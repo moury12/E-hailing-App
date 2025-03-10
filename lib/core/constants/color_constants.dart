@@ -6,7 +6,6 @@ class AppColors {
   static const Color kPrimaryLightColor = Color(0xffEEDDFF);
   static const Color kWhiteColor = Colors.white;
   static const Color kScaffoldBackgroundColor = Color(0xffF1F5F9);
-  static const Color kScaffoldGreyBackgroundColor = Color(0xffF1F5F9);
   static const Color kLightGreyColor = Color(0xffE2E8F0);
   static const Color kGreyColor = Color(0xffD9E1E7);
   static const Color kTextBlueGreyColor = Color(0xff334155);

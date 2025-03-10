@@ -37,7 +37,7 @@ class CustomText extends StatelessWidget {
             fontWeight: fontWeight ?? style?.fontWeight,
           ) ??
           TextStyle(
-            color: color ?? AppColors.kLightTextColor,
+            color: color ?? AppColors.kTextColor,
             fontSize: fontSize ?? getFontSizeSemiSmall(),
             fontFamily: 'Poppins',
             fontWeight: fontWeight??FontWeight.w500,

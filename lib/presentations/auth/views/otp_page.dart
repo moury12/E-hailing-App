@@ -1,0 +1,11 @@
+import 'package:flutter/material.dart';
+
+class OtpPage extends StatelessWidget {
+  static const String routeName = '/otp';
+  const OtpPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold();
+  }
+}

@@ -69,16 +69,17 @@ class AppTheme {
         ),
         splashRadius: 20.0, // Radius of the splash when tapped
       ),
+
       inputDecorationTheme: inputDecorationTheme,
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: AppColors.kWhiteColor,
       ),
       appBarTheme: AppBarTheme(
-        surfaceTintColor: AppColors.kWhiteColor,
-        backgroundColor: AppColors.kWhiteColor,
+        surfaceTintColor: AppColors.kScaffoldBackgroundColor,
+        backgroundColor: AppColors.kScaffoldBackgroundColor,
         foregroundColor: AppColors.kTextColor,
       ),
-      scaffoldBackgroundColor: AppColors.kWhiteColor,
+      scaffoldBackgroundColor: AppColors.kScaffoldBackgroundColor,
       textTheme: const TextTheme(
           /* bodyText1: TextStyle(fontSize: 16, color: Colors.black),
         bodyText2: TextStyle(fontSize: 14, color: Colors.black54),
