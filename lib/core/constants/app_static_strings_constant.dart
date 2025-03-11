@@ -1,15 +1,19 @@
 class AppStaticStrings {
   // Authentication
   static const String welcomeBack = 'Welcome Back!';
-  static const String signIn = 'Sign In';
+  static const String logIn = 'Log In';
   static const String signUp = 'Sign Up';
+  static const String signUpToGetStarted = 'Sign up to get started. Fill in your details to create an account.';
   static const String email = 'Email';
+  static const String orContinueWith = 'Or continue with';
   static const String password = 'Password';
+  static const String logInToContinue = 'Log in to continue. Enter your credentials to access your account.';
   static const String confirmPassword = 'Confirm Password';
   static const String rememberMe = 'Remember me';
   static const String forgotPassword = 'Forgot Password?';
-  static const String dontHaveAccount = "Don't have an account? Register Now";
-  static const String alreadyHaveAccount = "Already have an account? Log in";
+  static const String registerNow = 'Register Now?';
+  static const String dontHaveAccount = "Don't have an account?";
+  static const String alreadyHaveAccount = "Already have an account?";
 
   // Account Creation
   static const String createYourAccount = 'Create Your Account';

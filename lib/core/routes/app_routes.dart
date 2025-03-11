@@ -5,8 +5,8 @@ import 'package:e_hailing_app/presentations/auth/views/otp_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/otp_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/reset_password_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/reset_password_page.dart';
-import 'package:e_hailing_app/presentations/auth/views/signin_page.dart';
-import 'package:e_hailing_app/presentations/auth/views/signin_page.dart';
+import 'package:e_hailing_app/presentations/auth/views/signup_page.dart';
+import 'package:e_hailing_app/presentations/auth/views/signup_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
@@ -27,8 +27,8 @@ class AppRoutes {
       binding: AuthBinding(),
     ),
     GetPage(
-      name: SigninPage.routeName,
-      page: () => SigninPage(),
+      name: SignupPage.routeName,
+      page: () => SignupPage(),
       binding: AuthBinding(),
     ),
     GetPage(

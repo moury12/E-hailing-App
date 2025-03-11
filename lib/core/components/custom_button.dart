@@ -65,7 +65,7 @@ class CustomButton extends StatelessWidget {
         width: width,
         decoration: BoxDecoration(
             border: Border.all(color: borderColor),
-            borderRadius: BorderRadius.circular(radius ?? 8.r),
+            borderRadius: BorderRadius.circular(radius ?? 24.r),
             color: fillColor),
         child: isLoading == true
             ? const DefaultProgressIndicator(
@@ -79,7 +79,7 @@ class CustomButton extends StatelessWidget {
                     Text(
                         textAlign: TextAlign.center,
                         title,
-                        style: poppinsRegular.copyWith(
+                        style: poppinsSemiBold.copyWith(
                             color: textColor,
                             fontSize:
                                 fontSize ?? getFontSizeSemiSmall())),
