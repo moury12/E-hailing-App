@@ -104,6 +104,7 @@ class AppStaticStrings {
   static const String additionalNote = 'Additional Note';
   static const String loremIpsumText = 'Lorem Ipsum Dolor Sit Amet Consectetur, Commodao Mauris Vitae Non Vestibulum Armet Fusce.';
   static const String myRides = 'My Rides';
+  static const String trackRides = 'Track Ride';
   static const String ongoing = 'Ongoing';
   static const String upcoming = 'Upcoming';
   static const String completed = 'Completed';

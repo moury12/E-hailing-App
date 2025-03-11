@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../presentations/auth/controllers/auth_controller.dart';
+import '../../presentations/navigation/controllers/navigation_controller.dart';
 import '../../presentations/splash/controllers/common_controller.dart';
 import '../../presentations/splash/controllers/splash_controller.dart';
 
@@ -32,12 +33,12 @@ class AuthBinding extends Bindings {
   }
 }
 //
-// class NavigationBinding extends Bindings {
-//   @override
-//   void dependencies() {
-//     Get.put(NavigationController());
-//   }
-// }
+class NavigationBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(NavigationController());
+  }
+}
 //
 // class ProfileBinding extends Bindings {
 //   @override
