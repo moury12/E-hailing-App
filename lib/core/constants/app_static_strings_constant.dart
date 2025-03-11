@@ -5,11 +5,13 @@ class AppStaticStrings {
   static const String signUp = 'Sign Up';
   static const String signUpToGetStarted = 'Sign up to get started. Fill in your details to create an account.';
   static const String email = 'Email';
+  static const String weWillSendACode = 'We\'ll send a verification code to this email to confirm your account.';
   static const String orContinueWith = 'Or continue with';
   static const String password = 'Password';
   static const String logInToContinue = 'Log in to continue. Enter your credentials to access your account.';
   static const String confirmPassword = 'Confirm Password';
   static const String rememberMe = 'Remember me';
+  static const String createAnewPassword = 'Create a new password to secure your account.';
   static const String forgotPassword = 'Forgot Password?';
   static const String registerNow = 'Register Now?';
   static const String dontHaveAccount = "Don't have an account?";
@@ -26,6 +28,7 @@ class AppStaticStrings {
   static const String verifyYourIdentity = 'Verify Your Identity';
   static const String nricPassport = 'NRIC / Passport';
   static const String uploadNricPassport = 'Upload NRIC / Passport';
+  static const String uploadImage = 'Upload Image';
   static const String confirm = 'Confirm';
 
   // Email Verification

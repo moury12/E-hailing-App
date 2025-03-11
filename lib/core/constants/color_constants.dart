@@ -17,7 +17,7 @@ class AppColors {
   static const Color kBlueAccentColor = Color(0xff60A5FA);
   static const Color kBlueLittleDarkColor = Color(0xff2D6AEC);
   static const Color kBrightBlueColor = Color(0xff0091F7);
-  static const Color kLightBlueColor = Color(0xffE0F2FE);
+  static const Color kLightBlueColor = Color(0xffBFDBFE);
   static const Color kSplashBackgroundColor = Color(0xff8A53FE);
   static const Color kTextColor = Color(0xff000000);
   static const Color kLightTextColor = Color(0xff515151);
