@@ -1,3 +1,5 @@
+import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
+import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,13 +28,14 @@ class AppTheme {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.kWhiteColor,
         showUnselectedLabels: true,
+
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.kPrimaryColor,
         unselectedItemColor: AppColors.kLightTextColor,
         unselectedLabelStyle: poppinsRegular.copyWith(
-            color: AppColors.kLightTextColor, fontSize: 12.sp),
-        selectedLabelStyle: poppinsMedium.copyWith(
-            color: AppColors.kPrimaryColor, fontSize: 12.sp),
+            color: AppColors.kTextColor, fontSize: getFontSizeSmall()),
+        selectedLabelStyle: poppinsRegular.copyWith(
+            color: AppColors.kPrimaryColor, fontSize: getFontSizeSmall()),
       ),
 
       checkboxTheme: CheckboxThemeData(

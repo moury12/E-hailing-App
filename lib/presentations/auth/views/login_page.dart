@@ -10,6 +10,7 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/auth/views/signup_page.dart';
+import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -75,7 +76,9 @@ class LoginPage extends StatelessWidget {
             ),
           ],
         ),
-        CustomButton(onTap: () {}, title: AppStaticStrings.logIn),
+        CustomButton(onTap: () {
+          Get.toNamed(NavigationPage.routeName);
+        }, title: AppStaticStrings.logIn),
         space12H,
         SocialMediaAuthWidget(),
       ],
