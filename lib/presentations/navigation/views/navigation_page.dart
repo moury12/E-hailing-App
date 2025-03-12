@@ -3,10 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/components/custom_button_tap.dart';
+import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
 import '../../../core/utils/variables.dart';
+import '../../home/widgets/row_more_button_widget.dart';
+import '../../home/widgets/search_field_button_widget.dart';
 import '../controllers/navigation_controller.dart';
+import '../widgets/bottom_sheets.dart';
 import '../widgets/google_map_widget.dart';
 import '../widgets/nav_item_widget.dart';
 
@@ -17,7 +21,18 @@ class NavigationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  GoogleMapWidget(),
+      body: Column(
+        children: [
+          Expanded(
+            child: Obx(() {
+              return IndexedStack(
+                index: NavigationController.to.currentNavIndex.value,
+                children: NavigationController.to.getPages(),
+              );
+            }),
+          ),
+        ],
+      ),
       bottomNavigationBar: Stack(
         children: [
           Container(
@@ -38,6 +53,9 @@ class NavigationPage extends StatelessWidget {
                     message: nav.title,
                     child: ButtonTapWidget(
                       onTap: () {
+                        if (nav.index == 0) {
+                          homeInitialBottomSheet();
+                        }
                         NavigationController.to.currentNavIndex.value =
                             nav.index;
                       },
@@ -75,4 +93,3 @@ class NavigationPage extends StatelessWidget {
     );
   }
 }
-

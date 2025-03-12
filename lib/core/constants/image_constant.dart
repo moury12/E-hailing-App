@@ -54,4 +54,4 @@ String uploadIcon = 'assets/icons/upload_icon.svg';
 String carImage = 'assets/images/car_img.svg';
 String logoImage = 'assets/images/logo.svg';
 String orImage = 'assets/images/or_img.svg';
-String purpleCarImage = 'assets/images/purple_car_img.svg';
+String purpleCarImage = 'assets/images/purple_car_img.png';
