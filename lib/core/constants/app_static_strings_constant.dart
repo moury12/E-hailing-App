@@ -76,6 +76,10 @@ class AppStaticStrings {
 
   // Payment
   static const String cash = 'Cash';
+  static const String more = 'More';
+  static const String recentTip = 'Recent Tip';
+  static const String service = 'Service';
+  static const String savedLocation = 'Saved Location ';
   static const String payWithCard = 'Pay with Card';
 
   // Ratings & Feedback
@@ -104,6 +108,8 @@ class AppStaticStrings {
   static const String additionalNote = 'Additional Note';
   static const String loremIpsumText = 'Lorem Ipsum Dolor Sit Amet Consectetur, Commodao Mauris Vitae Non Vestibulum Armet Fusce.';
   static const String myRides = 'My Rides';
+  static const String ride = 'Ride';
+  static const String preBookRide = 'Pre-Book Ride';
   static const String trackRides = 'Track Ride';
   static const String ongoing = 'Ongoing';
   static const String upcoming = 'Upcoming';
@@ -130,7 +136,7 @@ class AppStaticStrings {
   // Profile Section
   static const String accountInformation = 'Account Information';
   static const String earnings = 'Earnings';
-  static const String more = 'More';
+
   static const String helpSupport = 'Help/Support';
   static const String logOut = 'Log Out';
 

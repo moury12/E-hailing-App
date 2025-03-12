@@ -1,61 +1,46 @@
-import 'package:e_hailing_app/core/constants/custom_text.dart';
+import 'package:e_hailing_app/core/constants/color_constants.dart';
+import 'package:e_hailing_app/core/constants/image_constant.dart';
+import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../constants/color_constants.dart';
-import '../constants/fontsize_constant.dart';
-import '../constants/text_style_constant.dart';
-
-class CustomAuthAppbar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  const CustomAuthAppbar({
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+class CustomAppBarWidget extends StatelessWidget {
+  const CustomAppBarWidget({
     super.key,
-    required this.title,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      centerTitle: true,
-      title: CustomText(
-        text: title,
-        style: poppinsMedium,
-        fontSize: getFontSizeExtraLarge(),
-        color: AppColors.kTextColor,
+    return Container(
+      decoration: BoxDecoration(color: AppColors.kWhiteColor),
+      child: Padding(
+        padding: padding16.copyWith(
+          top: MediaQuery.of(context).viewPadding.top,
+          bottom: 6.h,
+        ),
+        child: Row(
+          children: [
+            SvgPicture.asset(primaryLogoIcon),
+            Spacer(),
+            IconButton(
+              onPressed: () {},
+              icon: SvgPicture.asset(sosIcon),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.kPrimaryColor,
+              ),
+              child: IconButton(
+                onPressed: () {},
+                icon: SvgPicture.asset(notificationIcon),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class CustomDefaultAppbar extends StatelessWidget
-    implements PreferredSizeWidget {
-  final String title;
-  final Widget? leading;
-  const CustomDefaultAppbar({
-    super.key,
-    required this.title, this.leading,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: AppColors.kPrimaryColor,
-      foregroundColor: AppColors.kWhiteColor,
-      centerTitle: true,
-      leading:leading ,
-      title: CustomText(
-        text: title,
-        style: poppinsMedium,
-        fontSize: getFontSizeExtraLarge(),
-        color: AppColors.kWhiteColor,
-      ),
-    );
-  }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}

@@ -38,6 +38,7 @@ class CustomTextField extends StatefulWidget {
     this.focusedBorder,
     this.enabledBorder,
     this.fillColor = Colors.transparent,
+    this.borderColor ,
     this.contentPadding = const EdgeInsets.only(left: 10),
     this.title,
     this.isEnable = true,
@@ -65,6 +66,7 @@ class CustomTextField extends StatefulWidget {
 
   final Color? suffixIconColor;
   final Color? fillColor;
+  final Color? borderColor;
 
   final Widget? suffixIcon;
   final Widget? prefixIcon;
@@ -197,28 +199,28 @@ class _CustomTextFieldState extends State<CustomTextField> {
               disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(widget.borderRadius ?? 8.r),
                 borderSide: BorderSide(
-                  color: /*widget.fillColor ??*/ Colors.black,
+                  color: widget.borderColor ?? Colors.black,
                   width: 1,
                 ),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(widget.borderRadius ?? 8.r),
                 borderSide: BorderSide(
-                  color: /* widget.fillColor ??*/ Colors.black,
+                  color:  widget.borderColor ?? Colors.black,
                   width: 1,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(widget.borderRadius ?? 8.r),
                 borderSide: BorderSide(
-                  color: /* widget.fillColor ??*/ Colors.black,
+                  color:  widget.borderColor ?? Colors.black,
                   width: 1,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(widget.borderRadius ?? 8.r),
                 borderSide: BorderSide(
-                  color: /* widget.fillColor ??*/ Colors.black,
+                  color:  widget.borderColor ?? Colors.black,
                   width: 1,
                 ),
               ),
