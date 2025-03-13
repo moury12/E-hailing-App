@@ -116,6 +116,7 @@ class AppStaticStrings {
   static const String ongoing = 'Ongoing';
   static const String upcoming = 'Upcoming';
   static const String completed = 'Completed';
+  static const String addLocation = 'Add location';
   static const String finalCost = 'Final cost';
   static const String tripDuration = 'Trip Duration';
   static const String from = 'From:';

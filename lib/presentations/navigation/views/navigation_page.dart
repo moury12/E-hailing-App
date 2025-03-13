@@ -11,7 +11,7 @@ import '../../home/controllers/home_controller.dart';
 import '../../home/widgets/row_more_button_widget.dart';
 import '../../home/widgets/search_field_button_widget.dart';
 import '../controllers/navigation_controller.dart';
-import '../widgets/bottom_sheets.dart';
+import '../../home/widgets/bottom_sheets.dart';
 import '../widgets/google_map_widget.dart';
 import '../widgets/nav_item_widget.dart';
 

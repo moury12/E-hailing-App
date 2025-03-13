@@ -2,19 +2,19 @@ import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
-class CustomAppBarWidget extends StatelessWidget {
+import '../constants/custom_text.dart';
+
+class CustomAppBarForHomeWidget extends StatelessWidget {
   final String? actionIcon;
   final Function()? onTap;
   final Function()? onBack;
   final bool? isBack;
-  const CustomAppBarWidget({
+  const CustomAppBarForHomeWidget({
     super.key,
     this.actionIcon,
     this.onTap,
@@ -46,6 +46,21 @@ class CustomAppBarWidget extends StatelessWidget {
       ),
     );
   }
+}
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  const CustomAppBar({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: CustomText(text: title),
+      centerTitle: true,
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 class PrimaryCircleButtonWidget extends StatelessWidget {

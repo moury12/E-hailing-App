@@ -3,11 +3,14 @@ import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_text_button.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/components/custom_timeline.dart';
+import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
+import 'package:e_hailing_app/presentations/home/views/saved_location_page.dart';
+import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,82 +20,75 @@ import 'package:timelines_plus/timelines_plus.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
-import '../../home/widgets/row_more_button_widget.dart';
-import '../../home/widgets/search_field_button_widget.dart';
-import 'custom_container_with_border.dart';
+import 'row_more_button_widget.dart';
+import 'search_field_button_widget.dart';
+import '../../navigation/widgets/custom_container_with_border.dart';
 
-// void homeInitialBottomSheet() {
-//   Get.bottomSheet(
-//
-//     barrierColor: Colors.transparent,
-//     // isDismissible: false,
-//     clipBehavior: Clip.none,
-//     Obx(() {
-//       return Container(
-//         margin: EdgeInsets.only(bottom: 83),
-//         decoration: BoxDecoration(
-//           color: AppColors.kLightGreyColor,
-//           borderRadius: BorderRadius.vertical(top: Radius.circular(34.r)),
-//         ),
-//         child: SingleChildScrollView(
-//           child: Padding(
-//             padding: padding12,
-//             child:
-//                 HomeController.to.wantToGo.value
-//                     ? WantToGoContentWidget()
-//                     : HomeController.to.setPickup.value
-//                     ? SetLocationWidget()
-//                     : InitialContentWidget(),
-//           ),
-//         ),
-//       );
-//     }),
-//     isScrollControlled: true,
-//     enableDrag: true,
-//     backgroundColor: Colors.transparent,
-//   );
-// }
-
-class SetLocationWidget extends StatelessWidget {
-  const SetLocationWidget({super.key});
+class HomeSetLocationWidget extends StatelessWidget {
+  const HomeSetLocationWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 8.h ,
+      spacing: 8.h,
       children: [
         CustomText(
           text: AppStaticStrings.setYourPickupLocation,
           style: poppinsSemiBold,
         ),
-        Obx(
-         () {
-            return CustomWhiteContainerWithBorder(
-              img: pickLocationIcon,
-              text: HomeController.to.placeName.value,
-              cross: ButtonTapWidget(
-                onTap: () {
-                  HomeController.to.placeName.value = '';
-                },
-                child: Padding(
-                  padding: padding6,
-                  child: SvgPicture.asset(crossCircleIcon),
-                ),
+        Obx(() {
+          return CustomWhiteContainerWithBorder(
+            img: pickLocationIcon,
+            text: HomeController.to.placeName.value,
+            cross: ButtonTapWidget(
+              onTap: () {
+                HomeController.to.placeName.value = '';
+              },
+              child: Padding(
+                padding: padding6,
+                child: SvgPicture.asset(crossCircleIcon),
               ),
-            );
-          }
+            ),
+          );
+        }),
+        CustomButton(
+          onTap: () {
+            HomeController.to.selectEv.value = true;
+            HomeController.to.setPickup.value = false;
+          },
+          title: AppStaticStrings.continueButton,
         ),
-        CustomButton(onTap: () {
+      ],
+    );
+  }
+}
+class HomeSelectEvWidget extends StatelessWidget {
+  const HomeSelectEvWidget({super.key});
 
-        },
-        title: AppStaticStrings.continueButton,)
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 12.h,
+      children: [
+        CustomText(text: AppStaticStrings.selectYourEv, style: poppinsSemiBold),
+        ...List.generate(
+          4,
+              (index) => index ==3?SelectCarITemWidget(
+            fillColor: AppColors.kPrimaryColor.withValues(alpha: .2),
+            borderColor: AppColors.kPrimaryColor,
+            onTap: () {
+
+            },):SelectCarITemWidget(onTap: () {
+
+          },),
+        ),
       ],
     );
   }
 }
 
-class WantToGoContentWidget extends StatelessWidget {
-  const WantToGoContentWidget({super.key});
+class HomeWantToGoContentWidget extends StatelessWidget {
+  const HomeWantToGoContentWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +153,9 @@ class WantToGoContentWidget extends StatelessWidget {
         IconWithTextWidget(
           icon: savedPlaceIcon,
           text: AppStaticStrings.savedPlace,
+          onTap: () {
+            Get.toNamed(SavedLocationPage.routeName);
+          },
         ),
         ...List.generate(
           4,
@@ -213,8 +212,8 @@ class IconWithTextWidget extends StatelessWidget {
   }
 }
 
-class InitialContentWidget extends StatelessWidget {
-  const InitialContentWidget({super.key});
+class HomeInitialContentWidget extends StatelessWidget {
+  const HomeInitialContentWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -276,43 +275,61 @@ class InitialContentWidget extends StatelessWidget {
             ),
           ],
         ),
+        space6H,
         CustomText(text: AppStaticStrings.service),
+        space6H,
+
         Row(
           spacing: 12.w,
           children: [
             Expanded(
-              child: CustomWhiteContainerWithBorder(
-                child: Column(
-                  spacing: 6.h,
-                  children: [
-                    Image.asset(purpleCarImage, height: 64),
-                    CustomText(
-                      text: AppStaticStrings.ride,
-                      style: poppinsSemiBold,
-                      fontSize: getFontSizeDefault(),
-                    ),
-                  ],
-                ),
+              child: ServiceWidget(
+                title: AppStaticStrings.ride,
+                img: purpleCarImage,
               ),
             ),
             Expanded(
-              child: CustomWhiteContainerWithBorder(
-                child: Column(
-                  spacing: 6.h,
-                  children: [
-                    Image.asset(purpleCarImage, height: 64),
-                    CustomText(
-                      text: AppStaticStrings.preBookRide,
-                      style: poppinsSemiBold,
-                      fontSize: getFontSizeDefault(),
-                    ),
-                  ],
-                ),
+              child: ServiceWidget(
+                onTap: () {
+                  HomeController.to.setPickup.value = true;
+                },
+                title: AppStaticStrings.preBookRide,
+                img: purpleCarImage2,
               ),
             ),
           ],
         ),
       ],
+    );
+  }
+}
+
+class ServiceWidget extends StatelessWidget {
+  final String title;
+  final String img;
+  final Function()? onTap;
+  const ServiceWidget({
+    super.key,
+    required this.title,
+    required this.img,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomWhiteContainerWithBorder(
+      onTap: onTap,
+      child: Column(
+        spacing: 6.h,
+        children: [
+          Image.asset(img, height: 64),
+          CustomText(
+            text: title,
+            style: poppinsSemiBold,
+            fontSize: getFontSizeDefault(),
+          ),
+        ],
+      ),
     );
   }
 }
