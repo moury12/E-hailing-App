@@ -8,6 +8,7 @@ class HomeController extends GetxController {
   RxBool wantToGo = false.obs;
   RxBool isBottomSheetOpen = true.obs;
   RxBool setPickup = false.obs;
+  RxBool selectEv = false.obs;
   RxBool addStops = false.obs;
   RxBool markerDraging = false.obs;
   RxString placeName = 'Fetching location...'.obs;

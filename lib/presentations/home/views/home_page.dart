@@ -1,9 +1,5 @@
-import 'package:e_hailing_app/core/components/custom_text_button.dart';
-import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
-import 'package:e_hailing_app/core/constants/custom_text.dart';
-import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/presentations/navigation/widgets/google_map_widget.dart';
@@ -13,10 +9,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/components/custom_appbar.dart';
-import '../../navigation/widgets/bottom_sheets.dart';
+import '../widgets/bottom_sheets.dart';
 import '../controllers/home_controller.dart';
-import '../widgets/row_more_button_widget.dart';
-import '../widgets/search_field_button_widget.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = '/home';
@@ -28,7 +22,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-
   Animation<Offset>? offset;
 
   @override
@@ -61,22 +54,29 @@ class _HomePageState extends State<HomePage>
         Column(
           children: [
             Obx(() {
-              return CustomAppBarWidget(
+              return CustomAppBarForHomeWidget(
                 onBack: () {
-                  if(HomeController.to.wantToGo.value){
-                    HomeController.to.wantToGo.value=false;
-                  }else if(HomeController.to.setPickup.value){
-                    HomeController.to.setPickup.value=false;
-                    HomeController.to.wantToGo.value=true;
-
-                  }else{
-                    HomeController.to.wantToGo.value=false;
-                    HomeController.to.setPickup.value=false;
+                  if (HomeController.to.wantToGo.value) {
+                    HomeController.to.wantToGo.value = false;
+                  } else if (HomeController.to.setPickup.value) {
+                    HomeController.to.setPickup.value = false;
+                    HomeController.to.wantToGo.value = true;
+                  } else if (HomeController.to.selectEv.value) {
+                    HomeController.to.selectEv.value = false;
+                    HomeController.to.setPickup.value = true;
+                  } else {
+                    HomeController.to.wantToGo.value = false;
+                    HomeController.to.setPickup.value = false;
                   }
                 },
-                isBack: HomeController.to.wantToGo.value||HomeController.to.setPickup.value,
+                isBack:
+                    HomeController.to.wantToGo.value ||
+                    HomeController.to.setPickup.value||
+                    HomeController.to.selectEv.value,
                 actionIcon:
-                    HomeController.to.wantToGo.value||HomeController.to.setPickup.value
+                    HomeController.to.wantToGo.value ||
+                            HomeController.to.setPickup.value||
+                        HomeController.to.selectEv.value
                         ? gpsWhiteIcon
                         : notificationIcon,
               );
@@ -98,10 +98,12 @@ class _HomePageState extends State<HomePage>
               }
             },
             onVerticalDragEnd: (details) {
-              if (HomeController.to.controller!.status == AnimationStatus.completed) {
+              if (HomeController.to.controller!.status ==
+                  AnimationStatus.completed) {
                 // If animation is completed (sheet fully up), keep it open
                 HomeController.to.controller?.forward();
-              } else if (HomeController.to.controller!.status == AnimationStatus.dismissed) {
+              } else if (HomeController.to.controller!.status ==
+                  AnimationStatus.dismissed) {
                 HomeController.to.controller?.reverse();
               }
             },
@@ -131,10 +133,12 @@ class _HomePageState extends State<HomePage>
                         ),
                         space12H,
                         HomeController.to.wantToGo.value
-                            ? WantToGoContentWidget()
+                            ? HomeWantToGoContentWidget()
                             : HomeController.to.setPickup.value
-                            ? SetLocationWidget()
-                            : InitialContentWidget(),
+                            ? HomeSetLocationWidget()
+                            : HomeController.to.selectEv.value
+                            ? HomeSelectEvWidget()
+                            : HomeInitialContentWidget(),
                       ],
                     ),
                   ),
@@ -147,3 +151,5 @@ class _HomePageState extends State<HomePage>
     );
   }
 }
+
+

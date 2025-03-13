@@ -49,9 +49,11 @@ String termsIcon = 'assets/icons/terms_icon.svg';
 String totalEarnIcon = 'assets/icons/total_earn_icon.svg';
 String tripTodayIcon = 'assets/icons/trip_today_icon.svg';
 String uploadIcon = 'assets/icons/upload_icon.svg';
+String arrowCircleIcon = 'assets/icons/arrow_circle_icon.svg';
 
 // Images
 String carImage = 'assets/images/car_img.svg';
 String logoImage = 'assets/images/logo.svg';
 String orImage = 'assets/images/or_img.svg';
 String purpleCarImage = 'assets/images/purple_car_img.png';
+String purpleCarImage2 = 'assets/images/purple_car_img2.png';

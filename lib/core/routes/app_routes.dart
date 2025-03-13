@@ -16,6 +16,8 @@ import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dar
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
 import 'package:get/get.dart';
 
+import '../../presentations/home/views/saved_location_page.dart';
+
 class AppRoutes {
   static route() => [
     GetPage(
@@ -53,6 +55,12 @@ class AppRoutes {
       page: () => VerifyIdentityPage(),
       binding: AuthBinding(),
     ),
+    GetPage(
+      name: SavedLocationPage.routeName,
+      page: () => SavedLocationPage(),
+      // binding: AuthBinding(),
+    ),
+
     GetPage(
       name: NavigationPage.routeName,
       page: () => NavigationPage(),
