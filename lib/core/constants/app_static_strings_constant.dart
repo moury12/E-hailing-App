@@ -80,6 +80,7 @@ class AppStaticStrings {
   static const String recentTip = 'Recent Tip';
   static const String service = 'Service';
   static const String savedLocation = 'Saved Location ';
+  static const String savedPlace = 'Saved Place';
   static const String payWithCard = 'Pay with Card';
 
   // Ratings & Feedback
@@ -93,6 +94,7 @@ class AppStaticStrings {
   static const String settings = 'Settings';
   static const String logout = 'Logout';
   static const String setYourPickupLocation = 'Set Your Pickup Location';
+  static const String setLocationFromMap = 'Set Location from map';
   static const String setYourDropOffLocation = 'Set Your Drop-off Location';
   static const String scrollMapAndPin = 'Scroll Map And Pin Your Location';
   static const String selectYourEv = 'Select your EV';

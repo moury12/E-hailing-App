@@ -7,6 +7,7 @@ import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
 import '../../../core/utils/variables.dart';
+import '../../home/controllers/home_controller.dart';
 import '../../home/widgets/row_more_button_widget.dart';
 import '../../home/widgets/search_field_button_widget.dart';
 import '../controllers/navigation_controller.dart';
@@ -26,6 +27,7 @@ class NavigationPage extends StatelessWidget {
           Expanded(
             child: Obx(() {
               return IndexedStack(
+                clipBehavior: Clip.none,
                 index: NavigationController.to.currentNavIndex.value,
                 children: NavigationController.to.getPages(),
               );
@@ -34,6 +36,7 @@ class NavigationPage extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: Stack(
+        clipBehavior: Clip.none,
         children: [
           Container(
             height: 80.w,
@@ -54,7 +57,7 @@ class NavigationPage extends StatelessWidget {
                     child: ButtonTapWidget(
                       onTap: () {
                         if (nav.index == 0) {
-                          homeInitialBottomSheet();
+                          HomeController.to.controller!.forward();
                         }
                         NavigationController.to.currentNavIndex.value =
                             nav.index;

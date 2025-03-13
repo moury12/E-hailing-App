@@ -12,10 +12,11 @@ class CustomWhiteContainerWithBorder extends StatelessWidget {
   final String? img;
   final Function()? onTap;
   final Widget? child;
+  final Widget? cross;
   const CustomWhiteContainerWithBorder({
     super.key,
      this.text,
-     this.img,  this.child, this.onTap,
+     this.img,  this.child, this.onTap, this.cross,
   });
 
   @override
@@ -40,6 +41,7 @@ class CustomWhiteContainerWithBorder extends StatelessWidget {
               Expanded(child: CustomText(
                 textAlign: TextAlign.center,
                 text: text??'',maxLines: 1,overflow: TextOverflow.ellipsis,)),
+              cross??SizedBox.shrink()
             ],
           ),
         ),
