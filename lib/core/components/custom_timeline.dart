@@ -21,7 +21,7 @@ class CustomTimeline extends StatelessWidget {
     this.indicatorColor = Colors.blue,
     this.indicatorStyle = PaintingStyle.fill,
     this.strokeCap = StrokeCap.butt,
-    this.strokeWidth = 2.0,
+    this.strokeWidth = 1.5,
     this.style = PaintingStyle.stroke,
   })  : itemCount = children.length,
         assert(itemGap >= 0),

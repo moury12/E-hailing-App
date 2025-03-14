@@ -14,6 +14,10 @@ import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
+import 'package:e_hailing_app/presentations/trip/views/request_trip_page.dart';
+import 'package:e_hailing_app/presentations/trip/views/request_trip_page.dart';
+import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
+import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:get/get.dart';
 
 import '../../presentations/home/views/saved_location_page.dart';
@@ -58,6 +62,15 @@ class AppRoutes {
     GetPage(
       name: SavedLocationPage.routeName,
       page: () => SavedLocationPage(),
+      // binding: AuthBinding(),
+    ),
+    GetPage(
+      name: RequestTripPage.routeName,
+      page: () => RequestTripPage(),
+      // binding: AuthBinding(),
+    ),GetPage(
+      name: TripDetailsPage.routeName,
+      page: () => TripDetailsPage(),
       // binding: AuthBinding(),
     ),
 

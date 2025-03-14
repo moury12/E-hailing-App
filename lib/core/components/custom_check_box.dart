@@ -8,8 +8,11 @@ import '../constants/color_constants.dart';
 class CustomCheckbox extends StatelessWidget {
   final bool isChecked;
   final ValueChanged<bool> onChanged;
-  const CustomCheckbox(
-      {super.key, required this.isChecked, required this.onChanged});
+  const CustomCheckbox({
+    super.key,
+    required this.isChecked,
+    required this.onChanged,
+  });
 
   // bool isChecked = false;
 
@@ -24,14 +27,22 @@ class CustomCheckbox extends StatelessWidget {
         alignment: Alignment.center,
         height: 18.w,
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.kLightTextColor, width: 2.w),
-          borderRadius: BorderRadius.circular(2.r),
+          color: isChecked ? AppColors.kPrimaryColor : Colors.transparent,
+          border: Border.all(
+            color:
+                isChecked ? AppColors.kPrimaryColor : AppColors.kLightTextColor,
+            width: 2.w,
+          ),
+          borderRadius: BorderRadius.circular(5.r),
         ),
-        child: isChecked
-            ? Icon(CupertinoIcons.checkmark_alt,
-                color: isChecked ? AppColors.kLightTextColor : Colors.white,
-                size: 16.w)
-            : null,
+        child:
+            isChecked
+                ? Icon(
+                  CupertinoIcons.checkmark_alt,
+                  color: isChecked ? AppColors.kWhiteColor : Colors.white,
+                  size: 16.w,
+                )
+                : null,
       ),
     );
   }

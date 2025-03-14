@@ -10,7 +10,9 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/views/saved_location_page.dart';
+import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
+import 'package:e_hailing_app/presentations/trip/views/request_trip_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -73,19 +75,17 @@ class HomeSelectEvWidget extends StatelessWidget {
         CustomText(text: AppStaticStrings.selectYourEv, style: poppinsSemiBold),
         ...List.generate(
           4,
-              (index) => index ==3?SelectCarITemWidget(
-            fillColor: AppColors.kPrimaryColor.withValues(alpha: .2),
-            borderColor: AppColors.kPrimaryColor,
-            onTap: () {
-
-            },):SelectCarITemWidget(onTap: () {
-
+              (index) => index ==3?CarDetailsCardWidget()
+                  :SelectCarITemWidget(onTap: () {
+Get.toNamed(RequestTripPage.routeName);
           },),
         ),
       ],
     );
   }
 }
+
+
 
 class HomeWantToGoContentWidget extends StatelessWidget {
   const HomeWantToGoContentWidget({super.key});
@@ -98,36 +98,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
           text: AppStaticStrings.selectDestination,
           style: poppinsSemiBold,
         ),
-        CustomTimeline(
-          indicators: <Widget>[
-            SvgPicture.asset(pickLocationIcon),
-            SvgPicture.asset(dropLocationIcon),
-          ],
-          children: <Widget>[
-            CustomTextField(
-              borderRadius: 24.r,
-              hintText: AppStaticStrings.pickupLocation,
-              fillColor: AppColors.kWhiteColor,
-              borderColor: AppColors.kGreyColor,
-              height: 38.h,
-              suffixIcon: Padding(
-                padding: padding8,
-                child: SvgPicture.asset(crossCircleIcon),
-              ),
-            ),
-            CustomTextField(
-              borderRadius: 24.r,
-              hintText: AppStaticStrings.dropLocation,
-              fillColor: AppColors.kWhiteColor,
-              borderColor: AppColors.kGreyColor,
-              height: 38.h,
-              suffixIcon: Padding(
-                padding: padding8,
-                child: SvgPicture.asset(crossCircleIcon),
-              ),
-            ),
-          ],
-        ),
+        PickupDropLocationWidget(),
         Row(
           spacing: 6.w,
           mainAxisAlignment: MainAxisAlignment.end,
@@ -178,6 +149,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
     );
   }
 }
+
 
 class IconWithTextWidget extends StatelessWidget {
   final String? icon;
