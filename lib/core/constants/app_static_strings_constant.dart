@@ -23,13 +23,28 @@ class AppStaticStrings {
   static const String vehicleIssue = 'Vehicle Issue';
   static const String tripRequestError = 'Trip Request Error';
   static const String submit = 'Submit';
+  static const String pickup = 'Pickup';
   // Account Creation
   static const String createYourAccount = 'Create Your Account';
   static const String fullName = 'Full Name';
   static const String phoneNumber = 'Phone Number';
   static const String emergencyContactNumber = 'Emergency Contact Number';
   static const String createAccount = 'Create Account';
+  static const String rideEnded = "Yey! your ride ended";
+  static const String arriveOnLocation = "You Arrive On Location";
 
+  // Payment Details
+  static const String rent = "Rent";
+  static const String tollFee = "Toll fee";
+  static const String totalPayment = "Total payment";
+
+  // Payment Methods
+  static const String creditDebitCards = "Credit/Debit Cards";
+  static const String handCash = "Hand Cash";
+  static const String dCoin = "D Coin";
+
+  // Currency
+  static const String currencyRM = "RM";
   // Identity Verification
   static const String verifyYourIdentity = 'Verify Your Identity';
   static const String nricPassport = 'NRIC / Passport';
@@ -169,7 +184,6 @@ class AppStaticStrings {
   // Earnings & Statistics
   static const String totalEarnings = 'Total Earn';
   static const String onlineCash = 'Online Cash';
-  static const String handCash = 'Hand Cash';
   static const String earningsGrowth = 'Earnings Growth';
   static const String viewTransactionHistory = 'View Transaction History';
   static const String tripToday = 'Trip Today';

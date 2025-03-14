@@ -1,8 +1,6 @@
 import 'package:e_hailing_app/core/components/custom_button.dart';
-import 'package:e_hailing_app/core/components/custom_check_box.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
-import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
@@ -34,7 +32,7 @@ Future<dynamic> tripCancellationDialog() {
         Padding(
           padding: padding12,
           child: CustomButton(onTap: () {
-
+            Get.back();
           },title: AppStaticStrings.submit,
           ),
         )

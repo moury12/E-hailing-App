@@ -7,6 +7,7 @@ class HomeController extends GetxController {
   static HomeController get to => Get.find();
   RxBool wantToGo = false.obs;
   RxBool isBottomSheetOpen = true.obs;
+  RxBool isDestination = false.obs;
   RxBool setPickup = false.obs;
   RxBool selectEv = false.obs;
   RxBool addStops = false.obs;

@@ -10,18 +10,17 @@ import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
-import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/navigation/widgets/custom_container_with_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 
 import '../../../core/components/custom_timeline.dart';
 import '../../../core/constants/image_constant.dart';
 import '../../../core/helper/helper_function.dart';
 import '../widgets/car_information_widget.dart';
+import '../widgets/row_call_chat_details_button.dart';
 
 class TripDetailsPage extends StatelessWidget {
   static const String routeName = '/trip-details';
@@ -33,7 +32,7 @@ class TripDetailsPage extends StatelessWidget {
       appBar: CustomAppBar(title: AppStaticStrings.yourTripDetail),
       body: SingleChildScrollView(
         child: Padding(
-          padding: padding16.copyWith(top:0),
+          padding: padding16.copyWith(top: 0),
           child: Column(
             spacing: 12.h,
             children: [
@@ -175,40 +174,8 @@ class TripDetailsPage extends StatelessWidget {
                   ],
                 ),
               ),
-              Row(
-                spacing: 12.w,
-                children: [
-                  Expanded(
-                    child: CustomButton(
-                      onTap: () {},
-                      child: SvgPicture.asset(callIcon),
-                    ),
-                  ),
-                  Expanded(
-                    child: CustomButton(
-                      onTap: () {},
-                      child: SvgPicture.asset(chatIcon),
-                    ),
-                  ),
-                  Expanded(
-                    child: CustomButton(
-                      onTap: () {
-                        Get.toNamed(
-                          NavigationPage.routeName,
-                          arguments: pickupDestination,
-                        );
-                      },
-                      title: AppStaticStrings.track,
-                    ),
-                  ),
-                ],
-              ),
-              CustomButton(
-                onTap: () {
-                  tripCancellationDialog();
-                },
-                title: AppStaticStrings.cancelTrip,
-              ),
+              RowCallChatDetailsButton(),
+              CancelTripButtonWidget(),
             ],
           ),
         ),
@@ -216,3 +183,4 @@ class TripDetailsPage extends StatelessWidget {
     );
   }
 }
+
