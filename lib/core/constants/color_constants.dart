@@ -9,6 +9,7 @@ class AppColors {
   static const Color kLightGreyColor = Color(0xffE2E8F0);
   static const Color kGreyColor = Color(0xffD9E1E7);
   static const Color kLightBlackColor = Color(0xff333333);
+  static const Color kExtraLightBlackColor = Color(0xff5D5D5D);
   static const Color kBorderColor = Color(0xff64748B);
   static const Color kTextBlueGreyColor = Color(0xff334155);
   static const Color kTextDarkBlueColor = Color(0xff1E293B);
@@ -22,7 +23,7 @@ class AppColors {
   static const Color kLightBlueColor = Color(0xffBFDBFE);
   static const Color kSplashBackgroundColor = Color(0xff8A53FE);
   static const Color kTextColor = Color(0xff000000);
-  static const Color kLightTextColor = Color(0xff515151);
+  static const Color kLightTextColor = Color(0xffDFE4EA);
   static const Color kExtraLightTextColor = Color(0xff757575);
   static const Color kExtraLightGreyTextColor = Color(0xff929394);
   static const Color kDividerColor = Color(0xffCFCFCF);

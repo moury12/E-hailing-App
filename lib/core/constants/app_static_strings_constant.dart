@@ -16,7 +16,13 @@ class AppStaticStrings {
   static const String registerNow = 'Register Now?';
   static const String dontHaveAccount = "Don't have an account?";
   static const String alreadyHaveAccount = "Already have an account?";
-
+  static const String tripCancellationTitle = 'Trip Cancellation Reasons';
+  static const String riderNoShow = 'Rider No-Show';
+  static const String wrongPickupLocation = 'Wrong Pickup Location';
+  static const String safetyConcerns = 'Safety Concerns';
+  static const String vehicleIssue = 'Vehicle Issue';
+  static const String tripRequestError = 'Trip Request Error';
+  static const String submit = 'Submit';
   // Account Creation
   static const String createYourAccount = 'Create Your Account';
   static const String fullName = 'Full Name';
@@ -35,6 +41,10 @@ class AppStaticStrings {
   static const String verifyYourEmail = 'Verify Your Email';
   static const String verificationCodeSent = "We'll send a verification code to this email to confirm your account.";
   static const String continueButton = 'Continue';
+  static const String stopLocation = 'Stop location';
+  static const String evpValidityPeriod = 'EVP Validity Period';
+  static const String evpNumber = 'EVP Number';
+  static const String carSeat = 'Car Seat';
 
   // OTP
   static const String sixDigitCode = '6-digit code';
@@ -76,6 +86,7 @@ class AppStaticStrings {
 
   // Payment
   static const String cash = 'Cash';
+  static const String cancelTrip = 'Cancel trip';
   static const String more = 'More';
   static const String recentTip = 'Recent Tip';
   static const String service = 'Service';
@@ -102,6 +113,7 @@ class AppStaticStrings {
   static const String fourSeats = '4 seats';
   static const String rm150 = 'RM 150';
   static const String requestYourTrip = 'Request Your Trip';
+  static const String yourTripDetail = 'Your Trip Detail';
   static const String pickupLocation = 'Pickup Location';
   static const String dropLocation = 'Drop Location';
   static const String tripDate = 'Trip Date';
@@ -113,6 +125,7 @@ class AppStaticStrings {
   static const String ride = 'Ride';
   static const String preBookRide = 'Pre-Book Ride';
   static const String trackRides = 'Track Ride';
+  static const String track= 'Track';
   static const String ongoing = 'Ongoing';
   static const String upcoming = 'Upcoming';
   static const String completed = 'Completed';
@@ -149,6 +162,7 @@ class AppStaticStrings {
   static const String document = 'Document';
   static const String carBrand = 'Car Brand:';
   static const String carModel = 'Car Model:';
+  static const String carNumber = 'Car Number:';
   static const String carType = 'Car Type:';
   static const String carColor = 'Color:';
 

@@ -7,6 +7,9 @@ import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+import '../../trip/views/request_trip_page.dart';
 
 class SelectCarITemWidget extends StatelessWidget {
   final Function()? onTap;
@@ -25,7 +28,7 @@ class SelectCarITemWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: fillColor ?? AppColors.kWhiteColor,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: borderColor ?? AppColors.kWhiteColor),
+        border: Border.all(color: borderColor ?? AppColors.kWhiteColor,width: 2.w),
       ),
       child: ButtonTapWidget(
         onTap: onTap,
@@ -49,5 +52,22 @@ class SelectCarITemWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+class CarDetailsCardWidget extends StatelessWidget {
+ final Function()? onTap;
+  const CarDetailsCardWidget({
+    super.key, this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SelectCarITemWidget(
+      fillColor: AppColors.kPrimaryExtraLightColor,
+      borderColor: AppColors.kPrimaryColor,
+      onTap:onTap?? () {
+        Get.toNamed(RequestTripPage.routeName);
+
+      },);
   }
 }
