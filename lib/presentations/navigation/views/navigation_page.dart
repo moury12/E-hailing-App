@@ -57,7 +57,12 @@ class NavigationPage extends StatelessWidget {
                     child: ButtonTapWidget(
                       onTap: () {
                         if (nav.index == 0) {
-                          HomeController.to.controller!.forward();
+                         if(HomeController.to.controller!.isForwardOrCompleted) {
+                            HomeController.to.controller!.reverse();
+                          }else{
+                           HomeController.to.controller!.forward();
+
+                         }
                         }
                         NavigationController.to.currentNavIndex.value =
                             nav.index;

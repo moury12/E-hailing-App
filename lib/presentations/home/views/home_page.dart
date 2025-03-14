@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/presentations/navigation/widgets/google_map_widget.dart';
+import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +12,7 @@ import 'package:get/get.dart';
 import '../../../core/components/custom_appbar.dart';
 import '../widgets/bottom_sheets.dart';
 import '../controllers/home_controller.dart';
+import '../widgets/trip_details_card_widget.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = '/home';
@@ -56,7 +58,11 @@ class _HomePageState extends State<HomePage>
             Obx(() {
               return CustomAppBarForHomeWidget(
                 onBack: () {
-                  if (HomeController.to.wantToGo.value) {
+                  debugPrint(Get.previousRoute);
+                   if(Get.previousRoute==TripDetailsPage.routeName){
+                  Get.back();
+                  }
+                  else if (HomeController.to.wantToGo.value) {
                     HomeController.to.wantToGo.value = false;
                   } else if (HomeController.to.setPickup.value) {
                     HomeController.to.setPickup.value = false;
@@ -64,9 +70,11 @@ class _HomePageState extends State<HomePage>
                   } else if (HomeController.to.selectEv.value) {
                     HomeController.to.selectEv.value = false;
                     HomeController.to.setPickup.value = true;
-                  } else {
+                  }
+                  else {
                     HomeController.to.wantToGo.value = false;
                     HomeController.to.setPickup.value = false;
+
                   }
                 },
                 isBack:
@@ -87,7 +95,9 @@ class _HomePageState extends State<HomePage>
           bottom: 0,
           left: 0,
           right: 0,
-          child: GestureDetector(
+          child:   Get.previousRoute==TripDetailsPage.routeName?
+              TripDetailsCard()
+              : GestureDetector(
             onVerticalDragUpdate: (details) {
               if (details.primaryDelta! > 0) {
                 // Dragging down
@@ -132,6 +142,7 @@ class _HomePageState extends State<HomePage>
                           width: 26.w,
                         ),
                         space12H,
+                     
                         HomeController.to.wantToGo.value
                             ? HomeWantToGoContentWidget()
                             : HomeController.to.setPickup.value
@@ -151,5 +162,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 }
+
 
 
