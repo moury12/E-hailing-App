@@ -11,6 +11,7 @@ class HomeController extends GetxController {
   RxBool setPickup = false.obs;
   RxBool selectEv = false.obs;
   RxBool addStops = false.obs;
+
   RxBool markerDraging = false.obs;
   RxString placeName = 'Fetching location...'.obs;
   AnimationController? controller;
@@ -19,6 +20,10 @@ class HomeController extends GetxController {
   void onInit() {
     getPlaceName(marketPosition.value);
     super.onInit();
+  }
+  GoogleMapController? mapController;
+  void onMapCreated(GoogleMapController controller) {
+    mapController ??= controller;  // Store and reuse the same controller
   }
   Future<void> getPlaceName(LatLng position) async {
     try {

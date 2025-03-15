@@ -2,13 +2,12 @@ import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import '../../../core/components/custom_button_tap.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
 import '../../../core/utils/variables.dart';
-import '../../home/controllers/home_controller.dart';
+import '../../home/widgets/google_map_widget.dart';
 import '../controllers/navigation_controller.dart';
 import '../widgets/nav_item_widget.dart';
 
@@ -34,10 +33,18 @@ class NavigationPage extends StatelessWidget {
                 : currentIndex == 3
                 ? CustomAppBar(title: AppStaticStrings.messages)
                 : null,
-        body: IndexedStack(
+        body: Stack(
           clipBehavior: Clip.none,
-          index: currentIndex,
-          children: navController.getPages(),
+          children: [
+            currentIndex == 0 || currentIndex == 2
+                ? GoogleMapWidget()
+                : SizedBox.shrink(),
+            IndexedStack(
+              clipBehavior: Clip.none,
+              index: currentIndex,
+              children: navController.getPages(),
+            ),
+          ],
         ),
         bottomNavigationBar: Stack(
           clipBehavior: Clip.none,
@@ -59,9 +66,6 @@ class NavigationPage extends StatelessWidget {
                       message: nav.title,
                       child: ButtonTapWidget(
                         onTap: () {
-                          // if (nav.index == 0) {
-                          //
-                          // }
                           navController.currentNavIndex.value = nav.index;
                         },
                         child: Padding(

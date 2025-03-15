@@ -2,7 +2,7 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
-import 'package:e_hailing_app/presentations/navigation/widgets/google_map_widget.dart';
+import 'package:e_hailing_app/presentations/home/widgets/google_map_widget.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage>
     super.initState();
     HomeController.to.controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: Duration(milliseconds: 500),
     );
     offset = Tween<Offset>(
       begin: Offset(0.0, 0.9),
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage>
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        GoogleMapWidget(),
+
         Column(
           children: [
             Obx(() {
@@ -97,23 +97,23 @@ class _HomePageState extends State<HomePage>
           right: 0,
           child:
              GestureDetector(
-                    onVerticalDragUpdate: (details) {
-                      if (details.primaryDelta! > 0) {
+                    onHorizontalDragUpdate: (details) {
+                      if (details.primaryDelta! <0) {
                         // Dragging down
                         HomeController.to.controller?.reverse();
-                      } else if (details.primaryDelta! < 0) {
+                      } else if (details.primaryDelta! > 0) {
                         // Dragging up
                         HomeController.to.controller?.forward();
                       }
                     },
-                    onVerticalDragEnd: (details) {
-                      if (HomeController.to.controller!.status ==
-                          AnimationStatus.completed) {
-                        // If animation is completed (sheet fully up), keep it open
-                        HomeController.to.controller?.forward();
-                      } else if (HomeController.to.controller!.status ==
-                          AnimationStatus.dismissed) {
+                    onHorizontalDragDown: (details) {
+                      if (HomeController.to
+                          .controller
+                          ?.isForwardOrCompleted ??
+                          false) {
                         HomeController.to.controller?.reverse();
+                      } else {
+                        HomeController.to.controller?.forward();
                       }
                     },
                     child: SlideTransition(

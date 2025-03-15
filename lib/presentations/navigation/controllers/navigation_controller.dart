@@ -1,5 +1,6 @@
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/views/home_page.dart';
+import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
 import 'package:e_hailing_app/presentations/message/views/message_page.dart';
 import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
 import 'package:e_hailing_app/presentations/my-rides/views/my_ride_page.dart';
@@ -7,6 +8,7 @@ import 'package:e_hailing_app/presentations/profile/views/profile_page.dart';
 import 'package:e_hailing_app/presentations/track-ride/views/track_ride_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NavigationController extends GetxController {
   static NavigationController get to => Get.find();
@@ -14,7 +16,9 @@ class NavigationController extends GetxController {
   @override
   void onInit() {
     Get.put(HomeController());
+    Get.put(MessageController());
     Get.put(MyRideController());
+
     super.onInit();
   }
 
