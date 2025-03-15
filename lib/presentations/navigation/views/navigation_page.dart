@@ -20,7 +20,7 @@ class NavigationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final navController = NavigationController.to;
-      final homeController = HomeController.to;
+      // final homeController = HomeController.to;
       final currentIndex = navController.currentNavIndex.value;
       double containerWidth = MediaQuery.of(context).size.width;
       double itemWidth = containerWidth / navList.length;
@@ -59,16 +59,9 @@ class NavigationPage extends StatelessWidget {
                       message: nav.title,
                       child: ButtonTapWidget(
                         onTap: () {
-                          if (nav.index == 0) {
-                            if (homeController
-                                    .controller
-                                    ?.isForwardOrCompleted ??
-                                false) {
-                              homeController.controller?.reverse();
-                            } else {
-                              homeController.controller?.forward();
-                            }
-                          }
+                          // if (nav.index == 0) {
+                          //
+                          // }
                           navController.currentNavIndex.value = nav.index;
                         },
                         child: Padding(

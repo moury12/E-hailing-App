@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../constants/color_constants.dart';
 import '../constants/padding_constant.dart';
@@ -73,7 +72,7 @@ class CustomNetworkImage extends StatelessWidget {
             border: border,
             borderRadius: BorderRadius.circular(radius??8.r),
             shape: boxShape,
-            color: Colors.grey.withOpacity(0.6),
+            color: Colors.grey.withValues(alpha:0.6),
             image: DecorationImage(
               image: AssetImage(imageErrorUrl ?? ''),
               fit: BoxFit.cover,

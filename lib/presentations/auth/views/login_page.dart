@@ -77,7 +77,7 @@ class LoginPage extends StatelessWidget {
           ],
         ),
         CustomButton(onTap: () {
-          Get.toNamed(NavigationPage.routeName);
+          Get.offAllNamed(NavigationPage.routeName);
         }, title: AppStaticStrings.logIn),
         space12H,
         SocialMediaAuthWidget(),

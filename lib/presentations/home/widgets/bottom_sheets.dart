@@ -35,7 +35,7 @@ class HomeSetLocationWidget extends StatelessWidget {
       spacing: 8.h,
       children: [
         CustomText(
-          text: AppStaticStrings.setYourPickupLocation,
+          text:HomeController.to.selectEv.value?AppStaticStrings.setYourDropOffLocation: AppStaticStrings.setYourPickupLocation,
           style: poppinsSemiBold,
         ),
         Obx(() {
@@ -55,8 +55,13 @@ class HomeSetLocationWidget extends StatelessWidget {
         }),
         CustomButton(
           onTap: () {
-            HomeController.to.selectEv.value = true;
-            HomeController.to.setPickup.value = false;
+           if( !HomeController.to.selectEv.value) {
+              HomeController.to.selectEv.value = true;
+              HomeController.to.setPickup.value = false;
+            }else{
+             // HomeController.to.selectEv.value = false;
+             Get.toNamed(RequestTripPage.routeName);
+           }
           },
           title: AppStaticStrings.continueButton,
         ),
