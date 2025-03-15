@@ -1,6 +1,4 @@
- import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 double getFontSizeSmall() =>
 ScreenUtil().screenWidth>= 1300 ? 15.sp : 12.sp;

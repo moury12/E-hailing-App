@@ -32,7 +32,7 @@ class TripDetailsCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.kWhiteColor,
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: AppColors.kPrimaryColor, width: .5.w),
+        border: Border.all(color: AppColors.kPrimaryColor, width: 1.w),
       ),
       padding: padding12,
       child: Obx(() {

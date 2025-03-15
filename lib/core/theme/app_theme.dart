@@ -1,10 +1,9 @@
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
-import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../constants/color_constants.dart';
-import '../constants/text_style_constant.dart' show poppinsMedium, poppinsRegular;
+import '../constants/text_style_constant.dart';
 
 
 class AppTheme {
@@ -61,11 +60,11 @@ class AppTheme {
           (states) {
             if (states.contains(WidgetState.hovered)) {
               return AppColors.kPrimaryColor
-                  .withOpacity(0.1); // Hover effect color
+                  .withValues(alpha: 0.1); // Hover effect color
             }
             if (states.contains(WidgetState.pressed)) {
               return AppColors.kPrimaryColor
-                  .withOpacity(0.2); // Pressed effect color
+                  .withValues(alpha:0.2); // Pressed effect color
             }
             return null;
           },

@@ -18,14 +18,16 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
     super.key,
     this.actionIcon,
     this.onTap,
-    this.isBack = false, this.onBack,
+    this.isBack = false,
+    this.onBack,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: isBack == true
-          ? Colors.transparent: AppColors.kWhiteColor),
+      decoration: BoxDecoration(
+        color: isBack == true ? Colors.transparent : AppColors.kWhiteColor,
+      ),
       child: Padding(
         padding: padding16.copyWith(
           top: MediaQuery.of(context).viewPadding.top,
@@ -34,9 +36,14 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
         child: Row(
           children: [
             isBack == true
-                ? PrimaryCircleButtonWidget(actionIcon: backIcon,onTap:onBack?? () {
-                  Get.back();
-                },)
+                ? PrimaryCircleButtonWidget(
+                  actionIcon: backIcon,
+                  onTap:
+                      onBack ??
+                      () {
+                        Get.back();
+                      },
+                )
                 : SvgPicture.asset(primaryLogoIcon),
             Spacer(),
             IconButton(onPressed: () {}, icon: SvgPicture.asset(sosIcon)),
@@ -47,16 +54,14 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
     );
   }
 }
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   const CustomAppBar({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: CustomText(text: title),
-      centerTitle: true,
-    );
+    return AppBar(title: CustomText(text: title), centerTitle: true);
   }
 
   @override
@@ -75,18 +80,22 @@ class PrimaryCircleButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-height: 40.w,
-      width: 40.w ,
+      height: 40.w,
+      width: 40.w,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: AppColors.kPrimaryColor,
       ),
-      child:ButtonTapWidget(
+      child: ButtonTapWidget(
         onTap: onTap,
 
         child: Padding(
           padding: padding12,
-          child: SvgPicture.asset(actionIcon ?? notificationIcon),
+          child: SvgPicture.asset(
+            actionIcon ?? notificationIcon,
+            height: 20.w,
+            width: 20.w,
+          ),
         ),
       ),
     );
