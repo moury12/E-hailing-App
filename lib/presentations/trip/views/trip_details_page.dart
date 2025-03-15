@@ -20,6 +20,7 @@ import '../../../core/components/custom_timeline.dart';
 import '../../../core/constants/image_constant.dart';
 import '../../../core/helper/helper_function.dart';
 import '../widgets/car_information_widget.dart';
+import '../widgets/rating_info_widget.dart';
 import '../widgets/row_call_chat_details_button.dart';
 
 class TripDetailsPage extends StatelessWidget {
@@ -70,17 +71,7 @@ class TripDetailsPage extends StatelessWidget {
                                 boxShape: BoxShape.circle,
                               ),
                               space4H,
-                              Row(
-                                spacing: 4.w,
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.star_fill,
-                                    color: AppColors.kYellowColor,
-                                    size: 15.sp,
-                                  ),
-                                  CustomText(text: '5.0', style: poppinsBold),
-                                ],
-                              ),
+                              RatingInfoWidget(rating: '5.0',),
                             ],
                           ),
                           Column(
@@ -183,4 +174,5 @@ class TripDetailsPage extends StatelessWidget {
     );
   }
 }
+
 

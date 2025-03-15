@@ -40,7 +40,7 @@ class TripDetailsCard extends StatelessWidget {
           spacing: 8.h,
           children: [
             CustomText(
-              text: AppStaticStrings.pickup,
+              text:HomeController.to.isDestination.value?AppStaticStrings.destination: AppStaticStrings.pickup,
               fontSize: getFontSizeDefault(),
             ),
             Row(
@@ -95,25 +95,7 @@ class TripDetailsCard extends StatelessWidget {
                   Get.toNamed(PaymentPage.routeName);
                 });
               },
-              child: CustomTimeline(
-                padding: EdgeInsets.zero,
-                indicators: <Widget>[
-                  SvgPicture.asset(pickLocationIcon),
-                  if (HomeController.to.isDestination.value)
-                    SvgPicture.asset(dropLocationIcon),
-                ],
-                children: <Widget>[
-                  FromToWidget(
-                    details: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
-                    headline: AppStaticStrings.from,
-                  ),
-                  if (HomeController.to.isDestination.value)
-                    FromToWidget(
-                      details: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
-                      headline: AppStaticStrings.to,
-                    ),
-                ],
-              ),
+              child: FromToTimeLine(showTo: HomeController.to.isDestination.value,),
             ),
             RowCallChatDetailsButton(),
             if (!HomeController.to.isDestination.value)
@@ -121,6 +103,36 @@ class TripDetailsCard extends StatelessWidget {
           ],
         );
       }),
+    );
+  }
+}
+
+class FromToTimeLine extends StatelessWidget {
+  final bool? showTo;
+  const FromToTimeLine({
+    super.key, this.showTo=true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomTimeline(
+      padding: EdgeInsets.zero,
+      indicators: <Widget>[
+        SvgPicture.asset(pickLocationIcon),
+        if (showTo==true)
+          SvgPicture.asset(dropLocationIcon),
+      ],
+      children: <Widget>[
+        FromToWidget(
+          details: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
+          headline: AppStaticStrings.from,
+        ),
+        if (showTo==true)
+          FromToWidget(
+            details: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
+            headline: AppStaticStrings.to,
+          ),
+      ],
     );
   }
 }

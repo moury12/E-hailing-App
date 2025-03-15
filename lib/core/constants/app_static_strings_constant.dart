@@ -45,6 +45,7 @@ class AppStaticStrings {
 
   // Currency
   static const String currencyRM = "RM";
+  static const String destination = "Destination";
   // Identity Verification
   static const String verifyYourIdentity = 'Verify Your Identity';
   static const String nricPassport = 'NRIC / Passport';
@@ -141,9 +142,9 @@ class AppStaticStrings {
   static const String preBookRide = 'Pre-Book Ride';
   static const String trackRides = 'Track Ride';
   static const String track= 'Track';
-  static const String ongoing = 'Ongoing';
-  static const String upcoming = 'Upcoming';
-  static const String completed = 'Completed';
+  static  String ongoing = 'Ongoing';
+  static  String upcoming = 'Upcoming';
+  static  String completed = 'Completed';
   static const String addLocation = 'Add location';
   static const String finalCost = 'Final cost';
   static const String tripDuration = 'Trip Duration';

@@ -1,6 +1,7 @@
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/views/home_page.dart';
 import 'package:e_hailing_app/presentations/message/views/message_page.dart';
+import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
 import 'package:e_hailing_app/presentations/my-rides/views/my_ride_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/profile_page.dart';
 import 'package:e_hailing_app/presentations/track-ride/views/track_ride_page.dart';
@@ -13,6 +14,7 @@ class NavigationController extends GetxController {
   @override
   void onInit() {
     Get.put(HomeController());
+    Get.put(MyRideController());
     super.onInit();
   }
 
