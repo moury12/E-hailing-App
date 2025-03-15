@@ -32,6 +32,17 @@ class RequestTripPage extends StatelessWidget {
               CarDetailsCardWidget(onTap: () {}),
               PickupDropLocationWidget(),
               CustomTextField(
+                hintText: '01/03/2025',
+                borderColor: AppColors.kGreyColor,
+                fillColor: AppColors.kWhiteColor,
+                borderRadius: 24.r,
+                title: AppStaticStrings.tripDate,
+                prefixIcon: Padding(
+                  padding: padding14,
+                  child: SvgPicture.asset(calenderIcon),
+                ),
+              ),
+              CustomTextField(
                 hintText: '12:35 PM',
                 borderColor: AppColors.kGreyColor,
                 fillColor: AppColors.kWhiteColor,
