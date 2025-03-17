@@ -24,7 +24,8 @@ import '../../trip/widgets/row_call_chat_details_button.dart';
 import 'gradient_progress_indicator.dart';
 
 class TripDetailsCard extends StatelessWidget {
-  const TripDetailsCard({super.key});
+  final bool? isDestination;
+  const TripDetailsCard({super.key, this.isDestination});
 
   @override
   Widget build(BuildContext context) {
