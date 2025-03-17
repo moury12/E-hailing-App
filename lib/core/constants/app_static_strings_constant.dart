@@ -32,7 +32,18 @@ class AppStaticStrings {
   static const String createAccount = 'Create Account';
   static const String rideEnded = "Yey! your ride ended";
   static const String arriveOnLocation = "You Arrive On Location";
+  // Settings
+  static const String accountSetting = 'Account Setting';
+  static const String duduCoinWallet = 'DUDU Coin Wallet';
+  static const String notification = 'Notification';
+  static const String savedLocation = 'Saved Location';
 
+  // More
+  static const String more = 'More';
+  static const String termsAndCondition = 'Terms & Condition';
+  static const String privacyPolicy = 'Privacy Policy';
+  static const String helpSupport = 'Help/Support';
+  static const String logOut = 'Log Out';
   // Payment Details
   static const String rent = "Rent";
   static const String tollFee = "Toll fee";
