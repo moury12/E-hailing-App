@@ -21,7 +21,9 @@ class NavigationController extends GetxController {
 
     super.onInit();
   }
-
+  void changeIndex(int index) {
+    currentNavIndex.value = index;
+  }
   List<Widget> getPages() {
     return [
       HomePage(),

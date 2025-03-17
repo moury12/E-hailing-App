@@ -1,8 +1,10 @@
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
+import 'package:e_hailing_app/core/constants/custom_text.dart';
+import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
-import 'package:e_hailing_app/presentations/home/widgets/google_map_widget.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,26 +27,76 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  Animation<Offset>? offset;
+  late AnimationController controller;
+  late Animation<Offset> offset;
+
+  final double _dragThreshold = 0.2;
+  double _dragDistance = 0.0;
+  bool _isDragging = false;
 
   @override
   void initState() {
     super.initState();
-    HomeController.to.controller = AnimationController(
+
+    controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 300),
     );
+
     offset = Tween<Offset>(
       begin: Offset(0.0, 0.9),
       end: Offset.zero,
-    ).animate(HomeController.to.controller!);
-    HomeController.to.controller!.forward();
+    ).animate(
+      CurvedAnimation(
+        parent: controller,
+        curve: Curves.easeOut,
+      ),
+    );
+
+
+    controller.forward();
   }
 
   @override
   void dispose() {
-    HomeController.to.controller!.dispose();
+    controller.dispose();
     super.dispose();
+  }
+
+  void _handleDragUpdate(DragUpdateDetails details) {
+
+    if (!_isDragging) {
+      _isDragging = true;
+      _dragDistance = 0.0;
+    }
+
+
+    _dragDistance += details.primaryDelta! / context.size!.height;
+    controller.value = (controller.value - _dragDistance).clamp(0.0, 1.0);
+    _dragDistance = 0.0;
+  }
+
+  void _handleDragEnd(DragEndDetails details) {
+    _isDragging = false;
+    final velocity = details.primaryVelocity ?? 0;
+    if (velocity.abs() > 500) {
+      if (velocity > 0) {
+
+        controller.reverse();
+      } else {
+        // Fast upward flick - open
+        controller.forward();
+      }
+    } else {
+      // Slower drag - check threshold
+      if (controller.value < 1.0 - _dragThreshold) {
+        // Close if we're below the threshold
+        controller.reverse();
+      } else {
+        // Otherwise open
+        controller.forward();
+      }
+    }
   }
 
   @override
@@ -52,38 +104,24 @@ class _HomePageState extends State<HomePage>
     return Stack(
       clipBehavior: Clip.none,
       children: [
-
         Column(
           children: [
             Obx(() {
               return CustomAppBarForHomeWidget(
                 onBack: () {
-                  debugPrint(Get.previousRoute);
-                  if (Get.previousRoute.isNotEmpty) {
-                    Get.back();
-                  } else if (HomeController.to.wantToGo.value) {
-                    HomeController.to.wantToGo.value = false;
-                  } else if (HomeController.to.setPickup.value) {
-                    HomeController.to.setPickup.value = false;
-                    HomeController.to.wantToGo.value = true;
-                  } else if (HomeController.to.selectEv.value) {
-                    HomeController.to.selectEv.value = false;
-                    HomeController.to.setPickup.value = true;
-                  } else {
-                    HomeController.to.wantToGo.value = false;
-                    HomeController.to.setPickup.value = false;
-                  }
+HomeController.to.handleBackNavigation();
+
                 },
                 onTap: () {
                   Get.toNamed(NotificationPage.routeName);
                 },
                 isBack:
                     HomeController.to.wantToGo.value ||
-                    HomeController.to.setPickup.value ||
+                    HomeController.to.setPickup.value ||HomeController.to.setDestination.value ||
                     HomeController.to.selectEv.value,
                 actionIcon:
                     HomeController.to.wantToGo.value ||
-                            HomeController.to.setPickup.value ||
+                            HomeController.to.setPickup.value ||HomeController.to.setDestination.value ||
                             HomeController.to.selectEv.value
                         ? gpsWhiteIcon
                         : notificationIcon,
@@ -95,71 +133,72 @@ class _HomePageState extends State<HomePage>
           bottom: 0,
           left: 0,
           right: 0,
-          child:
-             GestureDetector(
-                    onHorizontalDragUpdate: (details) {
-                      if (details.primaryDelta! <0) {
-                        // Dragging down
-                        HomeController.to.controller?.reverse();
-                      } else if (details.primaryDelta! > 0) {
-                        // Dragging up
-                        HomeController.to.controller?.forward();
-                      }
-                    },
-                    onHorizontalDragDown: (details) {
-                      if (HomeController.to
-                          .controller
-                          ?.isForwardOrCompleted ??
-                          false) {
-                        HomeController.to.controller?.reverse();
-                      } else {
-                        HomeController.to.controller?.forward();
-                      }
-                    },
-                    child: SlideTransition(
-                      position: offset!,
-
-                      child: Get.previousRoute == TripDetailsPage.routeName
-                          ? TripDetailsCard()
-                          :  Obx(() {
-                        return Container(
-                          // margin: EdgeInsets.only(bottom: 83),
-                          decoration: BoxDecoration(
-                            color: AppColors.kLightGreyColor,
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(34.r),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: padding12,
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.kPrimaryColor,
-                                    borderRadius: BorderRadius.circular(5.r),
-                                  ),
-                                  height: 4.w,
-                                  width: 26.w,
-                                ),
-                                space12H,
-
-                                HomeController.to.wantToGo.value
-                                    ? HomeWantToGoContentWidget()
-                                    : HomeController.to.setPickup.value
-                                    ? HomeSetLocationWidget()
-                                    : HomeController.to.selectEv.value
-                                    ? HomeSetLocationWidget()
-                                    : HomeInitialContentWidget(),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
+          child: GestureDetector(
+            onVerticalDragUpdate: _handleDragUpdate,
+            onVerticalDragEnd: _handleDragEnd,
+            child: SlideTransition(
+              position: offset,
+              child:
+                  Get.previousRoute == TripDetailsPage.routeName
+                      ? TripDetailsCard()
+                      :
+    Obx(
+      () {
+        return HomeController.to.isLoadingNewTrip.value? TripRequestLoadingWidget() : Container(
+          // margin: EdgeInsets.only(bottom: 83),
+          decoration: BoxDecoration(
+            color: AppColors.kLightGreyColor,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(34.r),
+            ),
+          ),
+          child: Padding(
+            padding: padding12,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Handle indicator
+                Container(
+                  height: 4.w,
+                  width: 40.w,
+                  decoration: BoxDecoration(
+                    color:
+                    AppColors
+                        .kPrimaryColor, // Replace with your AppColors.kPrimaryColor
+                    borderRadius: BorderRadius.circular(2),
                   ),
+                ),
+                space12H,
+                // Sheet content - replace with your conditional content
+                Obx(() {
+                  // Replace this with your actual implementation
+                  if (HomeController.to.wantToGo.value) {
+                    return HomeWantToGoContentWidget();
+                  } else if (HomeController.to.setPickup.value) {
+                    return HomeSetLocationWidget();
+                  } else if (HomeController.to.setDestination.value) {
+                    return HomeSetLocationWidget();
+                  }else if (HomeController.to.selectEv.value) {
+                    return HomeSelectEvWidget();
+                  } else {
+                    return HomeInitialContentWidget();
+                  }
+                }),
+
+                // Add bottom padding for safe area
+                SizedBox(height: 16),
+              ],
+            ),
+          ),
+        );
+      }
+    )
+
+            ),
+          ),
         ),
       ],
     );
   }
 }
+

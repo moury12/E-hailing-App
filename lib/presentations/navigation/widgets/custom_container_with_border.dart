@@ -47,7 +47,7 @@ class CustomWhiteContainerWithBorder extends StatelessWidget {
                     child: CustomText(
                       textAlign: textAlign ?? TextAlign.center,
                       text: text ?? '',
-                      maxLines: 1,
+                      maxLines: 2,
                       color: AppColors.kLightBlackColor,
                       overflow: TextOverflow.ellipsis,
                     ),
