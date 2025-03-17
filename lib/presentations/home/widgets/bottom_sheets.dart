@@ -35,7 +35,10 @@ class HomeSetLocationWidget extends StatelessWidget {
       spacing: 8.h,
       children: [
         CustomText(
-          text:HomeController.to.selectEv.value?AppStaticStrings.setYourDropOffLocation: AppStaticStrings.setYourPickupLocation,
+          text:
+              HomeController.to.setDestination.value
+                  ? AppStaticStrings.setYourDropOffLocation
+                  : AppStaticStrings.setYourPickupLocation,
           style: poppinsSemiBold,
         ),
         Obx(() {
@@ -48,20 +51,21 @@ class HomeSetLocationWidget extends StatelessWidget {
               },
               child: Padding(
                 padding: padding6,
-                child: SvgPicture.asset(crossCircleIcon),
+                child: SvgPicture.asset(crossCircleIcon, height: 14.w),
               ),
             ),
           );
         }),
         CustomButton(
           onTap: () {
-           if( !HomeController.to.selectEv.value) {
-              HomeController.to.selectEv.value = true;
+            if (!HomeController.to.setDestination.value) {
+              HomeController.to.setDestination.value = true;
               HomeController.to.setPickup.value = false;
-            }else{
-             // HomeController.to.selectEv.value = false;
-             Get.toNamed(RequestTripPage.routeName);
-           }
+            } else {
+              // HomeController.to.selectEv.value = false;
+              HomeController.to.selectEv.value = true;
+              HomeController.to.setDestination.value = false;
+            }
           },
           title: AppStaticStrings.continueButton,
         ),
@@ -69,6 +73,7 @@ class HomeSetLocationWidget extends StatelessWidget {
     );
   }
 }
+
 class HomeSelectEvWidget extends StatelessWidget {
   const HomeSelectEvWidget({super.key});
 
@@ -80,17 +85,33 @@ class HomeSelectEvWidget extends StatelessWidget {
         CustomText(text: AppStaticStrings.selectYourEv, style: poppinsSemiBold),
         ...List.generate(
           4,
-              (index) => index ==3?CarDetailsCardWidget()
-                  :SelectCarITemWidget(onTap: () {
-Get.toNamed(RequestTripPage.routeName);
-          },),
+          (index) =>
+              index == 3
+                  ? CarDetailsCardWidget(
+                    onTap: () {
+                      HomeController.to.resetAllStates();
+                      HomeController.to.isLoadingNewTrip.value = true;
+                      Future.delayed(Duration(seconds: 4), () {
+                        HomeController.to.isLoadingNewTrip.value = false;
+                        Get.toNamed(RequestTripPage.routeName);
+                      });
+                    },
+                  )
+                  : SelectCarITemWidget(
+                    onTap: () {
+                      HomeController.to.resetAllStates();
+                      HomeController.to.isLoadingNewTrip.value = true;
+                      Future.delayed(Duration(seconds: 4), () {
+                        HomeController.to.isLoadingNewTrip.value = false;
+                        Get.toNamed(RequestTripPage.routeName);
+                      });
+                    },
+                  ),
         ),
       ],
     );
   }
 }
-
-
 
 class HomeWantToGoContentWidget extends StatelessWidget {
   const HomeWantToGoContentWidget({super.key});
@@ -154,7 +175,6 @@ class HomeWantToGoContentWidget extends StatelessWidget {
     );
   }
 }
-
 
 class IconWithTextWidget extends StatelessWidget {
   final String? icon;
@@ -234,23 +254,28 @@ class HomeInitialContentWidget extends StatelessWidget {
           ],
         ),
         RowMoreButtonWidget(
-          onPressed: () {},
+          onPressed: () {
+            Get.toNamed(SavedLocationPage.routeName);
+          },
           title: AppStaticStrings.savedLocation,
         ),
-        Row(
-          spacing: 6.w,
-          children: [
-            ...List.generate(
-              3,
-              (index) => SizedBox(
-                width: ScreenUtil().screenWidth / 3 - 24,
-                child: CustomWhiteContainerWithBorder(
-                  text: AppStaticStrings.home,
-                  img: homeLocationIcon,
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            spacing: 6.w,
+            children: [
+              ...List.generate(
+                3,
+                (index) => SizedBox(
+                  width: ScreenUtil().screenWidth / 3 - 24,
+                  child: CustomWhiteContainerWithBorder(
+                    text: AppStaticStrings.home,
+                    img: homeLocationIcon,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         space6H,
         CustomText(text: AppStaticStrings.service),

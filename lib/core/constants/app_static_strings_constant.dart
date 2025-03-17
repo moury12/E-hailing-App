@@ -142,7 +142,9 @@ class AppStaticStrings {
   static const String preBookRide = 'Pre-Book Ride';
   static const String trackRides = 'Track Ride';
   static const String track= 'Track';
+  static const String newTripRequest = 'New trip Request';
   static  String ongoing = 'Ongoing';
+  static  String waitingForDriverConformation = 'Waiting for Driver confirmation';
   static  String upcoming = 'Upcoming';
   static  String completed = 'Completed';
   static const String addLocation = 'Add location';

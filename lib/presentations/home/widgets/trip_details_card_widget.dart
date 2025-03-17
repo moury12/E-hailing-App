@@ -21,6 +21,7 @@ import 'package:get/get.dart';
 
 import '../../../core/constants/image_constant.dart';
 import '../../trip/widgets/row_call_chat_details_button.dart';
+import 'gradient_progress_indicator.dart';
 
 class TripDetailsCard extends StatelessWidget {
   const TripDetailsCard({super.key});
@@ -104,6 +105,34 @@ class TripDetailsCard extends StatelessWidget {
         );
       }),
     );
+  }
+}
+class TripRequestLoadingWidget extends StatelessWidget {
+  const TripRequestLoadingWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: padding12,
+      padding: padding12,
+      decoration: BoxDecoration(
+          color: AppColors.kWhiteColor,
+          borderRadius: BorderRadius.circular(8.r),
+          gradient: LinearGradient(colors: [AppColors.kWhiteColor,AppColors.kPrimaryLightColor])
+
+        // border: Border.all(color: AppColors.kPrimaryColor, width: 1.w),
+      ),
+      child:Column(
+        spacing: 12.h,
+        children: [
+          CustomText(text: AppStaticStrings.newTripRequest,fontSize: getFontSizeDefault(),),
+          FromToTimeLine(),
+          GradientProgressIndicator(),
+          CustomText(text: AppStaticStrings.waitingForDriverConformation, color: AppColors.kExtraLightBlackColor,fontSize: getFontSizeSmall(),style: poppinsRegular,)
+        ],
+      ),);
   }
 }
 
