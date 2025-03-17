@@ -6,9 +6,7 @@ import 'package:e_hailing_app/presentations/my-rides/views/my_ride_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/profile_page.dart';
 import 'package:e_hailing_app/presentations/track-ride/views/track_ride_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../home/controllers/home_controller.dart';
 
@@ -70,7 +68,6 @@ class NavigationController extends GetxController {
       TrackRidePage(),
       MessageListPage(),
       ProfilePage(),
-      // HomePage(), CartPage(), OrderPage(), NotificationPage()
     ];
   }
 }
