@@ -3,14 +3,18 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
-import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/home/views/saved_location_page.dart';
 import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
+import '../../../core/constants/image_constant.dart';
+import '../widgets/profile_action_item_widget.dart';
 
 class ProfilePage extends StatelessWidget {
   static const String routeName = '/profile';
@@ -94,34 +98,53 @@ class ProfilePage extends StatelessWidget {
         ),
         Expanded(
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.r),
-                    color: AppColors.kWhiteColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.kExtraLightGreyTextColor,
-                        blurRadius: 6.r,
-                      ),
-                    ],
+            child: Padding(
+              padding: padding16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 12.h,
+                children: [
+                  ProfileActionItemWidget(
+                    img: settingsIcon,
+                    title: AppStaticStrings.accountSetting,
+                    onTap: () {},
                   ),
-                  child: Padding(
-                    padding: padding16,
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(settingsIcon),
-                        CustomText(text: AppStaticStrings.accountSetting),
-                        IconButton(onPressed: () {
-
-                        }, icon: Icon(CupertinoIcons.arrow_right_to_line_alt
-                        ))
-                      ],
-                    ),
+                  ProfileActionItemWidget(
+                    img: coinIcon,
+                    title: AppStaticStrings.duduCoinWallet,
+                    onTap: () {},
                   ),
-                ),
-              ],
+                  ProfileActionItemWidget(
+                    img: notificationProfileIcon,
+                    title: AppStaticStrings.notification,
+                    onTap: () {},
+                  ), ProfileActionItemWidget(
+                    img: savedLocationIcon,
+                    title: AppStaticStrings.savedLocation,
+                    onTap: () {
+                      Get.toNamed(SavedLocationPage.routeName);
+                    },
+                  ),
+                  CustomText(text: AppStaticStrings.more,fontSize: getFontSizeDefault(),),
+                  ProfileActionItemWidget(
+                    img: termsIcon,
+                    title: AppStaticStrings.termsAndCondition,
+                    onTap: () {},
+                  ),ProfileActionItemWidget(
+                    img: privacyIcon,
+                    title: AppStaticStrings.privacyPolicy,
+                    onTap: () {},
+                  ),ProfileActionItemWidget(
+                    img: helpIcon,
+                    title: AppStaticStrings.helpSupport,
+                    onTap: () {},
+                  ),ProfileActionItemWidget(
+                    img: logoutIcon,
+                    title: AppStaticStrings.logOut,
+                    onTap: () {},
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -114,10 +114,8 @@ class AppStaticStrings {
   // Payment
   static const String cash = 'Cash';
   static const String cancelTrip = 'Cancel trip';
-  static const String more = 'More';
   static const String recentTip = 'Recent Tip';
   static const String service = 'Service';
-  static const String savedLocation = 'Saved Location ';
   static const String savedPlace = 'Saved Place';
   static const String payWithCard = 'Pay with Card';
 
@@ -164,12 +162,12 @@ class AppStaticStrings {
   static const String from = 'From:';
   static const String to = 'To:';
 
-  static const String notification = 'Notification';
   static const String bookingConfirmed = 'Booking Confirmed!';
   static const String bookingCanceled = 'Booking Canceled!';
   static const String rideDelayed = 'Ride Delayed?';
 
   static const String messages = 'Messages';
+  static const String bookATrip = 'Book a Trip';
   static const String allMessages = 'All Messages';
   static const String newMessages = 'New Messages';
 
@@ -177,13 +175,10 @@ class AppStaticStrings {
   static const String addPaymentMethod = 'Add Payment Method';
 
   static const String termsAndConditions = 'Terms & Conditions';
-  static const String privacyPolicy = 'Privacy Policy';
   // Profile Section
   static const String accountInformation = 'Account Information';
   static const String earnings = 'Earnings';
 
-  static const String helpSupport = 'Help/Support';
-  static const String logOut = 'Log Out';
 
   // Profile Details
   static const String general = 'General';
