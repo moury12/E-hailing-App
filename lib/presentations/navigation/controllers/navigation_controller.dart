@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../home/controllers/home_controller.dart';
+import '../../track-ride/controllers/track_ride_controller.dart';
 
 class NavigationController extends GetxController {
   static NavigationController get to => Get.find();
@@ -18,6 +19,7 @@ class NavigationController extends GetxController {
     Get.put(HomeController());
     Get.put(MessageController());
     Get.put(MyRideController());
+    Get.put(TrackRideController());
 
     super.onInit();
   }
