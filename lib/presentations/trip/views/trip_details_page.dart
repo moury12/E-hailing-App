@@ -1,5 +1,4 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
-import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
@@ -17,7 +16,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/components/custom_timeline.dart';
 import '../../../core/constants/image_constant.dart';
-import '../../../core/helper/helper_function.dart';
 import '../widgets/car_information_widget.dart';
 import '../widgets/rating_info_widget.dart';
 import '../widgets/row_call_chat_details_button.dart';

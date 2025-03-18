@@ -1,8 +1,5 @@
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
-import 'package:e_hailing_app/core/components/custom_text_button.dart';
-import 'package:e_hailing_app/core/components/custom_textfield.dart';
-import 'package:e_hailing_app/core/components/custom_timeline.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
@@ -17,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:timelines_plus/timelines_plus.dart';
 
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
@@ -125,19 +121,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
           style: poppinsSemiBold,
         ),
         PickupDropLocationWidget(),
-        Row(
-          spacing: 6.w,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            SvgPicture.asset(addIcon),
-            CustomText(
-              text: AppStaticStrings.addStop,
-              fontSize: getFontSizeSmall(),
-              fontWeight: FontWeight.w400,
-              color: AppColors.kPrimaryColor,
-            ),
-          ],
-        ),
+
         IconWithTextWidget(
           icon: setLocationIcon,
           text: AppStaticStrings.setLocationFromMap,

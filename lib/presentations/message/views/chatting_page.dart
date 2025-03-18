@@ -4,12 +4,9 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
-import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
-import '../model/chat_message_model.dart';
 import '../widgets/chat_message_card_item_widget.dart';
 
 class ChattingPage extends StatelessWidget {

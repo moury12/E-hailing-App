@@ -8,8 +8,7 @@ import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../core/constants/color_constants.dart';
+import '../widgets/profile_card_item_widget.dart';
 
 class AccountInformationPage extends StatelessWidget {
   static const String routeName = '/acc-info';
@@ -62,44 +61,3 @@ class AccountInformationPage extends StatelessWidget {
   }
 }
 
-class ProfileCardItemWidget extends StatelessWidget {
-  final String title;
-  final String value;
-  const ProfileCardItemWidget({
-    super.key,
-    required this.title,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.r),
-        color: AppColors.kWhiteColor,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.kExtraLightGreyTextColor.withValues(alpha: .3),
-            blurRadius: 6.r,
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: padding12,
-        child: Row(
-          spacing: 12.w,
-          children: [
-            CustomText(text: title),
-            Expanded(
-              child: CustomText(
-                text: value,
-                textAlign: TextAlign.end,
-                color: AppColors.kExtraLightTextColor,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
