@@ -8,17 +8,11 @@ import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart
 import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
-import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/account_information_page.dart';
-import 'package:e_hailing_app/presentations/profile/views/account_information_page.dart';
-import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/change_password_page.dart';
-import 'package:e_hailing_app/presentations/profile/views/change_password_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
-import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
-import 'package:e_hailing_app/presentations/profile/views/term_policy_help_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/term_policy_help_page.dart';
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
 import 'package:e_hailing_app/presentations/trip/views/request_trip_page.dart';

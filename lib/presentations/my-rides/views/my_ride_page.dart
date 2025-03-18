@@ -1,12 +1,9 @@
 import 'package:e_hailing_app/core/components/tab-bar/dynamic_tab_widget.dart';
-import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../widgets/history_list_structure_widget.dart';
-import '../widgets/my_rides_history_card_item_widget.dart';
 
 class MyRidePage extends StatelessWidget {
   static const String routeName = '/my-ride';

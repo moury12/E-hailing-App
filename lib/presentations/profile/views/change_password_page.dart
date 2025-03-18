@@ -1,4 +1,5 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
@@ -20,7 +21,8 @@ class ChangePasswordPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: padding16,
-          child: Column(spacing: 12.h,
+          child: Column(
+            spacing: 12.h,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
@@ -36,13 +38,16 @@ class ChangePasswordPage extends StatelessWidget {
               CustomTextField(
                 title: AppStaticStrings.oldPassword,
                 isPassword: true,
-              ),CustomTextField(
+              ),
+              CustomTextField(
                 title: AppStaticStrings.newPassword,
                 isPassword: true,
-              ),CustomTextField(
+              ),
+              CustomTextField(
                 title: AppStaticStrings.reTypeNewPass,
                 isPassword: true,
               ),
+              CustomButton(onTap: () {}, title: AppStaticStrings.update),
             ],
           ),
         ),

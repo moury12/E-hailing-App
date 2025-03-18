@@ -95,7 +95,7 @@ class AppStaticStrings {
   static const String confirmPickup = 'Set Your Pickup Location';
   static const String confirmDropOff = 'Set Your Drop-off Location';
   static const String searchLocation = 'Search Location';
-  static const String addStop = 'Add a stop';
+  static const String addCoin = 'Add Coin';
 
   // Ride Details
   static const String requestRide = 'Request Ride';
@@ -148,7 +148,7 @@ class AppStaticStrings {
   static const String dropLocation = 'Drop Location';
   static const String tripDate = 'Trip Date';
   static const String pickTime = 'Pick Time';
-  static const String promoCode = 'PromoCode';
+  static const String addMoreCoin = 'Add More Coin';
   static const String additionalNote = 'Additional Note';
   static const String loremIpsumText = 'Lorem Ipsum Dolor Sit Amet Consectetur, Commodao Mauris Vitae Non Vestibulum Armet Fusce.';
   static const String myRides = 'My Rides';
@@ -206,11 +206,13 @@ class AppStaticStrings {
 
   // Tabs
   static const String today = 'Today';
+  static const String totalCoin = 'Total Coin';
   static const String thisWeek = 'This Week';
   static const String thisMonth = 'This Month';
 
   // Help & FAQs
   static const String faqs = 'FAQs';
+  static const String update = ' Update';
   static const String howToBook = 'How to book an appointment?';
   static const String successfulDelivery = 'How do I report a successful delivery?';
   static const String updateVehicle = 'How do I update my vehicle or personal details?';

@@ -1,5 +1,6 @@
 String activeHourIcon = 'assets/icons/active_hour_icon.svg';
 String addIcon = 'assets/icons/add_icon.svg';
+String addWhiteIcon = 'assets/icons/add_white_icon.svg';
 String appleIcon = 'assets/icons/apple_icon.svg';
 String backIcon = 'assets/icons/back_icon.svg';
 String calenderIcon = 'assets/icons/calender_icon.svg';

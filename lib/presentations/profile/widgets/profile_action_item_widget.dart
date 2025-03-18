@@ -1,5 +1,4 @@
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
-import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
