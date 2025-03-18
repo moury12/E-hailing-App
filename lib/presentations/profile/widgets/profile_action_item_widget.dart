@@ -25,7 +25,7 @@ class ProfileActionItemWidget extends StatelessWidget {
       ),
       child: ButtonTapWidget(
         onTap: onTap,
-        radius: 16.r,
+        radius: 16.w,
         child: Padding(
           padding: padding14,
           child: Row(

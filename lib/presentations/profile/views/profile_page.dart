@@ -5,13 +5,17 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/home/views/saved_location_page.dart';
 import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
+import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/term_policy_help_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../../../core/constants/image_constant.dart';
 import '../widgets/profile_action_item_widget.dart';
@@ -109,41 +113,62 @@ class ProfilePage extends StatelessWidget {
                   ProfileActionItemWidget(
                     img: settingsIcon,
                     title: AppStaticStrings.accountSetting,
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed(AccountSettingsPage.routeName);
+                    },
                   ),
                   ProfileActionItemWidget(
                     img: coinIcon,
                     title: AppStaticStrings.duduCoinWallet,
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed(CoinPage.routeName);
+                    },
                   ),
                   ProfileActionItemWidget(
                     img: notificationProfileIcon,
                     title: AppStaticStrings.notification,
-                    onTap: () {},
-                  ), ProfileActionItemWidget(
+                    onTap: () {
+                      Get.toNamed(NotificationPage.routeName);
+                    },
+                  ),
+                  ProfileActionItemWidget(
                     img: savedLocationIcon,
                     title: AppStaticStrings.savedLocation,
                     onTap: () {
                       Get.toNamed(SavedLocationPage.routeName);
                     },
                   ),
-                  CustomText(text: AppStaticStrings.more,fontSize: getFontSizeDefault(),),
+                  CustomText(
+                    text: AppStaticStrings.more,
+                    fontSize: getFontSizeDefault(),
+                  ),
                   ProfileActionItemWidget(
                     img: termsIcon,
                     title: AppStaticStrings.termsAndCondition,
-                    onTap: () {},
-                  ),ProfileActionItemWidget(
+                    onTap: () {
+                      Get.toNamed(TermsPolicyHelpPage.routeName);
+                    },
+                  ),
+                  ProfileActionItemWidget(
                     img: privacyIcon,
                     title: AppStaticStrings.privacyPolicy,
-                    onTap: () {},
-                  ),ProfileActionItemWidget(
+                    onTap: () {
+                      Get.toNamed(TermsPolicyHelpPage.routeName);
+                    },
+                  ),
+                  ProfileActionItemWidget(
                     img: helpIcon,
                     title: AppStaticStrings.helpSupport,
-                    onTap: () {},
-                  ),ProfileActionItemWidget(
+                    onTap: () {
+                      Get.toNamed(TermsPolicyHelpPage.routeName);
+                    },
+                  ),
+                  ProfileActionItemWidget(
                     img: logoutIcon,
                     title: AppStaticStrings.logOut,
-                    onTap: () {},
+                    onTap: () {
+                      Get.offAllNamed(LoginPage.routeName);
+                    },
                   ),
                 ],
               ),
