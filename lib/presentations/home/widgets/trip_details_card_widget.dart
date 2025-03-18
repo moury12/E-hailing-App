@@ -12,6 +12,7 @@ import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
+import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,7 +24,7 @@ import '../../trip/widgets/row_call_chat_details_button.dart';
 import 'gradient_progress_indicator.dart';
 
 class TripDetailsPickupCard extends StatelessWidget {
-  const TripDetailsPickupCard({super.key,});
+  const TripDetailsPickupCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,75 +36,73 @@ class TripDetailsPickupCard extends StatelessWidget {
         border: Border.all(color: AppColors.kPrimaryColor, width: 1.w),
       ),
       padding: padding12,
-      child:
-       Column(
-              spacing: 8.h,
-              children: [
-                CustomText(
-                  text: AppStaticStrings.pickup,
-                  fontSize: getFontSizeDefault(),
-                ),
-                Row(
-                  spacing: 12.w,
+      child: Column(
+        spacing: 8.h,
+        children: [
+          CustomText(
+            text: AppStaticStrings.pickup,
+            fontSize: getFontSizeDefault(),
+          ),
+          Row(
+            spacing: 12.w,
+            children: [
+              CustomNetworkImage(
+                imageUrl: dummyProfileImage,
+                boxShape: BoxShape.circle,
+                height: 42.w,
+                width: 42.w,
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomNetworkImage(
-                      imageUrl: dummyProfileImage,
-                      boxShape: BoxShape.circle,
-                      height: 42.w,
-                      width: 42.w,
+                    CustomText(
+                      text: 'Darrell Steward',
+                      style: poppinsSemiBold,
+                      fontSize: getFontSizeDefault(),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text: 'Darrell Steward',
-                            style: poppinsSemiBold,
-                            fontSize: getFontSizeDefault(),
-                          ),
-                          CustomText(
-                            text: '(406) 555-0120',
-                            color: AppColors.kLightBlackColor,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          CustomText(
-                            text: 'Estimated Time',
-                            color: AppColors.kLightBlackColor,
-                          ),
-                          CustomText(
-                            text: '4.00 Min',
-                            style: poppinsSemiBold,
-                            fontSize: getFontSizeDefault(),
-                          ),
-                        ],
-                      ),
+                    CustomText(
+                      text: '(406) 555-0120',
+                      color: AppColors.kLightBlackColor,
                     ),
                   ],
                 ),
-                CarDetailsCardWidget(),
-                ButtonTapWidget(
+              ),
 
-                  child: FromToTimeLine(showTo: false),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    CustomText(
+                      text: 'Estimated Time',
+                      color: AppColors.kLightBlackColor,
+                    ),
+                    CustomText(
+                      text: '4.00 Min',
+                      style: poppinsSemiBold,
+                      fontSize: getFontSizeDefault(),
+                    ),
+                  ],
                 ),
-                RowCallChatDetailsButton(),
+              ),
+            ],
+          ),
+          CarDetailsCardWidget(),
+          ButtonTapWidget(child: FromToTimeLine(showTo: false)),
+          RowCallChatDetailsButton(lastItemName: AppStaticStrings.details,
+            onTap: () {
+              Get.toNamed(TripDetailsPage.routeName);
+            },),
 
-                  CancelTripButtonWidget(),
-              ],
-                     )
-
+          CancelTripButtonWidget(),
+        ],
+      ),
     );
   }
 }
-class TripDetailsDestinationCard extends StatelessWidget {
 
+class TripDetailsDestinationCard extends StatelessWidget {
   const TripDetailsDestinationCard({super.key});
 
   @override
@@ -116,83 +115,82 @@ class TripDetailsDestinationCard extends StatelessWidget {
         border: Border.all(color: AppColors.kPrimaryColor, width: 1.w),
       ),
       padding: padding12,
-      child:
-
-           Column(
-              spacing: 8.h,
-              children: [
-                CustomText(
-                  text:AppStaticStrings.destination,
-                  fontSize: getFontSizeDefault(),
-                ),
-                Row(
-                  spacing: 12.w,
+      child: Column(
+        spacing: 8.h,
+        children: [
+          CustomText(
+            text: AppStaticStrings.destination,
+            fontSize: getFontSizeDefault(),
+          ),
+          Row(
+            spacing: 12.w,
+            children: [
+              CustomNetworkImage(
+                imageUrl: dummyProfileImage,
+                boxShape: BoxShape.circle,
+                height: 42.w,
+                width: 42.w,
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomNetworkImage(
-                      imageUrl: dummyProfileImage,
-                      boxShape: BoxShape.circle,
-                      height: 42.w,
-                      width: 42.w,
+                    CustomText(
+                      text: 'Darrell Steward',
+                      style: poppinsSemiBold,
+                      fontSize: getFontSizeDefault(),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text: 'Darrell Steward',
-                            style: poppinsSemiBold,
-                            fontSize: getFontSizeDefault(),
-                          ),
-                          CustomText(
-                            text: '(406) 555-0120',
-                            color: AppColors.kLightBlackColor,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          CustomText(
-                            text: 'Estimated Time',
-                            color: AppColors.kLightBlackColor,
-                          ),
-                          CustomText(
-                            text: '4.00 Min',
-                            style: poppinsSemiBold,
-                            fontSize: getFontSizeDefault(),
-                          ),
-                        ],
-                      ),
+                    CustomText(
+                      text: '(406) 555-0120',
+                      color: AppColors.kLightBlackColor,
                     ),
                   ],
                 ),
+              ),
 
-                ButtonTapWidget(
-                  onTap: () {
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
 
-                    Timer(Duration(seconds: 1), () {
-                      Get.toNamed(PaymentPage.routeName);
-                    });
-                  },
-                  child: FromToTimeLine(showTo: true,),
+                  children: [
+                    CustomText(
+                      text: AppStaticStrings.tripDuration,
+                      color: AppColors.kLightBlackColor,
+                    ),
+                    CustomText(
+                      text: '1.07 km',
+                      style: poppinsSemiBold,
+                      fontSize: getFontSizeDefault(),
+                    ),
+                  ],
                 ),
-                RowCallChatDetailsButton(),
+              ),
+            ],
+          ),
 
-              ],
-                     )
-
+          ButtonTapWidget(
+            onTap: () {
+              Timer(Duration(seconds: 1), () {
+                Get.toNamed(PaymentPage.routeName);
+              });
+            },
+            child: FromToTimeLine(showTo: true),
+          ),
+          RowCallChatDetailsButton(
+            lastItemName: AppStaticStrings.details,
+            onTap: () {
+              Get.back();
+            },
+          ),
+        ],
+      ),
     );
   }
 }
-class TripRequestLoadingWidget extends StatelessWidget {
 
-  const TripRequestLoadingWidget({
-    super.key,
-  });
+class TripRequestLoadingWidget extends StatelessWidget {
+  const TripRequestLoadingWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -200,29 +198,38 @@ class TripRequestLoadingWidget extends StatelessWidget {
       margin: padding12,
       padding: padding12,
       decoration: BoxDecoration(
-          color: AppColors.kWhiteColor,
-          borderRadius: BorderRadius.circular(8.r),
-          gradient: LinearGradient(colors: [AppColors.kWhiteColor,AppColors.kPrimaryLightColor])
+        color: AppColors.kWhiteColor,
+        borderRadius: BorderRadius.circular(8.r),
+        gradient: LinearGradient(
+          colors: [AppColors.kWhiteColor, AppColors.kPrimaryLightColor],
+        ),
 
         // border: Border.all(color: AppColors.kPrimaryColor, width: 1.w),
       ),
-      child:Column(
+      child: Column(
         spacing: 12.h,
         children: [
-          CustomText(text: AppStaticStrings.newTripRequest,fontSize: getFontSizeDefault(),),
+          CustomText(
+            text: AppStaticStrings.newTripRequest,
+            fontSize: getFontSizeDefault(),
+          ),
           FromToTimeLine(),
           GradientProgressIndicator(),
-          CustomText(text: AppStaticStrings.waitingForDriverConformation, color: AppColors.kExtraLightBlackColor,fontSize: getFontSizeSmall(),style: poppinsRegular,)
+          CustomText(
+            text: AppStaticStrings.waitingForDriverConformation,
+            color: AppColors.kExtraLightBlackColor,
+            fontSize: getFontSizeSmall(),
+            style: poppinsRegular,
+          ),
         ],
-      ),);
+      ),
+    );
   }
 }
 
 class FromToTimeLine extends StatelessWidget {
   final bool? showTo;
-  const FromToTimeLine({
-    super.key, this.showTo=true,
-  });
+  const FromToTimeLine({super.key, this.showTo = true});
 
   @override
   Widget build(BuildContext context) {
@@ -230,15 +237,14 @@ class FromToTimeLine extends StatelessWidget {
       padding: EdgeInsets.zero,
       indicators: <Widget>[
         SvgPicture.asset(pickLocationIcon),
-        if (showTo==true)
-          SvgPicture.asset(dropLocationIcon),
+        if (showTo == true) SvgPicture.asset(dropLocationIcon),
       ],
       children: <Widget>[
         FromToWidget(
           details: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
           headline: AppStaticStrings.from,
         ),
-        if (showTo==true)
+        if (showTo == true)
           FromToWidget(
             details: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
             headline: AppStaticStrings.to,

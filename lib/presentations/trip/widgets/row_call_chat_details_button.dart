@@ -11,8 +11,10 @@ import 'package:get/get.dart';
 import '../../../core/constants/image_constant.dart';
 import '../../../core/helper/helper_function.dart';
 class RowCallChatDetailsButton extends StatelessWidget {
+  final String? lastItemName;
+  final Function()? onTap;
   const RowCallChatDetailsButton({
-    super.key,
+    super.key,  this.lastItemName, this.onTap,
   });
 
   @override
@@ -34,13 +36,13 @@ class RowCallChatDetailsButton extends StatelessWidget {
         ),
         Expanded(
           child: CustomButton(
-            onTap: () {
+            onTap:onTap?? () {
               Get.toNamed(
                 NavigationPage.routeName,
                 arguments: pickupDestination,
               );
             },
-            title: AppStaticStrings.track,
+            title:lastItemName?? AppStaticStrings.track,
           ),
         ),
       ],

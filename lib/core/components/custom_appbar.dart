@@ -57,11 +57,15 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  const CustomAppBar({super.key, required this.title});
+  final List<Widget>? action;
+  const CustomAppBar({super.key, required this.title, this.action});
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(title: CustomText(text: title), centerTitle: true);
+    return AppBar(title: CustomText(text: title),
+        centerTitle: true,
+    actions: action??[],
+    );
   }
 
   @override

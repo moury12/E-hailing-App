@@ -5,6 +5,7 @@ import 'package:e_hailing_app/presentations/auth/views/reset_password_page.dart'
 import 'package:e_hailing_app/presentations/auth/views/signup_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
+import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
@@ -79,6 +80,10 @@ class AppRoutes {
     GetPage(
       name: NotificationPage.routeName,
       page: () => NotificationPage(),
+      // binding: NavigationBinding(),
+    ),GetPage(
+      name: ChattingPage.routeName,
+      page: () => ChattingPage(),
       // binding: NavigationBinding(),
     ),
   ];

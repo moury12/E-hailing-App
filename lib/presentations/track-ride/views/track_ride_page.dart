@@ -7,6 +7,7 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
+import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:e_hailing_app/presentations/track-ride/controllers/track_ride_controller.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -97,6 +98,9 @@ class _TrackRidePageState extends State<TrackRidePage>
             CustomAppBarForHomeWidget(
               isBack: true,
               actionIcon: gpsWhiteIcon,
+              onBack: () {
+                NavigationController.to.changeIndex(0);
+              },
               onTap: () {},
             ),
           ],
