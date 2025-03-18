@@ -2,9 +2,11 @@ class AppStaticStrings {
   // Authentication
   static const String welcomeBack = 'Welcome Back!';
   static const String logIn = 'Log In';
+  static const String oldPassword = 'Old Password ';
   static const String signUp = 'Sign Up';
   static const String signUpToGetStarted = 'Sign up to get started. Fill in your details to create an account.';
   static const String email = 'Email';
+  static const String reTypeNewPass = 'Re-Type New Password';
   static const String weWillSendACode = 'We\'ll send a verification code to this email to confirm your account.';
   static const String orContinueWith = 'Or continue with';
   static const String password = 'Password';
@@ -24,10 +26,12 @@ class AppStaticStrings {
   static const String tripRequestError = 'Trip Request Error';
   static const String submit = 'Submit';
   static const String pickup = 'Pickup';
+  static const String changePassword = 'Change Password';
   // Account Creation
   static const String createYourAccount = 'Create Your Account';
   static const String fullName = 'Full Name';
   static const String phoneNumber = 'Phone Number';
+  static const String location = 'Location';
   static const String emergencyContactNumber = 'Emergency Contact Number';
   static const String createAccount = 'Create Account';
   static const String rideEnded = "Yey! your ride ended";

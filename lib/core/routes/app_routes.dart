@@ -10,6 +10,16 @@ import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dar
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/account_information_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/account_information_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/change_password_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/change_password_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/term_policy_help_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/term_policy_help_page.dart';
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
 import 'package:e_hailing_app/presentations/trip/views/request_trip_page.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
@@ -84,6 +94,26 @@ class AppRoutes {
     ),GetPage(
       name: ChattingPage.routeName,
       page: () => ChattingPage(),
+      // binding: NavigationBinding(),
+    ),GetPage(
+      name: AccountInformationPage.routeName,
+      page: () => AccountInformationPage(),
+      // binding: NavigationBinding(),
+    ),GetPage(
+      name: AccountSettingsPage.routeName,
+      page: () => AccountSettingsPage(),
+      // binding: NavigationBinding(),
+    ),GetPage(
+      name: CoinPage.routeName,
+      page: () => CoinPage(),
+      // binding: NavigationBinding(),
+    ),GetPage(
+      name: TermsPolicyHelpPage.routeName,
+      page: () => TermsPolicyHelpPage(),
+      // binding: NavigationBinding(),
+    ),GetPage(
+      name: ChangePasswordPage.routeName,
+      page: () => ChangePasswordPage(),
       // binding: NavigationBinding(),
     ),
   ];
