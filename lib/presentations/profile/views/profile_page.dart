@@ -75,20 +75,22 @@ class ProfilePage extends StatelessWidget {
                       width: 70.w,
                       boxShape: BoxShape.circle,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: 'your name',
-                          fontSize: getFontSizeDefault(),
-                          color: AppColors.kTextDarkBlueColor,
-                        ),
-                        CustomText(
-                          text: 'yourname@gmail.com',
-                          fontSize: getFontSizeSmall(),
-                          color: AppColors.kExtraLightTextColor,
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: 'your name',
+                            fontSize: getFontSizeDefault(),
+                            color: AppColors.kTextDarkBlueColor,
+                          ),
+                          CustomText(
+                            text: 'yourname@gmail.com',
+                            fontSize: getFontSizeSmall(),
+                            color: AppColors.kExtraLightTextColor,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

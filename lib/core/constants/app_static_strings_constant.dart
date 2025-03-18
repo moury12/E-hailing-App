@@ -135,6 +135,7 @@ class AppStaticStrings {
   static const String scrollMapAndPin = 'Scroll Map And Pin Your Location';
   static const String selectYourEv = 'Select your EV';
   static const String sedan = 'Sedan';
+  static const String details = 'Details';
   static const String fourSeats = '4 seats';
   static const String rm150 = 'RM 150';
   static const String requestYourTrip = 'Request Your Trip';

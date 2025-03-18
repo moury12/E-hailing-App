@@ -31,7 +31,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
         children: [
           ///============================dynamic date==============================///
           CustomText(
-            text: 'Today, 07:00 am',
+            text: '27-3-2025, 07:00 am',
             style: poppinsSemiBold,
             fontSize: getFontSizeExtraLarge(),
           ),
