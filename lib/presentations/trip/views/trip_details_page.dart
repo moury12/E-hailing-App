@@ -136,7 +136,6 @@ class TripDetailsPage extends StatelessWidget {
 
                             indicators: <Widget>[
                               SvgPicture.asset(pickLocationIcon),
-                              SvgPicture.asset(stopLocationIcon),
                               SvgPicture.asset(dropLocationIcon),
                             ],
                             children: <Widget>[
@@ -144,11 +143,7 @@ class TripDetailsPage extends StatelessWidget {
                                 textAlign: TextAlign.start,
                                 text: AppStaticStrings.pickupLocation,
                               ),
-                              CustomWhiteContainerWithBorder(
-                                textAlign: TextAlign.start,
 
-                                text: AppStaticStrings.stopLocation,
-                              ),
                               CustomWhiteContainerWithBorder(
                                 textAlign: TextAlign.start,
 

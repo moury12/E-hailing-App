@@ -2,8 +2,10 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
+import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -27,8 +29,12 @@ class SocialMediaAuthWidget extends StatelessWidget {
         space6H,
         Row(mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(onPressed: () {}, icon: SvgPicture.asset(googleIcon)),
-            IconButton(onPressed: () {}, icon: SvgPicture.asset(appleIcon)),
+            IconButton(onPressed: () {
+              Boxes.getUserRole().put(role,driver );
+            }, icon: SvgPicture.asset(googleIcon)),
+            IconButton(onPressed: () {
+              Boxes.getUserRole().put(role,user );
+            }, icon: SvgPicture.asset(appleIcon)),
           ],
         ),
       ],

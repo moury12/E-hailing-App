@@ -10,6 +10,7 @@ class AppStaticStrings {
   static const String weWillSendACode = 'We\'ll send a verification code to this email to confirm your account.';
   static const String orContinueWith = 'Or continue with';
   static const String password = 'Password';
+  static const String statics = 'Statics';
   static const String logInToContinue = 'Log in to continue. Enter your credentials to access your account.';
   static const String confirmPassword = 'Confirm Password';
   static const String rememberMe = 'Remember me';
@@ -26,6 +27,7 @@ class AppStaticStrings {
   static const String tripRequestError = 'Trip Request Error';
   static const String submit = 'Submit';
   static const String pickup = 'Pickup';
+  static const String dashboard = 'Dashboard';
   static const String changePassword = 'Change Password';
   // Account Creation
   static const String createYourAccount = 'Create Your Account';

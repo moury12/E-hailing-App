@@ -49,7 +49,6 @@ String setLocationIcon = 'assets/icons/set_location_icon.svg';
 String settingsIcon = 'assets/icons/settings_icon.svg';
 String sosIcon = 'assets/icons/sos_icon.svg';
 String staticsIcon = 'assets/icons/statics_icon.svg';
-String stopLocationIcon = 'assets/icons/stop_location_icon.svg';
 String successfulIcon = 'assets/icons/successfull_icon.svg';
 String termsIcon = 'assets/icons/terms_icon.svg';
 String totalEarnIcon = 'assets/icons/total_earn_icon.svg';
