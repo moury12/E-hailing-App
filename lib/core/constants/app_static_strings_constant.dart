@@ -32,6 +32,15 @@ class AppStaticStrings {
   static const String fullName = 'Full Name';
   static const String phoneNumber = 'Phone Number';
   static const String location = 'Location';
+  static const String writeAReview = 'Write a Review';
+  static const String howWouldYouRate = 'How would you rate this pro overall?';
+  static const String review = 'Review';
+  static const String totalCost = 'Total Cost';
+  static const String availableCoin = ' Available Coin';
+  static const String paymentWithDCoin = 'Payment with D Coin';
+  static const String handCashPaymentRequest = 'Hand Cash Payment Request ';
+  static const String waitingForDriveConfirmation = 'Waiting for Driver confirmation';
+  static const String enterYourReview = 'Enter your Review...';
   static const String emergencyContactNumber = 'Emergency Contact Number';
   static const String createAccount = 'Create Account';
   static const String rideEnded = "Yey! your ride ended";
@@ -120,7 +129,10 @@ class AppStaticStrings {
   static const String cancelTrip = 'Cancel trip';
   static const String recentTip = 'Recent Tip';
   static const String service = 'Service';
+  static const String placeAddress = 'Place Address';
+  static const String placeName = 'Place Name';
   static const String savedPlace = 'Saved Place';
+  static const String save= 'Save';
   static const String payWithCard = 'Pay with Card';
 
   // Ratings & Feedback
@@ -162,6 +174,7 @@ class AppStaticStrings {
   static  String upcoming = 'Upcoming';
   static  String completed = 'Completed';
   static const String addLocation = 'Add location';
+  static const String addPlace = 'Add place';
   static const String finalCost = 'Final cost';
   static const String tripDuration = 'Trip Duration';
   static const String from = 'From:';

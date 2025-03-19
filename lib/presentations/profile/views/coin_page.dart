@@ -12,6 +12,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../core/components/custom_appbar.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
+import '../widgets/coin_container_widget.dart';
 
 class CoinPage extends StatelessWidget {
   static const String routeName = '/coin';
@@ -45,23 +46,7 @@ class CoinPage extends StatelessWidget {
                   children: [
                     CustomText(text: AppStaticStrings.totalCoin),
                     Spacer(),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.kPrimaryExtraLightColor,
-                        borderRadius: BorderRadius.circular(24.r),
-                        border: Border.all(color: AppColors.kPrimaryColor),
-                      ),
-
-                      child: Padding(
-                        padding: paddingH16V6,
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(coinIcon),
-                            CustomText(text: '7786'),
-                          ],
-                        ),
-                      ),
-                    ),
+                    CoinContainerWidget(),
                   ],
                 ),
               ),
@@ -104,3 +89,4 @@ color: AppColors.kWhiteColor,
     );
   }
 }
+

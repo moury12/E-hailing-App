@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import '../../presentations/auth/controllers/auth_controller.dart';
 import '../../presentations/navigation/controllers/navigation_controller.dart';
+import '../../presentations/save-location/controllers/save_location_controller.dart';
 import '../../presentations/splash/controllers/common_controller.dart';
 import '../../presentations/splash/controllers/splash_controller.dart';
 
@@ -16,6 +17,11 @@ class CommonBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(CommonController(), permanent: true);
+  }
+}class SaveLocationBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(SaveLocationController(), permanent: true);
   }
 }
 

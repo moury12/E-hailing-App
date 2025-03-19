@@ -6,7 +6,7 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
-import 'package:e_hailing_app/presentations/home/views/saved_location_page.dart';
+import 'package:e_hailing_app/presentations/save-location/views/saved_location_page.dart';
 import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/trip/views/request_trip_page.dart';
@@ -115,6 +115,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      spacing: 6.h,
       children: [
         CustomText(
           text: AppStaticStrings.selectDestination,

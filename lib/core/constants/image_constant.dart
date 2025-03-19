@@ -12,6 +12,7 @@ String changePassIcon = 'assets/icons/chng_pass_icon.svg';
 String coinIcon = 'assets/icons/coin_icon.svg';
 String notificationProfileIcon = 'assets/icons/notifiaction_profile_icon.svg';
 String crossCircleIcon = 'assets/icons/cross_circle_icon.svg';
+String crossIcon = 'assets/icons/cross_icon.svg';
 String carPrimaryIcon = 'assets/icons/car_primary_icon.svg';
 String dashboardIcon = 'assets/icons/dashboard_icon.svg';
 String distanceTodayIcon = 'assets/icons/distance_today_icon.svg';

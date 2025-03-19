@@ -1,5 +1,4 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
-import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
@@ -12,6 +11,10 @@ import 'package:e_hailing_app/presentations/trip/widgets/car_information_widget.
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../core/helper/helper_function.dart';
+import '../widgets/coin_dialog_payment_widget.dart';
+import '../widgets/payment_card_item.dart';
 
 class PaymentPage extends StatelessWidget {
   static const String routeName = '/payment';
@@ -65,13 +68,21 @@ class PaymentPage extends StatelessWidget {
                 PaymentCardItem(
                   img: handCashIcon,
                   title: AppStaticStrings.handCash,
-                  onTap: () {},
+                  onTap: () {
+                    showHandCashDialogs(context);
+                  },
                 ),
                 space4H,
                 PaymentCardItem(
                   img: coinIcon,
                   title: AppStaticStrings.dCoin,
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder:
+                          (context) => DCoinDialogPaymentWidget(),
+                    );
+                  },
                 ),
               ],
             ),
@@ -82,38 +93,3 @@ class PaymentPage extends StatelessWidget {
   }
 }
 
-class PaymentCardItem extends StatelessWidget {
-  final String img;
-  final String title;
-  final Function() onTap;
-  const PaymentCardItem({
-    super.key,
-    required this.img,
-    required this.title,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.kWhiteColor,
-        borderRadius: BorderRadius.circular(24.r),
-      ),
-      child: ButtonTapWidget(
-        radius: 24.r,
-        onTap: onTap,
-        child: Padding(
-          padding: paddingH16V8,
-          child: Row(
-            spacing: 12.w,
-            children: [
-              SvgPicture.asset(img),
-              CustomText(text: title, color: AppColors.kTextBlueGreyColor),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
