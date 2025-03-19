@@ -14,12 +14,14 @@ import 'package:e_hailing_app/presentations/profile/views/account_settings_page.
 import 'package:e_hailing_app/presentations/profile/views/change_password_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/term_policy_help_page.dart';
+import 'package:e_hailing_app/presentations/save-location/views/add_place_page.dart';
+import 'package:e_hailing_app/presentations/save-location/views/add_place_page.dart';
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
 import 'package:e_hailing_app/presentations/trip/views/request_trip_page.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:get/get.dart';
 
-import '../../presentations/home/views/saved_location_page.dart';
+import '../../presentations/save-location/views/saved_location_page.dart';
 
 class AppRoutes {
   static route() => [
@@ -109,6 +111,10 @@ class AppRoutes {
       name: ChangePasswordPage.routeName,
       page: () => ChangePasswordPage(),
       // binding: NavigationBinding(),
+    ),GetPage(
+      name: AddPlacePage.routeName,
+      page: () => AddPlacePage(),
+      binding: SaveLocationBinding(),
     ),
   ];
 }
