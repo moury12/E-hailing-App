@@ -29,6 +29,7 @@ String historyIcon = 'assets/icons/history_icon.svg';
 String homeIcon = 'assets/icons/home_icon.svg';
 String homeLocationIcon = 'assets/icons/home_location_icon.svg';
 String locationIcon = 'assets/icons/location_icon.svg';
+String pickUpLocationIcon = 'assets/icons/pickup_location_icon.svg';
 String logoutIcon = 'assets/icons/logout_icon.svg';
 String savedLocationIcon = 'assets/icons/saved_location_icon.svg';
 String messageIcon = 'assets/icons/message_icon.svg';

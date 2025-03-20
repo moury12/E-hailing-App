@@ -43,51 +43,7 @@ class TripDetailsPickupCard extends StatelessWidget {
             text: AppStaticStrings.pickup,
             fontSize: getFontSizeDefault(),
           ),
-          Row(
-            spacing: 12.w,
-            children: [
-              CustomNetworkImage(
-                imageUrl: dummyProfileImage,
-                boxShape: BoxShape.circle,
-                height: 42.w,
-                width: 42.w,
-              ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: 'Darrell Steward',
-                      style: poppinsSemiBold,
-                      fontSize: getFontSizeDefault(),
-                    ),
-                    CustomText(
-                      text: '(406) 555-0120',
-                      color: AppColors.kLightBlackColor,
-                    ),
-                  ],
-                ),
-              ),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    CustomText(
-                      text: 'Estimated Time',
-                      color: AppColors.kLightBlackColor,
-                    ),
-                    CustomText(
-                      text: '4.00 Min',
-                      style: poppinsSemiBold,
-                      fontSize: getFontSizeDefault(),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          DriverDetails(),
           CarDetailsCardWidget(),
           ButtonTapWidget(child: FromToTimeLine(showTo: false)),
           RowCallChatDetailsButton(lastItemName: AppStaticStrings.details,
@@ -98,6 +54,63 @@ class TripDetailsPickupCard extends StatelessWidget {
           CancelTripButtonWidget(),
         ],
       ),
+    );
+  }
+}
+
+class DriverDetails extends StatelessWidget {
+final  String? title;
+final  String? value;
+  const DriverDetails({
+    super.key, this.title, this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      spacing: 12.w,
+      children: [
+        CustomNetworkImage(
+          imageUrl: dummyProfileImage,
+          boxShape: BoxShape.circle,
+          height: 42.w,
+          width: 42.w,
+        ),
+        Expanded(
+          flex: 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(
+                text: 'Darrell Steward',
+                style: poppinsSemiBold,
+                fontSize: getFontSizeDefault(),
+              ),
+              CustomText(
+                text: '(406) 555-0120',
+                color: AppColors.kLightBlackColor,
+              ),
+            ],
+          ),
+        ),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              CustomText(
+                text: title??'Estimated Time',
+                color: AppColors.kLightBlackColor,
+              ),
+              CustomText(
+                text: value??'4.00 Min',
+                style: poppinsSemiBold,
+                fontSize: getFontSizeDefault(),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -122,52 +135,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
             text: AppStaticStrings.destination,
             fontSize: getFontSizeDefault(),
           ),
-          Row(
-            spacing: 12.w,
-            children: [
-              CustomNetworkImage(
-                imageUrl: dummyProfileImage,
-                boxShape: BoxShape.circle,
-                height: 42.w,
-                width: 42.w,
-              ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: 'Darrell Steward',
-                      style: poppinsSemiBold,
-                      fontSize: getFontSizeDefault(),
-                    ),
-                    CustomText(
-                      text: '(406) 555-0120',
-                      color: AppColors.kLightBlackColor,
-                    ),
-                  ],
-                ),
-              ),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-
-                  children: [
-                    CustomText(
-                      text: AppStaticStrings.tripDuration,
-                      color: AppColors.kLightBlackColor,
-                    ),
-                    CustomText(
-                      text: '1.07 km',
-                      style: poppinsSemiBold,
-                      fontSize: getFontSizeDefault(),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+        DriverDetails(title: AppStaticStrings.tripDuration,value: '7.68 km',),
 
           ButtonTapWidget(
             onTap: () {

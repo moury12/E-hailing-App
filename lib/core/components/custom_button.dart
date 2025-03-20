@@ -70,7 +70,7 @@ class CustomButton extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: borderColor),
           borderRadius: BorderRadius.circular(radius ?? 24.r),
-          color: fillColor??AppColors.kPrimaryColor.withValues(alpha:.8),
+          color: fillColor??AppColors.kPrimaryColor,
         ),
         child:
             isLoading == true

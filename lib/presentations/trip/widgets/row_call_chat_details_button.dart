@@ -1,5 +1,6 @@
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
+import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,9 +13,10 @@ import '../../../core/constants/image_constant.dart';
 import '../../../core/helper/helper_function.dart';
 class RowCallChatDetailsButton extends StatelessWidget {
   final String? lastItemName;
+  final bool? showLastButton;
   final Function()? onTap;
   const RowCallChatDetailsButton({
-    super.key,  this.lastItemName, this.onTap,
+    super.key,  this.lastItemName, this.onTap, this.showLastButton =true,
   });
 
   @override
@@ -25,16 +27,18 @@ class RowCallChatDetailsButton extends StatelessWidget {
         Expanded(
           child: CustomButton(
             onTap: () {},
-            child: SvgPicture.asset(callIcon),
+            padding: padding8,
+            child: SvgPicture.asset(callIcon,height: 24.w,),
           ),
         ),
         Expanded(
           child: CustomButton(
+            padding: padding8,
             onTap: () {},
-            child: SvgPicture.asset(chatIcon),
+            child: SvgPicture.asset(chatIcon,height: 24.w,),
           ),
         ),
-        Expanded(
+      showLastButton==true?  Expanded(
           child: CustomButton(
             onTap:onTap?? () {
               Get.toNamed(
@@ -44,7 +48,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
             },
             title:lastItemName?? AppStaticStrings.track,
           ),
-        ),
+        ):SizedBox.shrink(),
       ],
     );
   }

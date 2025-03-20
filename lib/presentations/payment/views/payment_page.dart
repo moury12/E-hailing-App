@@ -1,4 +1,5 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
@@ -7,10 +8,12 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/car_information_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import '../../../core/helper/helper_function.dart';
 import '../widgets/coin_dialog_payment_widget.dart';
@@ -22,6 +25,7 @@ class PaymentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final arg = Get.arguments;
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.payment),
       body: SingleChildScrollView(
@@ -59,31 +63,44 @@ class PaymentPage extends StatelessWidget {
                   value: 'RM 150',
                 ),
                 space12H,
-                PaymentCardItem(
-                  img: cardsIcon,
-                  title: AppStaticStrings.creditDebitCards,
-                  onTap: () {},
-                ),
-                space4H,
-                PaymentCardItem(
-                  img: handCashIcon,
-                  title: AppStaticStrings.handCash,
-                  onTap: () {
-                    showHandCashDialogs(context);
-                  },
-                ),
-                space4H,
-                PaymentCardItem(
-                  img: coinIcon,
-                  title: AppStaticStrings.dCoin,
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder:
-                          (context) => DCoinDialogPaymentWidget(),
-                    );
-                  },
-                ),
+               PaymentCardItem(
+                 img: cardsIcon,
+                 title: AppStaticStrings.creditDebitCards,
+                 onTap: () {},
+               ),
+               space4H,
+               PaymentCardItem(
+                 img: handCashIcon,
+                 title: AppStaticStrings.handCash,
+                 onTap: () {
+                   showHandCashDialogs(context);
+                 },
+               ),
+               space4H,
+               PaymentCardItem(
+                 img: coinIcon,
+                 title: AppStaticStrings.dCoin,
+                 onTap: () {
+                   showDialog(
+                     context: context,
+                     builder:
+                         (context) => DCoinDialogPaymentWidget(),
+                   );
+                 },
+               ),
+                arg!=null&& arg==driver?Column(
+                  spacing: 8.h,
+                  children: [
+                    CustomButton(onTap: () {
+
+                    },
+                    title: AppStaticStrings.confirm,), CustomButton(onTap: () {
+
+                    },fillColor: Colors.transparent,
+                      textColor: AppColors.kPrimaryColor,
+                    title: AppStaticStrings.notYet,),
+                  ],
+                ):SizedBox.shrink()
               ],
             ),
           ),
