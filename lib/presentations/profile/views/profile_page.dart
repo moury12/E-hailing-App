@@ -6,6 +6,7 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/earnings_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/vehicle_details_page.dart';
 import 'package:e_hailing_app/presentations/save-location/views/saved_location_page.dart';
 import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
@@ -146,7 +147,7 @@ class ProfilePage extends StatelessWidget {
                         img: earningIcon,
                         title: AppStaticStrings.earnings,
                         onTap: () {
-                          // Get.toNamed(CoinPage.routeName);
+                          Get.toNamed(EarningsPage.routeName);
                         },
                       )
                       : ProfileActionItemWidget(
