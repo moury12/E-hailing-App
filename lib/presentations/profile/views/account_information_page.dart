@@ -9,6 +9,7 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/profile_card_item_widget.dart';
+import '../widgets/profile_info_list_widget.dart';
 
 class AccountInformationPage extends StatelessWidget {
   static const String routeName = '/acc-info';
@@ -38,20 +39,7 @@ class AccountInformationPage extends StatelessWidget {
                   style: poppinsSemiBold,
                   fontSize: getFontSizeExtraLarge(),
                 ),
-                ProfileCardItemWidget(
-                  title: AppStaticStrings.fullName,
-                  value: 'Robert Smith',
-                ),
-                ProfileCardItemWidget(
-                  title: AppStaticStrings.email,
-                  value: 'robertsmith34@gmail.com',
-                ), ProfileCardItemWidget(
-                  title: AppStaticStrings.phoneNumber,
-                  value: '+3489 9999 9778',
-                ), ProfileCardItemWidget(
-                  title: AppStaticStrings.location,
-                  value: 'Juvenal Ridge, Port Vestach',
-                ),
+              ProfileInfoListWidget()
               ],
             ),
           ),
@@ -60,4 +48,5 @@ class AccountInformationPage extends StatelessWidget {
     );
   }
 }
+
 

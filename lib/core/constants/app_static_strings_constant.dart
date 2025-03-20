@@ -122,7 +122,11 @@ class AppStaticStrings {
   // Driver Details
   static const String driverName = 'Driver Name';
   static const String vehicleDetails = 'Vehicle Details';
-  static const String licensePlate = 'License Plate';
+  static const String licensePlate = 'License Plate "';
+  static const String license = 'License';
+  static const String vin = 'VIN :';
+  static const String insuranceStatus = 'Insurance Status :';
+  static const String registrationDate = 'Registration Date :';
   static const String rideCost = 'Ride Cost';
   static const String cancelRide = 'Cancel Ride';
 
