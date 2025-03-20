@@ -128,6 +128,23 @@ class AppStaticStrings {
 
   // Payment
   static const String cash = 'Cash';
+  static const String tripDistanceToday = 'Trip Distance Today  ';
+  static const String activeHour = 'Active Hour ';
+  static const String tripToday = 'Trip Today';
+  static const String onlineCash = 'Online Cash';
+  static const String totalEarn = 'Total Earn ';
+  static const String preBookRide = 'Pre-Book Ride';
+  static const String findAnother = 'Find Another';
+  static const String accept = 'Accept';
+  static const String noNewRideReq = 'No New Ride Request';
+  static const String pleaseGoOnlineRide = 'Please Go Online Ride Request';
+  static const String pickUpWithin = 'Pick up WithIn 04:10 PM';
+  static const String arrive = 'Arrive';
+  static const String tripStarted = 'Trip Started';
+  static const String arrived = 'Arrived ';
+  static const String startTrip = 'Start Trip';
+  static const String sendPaymentRequest = 'Send Payment request ';
+  static const String notYet = 'Not Yet';
   static const String cancelTrip = 'Cancel trip';
   static const String recentTip = 'Recent Tip';
   static const String service = 'Service';
@@ -167,7 +184,6 @@ class AppStaticStrings {
   static const String loremIpsumText = 'Lorem Ipsum Dolor Sit Amet Consectetur, Commodao Mauris Vitae Non Vestibulum Armet Fusce.';
   static const String myRides = 'My Rides';
   static const String ride = 'Ride';
-  static const String preBookRide = 'Pre-Book Ride';
   static const String trackRides = 'Track Ride';
   static const String track= 'Track';
   static const String newTripRequest = 'New trip Request';
@@ -212,12 +228,8 @@ class AppStaticStrings {
 
   // Earnings & Statistics
   static const String totalEarnings = 'Total Earn';
-  static const String onlineCash = 'Online Cash';
   static const String earningsGrowth = 'Earnings Growth';
   static const String viewTransactionHistory = 'View Transaction History';
-  static const String tripToday = 'Trip Today';
-  static const String activeHour = 'Active Hour';
-  static const String tripDistanceToday = 'Trip Distance Today';
 
   // Tabs
   static const String today = 'Today';
@@ -242,7 +254,6 @@ class AppStaticStrings {
   static const String rideAccepted = 'Ride Accepted';
   static const String riderIsOnTheWay = 'Rider is on the way';
   static const String arrivingAtPickup = 'Arriving at pickup location';
-  static const String startTrip = 'Start Trip';
   static const String tripCompleted = 'Trip Completed';
   static const String rateYourRide = 'Rate Your Ride';
   static const String leaveAReview = 'Leave a Review';

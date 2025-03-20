@@ -51,6 +51,8 @@ class NavigationPage extends StatelessWidget {
                   ? CustomAppBar(title: AppStaticStrings.myRides)
                   : currentIndex == 3
                   ? CustomAppBar(title: AppStaticStrings.messages)
+                  : currentIndex == 2&&CommonController.to.isDriver.value
+                  ? CustomAppBar(title: AppStaticStrings.statics)
                   : null,
           body: Stack(
             clipBehavior: Clip.none,
