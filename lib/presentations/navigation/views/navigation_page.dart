@@ -1,5 +1,6 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,7 +8,6 @@ import '../../../core/components/custom_button_tap.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
-import '../../../core/utils/variables.dart';
 import '../../home/widgets/google_map_widget.dart';
 import '../controllers/navigation_controller.dart';
 import '../widgets/nav_item_widget.dart';
@@ -20,10 +20,10 @@ class NavigationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final navController = NavigationController.to;
-      final homeController = HomeController.to;
+
       int currentIndex = navController.currentNavIndex.value;
       double containerWidth = MediaQuery.of(context).size.width;
-      double itemWidth = containerWidth / navList.length;
+      double itemWidth = containerWidth / NavigationController.to.navList.length;
       double indicatorPosition =
           itemWidth * currentIndex + (itemWidth - 70.w) / 2 - 12.w;
 
@@ -31,9 +31,12 @@ class NavigationPage extends StatelessWidget {
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
          if(currentIndex==0) {
-            if (!didPop) {
-             homeController.handleBackNavigation();
-            }
+           if(!CommonController.to.isDriver.value){
+             final homeController = HomeController.to;
+             if (!didPop) {
+               homeController.handleBackNavigation();
+             }
+           }
           }else{
            debugPrint('------------------');
            debugPrint(currentIndex.toString());
@@ -52,7 +55,7 @@ class NavigationPage extends StatelessWidget {
           body: Stack(
             clipBehavior: Clip.none,
             children: [
-              currentIndex == 0 || currentIndex == 2
+              currentIndex == 0 || (currentIndex == 2&&!CommonController.to.isDriver.value)
                   ? GoogleMapWidget()
                   : SizedBox.shrink(),
               IndexedStack(
@@ -75,8 +78,8 @@ class NavigationPage extends StatelessWidget {
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(navList.length, (index) {
-                    final nav = navList[index];
+                  children: List.generate(NavigationController.to.navList.length, (index) {
+                    final nav = NavigationController.to.navList[index];
                     return Expanded(
                       child: Tooltip(
                         message: nav.title,

@@ -1,7 +1,8 @@
-import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../navigation/controllers/navigation_controller.dart';
 
 class GoogleMapWidget extends StatelessWidget {
   const GoogleMapWidget({super.key});
@@ -12,9 +13,9 @@ class GoogleMapWidget extends StatelessWidget {
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
-        onMapCreated: HomeController.to.onMapCreated,
+        onMapCreated: NavigationController.to.onMapCreated,
         initialCameraPosition: CameraPosition(
-          target: HomeController.to.marketPosition.value,
+          target: NavigationController.to.marketPosition.value,
           zoom: 14,
         ),
         myLocationEnabled: true,
@@ -23,18 +24,18 @@ class GoogleMapWidget extends StatelessWidget {
         markers: {
           Marker(
             markerId: const MarkerId("selected_location"),
-            position: HomeController.to.marketPosition.value,
+            position: NavigationController.to.marketPosition.value,
             draggable: true,
             onTap: () {
-              HomeController.to.markerDraging.value = true;
+              NavigationController.to.markerDraging.value = true;
             },
             onDragStart: (value) {
-              HomeController.to.markerDraging.value = true;
+              NavigationController.to.markerDraging.value = true;
             },
             onDragEnd: (value) {
-              HomeController.to.marketPosition.value = value;
-              HomeController.to.getPlaceName(value);
-              HomeController.to.markerDraging.value = false;
+              NavigationController.to.marketPosition.value = value;
+              NavigationController.to.getPlaceName(value);
+              NavigationController.to.markerDraging.value = false;
             },
             infoWindow: const InfoWindow(
               title: "Selected Location",

@@ -13,20 +13,10 @@ class HomeController extends GetxController {
   RxBool selectEv = false.obs;
   RxBool addStops = false.obs;
   RxBool isLoadingNewTrip = false.obs;
-  RxBool markerDraging = false.obs;
-  RxString placeName = 'Fetching location...'.obs;
-  AnimationController? controller;
-  Rx<LatLng> marketPosition = LatLng(23.8168, 90.3675).obs;
-  @override
-  void onInit() {
-    getPlaceName(marketPosition.value);
-    super.onInit();
-  }
 
-  GoogleMapController? mapController;
-  void onMapCreated(GoogleMapController controller) {
-    mapController ??= controller; // Store and reuse the same controller
-  }
+  AnimationController? controller;
+
+
 
   bool handleBackNavigation() {
     debugPrint('Previous route: ${Get.previousRoute}');
@@ -95,19 +85,4 @@ class HomeController extends GetxController {
     selectEv.value = true;
   }
 
-  Future<void> getPlaceName(LatLng position) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks[0];
-        placeName.value = '${place.street} ${place.locality} ${place.country}';
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-      placeName.value = 'unknown location';
-    }
-  }
 }
