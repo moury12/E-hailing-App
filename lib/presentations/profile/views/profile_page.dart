@@ -6,12 +6,14 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/vehicle_details_page.dart';
 import 'package:e_hailing_app/presentations/save-location/views/saved_location_page.dart';
 import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/term_policy_help_page.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -117,13 +119,21 @@ class ProfilePage extends StatelessWidget {
                       Get.toNamed(AccountSettingsPage.routeName);
                     },
                   ),
-                  ProfileActionItemWidget(
-                    img: coinIcon,
-                    title: AppStaticStrings.duduCoinWallet,
-                    onTap: () {
-                      Get.toNamed(CoinPage.routeName);
-                    },
-                  ),
+                  CommonController.to.isDriver.value
+                      ? ProfileActionItemWidget(
+                        img: vehicleDetailsIcon,
+                        title: AppStaticStrings.vehicleDetails,
+                        onTap: () {
+                          Get.toNamed(VehicleDetailsPage.routeName);
+                        },
+                      )
+                      : ProfileActionItemWidget(
+                        img: coinIcon,
+                        title: AppStaticStrings.duduCoinWallet,
+                        onTap: () {
+                          Get.toNamed(CoinPage.routeName);
+                        },
+                      ),
                   ProfileActionItemWidget(
                     img: notificationProfileIcon,
                     title: AppStaticStrings.notification,
@@ -131,13 +141,21 @@ class ProfilePage extends StatelessWidget {
                       Get.toNamed(NotificationPage.routeName);
                     },
                   ),
-                  ProfileActionItemWidget(
-                    img: savedLocationIcon,
-                    title: AppStaticStrings.savedLocation,
-                    onTap: () {
-                      Get.toNamed(SavedLocationPage.routeName);
-                    },
-                  ),
+                  CommonController.to.isDriver.value
+                      ? ProfileActionItemWidget(
+                        img: earningIcon,
+                        title: AppStaticStrings.earnings,
+                        onTap: () {
+                          // Get.toNamed(CoinPage.routeName);
+                        },
+                      )
+                      : ProfileActionItemWidget(
+                        img: savedLocationIcon,
+                        title: AppStaticStrings.savedLocation,
+                        onTap: () {
+                          Get.toNamed(SavedLocationPage.routeName);
+                        },
+                      ),
                   CustomText(
                     text: AppStaticStrings.more,
                     fontSize: getFontSizeDefault(),
