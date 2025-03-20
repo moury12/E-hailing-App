@@ -35,7 +35,7 @@ class DynamicTabWidget extends StatelessWidget {
 
               CustomContainer(
                 backgroundColor: AppColors.kWhiteColor,
-                padding:padding8,
+                padding:EdgeInsets.all(4.sp),
                 widget: TabBar(indicatorPadding: EdgeInsets.zero, padding: EdgeInsets.zero,
                   indicatorColor: Colors.transparent, labelPadding: EdgeInsets.zero,
 
