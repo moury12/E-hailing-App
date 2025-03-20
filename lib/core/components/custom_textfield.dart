@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -175,24 +176,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   widget.isPassword
                       ? GestureDetector(
                         onTap: toggle,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 16,
-                            right: 16,
-                            top: 16,
-                            bottom: 16,
-                          ),
-                          child:
-                              obscureText
-                                  ? const Icon(
-                                    Icons.visibility_off_outlined,
-                                    color: AppColors.kTextColor,
-                                  )
-                                  : const Icon(
-                                    Icons.visibility_outlined,
-                                    color: AppColors.kTextColor,
-                                  ),
-                        ),
+                        child: obscureText 
+                            ? const Icon(
+                              Icons.visibility_off_outlined,
+                              color: AppColors.kTextColor,
+                            )
+                            : const Icon(
+                              Icons.visibility_outlined,
+                              color: AppColors.kTextColor,
+                            ),
                       )
                       : widget.suffixIcon,
               suffixIconColor: widget.suffixIconColor,

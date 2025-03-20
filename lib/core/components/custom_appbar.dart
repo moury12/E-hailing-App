@@ -2,6 +2,7 @@ import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/widgets/custom_toggle_switch_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,12 +15,14 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
   final Function()? onTap;
   final Function()? onBack;
   final bool? isBack;
+  final bool? isDriver;
   const CustomAppBarForHomeWidget({
     super.key,
     this.actionIcon,
     this.onTap,
     this.isBack = false,
     this.onBack,
+    this.isDriver = false,
   });
 
   @override
@@ -46,6 +49,7 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
                 )
                 : SvgPicture.asset(primaryLogoIcon),
             Spacer(),
+            isDriver == true ? CustomToggleSwitch() : SizedBox.shrink(),
             IconButton(onPressed: () {}, icon: SvgPicture.asset(sosIcon)),
             PrimaryCircleButtonWidget(actionIcon: actionIcon, onTap: onTap),
           ],
@@ -62,9 +66,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(title: CustomText(text: title),
-        centerTitle: true,
-    actions: action??[],
+    return AppBar(
+      title: CustomText(text: title),
+      centerTitle: true,
+      actions: action ?? [],
     );
   }
 

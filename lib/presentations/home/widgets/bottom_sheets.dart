@@ -18,6 +18,7 @@ import 'package:get/get.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
+import '../../navigation/controllers/navigation_controller.dart';
 import 'row_more_button_widget.dart';
 import 'search_field_button_widget.dart';
 import '../../navigation/widgets/custom_container_with_border.dart';
@@ -40,10 +41,10 @@ class HomeSetLocationWidget extends StatelessWidget {
         Obx(() {
           return CustomWhiteContainerWithBorder(
             img: pickLocationIcon,
-            text: HomeController.to.placeName.value,
+            text: NavigationController.to.placeName.value,
             cross: ButtonTapWidget(
               onTap: () {
-                HomeController.to.placeName.value = '';
+                NavigationController.to.placeName.value = '';
               },
               child: Padding(
                 padding: padding6,
