@@ -13,12 +13,12 @@ class MessageListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     MessageController.to.tabContent.add(
       Padding(
-        padding: padding12V,
+        padding: padding12V.copyWith(top: 0),
         child: Column(
           spacing: 12.h,
           children: List.generate(
             4,
-            (index) =>
+                (index) =>
                 MessageCardItemWidget(isRead: index % 2 == 0 ? true : false),
           ),
         ),
@@ -26,7 +26,7 @@ class MessageListPage extends StatelessWidget {
     );
     MessageController.to.tabContent.add(
       Padding(
-        padding: padding12V,
+        padding: padding12V.copyWith(top: 0),
         child: Column(
           spacing: 12.h,
           children: List.generate(
@@ -38,7 +38,7 @@ class MessageListPage extends StatelessWidget {
     );
     return SingleChildScrollView(
       child: Padding(
-        padding: padding16H,
+        padding: padding16H.copyWith(top: 0),
         child: Column(
           children: [
             DynamicTabWidget(

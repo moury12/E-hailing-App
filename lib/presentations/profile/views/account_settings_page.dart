@@ -20,7 +20,7 @@ class AccountSettingsPage extends StatelessWidget {
       appBar: CustomAppBar(title: AppStaticStrings.accountSetting),
       body: SingleChildScrollView(
         child: Padding(
-          padding: padding14,
+          padding: padding14.copyWith(top: 0),
           child: Column(
             spacing: 12.h,
             children: [

@@ -44,7 +44,8 @@ class StaticsCardItemWidget extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: AppColors.kExtraLightTextColor.withValues(alpha: .6),
-            blurRadius: 6.r,
+            blurRadius: 4.r,
+            spreadRadius: -2
           ),
         ],
       ),

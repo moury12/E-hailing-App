@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../presentations/auth/controllers/auth_controller.dart';
 import '../../presentations/navigation/controllers/navigation_controller.dart';
+import '../../presentations/profile/controllers/account_information_controller.dart';
 import '../../presentations/save-location/controllers/save_location_controller.dart';
 import '../../presentations/splash/controllers/common_controller.dart';
 import '../../presentations/splash/controllers/splash_controller.dart';
@@ -20,7 +21,9 @@ class CommonBinding extends Bindings {
   void dependencies() {
     Get.put(CommonController(), permanent: true);
   }
-}class SaveLocationBinding extends Bindings {
+}
+
+class SaveLocationBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(SaveLocationController(), permanent: true);
@@ -40,18 +43,29 @@ class AuthBinding extends Bindings {
     Get.put(AuthController());
   }
 }
+
 //
 class NavigationBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(NavigationController());
   }
-}class DriverSettingsBinding extends Bindings {
+}
+
+class AccountInformationBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(AccountInformationController());
+  }
+}
+
+class DriverSettingsBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(DriverSettingsController());
   }
 }
+
 //
 // class ProfileBinding extends Bindings {
 //   @override
