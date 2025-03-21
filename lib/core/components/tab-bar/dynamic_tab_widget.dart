@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/custom_space.dart';
 import '../../constants/fontsize_constant.dart';
-import '../../constants/padding_constant.dart';
 import '../../constants/text_style_constant.dart';
 import '../tab_content_view.dart';
 import 'custom_container.dart';
@@ -92,7 +91,7 @@ class DynamicTabWidget extends StatelessWidget {
                       .toList(),
                 ),
               ),
-              space6H,
+              space12H,
               TabContentView(
                 children: tabContent,
               ),

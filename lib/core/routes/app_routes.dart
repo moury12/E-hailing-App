@@ -16,6 +16,8 @@ import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/earnings_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/earnings_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/term_policy_help_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/transaction_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/transaction_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/vehicle_details_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/vehicle_details_page.dart';
 import 'package:e_hailing_app/presentations/save-location/views/add_place_page.dart';
@@ -92,13 +94,17 @@ class AppRoutes {
       page: () => NotificationPage(),
       // binding: NavigationBinding(),
     ),GetPage(
+      name: TransactionPage.routeName,
+      page: () => TransactionPage(),
+      // binding: NavigationBinding(),
+    ),GetPage(
       name: ChattingPage.routeName,
       page: () => ChattingPage(),
       // binding: NavigationBinding(),
     ),GetPage(
       name: AccountInformationPage.routeName,
       page: () => AccountInformationPage(),
-      // binding: NavigationBinding(),
+     binding: AccountInformationBinding(),
     ),GetPage(
       name: AccountSettingsPage.routeName,
       page: () => AccountSettingsPage(),

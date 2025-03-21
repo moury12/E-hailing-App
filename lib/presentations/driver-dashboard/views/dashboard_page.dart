@@ -7,6 +7,7 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/row_more_button_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
+import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/row_call_chat_details_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -100,7 +101,9 @@ class _DashboardPageState extends State<DashboardPage>
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Column(children: [CustomAppBarForHomeWidget(isDriver: true)]),
+        Column(children: [CustomAppBarForHomeWidget(isDriver: true,onTap: () {
+          Get.toNamed(NotificationPage.routeName);
+        },)]),
         Positioned(
           bottom: 0,
           left: 0,

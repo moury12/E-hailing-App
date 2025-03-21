@@ -122,7 +122,7 @@ class AppStaticStrings {
   // Driver Details
   static const String driverName = 'Driver Name';
   static const String vehicleDetails = 'Vehicle Details';
-  static const String licensePlate = 'License Plate "';
+  static const String licensePlate = 'License Plate';
   static const String license = 'License';
   static const String vin = 'VIN :';
   static const String insuranceStatus = 'Insurance Status :';
@@ -132,6 +132,11 @@ class AppStaticStrings {
 
   // Payment
   static const String cash = 'Cash';
+  static const String nationalIdPassport = 'National ID/Passport';
+  static const String drivingLicense = 'Driving License No ';
+  static const String licenseType = 'License Type';
+  static const String licenseExpire = 'License Expire';
+  static const String psvLicense = 'PSV License';
   static const String tripDistanceToday = 'Trip Distance Today  ';
   static const String activeHour = 'Active Hour ';
   static const String tripToday = 'Trip Today';
@@ -190,6 +195,7 @@ class AppStaticStrings {
   static const String ride = 'Ride';
   static const String trackRides = 'Track Ride';
   static const String track= 'Track';
+  static const String transactionHistory= 'Transaction History';
   static const String newTripRequest = 'New trip Request';
   static  String ongoing = 'Ongoing';
   static  String waitingForDriverConformation = 'Waiting for Driver confirmation';
