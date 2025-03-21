@@ -9,6 +9,7 @@ import 'package:e_hailing_app/presentations/save-location/controllers/save_locat
 import 'package:e_hailing_app/presentations/save-location/controllers/save_location_controller.dart';
 import 'package:e_hailing_app/presentations/save-location/controllers/save_location_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 
 import '../../../core/components/custom_button.dart';
@@ -28,60 +29,64 @@ class AddPlacePage extends StatelessWidget {
     body: SingleChildScrollView(
       child: Padding(
         padding: padding16,
-        child: Column(
-          children: [
-            CustomTextField(
-              title: AppStaticStrings.placeAddress,
-              textEditingController:
-              SaveLocationController.to.searchFieldController.value,
-              onChanged: (val) {
-                CommonController.to.fetchSuggestedPlaces(val);
-              },
-              hintText: 'search here...',
+        child: Obx(
+           () {
+            return Column(
+              children: [
+                CustomTextField(
+                  title: AppStaticStrings.placeAddress,
+                  textEditingController:
+                  SaveLocationController.to.searchFieldController.value,
+                  onChanged: (val) {
+                    CommonController.to.fetchSuggestedPlaces(val);
+                  },
+                  hintText: 'search here...',
 
-            ),
-            space12H,
-            CommonController.to.isLoadingOnLocationSuggestion.value
-                ? DefaultProgressIndicator(
-              color: AppColors.kPrimaryColor,
-            )
-                : Column(
-              children: List.generate(
-                CommonController.to.addressSuggestion.length,
-                    (index) {
-                  final address =
-                  CommonController.to.addressSuggestion[index];
-                  return SearchAddress(
-                    onTap: () async {
-                      final placeId = address['place_id'];
-                      await CommonController.to.getLatLngFromPlace(
-                          placeId,
-                          lat: SaveLocationController.to.lat,
-                          lng: SaveLocationController.to.lng,
-                          selectedAddress:
-                          SaveLocationController.to.selectedAddress);
-                      SaveLocationController
-                          .to.searchFieldController.value.text =
-                          SaveLocationController.to.selectedAddress.value;
+                ),
+                space12H,
+                CommonController.to.isLoadingOnLocationSuggestion.value
+                    ? DefaultProgressIndicator(
+                  color: AppColors.kPrimaryColor,
+                )
+                    : Column(
+                  children: List.generate(
+                    CommonController.to.addressSuggestion.length,
+                        (index) {
+                      final address =
+                      CommonController.to.addressSuggestion[index];
+                      return SearchAddress(
+                        onTap: () async {
+                          final placeId = address['place_id'];
+                          await CommonController.to.getLatLngFromPlace(
+                              placeId,
+                              lat: SaveLocationController.to.lat,
+                              lng: SaveLocationController.to.lng,
+                              selectedAddress:
+                              SaveLocationController.to.selectedAddress);
+                          SaveLocationController
+                              .to.searchFieldController.value.text =
+                              SaveLocationController.to.selectedAddress.value;
 
-                      CommonController.to.addressSuggestion.clear();
+                          CommonController.to.addressSuggestion.clear();
 
+                        },
+                        title: address['description'],
+                      );
                     },
-                    title: address['description'],
-                  );
+                  ),
+                ),
+                CustomTextField(
+                  title: AppStaticStrings.placeName,
+
+                ),
+                space12H,
+                CustomButton(onTap: () {
+
                 },
-              ),
-            ),
-            CustomTextField(
-              title: AppStaticStrings.placeName,
-
-            ),
-            space12H,
-            CustomButton(onTap: () {
-
-            },
-            title: AppStaticStrings.save,)
-          ],
+                title: AppStaticStrings.save,)
+              ],
+            );
+          }
         ),
       ),
     ),);

@@ -10,6 +10,7 @@ import 'package:e_hailing_app/presentations/home/widgets/gradient_progress_indic
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../presentations/payment/widgets/ratting_dialog_widget.dart';
 import '../../presentations/trip/widgets/trip_cancellation_reason_card_item.dart';
@@ -45,7 +46,14 @@ Future<dynamic> tripCancellationDialog() {
     ),
   );
 }
-
+void callOnPhone({required String phoneNumber})async{
+  final url = Uri.parse('tel:$phoneNumber');
+  if (await canLaunchUrl(url)) {
+  await launchUrl(url);
+  } else {
+  throw 'Could not launch $url';
+  }
+}
 void showHandCashDialogs(BuildContext context) {
   showDialog(
     context: context,

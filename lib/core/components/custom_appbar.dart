@@ -2,6 +2,7 @@ import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/widgets/custom_toggle_switch_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,7 +51,9 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
                 : SvgPicture.asset(primaryLogoIcon),
             Spacer(),
             isDriver == true ? CustomToggleSwitch() : SizedBox.shrink(),
-            IconButton(onPressed: () {}, icon: SvgPicture.asset(sosIcon)),
+            IconButton(onPressed: () {
+              callOnPhone(phoneNumber: '999');
+            }, icon: SvgPicture.asset(sosIcon)),
             PrimaryCircleButtonWidget(actionIcon: actionIcon, onTap: onTap),
           ],
         ),

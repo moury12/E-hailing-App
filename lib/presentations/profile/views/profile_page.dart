@@ -72,7 +72,7 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: padding12,
+                padding: padding12.copyWith(top: 0),
                 child: Row(
                   spacing: 12.w,
                   children: [
