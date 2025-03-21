@@ -10,6 +10,7 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/auth/views/signup_page.dart';
+import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,7 +54,9 @@ class LoginPage extends StatelessWidget {
               ),
             ),
 
-            CustomTextButton(title: AppStaticStrings.forgotPassword),
+            CustomTextButton(title: AppStaticStrings.forgotPassword,onPressed: () {
+              Get.toNamed(VerifyEmailPage.routeName);
+            },),
           ],
         ),
         SvgPicture.asset(orImage, width: ScreenUtil().screenWidth),
@@ -76,7 +79,7 @@ class LoginPage extends StatelessWidget {
           ],
         ),
         CustomButton(onTap: () {
-          Get.toNamed(NavigationPage.routeName);
+          Get.offAllNamed(NavigationPage.routeName);
         }, title: AppStaticStrings.logIn),
         space12H,
         SocialMediaAuthWidget(),

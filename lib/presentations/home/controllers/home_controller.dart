@@ -15,8 +15,12 @@ class HomeController extends GetxController {
   RxBool isLoadingNewTrip = false.obs;
 
   AnimationController? controller;
+  RxString previousRoute = ''.obs;
 
-
+  void updatePreviousRoute(String route) {
+    previousRoute.value = route;
+    update(); // Force rebuild
+  }
 
   bool handleBackNavigation() {
     debugPrint('Previous route: ${Get.previousRoute}');
@@ -26,6 +30,10 @@ class HomeController extends GetxController {
     if (Get.previousRoute.isNotEmpty &&
         Get.previousRoute != '/nav' &&
         Get.previousRoute != '/') {
+      // if(Get.previousRoute =='/nav'){
+      // updatePreviousRoute(Get.currentRoute);
+      //   resetAllStates();
+      // }
       Get.back();
       return true; // Back navigation handled by Get.back()
     }

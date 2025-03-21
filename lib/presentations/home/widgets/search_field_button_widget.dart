@@ -20,8 +20,8 @@ class SearchFieldButtonWidget extends StatelessWidget {
       isEnable: false,
       onTap: onTap ?? () {},
       prefixIcon: Padding(
-        padding: padding12,
-        child: SvgPicture.asset(searchIcon),
+        padding: padding16,
+        child: SvgPicture.asset(searchIcon,height: 16.w,),
       ),
     );
   }

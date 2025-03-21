@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
+import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,7 @@ class RowMoreButtonWidget extends StatelessWidget {
         CustomText(text: title),
         CustomTextButton(
           onPressed: onPressed,
+          padding: padding8,
           title: AppStaticStrings.more,
           textColor: AppColors.kPrimaryColor,
           fontSize: getFontSizeSemiSmall(),

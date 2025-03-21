@@ -68,7 +68,7 @@ class PaymentPage extends StatelessWidget {
                  title: AppStaticStrings.creditDebitCards,
                  onTap: () {},
                ),
-               space4H,
+
                PaymentCardItem(
                  img: handCashIcon,
                  title: AppStaticStrings.handCash,
@@ -76,7 +76,7 @@ class PaymentPage extends StatelessWidget {
                    showHandCashDialogs(context);
                  },
                ),
-               space4H,
+
                PaymentCardItem(
                  img: coinIcon,
                  title: AppStaticStrings.dCoin,

@@ -1,4 +1,5 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,8 @@ class NavigationPage extends StatelessWidget {
              if (!didPop) {
                homeController.handleBackNavigation();
              }
+           }else{
+             DashBoardController.to.handleBackNavigation();
            }
           }else{
            debugPrint('------------------');

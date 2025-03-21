@@ -8,6 +8,7 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
+import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -63,7 +64,18 @@ class RequestTripPage extends StatelessWidget {
               space6H,
               CustomButton(
                 onTap: () {
-                  Get.toNamed(TripDetailsPage.routeName);
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) =>
+                            AlertDialog(
+                              backgroundColor: Colors.transparent,
+                              contentPadding: EdgeInsets.zero,
+                                content: TripRequestLoadingWidget()),
+                  );
+                  Future.delayed(Duration(seconds: 2), () {
+                    Get.toNamed(TripDetailsPage.routeName);
+                  });
                 },
                 title: AppStaticStrings.confirm,
               ),

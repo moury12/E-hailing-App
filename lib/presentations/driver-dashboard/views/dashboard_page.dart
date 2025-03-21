@@ -1,17 +1,8 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
-import 'package:e_hailing_app/core/components/custom_button.dart';
-import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
-import 'package:e_hailing_app/core/constants/custom_text.dart';
-import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
-import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
-import 'package:e_hailing_app/presentations/home/widgets/row_more_button_widget.dart';
-import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
-import 'package:e_hailing_app/presentations/trip/widgets/row_call_chat_details_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constants/color_constants.dart';

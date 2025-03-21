@@ -2,6 +2,7 @@ import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
       children: [
         Expanded(
           child: CustomButton(
-            onTap: () {},
+            onTap: () { callOnPhone(phoneNumber: '01716773054');},
             padding: padding8,
             child: SvgPicture.asset(callIcon,height: 24.w,),
           ),
@@ -41,6 +42,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
       showLastButton==true?  Expanded(
           child: CustomButton(
             onTap:onTap?? () {
+              HomeController.to.updatePreviousRoute(Get.currentRoute);
               Get.toNamed(
                 NavigationPage.routeName,
                 arguments: pickupDestination,

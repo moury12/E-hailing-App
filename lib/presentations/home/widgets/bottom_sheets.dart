@@ -86,22 +86,26 @@ class HomeSelectEvWidget extends StatelessWidget {
               index == 3
                   ? CarDetailsCardWidget(
                     onTap: () {
-                      HomeController.to.resetAllStates();
-                      HomeController.to.isLoadingNewTrip.value = true;
-                      Future.delayed(Duration(seconds: 4), () {
-                        HomeController.to.isLoadingNewTrip.value = false;
-                        Get.toNamed(RequestTripPage.routeName);
-                      });
-                    },
-                  )
+                      //   HomeController.to.resetAllStates();
+                      //   HomeController.to.isLoadingNewTrip.value = true;
+                      //   Future.delayed(Duration(seconds: 4), () {
+                      //     HomeController.to.isLoadingNewTrip.value = false;
+                      //     Get.toNamed(RequestTripPage.routeName);
+                      //   });
+                      // },
+                      Get.toNamed(RequestTripPage.routeName);
+                    }
+                    )
                   : SelectCarITemWidget(
                     onTap: () {
-                      HomeController.to.resetAllStates();
-                      HomeController.to.isLoadingNewTrip.value = true;
-                      Future.delayed(Duration(seconds: 4), () {
-                        HomeController.to.isLoadingNewTrip.value = false;
-                        Get.toNamed(RequestTripPage.routeName);
-                      });
+                      // HomeController.to.resetAllStates();
+                      // HomeController.to.isLoadingNewTrip.value = true;
+                      // Future.delayed(Duration(seconds: 4), () {
+                      //   HomeController.to.isLoadingNewTrip.value = false;
+                      //   Get.toNamed(RequestTripPage.routeName);
+                      // });
+
+                      Get.toNamed(RequestTripPage.routeName);
                     },
                   ),
         ),
@@ -223,14 +227,14 @@ class HomeInitialContentWidget extends StatelessWidget {
               children: [
                 Expanded(
                   child: CustomWhiteContainerWithBorder(
-                    text: 'Building 8cvxcgvxfggggggggggggggg,...',
+                    text: 'Building 8...',
                     img: pickLocationIcon,
                   ),
                 ),
 
                 Expanded(
                   child: CustomWhiteContainerWithBorder(
-                    text: 'Building 8cvxcgvxfggggggggggggggg,...',
+                    text: 'Building 8...',
                     img: dropLocationIcon,
                   ),
                 ),
@@ -263,9 +267,9 @@ class HomeInitialContentWidget extends StatelessWidget {
             ],
           ),
         ),
-        space6H,
+        space8H,
         CustomText(text: AppStaticStrings.service),
-        space6H,
+        space8H,
 
         Row(
           spacing: 12.w,

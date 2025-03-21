@@ -10,6 +10,7 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
@@ -20,6 +21,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constants/image_constant.dart';
+import '../../navigation/views/navigation_page.dart';
 import '../../trip/widgets/row_call_chat_details_button.dart';
 import 'gradient_progress_indicator.dart';
 
@@ -139,7 +141,10 @@ class TripDetailsDestinationCard extends StatelessWidget {
 
           ButtonTapWidget(
             onTap: () {
+
               Timer(Duration(seconds: 1), () {
+                HomeController.to.updatePreviousRoute(Get.currentRoute);
+                HomeController.to.resetAllStates();
                 Get.toNamed(PaymentPage.routeName);
               });
             },
@@ -148,7 +153,10 @@ class TripDetailsDestinationCard extends StatelessWidget {
           RowCallChatDetailsButton(
             lastItemName: AppStaticStrings.details,
             onTap: () {
-              Get.back();
+              Get.toNamed(
+                TripDetailsPage.routeName,
+
+              );
             },
           ),
         ],
@@ -175,6 +183,7 @@ class TripRequestLoadingWidget extends StatelessWidget {
         // border: Border.all(color: AppColors.kPrimaryColor, width: 1.w),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         spacing: 12.h,
         children: [
           CustomText(
