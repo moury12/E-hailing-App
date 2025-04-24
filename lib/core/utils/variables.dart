@@ -29,6 +29,10 @@ List<TripCancellationModel> tripCancellationList = [
     isChecked: false.obs,
   ),
 ];
+// List<TripCancellationModel> paymentStatus =[TripCancellationModel(
+//   title: "Card Payment",
+//   isChecked: false.obs,
+// ),];
 String pickupDestination = 'Pickup destination';
 String userRole = 'User Role';
 String role = 'role';

@@ -51,7 +51,7 @@ class VerifyIdentityPage extends StatelessWidget {
         space4H,
         CustomButton(
           onTap: () {
-            Get.toNamed(VerifyEmailPage.routeName);
+            Get.back();
           },
           title: AppStaticStrings.confirm,
         ),

@@ -1,5 +1,6 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
+import 'package:e_hailing_app/core/components/custom_check_box.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
@@ -15,6 +16,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constants/custom_text.dart';
+import '../../../core/constants/fontsize_constant.dart';
+import '../../../core/constants/text_style_constant.dart';
+import '../../../core/helper/helper_function.dart';
+import '../../payment/widgets/coin_dialog_payment_widget.dart';
+import '../../payment/widgets/payment_card_item.dart';
+
 class RequestTripPage extends StatelessWidget {
   static const String routeName = '/request-trip';
   const RequestTripPage({super.key});
@@ -27,10 +35,43 @@ class RequestTripPage extends StatelessWidget {
         child: Padding(
           padding: padding16.copyWith(top: 0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 6.h,
             children: [
               CarDetailsCardWidget(onTap: () {}),
               PickupDropLocationWidget(),
+              Text(
+                "Payment Method",
+                style: poppinsMedium.copyWith(
+                  color: AppColors.kTextDarkBlueColor,
+                  fontSize: getFontSizeSemiSmall(),
+                ),
+              ),
+              PaymentCardItem(
+                img: cardsIcon,
+                title: AppStaticStrings.creditDebitCards,
+                onTap: () {},
+              ),
+
+              PaymentCardItem(
+                img: handCashIcon,
+                title: AppStaticStrings.handCash,
+                onTap: () {
+                  showHandCashDialogs(context);
+                },
+              ),
+
+              PaymentCardItem(
+                img: coinIcon,
+                title: AppStaticStrings.dCoin,
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => DCoinDialogPaymentWidget(),
+                  );
+                },
+              ),
               CustomTextField(
                 hintText: '01/03/2025',
                 borderColor: AppColors.kGreyColor,
@@ -52,6 +93,13 @@ class RequestTripPage extends StatelessWidget {
                   padding: padding14,
                   child: SvgPicture.asset(calenderIcon),
                 ),
+              ),CustomTextField(
+                // hintText: '12:35 PM',
+                borderColor: AppColors.kGreyColor,
+                fillColor: AppColors.kWhiteColor,
+                borderRadius: 24.r,
+                title: AppStaticStrings.promoCode,
+
               ),
               CustomTextField(
                 // hintText: '12:35 PM',

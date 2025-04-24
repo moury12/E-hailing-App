@@ -41,17 +41,16 @@ class TripDetailsPickupCard extends StatelessWidget {
       child: Column(
         spacing: 8.h,
         children: [
-          CustomText(
-            text: AppStaticStrings.pickup,
-            fontSize: getFontSizeDefault(),
-          ),
+          CustomText(text: AppStaticStrings.pickup, fontSize: getFontSizeDefault()),
           DriverDetails(),
           CarDetailsCardWidget(),
           ButtonTapWidget(child: FromToTimeLine(showTo: false)),
-          RowCallChatDetailsButton(lastItemName: AppStaticStrings.details,
+          RowCallChatDetailsButton(
+            lastItemName: AppStaticStrings.details,
             onTap: () {
               Get.toNamed(TripDetailsPage.routeName);
-            },),
+            },
+          ),
 
           CancelTripButtonWidget(),
         ],
@@ -61,37 +60,23 @@ class TripDetailsPickupCard extends StatelessWidget {
 }
 
 class DriverDetails extends StatelessWidget {
-final  String? title;
-final  String? value;
-  const DriverDetails({
-    super.key, this.title, this.value,
-  });
+  final String? title;
+  final String? value;
+  const DriverDetails({super.key, this.title, this.value});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       spacing: 12.w,
       children: [
-        CustomNetworkImage(
-          imageUrl: dummyProfileImage,
-          boxShape: BoxShape.circle,
-          height: 42.w,
-          width: 42.w,
-        ),
+        CustomNetworkImage(imageUrl: dummyProfileImage, boxShape: BoxShape.circle, height: 42.w, width: 42.w),
         Expanded(
           flex: 2,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomText(
-                text: 'Darrell Steward',
-                style: poppinsSemiBold,
-                fontSize: getFontSizeDefault(),
-              ),
-              CustomText(
-                text: '(406) 555-0120',
-                color: AppColors.kLightBlackColor,
-              ),
+              CustomText(text: 'Darrell Steward', style: poppinsSemiBold, fontSize: getFontSizeDefault()),
+              CustomText(text: 'RM 30.00', color: AppColors.kLightBlackColor),
             ],
           ),
         ),
@@ -100,15 +85,8 @@ final  String? value;
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              CustomText(
-                text: title??'Estimated Time',
-                color: AppColors.kLightBlackColor,
-              ),
-              CustomText(
-                text: value??'4.00 Min',
-                style: poppinsSemiBold,
-                fontSize: getFontSizeDefault(),
-              ),
+              CustomText(text: title ?? 'Estimated Time', color: AppColors.kLightBlackColor),
+              CustomText(text: value ?? '4.00 Min', style: poppinsSemiBold, fontSize: getFontSizeDefault()),
             ],
           ),
         ),
@@ -133,15 +111,30 @@ class TripDetailsDestinationCard extends StatelessWidget {
       child: Column(
         spacing: 8.h,
         children: [
-          CustomText(
-            text: AppStaticStrings.destination,
-            fontSize: getFontSizeDefault(),
+          CustomText(text: AppStaticStrings.destination, fontSize: getFontSizeDefault()),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                  children: [
+                    CustomText(text: "BYD Atto 3", fontSize: getFontSizeDefault()),
+                    Container(
+                      padding: EdgeInsets.all(4.r),
+                      decoration: BoxDecoration(color: AppColors.kPrimaryColor, borderRadius: BorderRadius.circular(8.r)),
+                      child: CustomText(text: "VKL8266(WHITE)", color: AppColors.kWhiteColor),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(CupertinoIcons.info_circle_fill),
+            ],
           ),
-        DriverDetails(title: AppStaticStrings.tripDuration,value: '7.68 km',),
+          DriverDetails(title: AppStaticStrings.tripDuration, value: '7.68 km'),
 
           ButtonTapWidget(
             onTap: () {
-
               Timer(Duration(seconds: 1), () {
                 HomeController.to.updatePreviousRoute(Get.currentRoute);
                 HomeController.to.resetAllStates();
@@ -153,10 +146,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
           RowCallChatDetailsButton(
             lastItemName: AppStaticStrings.details,
             onTap: () {
-              Get.toNamed(
-                TripDetailsPage.routeName,
-
-              );
+              Get.toNamed(TripDetailsPage.routeName);
             },
           ),
         ],
@@ -176,9 +166,7 @@ class TripRequestLoadingWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.kWhiteColor,
         borderRadius: BorderRadius.circular(8.r),
-        gradient: LinearGradient(
-          colors: [AppColors.kWhiteColor, AppColors.kPrimaryLightColor],
-        ),
+        gradient: LinearGradient(colors: [AppColors.kWhiteColor, AppColors.kPrimaryLightColor]),
 
         // border: Border.all(color: AppColors.kPrimaryColor, width: 1.w),
       ),
@@ -186,10 +174,7 @@ class TripRequestLoadingWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 12.h,
         children: [
-          CustomText(
-            text: AppStaticStrings.newTripRequest,
-            fontSize: getFontSizeDefault(),
-          ),
+          CustomText(text: AppStaticStrings.newTripRequest, fontSize: getFontSizeDefault()),
           FromToTimeLine(),
           GradientProgressIndicator(),
           CustomText(
@@ -212,20 +197,10 @@ class FromToTimeLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomTimeline(
       padding: EdgeInsets.zero,
-      indicators: <Widget>[
-        SvgPicture.asset(pickLocationIcon),
-        if (showTo == true) SvgPicture.asset(dropLocationIcon),
-      ],
+      indicators: <Widget>[SvgPicture.asset(pickLocationIcon), if (showTo == true) SvgPicture.asset(dropLocationIcon)],
       children: <Widget>[
-        FromToWidget(
-          details: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
-          headline: AppStaticStrings.from,
-        ),
-        if (showTo == true)
-          FromToWidget(
-            details: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
-            headline: AppStaticStrings.to,
-          ),
+        FromToWidget(details: '1901 Thornridge Cir. Shiloh, Hawaii 81063', headline: AppStaticStrings.from),
+        if (showTo == true) FromToWidget(details: '1901 Thornridge Cir. Shiloh, Hawaii 81063', headline: AppStaticStrings.to),
       ],
     );
   }
@@ -234,22 +209,14 @@ class FromToTimeLine extends StatelessWidget {
 class FromToWidget extends StatelessWidget {
   final String headline;
   final String details;
-  const FromToWidget({
-    super.key,
-    required this.headline,
-    required this.details,
-  });
+  const FromToWidget({super.key, required this.headline, required this.details});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomText(
-          text: headline,
-          style: poppinsSemiBold,
-          fontSize: getFontSizeDefault(),
-        ),
+        CustomText(text: headline, style: poppinsSemiBold, fontSize: getFontSizeDefault()),
         CustomText(text: details, color: AppColors.kLightBlackColor),
       ],
     );
