@@ -1,4 +1,5 @@
 import 'package:e_hailing_app/core/components/custom_button.dart';
+import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
@@ -10,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+
+import '../../../core/constants/color_constants.dart';
 
 class PickUpStartedWidget extends StatelessWidget {
   const PickUpStartedWidget({
@@ -56,6 +59,13 @@ class SendPaymentRequestWidget extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        CustomTextField(
+          borderColor: AppColors.kGreyColor,
+          fillColor: AppColors.kWhiteColor,
+          borderRadius: 24.r,
+
+          title: AppStaticStrings.tollFee,
         ),
         CustomButton(onTap: () {
 Get.toNamed(PaymentPage.routeName,arguments: driver);

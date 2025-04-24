@@ -15,17 +15,17 @@ class ProfileCardItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24.r),
-        color: AppColors.kWhiteColor,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.kExtraLightGreyTextColor.withValues(alpha: .3),
-            blurRadius: 6.r,
-          ),
-        ],
-      ),
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(24.r),
+      color: AppColors.kWhiteColor,
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.kExtraLightGreyTextColor.withValues(alpha: .3),
+          blurRadius: 6.r,
+        ),
+      ],
+    ),
       child: Padding(
         padding: padding12,
         child: Row(

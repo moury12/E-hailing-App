@@ -208,88 +208,97 @@ class HomeInitialContentWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       // spacing: 6.h,
       children: [
-        GestureDetector(
-          onTap: () {
-            debugPrint(HomeController.to.wantToGo.value.toString());
-            HomeController.to.wantToGo.value = true;
-          },
-          child: SearchFieldButtonWidget(),
-        ),
-        RowMoreButtonWidget(
-          title: AppStaticStrings.recentTip,
-          onPressed: () {},
-        ),
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            Row(
-              spacing: 6.w,
-              children: [
-                Expanded(
-                  child: CustomWhiteContainerWithBorder(
-                    text: 'Building 8...',
-                    img: pickLocationIcon,
-                  ),
-                ),
+        // GestureDetector(
+        //   onTap: () {
+        //     debugPrint(HomeController.to.wantToGo.value.toString());
+        //     HomeController.to.wantToGo.value = true;
+        //   },
+        //   child: SearchFieldButtonWidget(),
+        // ),
+        // RowMoreButtonWidget(
+        //   title: AppStaticStrings.recentTip,
+        //   onPressed: () {},
+        // ),
+        // Stack(
+        //   alignment: Alignment.center,
+        //   children: [
+        //     Row(
+        //       spacing: 6.w,
+        //       children: [
+        //         Expanded(
+        //           child: CustomWhiteContainerWithBorder(
+        //             text: 'Building 8...',
+        //             img: pickLocationIcon,
+        //           ),
+        //         ),
+        //
+        //         Expanded(
+        //           child: CustomWhiteContainerWithBorder(
+        //             text: 'Building 8...',
+        //             img: dropLocationIcon,
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //     SvgPicture.asset(exchangeIcon),
+        //   ],
+        // ),
+        // RowMoreButtonWidget(
+        //   onPressed: () {
+        //     Get.toNamed(SavedLocationPage.routeName);
+        //   },
+        //   title: AppStaticStrings.savedLocation,
+        // ),
+        // SingleChildScrollView(
+        //   scrollDirection: Axis.horizontal,
+        //   child: Row(
+        //     spacing: 6.w,
+        //     children: [
+        //       ...List.generate(
+        //         3,
+        //         (index) => SizedBox(
+        //           width: ScreenUtil().screenWidth / 3 - 24,
+        //           child: CustomWhiteContainerWithBorder(
+        //             text: AppStaticStrings.home,
+        //             img: homeLocationIcon,
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        //
+        // CustomText(text: AppStaticStrings.service),
+        // space8H,
 
-                Expanded(
-                  child: CustomWhiteContainerWithBorder(
-                    text: 'Building 8...',
-                    img: dropLocationIcon,
-                  ),
-                ),
-              ],
-            ),
-            SvgPicture.asset(exchangeIcon),
-          ],
-        ),
-        RowMoreButtonWidget(
-          onPressed: () {
-            Get.toNamed(SavedLocationPage.routeName);
-          },
-          title: AppStaticStrings.savedLocation,
-        ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            spacing: 6.w,
+            spacing: 12.w,
             children: [
-              ...List.generate(
-                3,
-                (index) => SizedBox(
-                  width: ScreenUtil().screenWidth / 3 - 24,
-                  child: CustomWhiteContainerWithBorder(
-                    text: AppStaticStrings.home,
-                    img: homeLocationIcon,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        space8H,
-        CustomText(text: AppStaticStrings.service),
-        space8H,
-
-        Row(
-          spacing: 12.w,
-          children: [
-            Expanded(
-              child: ServiceWidget(
-                title: AppStaticStrings.ride,
+              ServiceWidget(
+                title: AppStaticStrings.generalRide,
                 img: purpleCarImage,
+                onTap: () {
+                  HomeController.to.wantToGo.value = true;
+
+                },
               ),
-            ),
-            Expanded(
-              child: ServiceWidget(
+              ServiceWidget(
                 onTap: () {
                   HomeController.to.setPickup.value = true;
                 },
                 title: AppStaticStrings.preBookRide,
-                img: purpleCarImage2,
+                img: purpleCarImage,
+              ),ServiceWidget(
+                onTap: () {
+                  // HomeController.to.setPickup.value = true;
+                },
+                title: AppStaticStrings.womanOnlyRide,
+                img: purpleCarImage,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -312,13 +321,12 @@ class ServiceWidget extends StatelessWidget {
     return CustomWhiteContainerWithBorder(
       onTap: onTap,
       child: Column(
-        spacing: 6.h,
         children: [
           Image.asset(img, height: 64),
           CustomText(
             text: title,
             style: poppinsSemiBold,
-            fontSize: getFontSizeDefault(),
+            fontSize: getFontSizeSemiSmall(),
           ),
         ],
       ),

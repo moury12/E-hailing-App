@@ -1,6 +1,7 @@
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
+import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/auth_text_widgets.dart';
@@ -65,7 +66,7 @@ class SignupPage extends StatelessWidget {
           ],
         ),
         CustomButton(onTap: () {
-          Get.toNamed(VerifyIdentityPage.routeName);
+          Get.toNamed(VerifyEmailPage.routeName);
         }, title: AppStaticStrings.createAccount),
         space12H,
         SocialMediaAuthWidget(),
