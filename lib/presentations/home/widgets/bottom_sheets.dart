@@ -206,15 +206,15 @@ class HomeInitialContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      // spacing: 6.h,
+       spacing: 6.h,
       children: [
-        // GestureDetector(
-        //   onTap: () {
-        //     debugPrint(HomeController.to.wantToGo.value.toString());
-        //     HomeController.to.wantToGo.value = true;
-        //   },
-        //   child: SearchFieldButtonWidget(),
-        // ),
+        GestureDetector(
+          onTap: () {
+            debugPrint(HomeController.to.wantToGo.value.toString());
+            HomeController.to.wantToGo.value = true;
+          },
+          child: SearchFieldButtonWidget(),
+        ),
         // RowMoreButtonWidget(
         //   title: AppStaticStrings.recentTip,
         //   onPressed: () {},
@@ -268,7 +268,7 @@ class HomeInitialContentWidget extends StatelessWidget {
         //   ),
         // ),
         //
-        // CustomText(text: AppStaticStrings.service),
+        CustomText(text: AppStaticStrings.service),
         // space8H,
 
         SingleChildScrollView(
@@ -322,11 +322,11 @@ class ServiceWidget extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          Image.asset(img, height: 64),
+          Image.asset(img, height: 40.sp),
           CustomText(
             text: title,
             style: poppinsSemiBold,
-            fontSize: getFontSizeSemiSmall(),
+            fontSize: 10.sp,
           ),
         ],
       ),

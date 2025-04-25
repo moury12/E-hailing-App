@@ -74,11 +74,11 @@ class AppRoutes {
     GetPage(
       name: RequestTripPage.routeName,
       page: () => RequestTripPage(),
-      // binding: AuthBinding(),
+       binding: TripBinding(),
     ),GetPage(
       name: TripDetailsPage.routeName,
       page: () => TripDetailsPage(),
-      // binding: AuthBinding(),
+      binding: TripBinding(),
     ),GetPage(
       name: PaymentPage.routeName,
       page: () => PaymentPage(),
