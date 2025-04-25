@@ -83,3 +83,8 @@ List<StaticModel> earningList = [
     val: 'RM 600',
   ),
 ];
+List<String> paymentMethodList =[
+  AppStaticStrings.creditDebitCards,
+  AppStaticStrings.handCash,
+  AppStaticStrings.dCoin
+];

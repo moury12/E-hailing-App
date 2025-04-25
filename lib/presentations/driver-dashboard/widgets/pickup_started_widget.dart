@@ -64,8 +64,8 @@ class SendPaymentRequestWidget extends StatelessWidget {
           borderColor: AppColors.kGreyColor,
           fillColor: AppColors.kWhiteColor,
           borderRadius: 24.r,
-
-          title: AppStaticStrings.tollFee,
+keyboardType: TextInputType.number,
+          title: "Extra charges",
         ),
         CustomButton(onTap: () {
 Get.toNamed(PaymentPage.routeName,arguments: driver);

@@ -1,15 +1,16 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
-import 'package:e_hailing_app/core/components/custom_check_box.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
+import 'package:e_hailing_app/presentations/trip/controller/trip_controller.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,9 +20,6 @@ import 'package:get/get.dart';
 import '../../../core/constants/custom_text.dart';
 import '../../../core/constants/fontsize_constant.dart';
 import '../../../core/constants/text_style_constant.dart';
-import '../../../core/helper/helper_function.dart';
-import '../../payment/widgets/coin_dialog_payment_widget.dart';
-import '../../payment/widgets/payment_card_item.dart';
 
 class RequestTripPage extends StatelessWidget {
   static const String routeName = '/request-trip';
@@ -40,37 +38,27 @@ class RequestTripPage extends StatelessWidget {
             children: [
               CarDetailsCardWidget(onTap: () {}),
               PickupDropLocationWidget(),
-              Text(
-                "Payment Method",
-                style: poppinsMedium.copyWith(
-                  color: AppColors.kTextDarkBlueColor,
-                  fontSize: getFontSizeSemiSmall(),
+              Text("Payment Method", style: poppinsMedium.copyWith(color: AppColors.kTextDarkBlueColor, fontSize: getFontSizeSemiSmall())),
+              Container(height: 30,
+                padding:EdgeInsets.symmetric(horizontal: 12.w),
+                decoration: BoxDecoration(border: Border.all(color: AppColors.kGreyColor, width: 1.sp), borderRadius: BorderRadius.circular(12.r)),
+                child: DropdownButton<String>(
+                  padding: EdgeInsets.zero,
+
+                  value: TripController.to.selectedPaymentMethod.value,
+                  icon: Icon(Icons.arrow_drop_down,color: AppColors.kPrimaryColor,),
+                  borderRadius: BorderRadius.circular(10),
+                  underline: SizedBox(), // remove underline if needed
+                  dropdownColor: Colors.white,
+                  style: poppinsMedium.copyWith(color: AppColors.kTextColor,fontSize: 11.sp),
+                  onChanged: (String? newValue) {
+                    TripController.to.selectedPaymentMethod.value = newValue!;
+                  },
+                  items:
+                      paymentMethodList.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(value: value, child: Text(value));
+                      }).toList(),
                 ),
-              ),
-              PaymentCardItem(
-                img: cardsIcon,
-                title: AppStaticStrings.creditDebitCards,
-                onTap: () {},
-              ),
-
-              PaymentCardItem(
-                img: handCashIcon,
-                title: AppStaticStrings.handCash,
-                onTap: () {
-                  showHandCashDialogs(context);
-                },
-              ),
-
-              PaymentCardItem(
-                img: coinIcon,
-                title: AppStaticStrings.dCoin,
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder:
-                        (context) => DCoinDialogPaymentWidget(),
-                  );
-                },
               ),
               CustomTextField(
                 hintText: '01/03/2025',
@@ -78,10 +66,7 @@ class RequestTripPage extends StatelessWidget {
                 fillColor: AppColors.kWhiteColor,
                 borderRadius: 24.r,
                 title: AppStaticStrings.tripDate,
-                prefixIcon: Padding(
-                  padding: padding14,
-                  child: SvgPicture.asset(calenderIcon),
-                ),
+                prefixIcon: Padding(padding: padding14, child: SvgPicture.asset(calenderIcon)),
               ),
               CustomTextField(
                 hintText: '12:35 PM',
@@ -89,17 +74,14 @@ class RequestTripPage extends StatelessWidget {
                 fillColor: AppColors.kWhiteColor,
                 borderRadius: 24.r,
                 title: AppStaticStrings.pickTime,
-                prefixIcon: Padding(
-                  padding: padding14,
-                  child: SvgPicture.asset(calenderIcon),
-                ),
-              ),CustomTextField(
+                prefixIcon: Padding(padding: padding14, child: SvgPicture.asset(calenderIcon)),
+              ),
+              CustomTextField(
                 // hintText: '12:35 PM',
                 borderColor: AppColors.kGreyColor,
                 fillColor: AppColors.kWhiteColor,
                 borderRadius: 24.r,
                 title: AppStaticStrings.promoCode,
-
               ),
               CustomTextField(
                 // hintText: '12:35 PM',
@@ -116,10 +98,7 @@ class RequestTripPage extends StatelessWidget {
                     context: context,
                     builder:
                         (context) =>
-                            AlertDialog(
-                              backgroundColor: Colors.transparent,
-                              contentPadding: EdgeInsets.zero,
-                                content: TripRequestLoadingWidget()),
+                            AlertDialog(backgroundColor: Colors.transparent, contentPadding: EdgeInsets.zero, content: TripRequestLoadingWidget()),
                   );
                   Future.delayed(Duration(seconds: 2), () {
                     Get.toNamed(TripDetailsPage.routeName);

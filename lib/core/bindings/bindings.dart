@@ -8,6 +8,7 @@ import '../../presentations/profile/controllers/account_information_controller.d
 import '../../presentations/save-location/controllers/save_location_controller.dart';
 import '../../presentations/splash/controllers/common_controller.dart';
 import '../../presentations/splash/controllers/splash_controller.dart';
+import '../../presentations/trip/controller/trip_controller.dart';
 
 class SplashBinding extends Bindings {
   @override
@@ -41,6 +42,13 @@ class AuthBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(AuthController());
+  }
+}
+
+class TripBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(TripController());
   }
 }
 
