@@ -1,11 +1,12 @@
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/presentations/driver-statics/model/StaticModel.dart';
-import 'package:e_hailing_app/presentations/navigation/model/navigation_model.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:get/get.dart';
-
+import 'package:logger/logger.dart';
+var logger = Logger(
+  printer: PrettyPrinter(),
+);
 String dummyProfileImage = 'https://picsum.photos/200/300.jpg';
 List<TripCancellationModel> tripCancellationList = [
   TripCancellationModel(
