@@ -39,6 +39,8 @@ class CommonController extends GetxController {
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=${GoogleClient.googleMapUrl}';
     final response = await http.get(Uri.parse(url));
     debugPrint(url);
+    debugPrint(response.body);
+
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
       addressSuggestion.value = data['predictions'];

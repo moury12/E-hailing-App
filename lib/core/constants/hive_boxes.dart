@@ -3,5 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 class Boxes{
   static Box getUserRole()=>Hive.box(userRole);
+  static Box getUserData()=>Hive.box(userBoxName);
+  static Box getAuthData()=>Hive.box(authBox);
 
 }

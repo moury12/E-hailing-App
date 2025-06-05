@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:connectivity_plus/connectivity_plus.dart';
-
-import '../utils/variables.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 
 class ApiService {
   // Base URL for your API
-  final String baseUrl = 'http://10.0.60.189:5005';
+  final String baseUrl = 'http://10.0.60.26:8001';
 
   // Singleton pattern for API service
   static final ApiService _instance = ApiService._internal();
@@ -39,22 +40,24 @@ class ApiService {
 
   // Check internet connectivity
   Future<bool> checkInternetConnection() async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult.contains(ConnectivityResult.none)) {
-      return false;
-    }
+    // final connectionChecker = InternetConnectionCheckerPlus.createInstance(
+    //   checkInterval: const Duration(seconds: 5),
+    // );
 
     try {
-      final response = await http
-          .get(Uri.parse('https://www.google.com'))
-          .timeout(const Duration(seconds: 5));
-      return response.statusCode == 200;
+      bool result = await InternetConnection().hasInternetAccess;
+
+      // connectionChecker.onStatusChange.listen((status) {
+      //   if (status == InternetConnectionStatus.disconnected) {
+      //   }
+      // });
+
+      return result;
     } catch (e) {
+      debugPrint('Connection check error: $e');
       return false;
     }
-  }
-
-  // Generic HTTP request method
+  }  // Generic HTTP request method
   Future<dynamic> request({
     required String endpoint,
     required String method,
@@ -63,7 +66,6 @@ class ApiService {
     bool useAuth = true,
   })
   async {
-    // Check internet connection first
     bool isConnected = await checkInternetConnection();
     if (!isConnected) {
       return {
@@ -77,7 +79,7 @@ class ApiService {
     if (queryParams != null && queryParams.isNotEmpty) {
       uri = uri.replace(queryParameters: queryParams);
     }
-
+logger.d(uri.toString());
     http.Response response;
     final headers = {
       'Content-Type': 'application/json',
@@ -123,7 +125,7 @@ class ApiService {
 if(body!=null){
   logger.d(body);
 }
-      logger.d(uri);
+
 
       // Parse response
       var responseData = json.decode(response.body);
@@ -161,7 +163,7 @@ if(body!=null){
     if (!isConnected) {
       return {
         'success': false,
-        'message': 'No internet connection',
+        'message': AppStaticStrings.noInternet,
       };
     }
 
@@ -175,7 +177,15 @@ if(body!=null){
     fields.forEach((key, value) {
       request.fields[key] = value;
     });
-
+    logger.d('Sending Multipart Request:');
+    logger.d('➡️ URL: $uri');
+    logger.d('➡️ Method: $method');
+    logger.d('➡️ Headers: ${request.headers}');
+    logger.d('➡️ Fields: ${request.fields}');
+    logger.d('➡️ Files:');
+    for (var f in request.files) {
+      print('  - Field: ${f.field}, Filename: ${f.filename}, Length: ${f.length}');
+    }
     // Function to determine MediaType based on file extension
     MediaType getMediaType(String path) {
       final extension = path.split('.').last.toLowerCase();

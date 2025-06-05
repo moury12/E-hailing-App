@@ -1,4 +1,4 @@
-import 'package:device_preview/device_preview.dart';
+ import 'package:device_preview/device_preview.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
 import 'package:flutter/foundation.dart';
