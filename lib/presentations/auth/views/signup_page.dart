@@ -1,5 +1,6 @@
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
+import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
@@ -20,9 +21,17 @@ import '../../../core/constants/image_constant.dart';
 import '../../../core/constants/text_style_constant.dart';
 import '../widgets/social_media_auth_widget.dart';
 
-class SignupPage extends StatelessWidget {
+class SignupPage extends StatefulWidget {
   static const String routeName = '/signin';
+
   const SignupPage({super.key});
+
+  @override
+  State<SignupPage> createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,20 +40,85 @@ class SignupPage extends StatelessWidget {
       children: [
         AuthTitleTextWidget(title: AppStaticStrings.createYourAccount),
         AuthSubTextWidget(text: AppStaticStrings.signUpToGetStarted),
-        CustomTextField(title: AppStaticStrings.fullName),
-        CustomTextField(title: AppStaticStrings.email),
-        CustomTextField(
-          title: AppStaticStrings.phoneNumber,
-          keyboardType: TextInputType.number,
-        ),
-        CustomTextField(
-          title: AppStaticStrings.emergencyContactNumber,
-          keyboardType: TextInputType.number,
-        ),
-        CustomTextField(title: AppStaticStrings.password, isPassword: true),
-        CustomTextField(
-          title: AppStaticStrings.confirmPassword,
-          isPassword: true,
+        Form(
+          key: formKey,
+          child: Column(
+            spacing: 8.h,
+            children: [
+              CustomTextField(
+                textEditingController: AuthController.to.nameSignUpController,
+                title: AppStaticStrings.fullName,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppStaticStrings.fullNameRequired;
+                  }
+                  return null;
+                },
+                isRequired: true,
+              ),
+              CustomTextField(
+                title: AppStaticStrings.email,
+                isRequired: true,
+
+                textEditingController:
+                    AuthController.to.emailSignUpController.value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppStaticStrings.emailRequired.tr;
+                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return AppStaticStrings.enterValidEmail.tr;
+                  }
+                  return null;
+                },
+              ),
+              CustomTextField(
+                title: AppStaticStrings.phoneNumber,
+                keyboardType: TextInputType.number,
+                textEditingController: AuthController.to.phoneSignUpController,
+                isRequired: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppStaticStrings.phoneRequired.tr;
+                  } else if (value.length < 8) {
+                    return AppStaticStrings.phoneMustbe11.tr;
+                  }
+
+                  return null;
+                },
+              ),
+
+              CustomTextField(
+                title: AppStaticStrings.password,
+                isPassword: true,
+                textEditingController: AuthController.to.passSignUpController,
+                isRequired: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppStaticStrings.passRequired.tr;
+                  } else if (value.length < 6) {
+                    return AppStaticStrings.passMustbe6.tr;
+                  }
+                  return null;
+                },
+              ),
+              CustomTextField(
+                title: AppStaticStrings.confirmPassword,
+                isPassword: true,
+                textEditingController:
+                AuthController.to.confirmPassSignUpController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppStaticStrings.passRequired.tr;
+                  } else if (value !=
+                      AuthController.to.passSignUpController.value.text) {
+                    return AppStaticStrings.passNotMatch.tr;
+                  }
+                  return null;
+                },
+                isRequired: true,
+              ),
+            ],
+          ),
         ),
         SvgPicture.asset(orImage, width: ScreenUtil().screenWidth),
         Row(
@@ -65,9 +139,12 @@ class SignupPage extends StatelessWidget {
             ),
           ],
         ),
-        CustomButton(onTap: () {
-          Get.toNamed(VerifyEmailPage.routeName);
-        }, title: AppStaticStrings.createAccount),
+        CustomButton(
+          onTap: () {
+            Get.toNamed(VerifyEmailPage.routeName);
+          },
+          title: AppStaticStrings.createAccount,
+        ),
         space12H,
         SocialMediaAuthWidget(),
       ],

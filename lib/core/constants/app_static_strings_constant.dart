@@ -1,4 +1,15 @@
 class AppStaticStrings {
+
+  // validation
+
+  static const String emailRequired = 'Email is Required';
+  static const String passRequired = 'Password is Required';
+  static const String phoneRequired = 'Phone Number is Required';
+  static const String enterValidEmail = 'Enter a valid Email';
+  static const String passMustbe6 = 'Password must be 6 digit';
+  static const String passNotMatch = 'Password not matched';
+  static const String phoneMustbe11 = 'Enter a valid Phone Number';
+
   // Authentication
   static const String welcomeBack = 'Welcome Back!';
   static const String logIn = 'Log In';
@@ -11,6 +22,7 @@ class AppStaticStrings {
   static const String orContinueWith = 'Or continue with';
   static const String password = 'Password';
   static const String statics = 'Statics';
+  static const String noInternet = 'No internet connection';
   static const String logInToContinue = 'Log in to continue. Enter your credentials to access your account.';
   static const String confirmPassword = 'Confirm Password';
   static const String rememberMe = 'Remember me';
@@ -26,6 +38,7 @@ class AppStaticStrings {
   static const String vehicleIssue = 'Vehicle Issue';
   static const String tripRequestError = 'Trip Request Error';
   static const String submit = 'Submit';
+  static const String cancel = 'Cancel';
   static const String pickup = 'Pickup';
   static const String promoCode = 'Promo Code';
   static const String dashboard = 'Dashboard';
@@ -33,6 +46,7 @@ class AppStaticStrings {
   // Account Creation
   static const String createYourAccount = 'Create Your Account';
   static const String fullName = 'Full Name';
+  static const String fullNameRequired = 'Full Name is Required';
   static const String phoneNumber = 'Phone Number';
   static const String location = 'Location';
   static const String writeAReview = 'Write a Review';

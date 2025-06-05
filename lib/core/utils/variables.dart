@@ -7,6 +7,12 @@ import 'package:logger/logger.dart';
 var logger = Logger(
   printer: PrettyPrinter(),
 );
+const String authBox = 'auth';
+
+String userBoxName = 'user';
+String initialKey = 'initial';
+String tokenKey = 'token';
+String verifyTokenKey = 'verify token';
 String dummyProfileImage = 'https://picsum.photos/200/300.jpg';
 List<TripCancellationModel> tripCancellationList = [
   TripCancellationModel(

@@ -25,7 +25,7 @@ class OtpTextField extends StatelessWidget {
             child: Obx(() {
               return TextField(
 
-                controller: AuthController.to.controllers[index].value,
+                controller: AuthController.to.otpControllers[index].value,
                 focusNode: AuthController.to.focusNodes[index],
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
@@ -60,7 +60,7 @@ class OtpTextField extends StatelessWidget {
                 ),
                 onChanged: (value) {
                   AuthController.to.onOtpChanged(value, index);
-                  AuthController.to.controllers[index].refresh();
+                  AuthController.to.otpControllers[index].refresh();
                 },
               );
             }),
