@@ -7,11 +7,21 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/utils/google_map_api_key.dart';
-
-// import '../../../core/utils/google_map_api_key.dart';
+import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
+import 'package:flutter/foundation.dart';
+import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
+import 'package:e_hailing_app/core/api-client/api_service.dart';import 'package:e_hailing_app/core/helper/helper_function.dart';
 
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
+  RxBool isLoadingProfile = false.obs;
+  Rx<UserProfileModel> userModel = UserProfileModel().obs;
+  var selectedRoleOption = Boxes.getUserData().get(roleKey) != null
+      ? Boxes.getUserData().get(roleKey) == 'USER'
+      ? 0.obs
+      : 1.obs
+      : 0.obs;
   RxBool isDriver =
       (Boxes.getUserRole().get(role, defaultValue: user).toString() == driver)
           .obs;
@@ -49,7 +59,51 @@ class CommonController extends GetxController {
       isLoadingOnLocationSuggestion.value = false;
     }
   }
+  Future<void> checkUserRole()async{
+    logger.d("token - ${Boxes.getUserData().get(tokenKey)}");
+    if (Boxes.getUserData().get(tokenKey) != null &&
+        Boxes.getUserData().get(tokenKey).toString().isNotEmpty)  {
+      await getUserProfileRequest();
+      Boxes.getUserRole().put(role, userModel.value.role!.toLowerCase());
+isDriver.value =
+          userModel.value.role!.toLowerCase() == driver;
+    }
+  }
+  ///------------------------------ get User profile method -------------------------///
 
+  Future<void> getUserProfileRequest() async {
+    try {
+      isLoadingProfile.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+      final response = await ApiService().request(
+        endpoint: getProfileEndPoint,
+        method: 'GET',
+      );
+      isLoadingProfile.value = false;
+      if (response['success'] == true) {
+        logger.d(response);
+        userModel.value = UserProfileModel.fromJson(response['data']);
+
+        // if (userModel.value.i != null && userModel.value.i!.isNotEmpty) {
+        //    preloadImagesFromUrls([userModel.value.img.toString()]);
+        // }
+
+      } else {
+        logger.e(response);
+        if(kDebugMode){
+          showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed,
+          );
+        }
+      }
+    } catch (e) {
+      logger.e(e.toString());
+      isLoadingProfile.value = false;
+    }
+  }
   Future<void> getLatLngFromPlace(
     String placeId, {
     required RxString lat,

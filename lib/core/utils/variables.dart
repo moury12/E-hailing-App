@@ -8,7 +8,8 @@ var logger = Logger(
   printer: PrettyPrinter(),
 );
 const String authBox = 'auth';
-
+const String verifyEmail = 'verifyEmail';
+String roleKey ='role';
 String userBoxName = 'user';
 String initialKey = 'initial';
 String tokenKey = 'token';
