@@ -124,6 +124,7 @@ logger.d(uri.toString());
       }
 if(body!=null){
   logger.d(body);
+  logger.d(uri.toString());
 }
 
 

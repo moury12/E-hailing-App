@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../navigation/controllers/navigation_controller.dart';
 
 class GoogleMapWidget extends StatelessWidget {
+
   const GoogleMapWidget({super.key});
 
   @override
@@ -25,7 +26,7 @@ class GoogleMapWidget extends StatelessWidget {
           Marker(
             markerId: const MarkerId("selected_location"),
             position: NavigationController.to.marketPosition.value,
-            draggable: true,
+            draggable: false,
             onTap: () {
               NavigationController.to.markerDraging.value = true;
             },

@@ -9,7 +9,9 @@ import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
+import 'package:e_hailing_app/presentations/auth/views/otp_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -70,22 +72,27 @@ class AuthController extends GetxController {
         body: {
           "name": nameSignUpController.text,
           "email": emailSignUpController.value.text,
-          "phone": phoneSignUpController.value.text,
+          "phoneNumber": phoneSignUpController.text,
           "password": passSignUpController.text,
-          "confirm_password": confirmPassSignUpController.text,
+          "confirmPassword": confirmPassSignUpController.text,
+          "provider": "local", //local //google //apple
+          "role": "USER"
         },
         useAuth: false,
       );
 
       // Clear loading state
       loadingProcess.value = AuthProcess.none;
-
+      logger.d(response);
       if (response['success'] == true) {
-        logger.d(response);
+
         showCustomSnackbar(title: 'Success', message: response['message']);
-        // Get.toNamed(VerifyOtpPage.routeName, arguments: verifyEmail);
+        Get.toNamed(OtpPage.routeName, arguments: verifyEmail);
+      }else if(response['message'] == "Already have an account. Please activate"){
+        Get.toNamed(OtpPage.routeName, arguments: verifyEmail);
+
       } else {
-        logger.e(response);
+
 
         showCustomSnackbar(
           title: 'Failed',
@@ -103,19 +110,19 @@ class AuthController extends GetxController {
   ///------------------------------ verify email method -------------------------///
   Future<void> verifyEmailRequest({
     required String email,
-    required bool isAccVerify,
+   required bool isAccVerify,
   })
   async {
     try {
       loadingProcess.value = AuthProcess.activateAccount;
 
       final response = await ApiService().request(
-        endpoint: verifyOtpEndPoint,
+        endpoint: activeAccEndPoint,
         useAuth: false,
         method: 'POST',
         body: {
           "email": email,
-          "code": otpControllers.map((e) => e.value.text).join(),
+          "activationCode": otpControllers.map((e) => e.value.text).join(),
         },
       );
 
@@ -123,17 +130,22 @@ class AuthController extends GetxController {
 
       if (response['success'] == true) {
         logger.d(response);
-        Boxes.getUserData().put(verifyTokenKey, response['data']['token']);
-        logger.d(
-          Boxes.getUserData().put(verifyTokenKey, response['data']['token']),
-        );
+        // Boxes.getUserData().put(verifyTokenKey, response['data']['token']);
+        // logger.d(
+        //   Boxes.getUserData().put(verifyTokenKey, response['data']['token']),
+        // );
         showCustomSnackbar(title: 'Success', message: response['message']);
 
-        if (isAccVerify) {
+
+       if(isAccVerify) {
           Get.offAllNamed(LoginPage.routeName);
-        } else {
-          // Get.toNamed(SetNewPasswordPage.routeName);
+          nameSignUpController.clear();
+          passSignUpController.clear();
+          confirmPassSignUpController.clear();
+          emailSignUpController.value.clear();
+          phoneSignUpController.clear();
         }
+
       } else {
         logger.e(response);
 
@@ -178,9 +190,10 @@ class AuthController extends GetxController {
           );
         }
         showCustomSnackbar(title: 'Success', message: response['message']);
-        Boxes.getUserData().put(tokenKey, response['token']);
+        Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
         // NavigationController.to.isLoggedIn;
         ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+        await  CommonController.to.checkUserRole();
         Get.offAllNamed(NavigationPage.routeName);
       } else {
         logger.e(response);
@@ -282,31 +295,31 @@ class AuthController extends GetxController {
     confirmPassSignUpController.clear();
   }
 
-  @override
-  void onClose() {
-    emailSignUpController.value.dispose();
-    nameSignUpController.dispose();
-    passSignUpController.dispose();
-    confirmPassSignUpController.dispose();
-    passNewController.dispose();
-    confirmPassNewController.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   emailSignUpController.value.dispose();
+  //   nameSignUpController.dispose();
+  //   passSignUpController.dispose();
+  //   confirmPassSignUpController.dispose();
+  //   passNewController.dispose();
+  //   confirmPassNewController.dispose();
+  //   super.onClose();
+  // }
 
   reinitializeSignUpControllers() {
     if (kDebugMode) {
-      emailSignUpController.value.text = 'vaxag42656@bamsrad.com';
-      nameSignUpController.text = 'vaxag42656';
+      emailSignUpController.value.text = 'cameg29044@lewou.com';
+      nameSignUpController.text = 'cameg29044';
       phoneSignUpController.text = '01566026603';
-      passSignUpController.text = '12345aA*';
-      confirmPassSignUpController.text = '12345aA*';
-      // emailLoginController.text = 'vaxag42656@bamsrad.com';
-      // passLoginController.text = '12345aA*';
+      passSignUpController.text = '123456';
+      confirmPassSignUpController.text = '123456';
+      emailLoginController.text = 'cameg29044@lewou.com';
+      passLoginController.text = '123456';
 
       emailForgetController.value.text =
       'calaga8422@bocapies.com' /*'pihoner651@eligou.com'*/;
-      passNewController.text = '12345aA*';
-      confirmPassNewController.text = '12345aA*';
+      passNewController.text = '123456';
+      confirmPassNewController.text = '123456';
     }
   }
 

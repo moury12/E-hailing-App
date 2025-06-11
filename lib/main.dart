@@ -14,6 +14,9 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox(userRole);
+  await Hive.openBox(userBoxName);
+  await Hive.openBox(authBox);
+
   await ScreenUtil.ensureScreenSize();
   runApp(DevicePreview(
       enabled: !kReleaseMode,

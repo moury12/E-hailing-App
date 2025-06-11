@@ -1,10 +1,11 @@
-String signupEndPoint ='/auth/register';
-String loginEndPoint ='/auth/login';
-String getOtpEndPoint ='/auth/activation-code-resend';
-String activeAccEndPoint ='/auth/activate-account';
-String forgetPassEndPoint ='/auth/forgot-password';
-String verifyOtpEndPoint ='/auth/forget-pass-otp-verify';
-String resetPasswordEndPoint ='/auth/reset-password';
-String socialLoginEndPoint ='/auth/social-login';
+String signupEndPoint ='auth/register';
+String loginEndPoint ='auth/login';
+String getOtpEndPoint ='auth/activation-code-resend';
+String activeAccEndPoint ='auth/activate-account';
+String forgetPassEndPoint ='auth/forgot-password';
+String verifyOtpEndPoint ='auth/forget-pass-otp-verify';
+String resetPasswordEndPoint ='auth/reset-password';
+String socialLoginEndPoint ='auth/social-login';
+String getProfileEndPoint ='user/profile';
 
 

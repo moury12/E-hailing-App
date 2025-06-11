@@ -8,6 +8,8 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/auth/views/signup_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
@@ -24,18 +26,54 @@ import '../widgets/social_media_auth_widget.dart';
 
 class LoginPage extends StatelessWidget {
   static const String routeName = '/login';
-  const LoginPage({super.key});
+
+   LoginPage({super.key});
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return AuthScaffoldStructureWidget(
-       space: 6.h,
+      space: 6.h,
       children: [
         AuthTitleTextWidget(title: AppStaticStrings.welcomeBack),
         AuthSubTextWidget(text: AppStaticStrings.logInToContinue),
         space12H,
-        CustomTextField(title: AppStaticStrings.email),
-        CustomTextField(title: AppStaticStrings.password, isPassword: true),
+        Form(
+          key: formKey,
+          child: Column(
+            spacing: 6.h,
+            children: [
+              CustomTextField(
+                title: AppStaticStrings.email,
+                isRequired: true,
+
+                textEditingController: AuthController.to.emailLoginController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppStaticStrings.emailRequired.tr;
+                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return AppStaticStrings.enterValidEmail.tr;
+                  }
+                  return null;
+                },
+              ),
+              CustomTextField(
+                title: AppStaticStrings.password,
+                isPassword: true,
+                textEditingController: AuthController.to.passLoginController,
+                isRequired: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppStaticStrings.passRequired.tr;
+                  } else if (value.length < 6) {
+                    return AppStaticStrings.passMustbe6.tr;
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
         Row(
           children: [
             Expanded(
@@ -54,9 +92,12 @@ class LoginPage extends StatelessWidget {
               ),
             ),
 
-            CustomTextButton(title: AppStaticStrings.forgotPassword,onPressed: () {
-              Get.toNamed(VerifyEmailPage.routeName);
-            },),
+            CustomTextButton(
+              title: AppStaticStrings.forgotPassword,
+              onPressed: () {
+                Get.toNamed(VerifyEmailPage.routeName);
+              },
+            ),
           ],
         ),
         SvgPicture.asset(orImage, width: ScreenUtil().screenWidth),
@@ -78,9 +119,18 @@ class LoginPage extends StatelessWidget {
             ),
           ],
         ),
-        CustomButton(onTap: () {
-          Get.offAllNamed(NavigationPage.routeName);
-        }, title: AppStaticStrings.logIn),
+        Obx(() {
+          return CustomButton(
+            isLoading: AuthController.to.loadingProcess.value ==
+                AuthProcess.login,
+            onTap: () {
+              if(formKey.currentState!.validate()){
+                AuthController.to.signInRequest();
+              }
+            },
+            title: AppStaticStrings.logIn,
+          );
+        }),
         space12H,
         SocialMediaAuthWidget(),
       ],
