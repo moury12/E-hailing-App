@@ -62,17 +62,19 @@ class ResetPasswordPage extends StatelessWidget {
           ),
         ),
         space4H,
-        CustomButton(
-          isLoading:
-              AuthController.to.loadingProcess.value ==
-              AuthProcess.resetPassword,
-          onTap: () {
-            if (formKey.currentState!.validate()) {
-              AuthController.to.resetPasswordRequest();
-            }
-          },
-          title: AppStaticStrings.confirm,
-        ),
+        Obx(() {
+          return CustomButton(
+            isLoading:
+                AuthController.to.loadingProcess.value ==
+                AuthProcess.resetPassword,
+            onTap: () {
+              if (formKey.currentState!.validate()) {
+                AuthController.to.resetPasswordRequest();
+              }
+            },
+            title: AppStaticStrings.confirm,
+          );
+        }),
       ],
     );
   }
