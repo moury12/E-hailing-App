@@ -9,11 +9,9 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
-import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/auth/views/signup_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
-import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -24,11 +22,25 @@ import '../widgets/auth_scaffold_structure_widget.dart';
 import '../widgets/auth_text_widgets.dart';
 import '../widgets/social_media_auth_widget.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   static const String routeName = '/login';
 
-   LoginPage({super.key});
+  LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    Future.delayed(Duration(seconds: 3), () {
+      return AuthController.to.showCredentialsDialog();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,10 +133,10 @@ class LoginPage extends StatelessWidget {
         ),
         Obx(() {
           return CustomButton(
-            isLoading: AuthController.to.loadingProcess.value ==
-                AuthProcess.login,
+            isLoading:
+                AuthController.to.loadingProcess.value == AuthProcess.login,
             onTap: () {
-              if(formKey.currentState!.validate()){
+              if (formKey.currentState!.validate()) {
                 AuthController.to.signInRequest();
               }
             },

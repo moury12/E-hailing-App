@@ -26,9 +26,6 @@ class AuthController extends GetxController {
 
   @override
   void onInit() {
-    Future.delayed(Duration(seconds: 1), () {
-      return showCredentialsDialog();
-    });
     reinitializeSignUpControllers();
 
     super.onInit();
