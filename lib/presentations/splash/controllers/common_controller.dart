@@ -1,32 +1,37 @@
 import 'dart:convert';
+
+import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
+import 'package:e_hailing_app/core/api-client/api_service.dart';
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
+import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/utils/google_map_api_key.dart';
-import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
-import 'package:flutter/foundation.dart';
-import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
-import 'package:e_hailing_app/core/api-client/api_service.dart';import 'package:e_hailing_app/core/helper/helper_function.dart';
 
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
   RxBool isLoadingProfile = false.obs;
+
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
-  var selectedRoleOption = Boxes.getUserData().get(roleKey) != null
-      ? Boxes.getUserData().get(roleKey) == 'USER'
-      ? 0.obs
-      : 1.obs
-      : 0.obs;
+  var selectedRoleOption =
+      Boxes.getUserData().get(roleKey) != null
+          ? Boxes.getUserData().get(roleKey) == 'USER'
+              ? 0.obs
+              : 1.obs
+          : 0.obs;
   RxBool isDriver =
       (Boxes.getUserRole().get(role, defaultValue: user).toString() == driver)
           .obs;
   RxBool isLoadingOnLocationSuggestion = false.obs;
   RxList<dynamic> addressSuggestion = [].obs;
+
   @override
   void onInit() {
     debugPrint(Boxes.getUserRole().get(role, defaultValue: user).toString());
@@ -59,19 +64,20 @@ class CommonController extends GetxController {
       isLoadingOnLocationSuggestion.value = false;
     }
   }
-  Future<void> checkUserRole()async{
+
+  Future<void> checkUserRole() async {
     logger.d("token - ${Boxes.getUserData().get(tokenKey)}");
     if (Boxes.getUserData().get(tokenKey) != null &&
-        Boxes.getUserData().get(tokenKey).toString().isNotEmpty)  {
+        Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
       await getUserProfileRequest();
       Boxes.getUserRole().put(role, userModel.value.role!.toLowerCase());
-isDriver.value =
-          userModel.value.role!.toLowerCase() == driver;
+      isDriver.value = userModel.value.role!.toLowerCase() == driver;
     }
   }
+
   ///------------------------------ get User profile method -------------------------///
 
-  Future<void> getUserProfileRequest() async {
+  Future<void> getUserProfileRequest({bool needReinitilaize = false}) async {
     try {
       isLoadingProfile.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
@@ -85,13 +91,15 @@ isDriver.value =
         logger.d(response);
         userModel.value = UserProfileModel.fromJson(response['data']);
 
-        // if (userModel.value.i != null && userModel.value.i!.isNotEmpty) {
-        //    preloadImagesFromUrls([userModel.value.img.toString()]);
-        // }
-
+        if (userModel.value.img != null && userModel.value.img!.isNotEmpty) {
+          preloadImagesFromUrls([userModel.value.img.toString()]);
+        }
+        if (needReinitilaize) {
+          reinitializeProfileControllers();
+        }
       } else {
         logger.e(response);
-        if(kDebugMode){
+        if (kDebugMode) {
           showCustomSnackbar(
             title: 'Failed',
             message: response['message'],
@@ -104,6 +112,20 @@ isDriver.value =
       isLoadingProfile.value = false;
     }
   }
+
+  reinitializeProfileControllers() {
+    AccountInformationController.to.nameController.value.text =
+        userModel.value.name ?? AppStaticStrings.noDataFound;
+
+    ///=====================add dynmic email ====================///
+    AccountInformationController.to.placeController.value.text =
+        userModel.value.address ?? AppStaticStrings.noDataFound;
+
+    ///=====================add dynmic contactNumber ====================///
+    AccountInformationController.to.contactNumberController.value.text =
+        userModel.value.phoneNumber ?? AppStaticStrings.noDataFound;
+  }
+
   Future<void> getLatLngFromPlace(
     String placeId, {
     required RxString lat,

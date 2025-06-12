@@ -1,5 +1,4 @@
 class AppStaticStrings {
-
   // validation
 
   static const String emailRequired = 'Email is Required';
@@ -15,18 +14,22 @@ class AppStaticStrings {
   static const String logIn = 'Log In';
   static const String oldPassword = 'Old Password ';
   static const String signUp = 'Sign Up';
-  static const String signUpToGetStarted = 'Sign up to get started. Fill in your details to create an account.';
+  static const String signUpToGetStarted =
+      'Sign up to get started. Fill in your details to create an account.';
   static const String email = 'Email';
   static const String reTypeNewPass = 'Re-Type New Password';
-  static const String weWillSendACode = 'We\'ll send a verification code to this email to confirm your account.';
+  static const String weWillSendACode =
+      'We\'ll send a verification code to this email to confirm your account.';
   static const String orContinueWith = 'Or continue with';
   static const String password = 'Password';
   static const String statics = 'Statics';
   static const String noInternet = 'No internet connection';
-  static const String logInToContinue = 'Log in to continue. Enter your credentials to access your account.';
+  static const String logInToContinue =
+      'Log in to continue. Enter your credentials to access your account.';
   static const String confirmPassword = 'Confirm Password';
   static const String rememberMe = 'Remember me';
-  static const String createAnewPassword = 'Create a new password to secure your account.';
+  static const String createAnewPassword =
+      'Create a new password to secure your account.';
   static const String forgotPassword = 'Forgot Password?';
   static const String registerNow = 'Register Now?';
   static const String dontHaveAccount = "Don't have an account?";
@@ -43,6 +46,7 @@ class AppStaticStrings {
   static const String promoCode = 'Promo Code';
   static const String dashboard = 'Dashboard';
   static const String changePassword = 'Change Password';
+
   // Account Creation
   static const String createYourAccount = 'Create Your Account';
   static const String fullName = 'Full Name';
@@ -56,12 +60,14 @@ class AppStaticStrings {
   static const String availableCoin = ' Available Coin';
   static const String paymentWithDCoin = 'Payment with D Coin';
   static const String handCashPaymentRequest = 'Hand Cash Payment Request ';
-  static const String waitingForDriveConfirmation = 'Waiting for Driver confirmation';
+  static const String waitingForDriveConfirmation =
+      'Waiting for Driver confirmation';
   static const String enterYourReview = 'Enter your Review...';
   static const String emergencyContactNumber = 'Emergency Contact Number';
   static const String createAccount = 'Create Account';
   static const String rideEnded = "Yey! your ride ended";
   static const String arriveOnLocation = "You Arrive On Location";
+
   // Settings
   static const String accountSetting = 'Account Setting';
   static const String duduCoinWallet = 'DUDU Coin Wallet';
@@ -74,6 +80,7 @@ class AppStaticStrings {
   static const String privacyPolicy = 'Privacy Policy';
   static const String helpSupport = 'Help/Support';
   static const String logOut = 'Log Out';
+
   // Payment Details
   static const String rent = "Rent";
   static const String tollFee = "Toll fee";
@@ -87,6 +94,7 @@ class AppStaticStrings {
   // Currency
   static const String currencyRM = "RM";
   static const String destination = "Destination";
+
   // Identity Verification
   static const String verifyYourIdentity = 'Verify Your Identity';
   static const String nricPassport = 'NRIC / Passport';
@@ -96,7 +104,8 @@ class AppStaticStrings {
 
   // Email Verification
   static const String verifyYourEmail = 'Verify Your Email';
-  static const String verificationCodeSent = "We'll send a verification code to this email to confirm your account.";
+  static const String verificationCodeSent =
+      "We'll send a verification code to this email to confirm your account.";
   static const String continueButton = 'Continue';
   static const String stopLocation = 'Stop location';
   static const String evpValidityPeriod = 'EVP Validity Period';
@@ -147,6 +156,7 @@ class AppStaticStrings {
 
   // Payment
   static const String cash = 'Cash';
+  static const String noDataFound = "No data found";
   static const String nationalIdPassport = 'National ID/Passport';
   static const String drivingLicense = 'Driving License No ';
   static const String licenseType = 'License Type';
@@ -176,7 +186,7 @@ class AppStaticStrings {
   static const String placeAddress = 'Place Address';
   static const String placeName = 'Place Name';
   static const String savedPlace = 'Saved Place';
-  static const String save= 'Save';
+  static const String save = 'Save';
   static const String payWithCard = 'Pay with Card';
 
   // Ratings & Feedback
@@ -206,18 +216,20 @@ class AppStaticStrings {
   static const String pickTime = 'Pick Time';
   static const String addMoreCoin = 'Add More Coin';
   static const String additionalNote = 'Additional Note';
-  static const String loremIpsumText = 'Lorem Ipsum Dolor Sit Amet Consectetur, Commodao Mauris Vitae Non Vestibulum Armet Fusce.';
+  static const String loremIpsumText =
+      'Lorem Ipsum Dolor Sit Amet Consectetur, Commodao Mauris Vitae Non Vestibulum Armet Fusce.';
   static const String myRides = 'My Rides';
   static const String ride = 'Ride';
   static const String generalRide = 'General Ride';
   static const String trackRides = 'Track Ride';
-  static const String track= 'Track';
-  static const String transactionHistory= 'Transaction History';
+  static const String track = 'Track';
+  static const String transactionHistory = 'Transaction History';
   static const String newTripRequest = 'New trip Request';
-  static  String ongoing = 'Ongoing';
-  static  String waitingForDriverConformation = 'Waiting for Driver confirmation';
-  static  String upcoming = 'Upcoming';
-  static  String completed = 'Completed';
+  static String ongoing = 'Ongoing';
+  static String waitingForDriverConformation =
+      'Waiting for Driver confirmation';
+  static String upcoming = 'Upcoming';
+  static String completed = 'Completed';
   static const String addLocation = 'Add location';
   static const String addPlace = 'Add place';
   static const String finalCost = 'Final cost';
@@ -238,10 +250,10 @@ class AppStaticStrings {
   static const String addPaymentMethod = 'Add Payment Method';
 
   static const String termsAndConditions = 'Terms & Conditions';
+
   // Profile Section
   static const String accountInformation = 'Account Information';
   static const String earnings = 'Earnings';
-
 
   // Profile Details
   static const String general = 'General';
@@ -268,8 +280,10 @@ class AppStaticStrings {
   static const String faqs = 'FAQs';
   static const String update = ' Update';
   static const String howToBook = 'How to book an appointment?';
-  static const String successfulDelivery = 'How do I report a successful delivery?';
-  static const String updateVehicle = 'How do I update my vehicle or personal details?';
+  static const String successfulDelivery =
+      'How do I report a successful delivery?';
+  static const String updateVehicle =
+      'How do I update my vehicle or personal details?';
   static const String deliveryRoute = 'How can I report my delivery route?';
   static const String customerSupport = 'Customer Support (24/7)';
 
@@ -284,5 +298,4 @@ class AppStaticStrings {
   static const String tripCompleted = 'Trip Completed';
   static const String rateYourRide = 'Rate Your Ride';
   static const String leaveAReview = 'Leave a Review';
-
 }

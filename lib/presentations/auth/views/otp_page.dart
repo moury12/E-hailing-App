@@ -4,7 +4,6 @@ import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
-import 'package:e_hailing_app/presentations/auth/views/reset_password_page.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/auth_text_widgets.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/otp_text_field.dart';
@@ -40,6 +39,11 @@ class OtpPage extends StatelessWidget {
                 AuthController.to.verifyEmailRequest(
                   email: AuthController.to.emailSignUpController.value.text,
                   isAccVerify: true,
+                );
+              } else {
+                AuthController.to.verifyEmailRequest(
+                  email: AuthController.to.emailForgetController.value.text,
+                  isAccVerify: false,
                 );
               }
             },
