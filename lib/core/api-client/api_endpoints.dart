@@ -7,5 +7,6 @@ String verifyOtpEndPoint ='auth/forget-pass-otp-verify';
 String resetPasswordEndPoint ='auth/reset-password';
 String socialLoginEndPoint ='auth/social-login';
 String getProfileEndPoint ='user/profile';
+String editProfileEndPoint ='user/edit-profile';
 
 

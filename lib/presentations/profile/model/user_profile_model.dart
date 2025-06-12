@@ -9,40 +9,44 @@ class UserProfileModel {
   bool? isOnline;
   LocationCoordinates? locationCoordinates;
   String? userAccountStatus;
+  String? address;
   int? outstandingFee;
   String? createdAt;
   String? updatedAt;
   int? iV;
 
-  UserProfileModel(
-      {this.sId,
-        this.authId,
-        this.name,
-        this.img,
-        this.email,
-        this.role,
-        this.phoneNumber,
-        this.isOnline,
-        this.locationCoordinates,
-        this.userAccountStatus,
-        this.outstandingFee,
-        this.createdAt,
-        this.updatedAt,
-        this.iV});
+  UserProfileModel({
+    this.sId,
+    this.authId,
+    this.name,
+    this.img,
+    this.email,
+    this.address,
+    this.role,
+    this.phoneNumber,
+    this.isOnline,
+    this.locationCoordinates,
+    this.userAccountStatus,
+    this.outstandingFee,
+    this.createdAt,
+    this.updatedAt,
+    this.iV,
+  });
 
   UserProfileModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
-    authId =
-    json['authId'] != null ? AuthId.fromJson(json['authId']) : null;
+    authId = json['authId'] != null ? AuthId.fromJson(json['authId']) : null;
     name = json['name'];
     img = json["profile_image"];
     email = json['email'];
     role = json['role'];
+    address = json['address'];
     phoneNumber = json['phoneNumber'];
     isOnline = json['isOnline'];
-    locationCoordinates = json['locationCoordinates'] != null
-        ? LocationCoordinates.fromJson(json['locationCoordinates'])
-        : null;
+    locationCoordinates =
+        json['locationCoordinates'] != null
+            ? LocationCoordinates.fromJson(json['locationCoordinates'])
+            : null;
     userAccountStatus = json['userAccountStatus'];
     outstandingFee = json['outstandingFee'];
     createdAt = json['createdAt'];
@@ -59,6 +63,7 @@ class UserProfileModel {
     data['name'] = name;
     data["profile_image"] = img;
     data['email'] = email;
+    data['address'] = address;
     data['role'] = role;
     data['phoneNumber'] = phoneNumber;
     data['isOnline'] = isOnline;
@@ -86,17 +91,18 @@ class AuthId {
   String? updatedAt;
   int? iV;
 
-  AuthId(
-      {this.sId,
-        this.name,
-        this.email,
-        this.provider,
-        this.role,
-        this.isBlocked,
-        this.isActive,
-        this.createdAt,
-        this.updatedAt,
-        this.iV});
+  AuthId({
+    this.sId,
+    this.name,
+    this.email,
+    this.provider,
+    this.role,
+    this.isBlocked,
+    this.isActive,
+    this.createdAt,
+    this.updatedAt,
+    this.iV,
+  });
 
   AuthId.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];

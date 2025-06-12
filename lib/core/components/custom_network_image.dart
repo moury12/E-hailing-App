@@ -30,7 +30,8 @@ class CustomNetworkImage extends StatelessWidget {
     this.width,
     this.border,
     this.radius,
-    this.boxShape = BoxShape.rectangle, this.borderRadius,
+    this.boxShape = BoxShape.rectangle,
+    this.borderRadius,
   });
 
   @override
@@ -43,7 +44,10 @@ class CustomNetworkImage extends StatelessWidget {
           width: width,
           decoration: BoxDecoration(
             border: border,
-            borderRadius:boxShape==BoxShape.circle? null:borderRadius??BorderRadius.circular(radius??8.r),
+            borderRadius:
+                boxShape == BoxShape.circle
+                    ? null
+                    : borderRadius ?? BorderRadius.circular(radius ?? 8.r),
             shape: boxShape,
             color: backgroundColor,
             image: DecorationImage(
@@ -56,13 +60,16 @@ class CustomNetworkImage extends StatelessWidget {
         );
       },
       placeholder: (context, url) {
-        return Center(
+        return SizedBox(
+          height: height,
+          width: width,
+          child: Center(
             child: Padding(
               padding: padding8,
-              child: DefaultProgressIndicator(
-                        color: AppColors.kPrimaryColor,
-                      ),
-            ));
+              child: DefaultProgressIndicator(color: AppColors.kPrimaryColor),
+            ),
+          ),
+        );
       },
       errorWidget: (context, url, error) {
         return Container(
@@ -70,9 +77,9 @@ class CustomNetworkImage extends StatelessWidget {
           width: width,
           decoration: BoxDecoration(
             border: border,
-            borderRadius: BorderRadius.circular(radius??8.r),
+            borderRadius: BorderRadius.circular(radius ?? 8.r),
             shape: boxShape,
-            color: Colors.grey.withValues(alpha:0.6),
+            color: Colors.grey.withValues(alpha: 0.6),
             image: DecorationImage(
               image: AssetImage(imageErrorUrl ?? ''),
               fit: BoxFit.cover,

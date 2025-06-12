@@ -1,5 +1,6 @@
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
+import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
@@ -17,6 +18,7 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
   final Function()? onBack;
   final bool? isBack;
   final bool? isDriver;
+
   const CustomAppBarForHomeWidget({
     super.key,
     this.actionIcon,
@@ -51,9 +53,12 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
                 : SvgPicture.asset(primaryLogoIcon),
             Spacer(),
             isDriver == true ? CustomToggleSwitch() : SizedBox.shrink(),
-            IconButton(onPressed: () {
-              callOnPhone(phoneNumber: '999');
-            }, icon: SvgPicture.asset(sosIcon)),
+            IconButton(
+              onPressed: () {
+                callOnPhone(phoneNumber: '999');
+              },
+              icon: SvgPicture.asset(sosIcon),
+            ),
             PrimaryCircleButtonWidget(actionIcon: actionIcon, onTap: onTap),
           ],
         ),
@@ -65,12 +70,13 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? action;
+
   const CustomAppBar({super.key, required this.title, this.action});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: CustomText(text: title),
+      title: CustomText(text: title, fontSize: getFontSizeDefault()),
       centerTitle: true,
       actions: action ?? [],
     );
@@ -89,6 +95,7 @@ class PrimaryCircleButtonWidget extends StatelessWidget {
 
   final String? actionIcon;
   final Function()? onTap;
+
   @override
   Widget build(BuildContext context) {
     return Container(

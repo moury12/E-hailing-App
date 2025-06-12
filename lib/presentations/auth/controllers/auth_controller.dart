@@ -10,6 +10,7 @@ import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/otp_page.dart';
+import 'package:e_hailing_app/presentations/auth/views/reset_password_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/foundation.dart';
@@ -22,6 +23,7 @@ import '../../../core/constants/custom_text.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
+
   @override
   void onInit() {
     Future.delayed(Duration(seconds: 1), () {
@@ -29,17 +31,16 @@ class AuthController extends GetxController {
     });
     reinitializeSignUpControllers();
 
-
     super.onInit();
   }
 
   RxBool isRememberMe = false.obs;
 
-
-
   var tabContent = <Widget>[].obs;
   Rx<AuthProcess> loadingProcess = AuthProcess.none.obs;
+
   bool isLoading(AuthProcess process) => loadingProcess.value == process;
+
   bool get isAnyLoading => loadingProcess.value != AuthProcess.none;
 
   ///=============================controller for signUp ========================///
@@ -76,7 +77,7 @@ class AuthController extends GetxController {
           "password": passSignUpController.text,
           "confirmPassword": confirmPassSignUpController.text,
           "provider": "local", //local //google //apple
-          "role": "USER"
+          "role": "USER",
         },
         useAuth: false,
       );
@@ -85,21 +86,17 @@ class AuthController extends GetxController {
       loadingProcess.value = AuthProcess.none;
       logger.d(response);
       if (response['success'] == true) {
-
         showCustomSnackbar(title: 'Success', message: response['message']);
         Get.toNamed(OtpPage.routeName, arguments: verifyEmail);
-      }else if(response['message'] == "Already have an account. Please activate"){
+      } else if (response['message'] ==
+          "Already have an account. Please activate") {
         Get.toNamed(OtpPage.routeName, arguments: verifyEmail);
-
       } else {
-
-
         showCustomSnackbar(
           title: 'Failed',
           message: response['message'],
           type: SnackBarType.failed,
         );
-
       }
     } catch (e) {
       loadingProcess.value = AuthProcess.none;
@@ -110,19 +107,18 @@ class AuthController extends GetxController {
   ///------------------------------ verify email method -------------------------///
   Future<void> verifyEmailRequest({
     required String email,
-   required bool isAccVerify,
-  })
-  async {
+    required bool isAccVerify,
+  }) async {
     try {
       loadingProcess.value = AuthProcess.activateAccount;
-
+      String codeKeyName = isAccVerify ? "activationCode" : "code";
       final response = await ApiService().request(
-        endpoint: activeAccEndPoint,
+        endpoint: isAccVerify ? activeAccEndPoint : verifyOtpEndPoint,
         useAuth: false,
         method: 'POST',
         body: {
           "email": email,
-          "activationCode": otpControllers.map((e) => e.value.text).join(),
+          codeKeyName: otpControllers.map((e) => e.value.text).join(),
         },
       );
 
@@ -136,16 +132,17 @@ class AuthController extends GetxController {
         // );
         showCustomSnackbar(title: 'Success', message: response['message']);
 
-
-       if(isAccVerify) {
+        if (isAccVerify) {
           Get.offAllNamed(LoginPage.routeName);
           nameSignUpController.clear();
           passSignUpController.clear();
           confirmPassSignUpController.clear();
           emailSignUpController.value.clear();
           phoneSignUpController.clear();
+        } else {
+          otpControllers.clear();
+          Get.offAllNamed(ResetPasswordPage.routeName);
         }
-
       } else {
         logger.e(response);
 
@@ -154,7 +151,6 @@ class AuthController extends GetxController {
           message: response['message'],
           type: SnackBarType.failed,
         );
-
       }
     } catch (e) {
       loadingProcess.value = AuthProcess.none;
@@ -163,8 +159,7 @@ class AuthController extends GetxController {
   }
 
   ///------------------------------ sign in method -------------------------///
-  Future<void> signInRequest() async
-  {
+  Future<void> signInRequest() async {
     try {
       loadingProcess.value = AuthProcess.login;
 
@@ -193,7 +188,7 @@ class AuthController extends GetxController {
         Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
         // NavigationController.to.isLoggedIn;
         ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
-        await  CommonController.to.checkUserRole();
+        await CommonController.to.checkUserRole();
         Get.offAllNamed(NavigationPage.routeName);
       } else {
         logger.e(response);
@@ -203,7 +198,6 @@ class AuthController extends GetxController {
           message: response['message'],
           type: SnackBarType.failed,
         );
-
       }
     } catch (e) {
       loadingProcess.value = AuthProcess.none;
@@ -227,7 +221,7 @@ class AuthController extends GetxController {
       if (response['success'] == true) {
         logger.d(response);
         showCustomSnackbar(title: 'Success', message: response['message']);
-        // Get.toNamed(VerifyOtpPage.routeName);
+        Get.toNamed(OtpPage.routeName, arguments: "forget");
       } else {
         logger.e(response);
 
@@ -236,7 +230,6 @@ class AuthController extends GetxController {
           message: response['message'],
           type: SnackBarType.failed,
         );
-
       }
     } catch (e) {
       loadingProcess.value = AuthProcess.none;
@@ -257,8 +250,9 @@ class AuthController extends GetxController {
         endpoint: resetPasswordEndPoint,
         method: 'POST',
         body: {
-          "confirm_password": confirmPassNewController.text,
-          "password": passNewController.text,
+          "email": emailForgetController.value.text,
+          "confirmPassword": confirmPassNewController.text,
+          "newPassword": passNewController.text,
         },
       );
 
@@ -277,7 +271,6 @@ class AuthController extends GetxController {
           message: response['message'],
           type: SnackBarType.failed,
         );
-
       }
     } catch (e) {
       loadingProcess.value = AuthProcess.none;
@@ -285,26 +278,12 @@ class AuthController extends GetxController {
     }
   }
 
-
-
-
   clearSignUpController() {
     emailSignUpController.value.clear();
     nameSignUpController.clear();
     passSignUpController.clear();
     confirmPassSignUpController.clear();
   }
-
-  // @override
-  // void onClose() {
-  //   emailSignUpController.value.dispose();
-  //   nameSignUpController.dispose();
-  //   passSignUpController.dispose();
-  //   confirmPassSignUpController.dispose();
-  //   passNewController.dispose();
-  //   confirmPassNewController.dispose();
-  //   super.onClose();
-  // }
 
   reinitializeSignUpControllers() {
     if (kDebugMode) {
@@ -317,20 +296,19 @@ class AuthController extends GetxController {
       passLoginController.text = '123456';
 
       emailForgetController.value.text =
-      'calaga8422@bocapies.com' /*'pihoner651@eligou.com'*/;
+          'tanzibamouri00@gmail.com' /*'pihoner651@eligou.com'*/;
       passNewController.text = '123456';
       confirmPassNewController.text = '123456';
     }
   }
 
-
-
   ///------------------------------- OTP section ------------------------------///
   final List<Rx<TextEditingController>> otpControllers = List.generate(
     6,
-        (index) => TextEditingController().obs,
+    (index) => TextEditingController().obs,
   );
   final List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
+
   void onOtpChanged(String value, int index) {
     if (value.isNotEmpty) {
       if (index < 5) {
@@ -361,18 +339,17 @@ class AuthController extends GetxController {
     }
     focusNodes[0].requestFocus();
   }
+
   Future<void> showCredentialsDialog() async {
     final credentials = await getCredentials();
 
     if (credentials.isNotEmpty && credentials['rememberMe'] == true) {
       Get.dialog(
         AlertDialog(
-
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               CustomText(
                 textAlign: TextAlign.center,
                 text: 'Email: ${credentials['email']}',
@@ -381,7 +358,8 @@ class AuthController extends GetxController {
               ),
               CustomText(
                 textAlign: TextAlign.center,
-                text:'Password: ${'•' * (credentials['password']?.length ?? 0)}',
+                text:
+                    'Password: ${'•' * (credentials['password']?.length ?? 0)}',
                 color: AppColors.kExtraLightTextColor,
                 fontSize: getFontSizeSemiSmall(),
               ),
@@ -398,27 +376,25 @@ class AuthController extends GetxController {
                     ),
                   ),
                   Expanded(
-                      child:  CustomButton(
-                        onTap: () {
-                          AuthController.to.emailLoginController.text=credentials['email'];
-                          AuthController.to.passLoginController.text=credentials['password'];
+                    child: CustomButton(
+                      onTap: () {
+                        AuthController.to.emailLoginController.text =
+                            credentials['email'];
+                        AuthController.to.passLoginController.text =
+                            credentials['password'];
 
-                          Get.back();
-                        },
-                        title: AppStaticStrings.confirm.tr,
-                      )
+                        Get.back();
+                      },
+                      title: AppStaticStrings.confirm.tr,
+                    ),
                   ),
                 ],
               ),
-
             ],
           ),
-
         ),
         barrierDismissible: true,
       );
     }
   }
-
 }
-
