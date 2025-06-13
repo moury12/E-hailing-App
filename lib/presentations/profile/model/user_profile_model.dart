@@ -2,56 +2,80 @@ class UserProfileModel {
   String? sId;
   AuthId? authId;
   String? name;
-  String? img;
   String? email;
   String? role;
+  String? img;
   String? phoneNumber;
+  String? address;
   bool? isOnline;
   LocationCoordinates? locationCoordinates;
+  String? idOrPassportNo;
+  String? drivingLicenseNo;
+  String? licenseType;
+  String? licenseExpiry;
+  String? idOrPassportImage;
+  String? psvLicenseImage;
+  String? drivingLicenseImage;
   String? userAccountStatus;
-  String? address;
-  int? outstandingFee;
   String? createdAt;
   String? updatedAt;
   int? iV;
+  int? outstandingFee;
+  bool? isAvailable;
 
   UserProfileModel({
     this.sId,
     this.authId,
     this.name,
-    this.img,
     this.email,
-    this.address,
     this.role,
+    this.img,
     this.phoneNumber,
+    this.address,
     this.isOnline,
     this.locationCoordinates,
+    this.idOrPassportNo,
+    this.drivingLicenseNo,
+    this.licenseType,
+    this.licenseExpiry,
+    this.idOrPassportImage,
+    this.psvLicenseImage,
+    this.drivingLicenseImage,
     this.userAccountStatus,
-    this.outstandingFee,
     this.createdAt,
     this.updatedAt,
     this.iV,
+    this.outstandingFee,
+    this.isAvailable,
   });
 
   UserProfileModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     authId = json['authId'] != null ? AuthId.fromJson(json['authId']) : null;
     name = json['name'];
-    img = json["profile_image"];
     email = json['email'];
     role = json['role'];
-    address = json['address'];
+    img = json['profile_image'];
     phoneNumber = json['phoneNumber'];
+    address = json['address'];
     isOnline = json['isOnline'];
     locationCoordinates =
         json['locationCoordinates'] != null
             ? LocationCoordinates.fromJson(json['locationCoordinates'])
             : null;
+    idOrPassportNo = json['idOrPassportNo'];
+    drivingLicenseNo = json['drivingLicenseNo'];
+    licenseType = json['licenseType'];
+    licenseExpiry = json['licenseExpiry'];
+    idOrPassportImage = json['id_or_passport_image'];
+    psvLicenseImage = json['psv_license_image'];
+    drivingLicenseImage = json['driving_license_image'];
     userAccountStatus = json['userAccountStatus'];
-    outstandingFee = json['outstandingFee'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
+    outstandingFee = json['outstandingFee'];
+    isAvailable = json['isAvailable'];
   }
 
   Map<String, dynamic> toJson() {
@@ -61,20 +85,28 @@ class UserProfileModel {
       data['authId'] = authId!.toJson();
     }
     data['name'] = name;
-    data["profile_image"] = img;
     data['email'] = email;
-    data['address'] = address;
     data['role'] = role;
+    data['profile_image'] = img;
     data['phoneNumber'] = phoneNumber;
+    data['address'] = address;
     data['isOnline'] = isOnline;
     if (locationCoordinates != null) {
       data['locationCoordinates'] = locationCoordinates!.toJson();
     }
+    data['idOrPassportNo'] = idOrPassportNo;
+    data['drivingLicenseNo'] = drivingLicenseNo;
+    data['licenseType'] = licenseType;
+    data['licenseExpiry'] = licenseExpiry;
+    data['id_or_passport_image'] = idOrPassportImage;
+    data['psv_license_image'] = psvLicenseImage;
+    data['driving_license_image'] = drivingLicenseImage;
     data['userAccountStatus'] = userAccountStatus;
-    data['outstandingFee'] = outstandingFee;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
     data['__v'] = iV;
+    data['outstandingFee'] = outstandingFee;
+    data['isAvailable'] = isAvailable;
     return data;
   }
 }

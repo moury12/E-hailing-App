@@ -6,14 +6,13 @@ import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SocialMediaAuthWidget extends StatelessWidget {
-  const SocialMediaAuthWidget({
-    super.key,
-  });
+  const SocialMediaAuthWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +27,23 @@ class SocialMediaAuthWidget extends StatelessWidget {
           ),
         ),
         space6H,
-        Row(mainAxisAlignment: MainAxisAlignment.center,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(onPressed: () {
-              Boxes.getUserRole().put(role,driver );
-              CommonController.to.isDriver.value=true;
-            }, icon: SvgPicture.asset(googleIcon)),
-            IconButton(onPressed: () {
-              Boxes.getUserRole().put(role,user );
-              CommonController.to.isDriver.value=false;
-
-            }, icon: SvgPicture.asset(appleIcon)),
+            IconButton(
+              onPressed: () {
+                // GoogleSignIn().signIn();
+                AuthController.to.signInWithGoogle();
+              },
+              icon: SvgPicture.asset(googleIcon),
+            ),
+            IconButton(
+              onPressed: () {
+                Boxes.getUserRole().put(role, user);
+                CommonController.to.isDriver.value = false;
+              },
+              icon: SvgPicture.asset(appleIcon),
+            ),
           ],
         ),
       ],

@@ -1,9 +1,5 @@
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
-import 'package:e_hailing_app/core/components/custom_button.dart';
-import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
-import 'package:e_hailing_app/core/constants/color_constants.dart';
-import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
@@ -15,11 +11,9 @@ import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dar
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
-import '../../../core/constants/custom_space.dart';
-import '../../../core/constants/custom_text.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
@@ -57,6 +51,8 @@ class AuthController extends GetxController {
   TextEditingController passNewController = TextEditingController();
 
   TextEditingController confirmPassNewController = TextEditingController();
+  RxBool isGoogleAuthLoading = false.obs;
+  RxBool isAppleAuthLoading = false.obs;
 
   ///------------------------------ sign up method -------------------------///
   Future<void> signUpRequest() async {
@@ -282,6 +278,114 @@ class AuthController extends GetxController {
     confirmPassSignUpController.clear();
   }
 
+  Future<void> signInWithGoogle() async {
+    try {
+      isGoogleAuthLoading.value = true;
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final String name = googleUser.displayName ?? "User";
+      final String email = googleUser.email;
+      final response = await ApiService().request(
+        endpoint: signupEndPoint,
+        method: 'POST',
+        body: {
+          "name": name,
+          "email": email,
+          "password": "123456", // dummy password (you may use JWT or token)
+          "confirmPassword": "123456",
+          "provider": "google",
+          "role": "USER",
+        },
+        useAuth: false,
+      );
+      logger.d(response.toString());
+      isGoogleAuthLoading.value = false;
+
+      if (response['success'] == true) {
+        showCustomSnackbar(title: 'Success', message: response['message']);
+        Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
+        // NavigationController.to.isLoggedIn;
+        ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+        await CommonController.to.checkUserRole();
+        Get.offAllNamed(NavigationPage.routeName);
+      } else {
+        showCustomSnackbar(
+          title: 'Failed',
+          message: response['message'],
+          type: SnackBarType.failed,
+        );
+      }
+    } catch (e) {
+      isGoogleAuthLoading.value = false;
+
+      logger.e('Error: $e');
+      // Consider showing a user-friendly error message
+    }
+  }
+
+  Future<void> signInWithApple() async {
+    try {
+      isAppleAuthLoading.value = true;
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      // Extract the ID token
+      final idToken = credential.identityToken;
+      logger.d(idToken);
+      if (idToken == null) throw Exception('No ID token received');
+
+      // final response = await http.post(
+      //   Uri.parse('https://appleauth-stbfcg576q-uc.a.run.app'),
+      //   headers: {'Content-Type': 'application/json'}, // Add this header
+      //   body: jsonEncode({
+      //     // Properly encode the JSON
+      //     'data': {'idToken': idToken},
+      //   }),
+      // );
+
+      // logger.d('Backend response: ${response.body}');
+      // Map<String, dynamic> responseBody = jsonDecode(response.body);
+      // if (responseBody['result']['success'] == true) {
+      //   isAppleAuthLoading.value = false;
+      //   // Boxes.getUserData().put(
+      //   //   tokenKey,
+      //   //   responseBody['result']['data']['access_token'],
+      //   // );
+      //   // Boxes.getUserData().put(
+      //   //   refreshTokenKey,
+      //   //   responseBody['result']['data']['refresh_token'],
+      //   // );
+      //   showCustomSnackbar(
+      //     title: 'Success',
+      //     message: responseBody['result']['data']['message'],
+      //   );
+      //
+      //   logger.d(Boxes.getUserData().get(tokenKey).toString());
+      //   Get.offAllNamed(NavigationPage.routeName);
+      // }
+      // else {
+      //   isAppleAuthLoading.value = false;
+      //
+      //   showCustomSnackbar(
+      //     title: 'Failed',
+      //     message: response['message'],
+      //     type: SnackBarType.failed,
+      //   );
+      // }
+    } catch (e) {
+      isAppleAuthLoading.value = false;
+      print("error apple $e");
+      // logger.e('Error: $e');
+      // Consider showing a user-friendly error message
+    }
+  }
+
   reinitializeSignUpControllers() {
     if (kDebugMode) {
       emailSignUpController.value.text = 'cameg29044@lewou.com';
@@ -335,63 +439,5 @@ class AuthController extends GetxController {
       controller.value.clear();
     }
     focusNodes[0].requestFocus();
-  }
-
-  Future<void> showCredentialsDialog() async {
-    final credentials = await getCredentials();
-
-    if (credentials.isNotEmpty && credentials['rememberMe'] == true) {
-      Get.dialog(
-        AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomText(
-                textAlign: TextAlign.center,
-                text: 'Email: ${credentials['email']}',
-                color: AppColors.kExtraLightTextColor,
-                fontSize: getFontSizeSemiSmall(),
-              ),
-              CustomText(
-                textAlign: TextAlign.center,
-                text:
-                    'Password: ${'•' * (credentials['password']?.length ?? 0)}',
-                color: AppColors.kExtraLightTextColor,
-                fontSize: getFontSizeSemiSmall(),
-              ),
-              space8H,
-              Row(
-                spacing: 8.w,
-                children: [
-                  Expanded(
-                    child: CustomButton(
-                      textColor: AppColors.kPrimaryColor,
-                      fillColor: Colors.transparent,
-                      onTap: () => Get.back(),
-                      title: AppStaticStrings.cancel.tr,
-                    ),
-                  ),
-                  Expanded(
-                    child: CustomButton(
-                      onTap: () {
-                        AuthController.to.emailLoginController.text =
-                            credentials['email'];
-                        AuthController.to.passLoginController.text =
-                            credentials['password'];
-
-                        Get.back();
-                      },
-                      title: AppStaticStrings.confirm.tr,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        barrierDismissible: true,
-      );
-    }
   }
 }
