@@ -10,7 +10,6 @@ import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
-import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:e_hailing_app/presentations/profile/views/edit_profile_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +27,11 @@ class AccountInformationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AccountInformationController.to.tabContent.add(
-      ProfileInfoListWidget(userModel: UserProfileModel()),
+      Obx(() {
+        return ProfileInfoListWidget(
+          userModel: CommonController.to.userModel.value,
+        );
+      }),
     );
     AccountInformationController.to.tabContent.add(
       Column(
@@ -36,7 +39,9 @@ class AccountInformationPage extends StatelessWidget {
         children: [
           ProfileCardItemWidget(
             title: AppStaticStrings.nationalIdPassport,
-            value: 'Robert Smith',
+            value:
+                CommonController.to.userModel.value.idOrPassportNo ??
+                AppStaticStrings.noDataFound,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.drivingLicense,

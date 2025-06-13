@@ -5,12 +5,14 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
+import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/gradient_progress_indicator.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -143,6 +145,63 @@ Future<void> preloadImagesFromUrls(List<String> imageUrls) async {
         debugPrint("Exception while caching URL: $imageUrl / $e");
       }
     }
+  }
+}
+
+Future<void> showCredentialsDialog() async {
+  final credentials = await getCredentials();
+
+  if (credentials.isNotEmpty && credentials['rememberMe'] == true) {
+    Get.dialog(
+      AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomText(
+              textAlign: TextAlign.center,
+              text: 'Email: ${credentials['email']}',
+              color: AppColors.kExtraLightTextColor,
+              fontSize: getFontSizeSemiSmall(),
+            ),
+            CustomText(
+              textAlign: TextAlign.center,
+              text: 'Password: ${'•' * (credentials['password']?.length ?? 0)}',
+              color: AppColors.kExtraLightTextColor,
+              fontSize: getFontSizeSemiSmall(),
+            ),
+            space8H,
+            Row(
+              spacing: 8.w,
+              children: [
+                Expanded(
+                  child: CustomButton(
+                    textColor: AppColors.kPrimaryColor,
+                    fillColor: Colors.transparent,
+                    onTap: () => Get.back(),
+                    title: AppStaticStrings.cancel.tr,
+                  ),
+                ),
+                Expanded(
+                  child: CustomButton(
+                    onTap: () {
+                      AuthController.to.emailLoginController.text =
+                          credentials['email'];
+                      AuthController.to.passLoginController.text =
+                          credentials['password'];
+
+                      Get.back();
+                    },
+                    title: AppStaticStrings.confirm.tr,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      barrierDismissible: true,
+    );
   }
 }
 
