@@ -205,7 +205,10 @@ class AppStaticStrings {
   static const String scrollMapAndPin = 'Scroll Map And Pin Your Location';
   static const String selectYourEv = 'Select your EV';
   static const String sedan = 'Sedan';
+  static const String deleteAcc = 'Delete Account';
   static const String details = 'Details';
+  static const String areYouSureYouWantToDelete =
+      "Are you sure you want to delete this account??";
   static const String fourSeats = '4 seats';
   static const String rm150 = 'RM 150';
   static const String requestYourTrip = 'Request Your Trip';
@@ -278,6 +281,7 @@ class AppStaticStrings {
 
   // Help & FAQs
   static const String faqs = 'FAQs';
+  static const String delete = 'Delete';
   static const String update = ' Update';
   static const String howToBook = 'How to book an appointment?';
   static const String successfulDelivery =
