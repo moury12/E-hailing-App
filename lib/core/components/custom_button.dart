@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import '../constants/color_constants.dart';
 import '../constants/custom_space.dart';
 import '../constants/fontsize_constant.dart';
@@ -65,12 +66,12 @@ class CustomButton extends StatelessWidget {
         ),
         alignment: Alignment.center,
         height: height,
-        padding: padding ?? padding12V,
+        padding: padding ?? padding12,
         width: width,
         decoration: BoxDecoration(
           border: Border.all(color: borderColor),
           borderRadius: BorderRadius.circular(radius ?? 24.r),
-          color: fillColor??AppColors.kPrimaryColor,
+          color: fillColor ?? AppColors.kPrimaryColor,
         ),
         child:
             isLoading == true
@@ -111,6 +112,7 @@ class CustomButton extends StatelessWidget {
 class DefaultProgressIndicator extends StatelessWidget {
   final Color? color;
   final double? strokeWidth;
+
   const DefaultProgressIndicator({super.key, this.color, this.strokeWidth});
 
   @override

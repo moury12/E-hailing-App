@@ -84,4 +84,49 @@ class AccountInformationController extends GetxController {
       isLoadingUpdateProfile.value = false;
     }
   }
+
+  //
+  // ///------------------------------ delete profile method -------------------------///
+  //
+  // Future<void> deleteProfileRequest() async {
+  //   try {
+  //     isLoadingUpdateProfile.value = true;
+  //     ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+  //     Map<String, String> fields = {
+  //       'name': nameController.value.text,
+  //       'phoneNumber': contactNumberController.value.text,
+  //       'address': placeController.value.text,
+  //     };
+  //     Map<String, dynamic> files = {};
+  //     if (profileImgPath.value.isNotEmpty) {
+  //       files['profile_image'] = File(profileImgPath.value);
+  //     }
+  //
+  //     final response = await ApiService().multipartRequest(
+  //       endpoint: editProfileEndPoint,
+  //       method: 'PATCH',
+  //       fields: fields,
+  //       files: files,
+  //     );
+  //
+  //     if (response['success'] == true) {
+  //       logger.d(response);
+  //       profileImgPath.value = "";
+  //       await CommonController.to.getUserProfileRequest();
+  //       isLoadingUpdateProfile.value = false;
+  //     } else {
+  //       logger.e(response);
+  //
+  //       showCustomSnackbar(
+  //         title: 'Failed',
+  //         message: response['message'],
+  //         type: SnackBarType.failed,
+  //       );
+  //       isLoadingUpdateProfile.value = false;
+  //     }
+  //   } catch (e) {
+  //     logger.e(e.toString());
+  //     isLoadingUpdateProfile.value = false;
+  //   }
+  // }
 }

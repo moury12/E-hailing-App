@@ -1,5 +1,9 @@
+import 'package:e_hailing_app/core/components/custom_button.dart';
+import 'package:e_hailing_app/core/constants/color_constants.dart';
+import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/account_information_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/change_password_page.dart';
 import 'package:e_hailing_app/presentations/profile/widgets/profile_action_item_widget.dart';
@@ -9,9 +13,11 @@ import 'package:get/get.dart';
 
 import '../../../core/components/custom_appbar.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
+import '../../../core/constants/custom_space.dart';
 
 class AccountSettingsPage extends StatelessWidget {
   static const String routeName = '/acc-settings';
+
   const AccountSettingsPage({super.key});
 
   @override
@@ -33,6 +39,50 @@ class AccountSettingsPage extends StatelessWidget {
                 img: changePassIcon,
                 title: AppStaticStrings.changePassword,
                 onTap: () => Get.toNamed(ChangePasswordPage.routeName),
+              ),
+              ProfileActionItemWidget(
+                img: deleteAccountIcon,
+                title: AppStaticStrings.deleteAcc,
+                onTap:
+                    () => showDialog(
+                      context: context,
+                      builder:
+                          (context) => AlertDialog(
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CustomText(
+                                  text:
+                                      AppStaticStrings
+                                          .areYouSureYouWantToDelete,
+                                  textAlign: TextAlign.center,
+                                ),
+                                space8H,
+                                Row(
+                                  spacing: 8.w,
+                                  children: [
+                                    Expanded(
+                                      child: CustomButton(
+                                        textColor: AppColors.kPrimaryColor,
+                                        fillColor: Colors.transparent,
+                                        onTap: () => Get.back(),
+                                        title: AppStaticStrings.cancel,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: CustomButton(
+                                        onTap: () {
+                                          Get.toNamed(LoginPage.routeName);
+                                        },
+                                        title: AppStaticStrings.delete,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                    ),
               ),
             ],
           ),
