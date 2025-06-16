@@ -15,7 +15,9 @@
     <application
         android:label="e_hailing_app"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -44,7 +46,7 @@
             android:value="2" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCKcH-bWVaa5B2ol6NCShyi463MpqoR_44" />
+            android:value="AIzaSyC_qKHmzl-HHB9hr8-fWGmhETSVR2H0894" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

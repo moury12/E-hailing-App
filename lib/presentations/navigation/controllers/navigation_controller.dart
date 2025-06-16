@@ -23,14 +23,13 @@ import '../model/navigation_model.dart';
 
 class NavigationController extends GetxController {
   static NavigationController get to => Get.find();
-  Rx<LatLng> marketPosition = LatLng(23.8168, 90.3675).obs;
   RxString placeName = 'Fetching location...'.obs;
   RxInt currentNavIndex = 0.obs;
   RxBool markerDraging = false.obs;
 
   @override
   void onInit() {
-    getPlaceName(marketPosition.value);
+    getPlaceName(CommonController.to.marketPosition.value);
     CommonController.to.isDriver.value
         ? Get.put(DashBoardController())
         : Get.put(HomeController());
@@ -38,7 +37,7 @@ class NavigationController extends GetxController {
     Get.put(MyRideController());
     CommonController.to.isDriver.value
         ? Get.put(StaticsController())
-        :  Get.put(TrackRideController());
+        : Get.put(TrackRideController());
 
     super.onInit();
   }
@@ -47,20 +46,16 @@ class NavigationController extends GetxController {
     currentNavIndex.value = index;
   }
 
-  GoogleMapController? mapController;
-  void onMapCreated(GoogleMapController controller) {
-    mapController ??= controller; // Store and reuse the same controller
-  }
-
   List<Widget> getPages() {
     return [
       CommonController.to.isDriver.value ? DashboardPage() : HomePage(),
       MyRidePage(),
-      CommonController.to.isDriver.value ? StaticsPage() :   TrackRidePage(),
+      CommonController.to.isDriver.value ? StaticsPage() : TrackRidePage(),
       MessageListPage(),
       ProfilePage(),
     ];
   }
+
   Future<void> getPlaceName(LatLng position) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(

@@ -9,7 +9,9 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
@@ -18,7 +20,10 @@ import '../../../core/utils/google_map_api_key.dart';
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
   RxBool isLoadingProfile = false.obs;
+  Rx<LatLng> marketPosition = LatLng(23.8168, 90.3675).obs;
 
+  // Rx<LatLng> marketPosition = LatLng(23.8168, 90.3675).obs;
+  // GoogleMapController? mapController;
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
   var selectedRoleOption =
       Boxes.getUserData().get(roleKey) != null
@@ -36,7 +41,16 @@ class CommonController extends GetxController {
   void onInit() {
     debugPrint(Boxes.getUserRole().get(role, defaultValue: user).toString());
     requestLocationPermission();
+
     super.onInit();
+  }
+
+  GoogleMapController? mapController;
+
+  void onMapCreated(GoogleMapController controller) {
+    mapController ??= controller;
+    CommonController.to
+        .fetchCurrentLocation(); // Store and reuse the same controller
   }
 
   Future<void> requestLocationPermission() async {
@@ -45,6 +59,56 @@ class CommonController extends GetxController {
       debugPrint("Location permission granted.");
     } else {
       debugPrint("Location permission denied.");
+    }
+  }
+
+  Future<void> fetchCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      Get.snackbar('Location Disabled', 'Please enable location services');
+      return;
+    }
+
+    // Check for permissions
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Get.snackbar('Permission Denied', 'Location permission denied');
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      Get.snackbar(
+        'Permission Denied',
+        'Location permission permanently denied. Please enable in settings.',
+      );
+      return;
+    }
+
+    try {
+      // Get the current position - THIS WAS MISSING
+      Position position = await Geolocator.getCurrentPosition(
+        // Add timeout
+      );
+
+      // Set new position - THIS WAS MISSING
+      marketPosition.value = LatLng(position.latitude, position.longitude);
+
+      // Optionally move camera to the new position
+      mapController?.animateCamera(
+        CameraUpdate.newLatLng(marketPosition.value),
+      );
+    } catch (e) {
+      Get.snackbar('Error', 'Could not get current location: ${e.toString()}');
+
+      // Use fallback if error occurs
+      marketPosition.value = LatLng(23.8168, 90.3675); // Dhaka, Bangladesh
     }
   }
 
