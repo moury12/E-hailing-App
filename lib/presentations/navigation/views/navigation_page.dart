@@ -5,6 +5,7 @@ import 'package:e_hailing_app/presentations/splash/controllers/common_controller
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
 import '../../../core/components/custom_button_tap.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
@@ -15,6 +16,7 @@ import '../widgets/nav_item_widget.dart';
 
 class NavigationPage extends StatelessWidget {
   static const String routeName = '/nav';
+
   const NavigationPage({super.key});
 
   @override
@@ -24,29 +26,29 @@ class NavigationPage extends StatelessWidget {
 
       int currentIndex = navController.currentNavIndex.value;
       double containerWidth = MediaQuery.of(context).size.width;
-      double itemWidth = containerWidth / NavigationController.to.navList.length;
+      double itemWidth =
+          containerWidth / NavigationController.to.navList.length;
       double indicatorPosition =
           itemWidth * currentIndex + (itemWidth - 70.w) / 2 - 12.w;
 
       return PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) {
-         if(currentIndex==0) {
-           if(!CommonController.to.isDriver.value){
-             final homeController = HomeController.to;
-             if (!didPop) {
-               homeController.handleBackNavigation();
-             }
-           }else{
-             DashBoardController.to.handleBackNavigation();
-           }
-          }else{
-           debugPrint('------------------');
-           debugPrint(currentIndex.toString());
-           navController.changeIndex(0);
-           debugPrint(currentIndex.toString());
-
-         }
+          if (currentIndex == 0) {
+            if (!CommonController.to.isDriver.value) {
+              final homeController = HomeController.to;
+              if (!didPop) {
+                homeController.handleBackNavigation();
+              }
+            } else {
+              DashBoardController.to.handleBackNavigation();
+            }
+          } else {
+            debugPrint('------------------');
+            debugPrint(currentIndex.toString());
+            navController.changeIndex(0);
+            debugPrint(currentIndex.toString());
+          }
         },
         child: Scaffold(
           appBar:
@@ -54,13 +56,14 @@ class NavigationPage extends StatelessWidget {
                   ? CustomAppBar(title: AppStaticStrings.myRides)
                   : currentIndex == 3
                   ? CustomAppBar(title: AppStaticStrings.messages)
-                  : currentIndex == 2&&CommonController.to.isDriver.value
+                  : currentIndex == 2 && CommonController.to.isDriver.value
                   ? CustomAppBar(title: AppStaticStrings.statics)
                   : null,
           body: Stack(
             clipBehavior: Clip.none,
             children: [
-              currentIndex == 0 || (currentIndex == 2&&!CommonController.to.isDriver.value)
+              currentIndex == 0 ||
+                      (currentIndex == 2 && !CommonController.to.isDriver.value)
                   ? GoogleMapWidget()
                   : SizedBox.shrink(),
               IndexedStack(
@@ -79,27 +82,32 @@ class NavigationPage extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: AppColors.kWhiteColor,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(4.r)),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(4.r),
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(NavigationController.to.navList.length, (index) {
-                    final nav = NavigationController.to.navList[index];
-                    return Expanded(
-                      child: Tooltip(
-                        message: nav.title,
-                        child: ButtonTapWidget(
-                          onTap: () {
-                            navController.changeIndex(index);
-                          },
-                          child: Padding(
-                            padding: padding6H.copyWith(bottom: 6.w),
-                            child: NavItem(nav: nav),
+                  children: List.generate(
+                    NavigationController.to.navList.length,
+                    (index) {
+                      final nav = NavigationController.to.navList[index];
+                      return Expanded(
+                        child: Tooltip(
+                          message: nav.title,
+                          child: ButtonTapWidget(
+                            onTap: () {
+                              navController.changeIndex(index);
+                            },
+                            child: Padding(
+                              padding: padding6H.copyWith(bottom: 6.w),
+                              child: NavItem(nav: nav),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    },
+                  ),
                 ),
               ),
               AnimatedPositioned(

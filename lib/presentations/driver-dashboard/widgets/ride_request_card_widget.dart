@@ -1,4 +1,3 @@
-import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constants/color_constants.dart';
-import '../../../core/constants/custom_space.dart';
 import '../../../core/constants/padding_constant.dart';
 
 class RideRequestCardWidget extends StatelessWidget {
@@ -41,10 +39,13 @@ class RideRequestCardWidget extends StatelessWidget {
         ),
         DriverDetails(title: AppStaticStrings.tripDuration, value: '7.68 km'),
         FromToTimeLine(),
-        CustomButton(onTap: () {
-          DashBoardController.to.rideRequest.value = false;
-          DashBoardController.to.pickup.value = true;
-        }, title: AppStaticStrings.accept),
+        CustomButton(
+          onTap: () {
+            DashBoardController.to.rideRequest.value = false;
+            DashBoardController.to.pickup.value = true;
+          },
+          title: AppStaticStrings.accept,
+        ),
         CustomButton(
           fillColor: AppColors.kWhiteColor,
           textColor: AppColors.kPrimaryColor,

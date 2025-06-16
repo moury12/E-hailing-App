@@ -9,3 +9,5 @@ String socialLoginEndPoint = 'auth/social-login';
 String getProfileEndPoint = 'user/profile';
 String editProfileEndPoint = 'user/edit-profile';
 String deleteProfileEndPoint = '/user/delete-account';
+String saveLocationEndPoint = '/saved-location/post-saved-location';
+String getSavedLocationEndPoint = '/saved-location/get-my-saved-location';
