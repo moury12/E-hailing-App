@@ -4,7 +4,9 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/constants/pagination_loading_widget.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/presentations/save-location/controllers/save_location_controller.dart';
 import 'package:e_hailing_app/presentations/save-location/model/save_location_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -72,8 +74,14 @@ class SavedLocationItemWidget extends StatelessWidget {
               Spacer(),
               trailingImg != null
                   ? SvgPicture.asset(trailingImg ?? deleteAccountIcon)
+                  : SaveLocationController.to.isLoadingDeleteLocation.value
+                  ? PaginationLoadingWidget()
                   : ButtonTapWidget(
-                    onTap: () {},
+                    onTap: () {
+                      SaveLocationController.to.deletePlaceRequest(
+                        locationID: saveLocationModel.sId ?? "",
+                      );
+                    },
                     child: Padding(
                       padding: padding6,
                       child: Icon(
