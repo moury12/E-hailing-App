@@ -5,23 +5,28 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
-import 'package:flutter/material.dart';
+import 'package:e_hailing_app/presentations/save-location/model/save_location_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../core/components/custom_appbar.dart';
 class SavedLocationItemWidget extends StatelessWidget {
+  final SaveLocationModel saveLocationModel;
   final String? img;
   final String? trailingImg;
   final String? title;
   final Function()? onTap;
   final String? subText;
+
   const SavedLocationItemWidget({
     super.key,
+
     this.img,
     this.trailingImg,
     this.title,
-    this.subText, this.onTap,
+    this.subText,
+    this.onTap,
+    required this.saveLocationModel,
   });
 
   @override
@@ -35,9 +40,7 @@ class SavedLocationItemWidget extends StatelessWidget {
       ),
       child: ButtonTapWidget(
         radius: 16.r,
-         onTap:onTap?? () {
-
-         },
+        onTap: onTap ?? () {},
         child: Padding(
           padding: padding8,
           child: Row(
@@ -48,18 +51,38 @@ class SavedLocationItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    text: title ?? AppStaticStrings.home,
+                    text:
+                        title ??
+                        saveLocationModel.locationName ??
+                        AppStaticStrings.noDataFound,
                     style: poppinsSemiBold,
                   ),
-                  subText!=null? CustomText(
-                    text: subText ?? '',
-                    style: poppinsThin,
-                    color: AppColors.kLightBlackColor,
-                  ):SizedBox.shrink(),
+                  subText != null
+                      ? CustomText(
+                        text:
+                            subText ??
+                            saveLocationModel.locationAddress ??
+                            AppStaticStrings.noDataFound,
+                        style: poppinsThin,
+                        color: AppColors.kLightBlackColor,
+                      )
+                      : SizedBox.shrink(),
                 ],
               ),
               Spacer(),
-              SvgPicture.asset(trailingImg ?? arrowCircleIcon),
+              trailingImg != null
+                  ? SvgPicture.asset(trailingImg ?? deleteAccountIcon)
+                  : ButtonTapWidget(
+                    onTap: () {},
+                    child: Padding(
+                      padding: padding6,
+                      child: Icon(
+                        CupertinoIcons.delete,
+                        size: 20.sp,
+                        color: AppColors.kPrimaryColor,
+                      ),
+                    ),
+                  ),
             ],
           ),
         ),

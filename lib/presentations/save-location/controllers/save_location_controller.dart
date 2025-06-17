@@ -3,6 +3,8 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/save-location/model/save_location_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +15,9 @@ class SaveLocationController extends GetxController {
   RxString lng = ''.obs;
   RxString selectedAddress = ''.obs;
   RxBool isLoadingSaveLocation = false.obs;
+  RxBool isLoadingDeleteLocation = false.obs;
   RxBool isLoadingSavedLocation = false.obs;
+  TextEditingController placeName = TextEditingController();
 
   ///====================save location pagination variable========================///
 
@@ -21,6 +25,8 @@ class SaveLocationController extends GetxController {
   final RxInt itemsPerPage = 10.obs;
   final RxInt totalSaveLocationPages = 5.obs;
   final RxBool isLoadingMore = false.obs;
+
+  final RxList<SaveLocationModel> saveLocationList = <SaveLocationModel>[].obs;
 
   ///------------------------------  save place method -------------------------///
 
@@ -44,14 +50,13 @@ class SaveLocationController extends GetxController {
           "latitude": lat,
         },
       );
-
+      isLoadingSaveLocation.value = false;
       if (response['success'] == true) {
         logger.d(response);
 
         showCustomSnackbar(title: 'Success', message: response['message']);
-        // await getConversationListRequest();
-
-        isLoadingSaveLocation.value = false;
+        await getSaveLocationListRequest();
+        Get.back();
       } else {
         logger.e(response);
         showCustomSnackbar(title: 'Failed', message: response['message']);
@@ -64,7 +69,6 @@ class SaveLocationController extends GetxController {
 
   ///------------------------------  get save location list method -------------------------///
 
-  /*
   Future<void> getSaveLocationListRequest({bool loadMore = false}) async {
     try {
       if (loadMore && currentPage.value >= totalSaveLocationPages.value) {
@@ -95,33 +99,21 @@ class SaveLocationController extends GetxController {
       isLoadingMore.value = false;
       if (response['success'] == true) {
         if (response['pagination'] != null) {
-          currentPage.value = response['pagination']['currentPage'] ?? 1;
+          currentPage.value = response['data']['meta']['page'] ?? 1;
           totalSaveLocationPages.value =
-              response['pagination']['totalPages'] ?? 1; // Add this line
+              response['data']['meta']['totalPage'] ?? 1; // Add this line
 
-          itemsPerPage.value = response['pagination']['itemsPerPage'] ?? 10;
+          itemsPerPage.value = response['data']['meta']['limit'] ?? 10;
         }
-        final newCategories =
-            (response['data'] as List)
-                .map((e) => ConversationModel.fromJson(e))
-                .toList();
-        final imageUrls =
-            newCategories
-                .map((cat) => "${ApiService().baseUrl}/${cat.users!.first.img}")
-                .where((url) => url.isNotEmpty)
-                .toList();
-        final imageUrls1 =
-            newCategories
-                .map((cat) => "${ApiService().baseUrl}/${cat.users!.last.img}")
-                .where((url) => url.isNotEmpty)
+        final newLocation =
+            (response['data']["result"] as List)
+                .map((e) => SaveLocationModel.fromJson(e))
                 .toList();
 
-        preloadImagesFromUrls(imageUrls);
-        await preloadImagesFromUrls(imageUrls1);
         if (loadMore) {
-          conversationList.addAll(newCategories); // Append for load more
+          saveLocationList.addAll(newLocation); // Append for load more
         } else {
-          conversationList.value = newCategories; // Replace for refresh
+          saveLocationList.value = newLocation; // Replace for refresh
         }
         logger.d(response);
       } else {
@@ -139,5 +131,34 @@ class SaveLocationController extends GetxController {
       isLoadingSavedLocation.value = false;
     }
   }
-*/
+
+  ///------------------------------  delete place method -------------------------///
+
+  Future<void> deletePlaceRequest({required String locationID}) async {
+    try {
+      isLoadingDeleteLocation.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+      final response = await ApiService().request(
+        endpoint: deleteSavedLocationEndPoint,
+        method: 'DELETE',
+        body: {"savedLocationId": locationID},
+      );
+
+      if (response['success'] == true) {
+        logger.d(response);
+
+        showCustomSnackbar(title: 'Success', message: response['message']);
+        // await getConversationListRequest();
+
+        isLoadingDeleteLocation.value = false;
+      } else {
+        logger.e(response);
+        showCustomSnackbar(title: 'Failed', message: response['message']);
+      }
+    } catch (e) {
+      isLoadingDeleteLocation.value = false;
+      logger.e(e.toString());
+    }
+  }
 }
