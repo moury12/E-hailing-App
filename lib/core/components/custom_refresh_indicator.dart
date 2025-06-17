@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../constants/color_constants.dart';
 
 class CustomRefreshIndicator extends StatelessWidget {
@@ -16,7 +17,11 @@ class CustomRefreshIndicator extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: onRefresh,
       color: AppColors.kPrimaryColor,
-      displacement: 40.0, // Adjust the distance the indicator moves
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      displacement: 40.0,
+      strokeWidth: 1,
+      // Adjust the distance the indicator moves
       child: child,
     );
   }

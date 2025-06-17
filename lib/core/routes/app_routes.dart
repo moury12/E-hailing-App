@@ -66,7 +66,7 @@ class AppRoutes {
     GetPage(
       name: SavedLocationPage.routeName,
       page: () => SavedLocationPage(),
-      // binding: AuthBinding(),
+      binding: SaveLocationBinding(),
     ),
     GetPage(
       name: RequestTripPage.routeName,

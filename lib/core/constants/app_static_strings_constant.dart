@@ -184,6 +184,8 @@ class AppStaticStrings {
   static const String recentTip = 'Recent Tip';
   static const String service = 'Service';
   static const String placeAddress = 'Place Address';
+  static const String placeAddressRequired = 'Place Address Required';
+  static const String placeNameRequired = 'Place Name Required';
   static const String placeName = 'Place Name';
   static const String savedPlace = 'Saved Place';
   static const String save = 'Save';
