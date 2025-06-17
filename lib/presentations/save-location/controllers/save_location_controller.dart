@@ -53,7 +53,8 @@ class SaveLocationController extends GetxController {
       isLoadingSaveLocation.value = false;
       if (response['success'] == true) {
         logger.d(response);
-
+        placeName.clear();
+        searchFieldController.value.clear();
         showCustomSnackbar(title: 'Success', message: response['message']);
         await getSaveLocationListRequest();
         Get.back();
@@ -98,7 +99,7 @@ class SaveLocationController extends GetxController {
       isLoadingSavedLocation.value = false;
       isLoadingMore.value = false;
       if (response['success'] == true) {
-        if (response['pagination'] != null) {
+        if (response['data']['meta'] != null) {
           currentPage.value = response['data']['meta']['page'] ?? 1;
           totalSaveLocationPages.value =
               response['data']['meta']['totalPage'] ?? 1; // Add this line
@@ -152,6 +153,7 @@ class SaveLocationController extends GetxController {
         // await getConversationListRequest();
 
         isLoadingDeleteLocation.value = false;
+        await getSaveLocationListRequest();
       } else {
         logger.e(response);
         showCustomSnackbar(title: 'Failed', message: response['message']);

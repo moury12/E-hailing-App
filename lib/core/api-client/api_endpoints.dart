@@ -12,3 +12,4 @@ String deleteProfileEndPoint = 'user/delete-account';
 String saveLocationEndPoint = 'saved-location/post-saved-location';
 String getSavedLocationEndPoint = 'saved-location/get-my-saved-location';
 String deleteSavedLocationEndPoint = 'saved-location/delete-saved-location';
+String getCarEndPoint = 'car/get-all-cars';
