@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
@@ -156,20 +157,19 @@ class CommonController extends GetxController {
     LatLng end,
     RxSet<Polyline> routePolylines,
   ) async {
-    final apiKey = GoogleClient.googleMapUrl; // Your API Key
+    final apiKey = GoogleClient.googleMapUrl;
     final url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
 
     final response = await http.get(Uri.parse(url));
     debugPrint("------------------------------");
     debugPrint(response.body);
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      // ✅ Add check here to prevent crash
       if (data['routes'] != null && data['routes'].isNotEmpty) {
         final points = data['routes'][0]['overview_polyline']['points'];
-
         List<LatLng> polylinePoints = decodePolyline(points);
 
         final polyline = Polyline(
@@ -180,12 +180,98 @@ class CommonController extends GetxController {
         );
 
         routePolylines.value = {polyline};
+
+        // Wait a bit to ensure map controller is ready
+        await Future.delayed(const Duration(milliseconds: 500));
+
+        // Check if map controller is available
+        if (CommonController.to.mapController != null) {
+          LatLngBounds bounds = getBoundsFromPoints(polylinePoints);
+          try {
+            // Try with better centering and more padding
+            await CommonController.to.mapController!.animateCamera(
+              CameraUpdate.newLatLngBounds(
+                bounds,
+                150,
+              ), // More padding for better centering
+            );
+            debugPrint("Camera animated successfully");
+          } catch (e) {
+            debugPrint("Error animating camera: $e");
+            // Better fallback: Calculate center and appropriate zoom level
+            LatLng center = _calculateCenter(polylinePoints);
+            double zoom = _calculateZoomLevel(bounds);
+
+            await CommonController.to.mapController!.animateCamera(
+              CameraUpdate.newLatLngZoom(center, zoom),
+            );
+          }
+        } else {
+          debugPrint("Map controller is null");
+        }
       } else {
-        print("No route found. Response: ${data}");
+        print("No route found. Response: $data");
       }
     } else {
       print("Failed to fetch directions: ${response.body}");
     }
+  }
+
+  // Improved bounds calculation with validation
+  LatLngBounds getBoundsFromPoints(List<LatLng> points) {
+    if (points.isEmpty) {
+      throw ArgumentError('Points list cannot be empty');
+    }
+
+    double minLat = points.first.latitude;
+    double maxLat = points.first.latitude;
+    double minLng = points.first.longitude;
+    double maxLng = points.first.longitude;
+
+    for (LatLng point in points) {
+      minLat = math.min(minLat, point.latitude);
+      maxLat = math.max(maxLat, point.latitude);
+      minLng = math.min(minLng, point.longitude);
+      maxLng = math.max(maxLng, point.longitude);
+    }
+
+    // Add proportional padding for better centering
+    double latPadding = (maxLat - minLat) * 0.1; // 20% padding
+    double lngPadding = (maxLng - minLng) * 0.1; // 20% padding
+
+    // Minimum padding to avoid too tight bounds
+    latPadding = math.max(latPadding, 0.002);
+    lngPadding = math.max(lngPadding, 0.002);
+
+    return LatLngBounds(
+      southwest: LatLng(minLat - latPadding, minLng - lngPadding),
+      northeast: LatLng(maxLat + latPadding, maxLng + lngPadding),
+    );
+  }
+
+  // Helper function to calculate center point
+  LatLng _calculateCenter(List<LatLng> points) {
+    double centerLat =
+        points.map((p) => p.latitude).reduce((a, b) => a + b) / points.length;
+    double centerLng =
+        points.map((p) => p.longitude).reduce((a, b) => a + b) / points.length;
+    return LatLng(centerLat, centerLng);
+  }
+
+  // Helper function to calculate appropriate zoom level
+  double _calculateZoomLevel(LatLngBounds bounds) {
+    double latDiff = bounds.northeast.latitude - bounds.southwest.latitude;
+    double lngDiff = bounds.northeast.longitude - bounds.southwest.longitude;
+
+    double maxDiff = math.max(latDiff, lngDiff);
+
+    // Adjust zoom based on the route distance
+    if (maxDiff > 0.1) return 11.0;
+    if (maxDiff > 0.05) return 12.0;
+    if (maxDiff > 0.02) return 13.0;
+    if (maxDiff > 0.01) return 14.0;
+    if (maxDiff > 0.005) return 15.0;
+    return 16.0;
   }
 
   List<LatLng> decodePolyline(String encoded) {
