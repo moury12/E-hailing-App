@@ -10,12 +10,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/components/custom_appbar.dart';
-import '../widgets/bottom_sheets.dart';
 import '../controllers/home_controller.dart';
+import '../widgets/bottom_sheets.dart';
 import '../widgets/trip_details_card_widget.dart';
 
 class HomePage extends StatefulWidget {
   static const String routeName = '/home';
+
   const HomePage({super.key});
 
   @override
@@ -127,69 +128,59 @@ class _HomePageState extends State<HomePage>
             onVerticalDragEnd: _handleDragEnd,
             child: SlideTransition(
               position: offset,
-              child:
-                  Obx(
-                      () {
-                          return  HomeController.to.previousRoute.value == TripDetailsPage.routeName
-                              ?TripDetailsDestinationCard()
-                              :Container(
-                                  // margin: EdgeInsets.only(bottom: 83),
-                                   decoration: BoxDecoration(
-                                    color: AppColors.kLightGreyColor,
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(34.r),
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: padding12,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        // Handle indicator
-                                        Container(
-                                          height: 4.w,
-                                          width: 40.w,
-                                          decoration: BoxDecoration(
-                                            color:
-                                                AppColors
-                                                    .kPrimaryColor, // Replace with your AppColors.kPrimaryColor
-                                            borderRadius: BorderRadius.circular(2),
-                                          ),
-                                        ),
-                                        space12H,
-                                        // Sheet content - replace with your conditional content
-                                        Obx(() {
-                                          // Replace this with your actual implementation
-                                          if (HomeController.to.wantToGo.value) {
-                                            return HomeWantToGoContentWidget();
-                                          } else if (HomeController
-                                              .to
-                                              .setPickup
-                                              .value) {
-                                            return HomeSetLocationWidget();
-                                          } else if (HomeController
-                                              .to
-                                              .setDestination
-                                              .value) {
-                                            return HomeSetLocationWidget();
-                                          } else if (HomeController
-                                              .to
-                                              .selectEv
-                                              .value) {
-                                            return HomeSelectEvWidget();
-                                          } else {
-                                            return HomeInitialContentWidget();
-                                          }
-                                        }),
-
-                                        // Add bottom padding for safe area
-                                       space8H
-                                      ],
-                                    ),
-                                  ),
-                                );
-                        }
+              child: Obx(() {
+                return HomeController.to.previousRoute.value ==
+                        TripDetailsPage.routeName
+                    ? TripDetailsDestinationCard()
+                    : Container(
+                      // margin: EdgeInsets.only(bottom: 83),
+                      decoration: BoxDecoration(
+                        color: AppColors.kLightGreyColor,
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(34.r),
+                        ),
                       ),
+                      child: Padding(
+                        padding: padding12.copyWith(bottom: 0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Handle indicator
+                            Container(
+                              height: 4.w,
+                              width: 40.w,
+                              decoration: BoxDecoration(
+                                color: AppColors.kPrimaryColor,
+                                // Replace with your AppColors.kPrimaryColor
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            space12H,
+                            // Sheet content - replace with your conditional content
+                            Obx(() {
+                              // Replace this with your actual implementation
+                              if (HomeController.to.wantToGo.value) {
+                                return HomeWantToGoContentWidget();
+                              } else if (HomeController.to.setPickup.value) {
+                                return HomeSetLocationWidget();
+                              } else if (HomeController
+                                  .to
+                                  .setDestination
+                                  .value) {
+                                return HomeSetLocationWidget();
+                              } else if (HomeController.to.selectEv.value) {
+                                return HomeSelectEvWidget();
+                              } else {
+                                return HomeInitialContentWidget();
+                              }
+                            }),
+
+                            // Add bottom padding for safe area
+                          ],
+                        ),
+                      ),
+                    );
+              }),
             ),
           ),
         ),

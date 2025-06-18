@@ -2,13 +2,15 @@ import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
-import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
-import 'package:e_hailing_app/presentations/save-location/views/saved_location_page.dart';
 import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
+import 'package:e_hailing_app/presentations/save-location/views/add_place_page.dart';
+import 'package:e_hailing_app/presentations/save-location/views/saved_location_page.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/trip/views/request_trip_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,9 +21,8 @@ import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
 import '../../navigation/controllers/navigation_controller.dart';
-import 'row_more_button_widget.dart';
-import 'search_field_button_widget.dart';
 import '../../navigation/widgets/custom_container_with_border.dart';
+import 'search_field_button_widget.dart';
 
 class HomeSetLocationWidget extends StatelessWidget {
   const HomeSetLocationWidget({super.key});
@@ -94,8 +95,8 @@ class HomeSelectEvWidget extends StatelessWidget {
                       //   });
                       // },
                       Get.toNamed(RequestTripPage.routeName);
-                    }
-                    )
+                    },
+                  )
                   : SelectCarITemWidget(
                     onTap: () {
                       // HomeController.to.resetAllStates();
@@ -120,14 +121,15 @@ class HomeWantToGoContentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 6.h,
+      // spacing: 6.h,
       children: [
         CustomText(
           text: AppStaticStrings.selectDestination,
           style: poppinsSemiBold,
         ),
+        space8H,
         PickupDropLocationWidget(),
-
+        locationSuggestionList(),
         IconWithTextWidget(
           icon: setLocationIcon,
           text: AppStaticStrings.setLocationFromMap,
@@ -144,26 +146,70 @@ class HomeWantToGoContentWidget extends StatelessWidget {
             Get.toNamed(SavedLocationPage.routeName);
           },
         ),
-        ...List.generate(
-          4,
-          (index) => IconWithTextWidget(
-            icon: historyIcon,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomText(text: 'Tongi Bangladesh'),
-                CustomText(
-                  text: 'Gazipur, DHaka',
-                  fontSize: getFontSizeSmall(),
-                  style: poppinsRegular,
-                ),
-              ],
-            ),
-          ),
-        ),
       ],
     );
   }
+}
+
+Widget locationSuggestionList() {
+  return Obx(() {
+    if (CommonController.to.isLoadingOnLocationSuggestion.value) {
+      return DefaultProgressIndicator(color: AppColors.kPrimaryColor);
+    }
+
+    if (CommonController.to.addressSuggestion.isEmpty) {
+      return SizedBox.shrink();
+    }
+
+    // Determine which controller to update
+    final isPickup = HomeController.to.activeField.value == "pickup";
+    final controllerToUpdate =
+        isPickup
+            ? HomeController.to.pickupLocationController
+            : HomeController.to.dropOffLocationController;
+
+    return Column(
+      children: List.generate(CommonController.to.addressSuggestion.length, (
+        index,
+      ) {
+        final address = CommonController.to.addressSuggestion[index];
+        return SearchAddress(
+          title: address['description'],
+          onTap: () async {
+            final placeId = address['place_id'];
+            await CommonController.to.getLatLngFromPlace(
+              placeId,
+              lat:
+                  HomeController.to.dropoffLatLng.value?.latitude
+                      .toString()
+                      .obs ??
+                  ''.obs,
+              lng:
+                  HomeController.to.dropoffLatLng.value?.longitude
+                      .toString()
+                      .obs ??
+                  ''.obs,
+
+              selectedAddress: HomeController.to.selectedAddress,
+            );
+
+            controllerToUpdate.value.text =
+                HomeController.to.selectedAddress.value;
+            CommonController.to.addressSuggestion.clear();
+            if (HomeController.to.pickupLatLng.value != null &&
+                HomeController.to.dropoffLatLng.value != null) {
+              CommonController.to.drawPolylineBetweenPoints(
+                HomeController.to.pickupLatLng.value!,
+                HomeController.to.dropoffLatLng.value!,
+                NavigationController.to.routePolylines,
+              );
+            }
+            HomeController.to.activeField.value = ''; // Reset
+          },
+        );
+      }),
+    );
+  });
 }
 
 class IconWithTextWidget extends StatelessWidget {
@@ -171,6 +217,7 @@ class IconWithTextWidget extends StatelessWidget {
   final String? text;
   final Widget? child;
   final Function()? onTap;
+
   const IconWithTextWidget({
     super.key,
     this.icon,
@@ -206,7 +253,7 @@ class HomeInitialContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-       spacing: 6.h,
+      spacing: 6.h,
       children: [
         GestureDetector(
           onTap: () {
@@ -215,62 +262,10 @@ class HomeInitialContentWidget extends StatelessWidget {
           },
           child: SearchFieldButtonWidget(),
         ),
-        // RowMoreButtonWidget(
-        //   title: AppStaticStrings.recentTip,
-        //   onPressed: () {},
-        // ),
-        // Stack(
-        //   alignment: Alignment.center,
-        //   children: [
-        //     Row(
-        //       spacing: 6.w,
-        //       children: [
-        //         Expanded(
-        //           child: CustomWhiteContainerWithBorder(
-        //             text: 'Building 8...',
-        //             img: pickLocationIcon,
-        //           ),
-        //         ),
-        //
-        //         Expanded(
-        //           child: CustomWhiteContainerWithBorder(
-        //             text: 'Building 8...',
-        //             img: dropLocationIcon,
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //     SvgPicture.asset(exchangeIcon),
-        //   ],
-        // ),
-        // RowMoreButtonWidget(
-        //   onPressed: () {
-        //     Get.toNamed(SavedLocationPage.routeName);
-        //   },
-        //   title: AppStaticStrings.savedLocation,
-        // ),
-        // SingleChildScrollView(
-        //   scrollDirection: Axis.horizontal,
-        //   child: Row(
-        //     spacing: 6.w,
-        //     children: [
-        //       ...List.generate(
-        //         3,
-        //         (index) => SizedBox(
-        //           width: ScreenUtil().screenWidth / 3 - 24,
-        //           child: CustomWhiteContainerWithBorder(
-        //             text: AppStaticStrings.home,
-        //             img: homeLocationIcon,
-        //           ),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        //
-        CustomText(text: AppStaticStrings.service),
-        // space8H,
 
+        CustomText(text: AppStaticStrings.service),
+
+        // space8H,
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -281,7 +276,6 @@ class HomeInitialContentWidget extends StatelessWidget {
                 img: purpleCarImage,
                 onTap: () {
                   HomeController.to.wantToGo.value = true;
-
                 },
               ),
               ServiceWidget(
@@ -290,8 +284,10 @@ class HomeInitialContentWidget extends StatelessWidget {
                 },
                 title: AppStaticStrings.preBookRide,
                 img: purpleCarImage,
-              ),ServiceWidget(
+              ),
+              ServiceWidget(
                 onTap: () {
+                  showComingSoonDialog(context);
                   // HomeController.to.setPickup.value = true;
                 },
                 title: AppStaticStrings.womanOnlyRide,
@@ -300,6 +296,7 @@ class HomeInitialContentWidget extends StatelessWidget {
             ],
           ),
         ),
+        space8H,
       ],
     );
   }
@@ -309,6 +306,7 @@ class ServiceWidget extends StatelessWidget {
   final String title;
   final String img;
   final Function()? onTap;
+
   const ServiceWidget({
     super.key,
     required this.title,
@@ -323,11 +321,7 @@ class ServiceWidget extends StatelessWidget {
       child: Column(
         children: [
           Image.asset(img, height: 40.sp),
-          CustomText(
-            text: title,
-            style: poppinsSemiBold,
-            fontSize: 10.sp,
-          ),
+          CustomText(text: title, style: poppinsSemiBold, fontSize: 10.sp),
         ],
       ),
     );

@@ -7,6 +7,7 @@ import 'package:e_hailing_app/presentations/home/model/car_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomeController extends GetxController {
   static HomeController get to => Get.find();
@@ -19,8 +20,16 @@ class HomeController extends GetxController {
   RxBool addStops = false.obs;
   RxBool isLoadingNewTrip = false.obs;
   RxBool isLoadingCar = false.obs;
-  final RxList<CarModel> carList = <CarModel>[].obs;
 
+  RxString selectedAddress = ''.obs;
+  RxString activeField = ''.obs; // "pickup" or "dropoff"
+  Rx<LatLng?> pickupLatLng = Rx<LatLng?>(null);
+  Rx<LatLng?> dropoffLatLng = Rx<LatLng?>(null);
+  final RxList<CarModel> carList = <CarModel>[].obs;
+  Rx<TextEditingController> pickupLocationController =
+      TextEditingController().obs;
+  Rx<TextEditingController> dropOffLocationController =
+      TextEditingController().obs;
   AnimationController? controller;
   RxString previousRoute = ''.obs;
 
