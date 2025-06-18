@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
+import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -99,8 +101,7 @@ class CommonController extends GetxController {
 
       // Set new position - THIS WAS MISSING
       marketPosition.value = LatLng(position.latitude, position.longitude);
-
-      // Optionally move camera to the new position
+      await getAddressFromLatLng(marketPosition.value);
       mapController?.animateCamera(
         CameraUpdate.newLatLng(marketPosition.value),
       );
@@ -127,6 +128,94 @@ class CommonController extends GetxController {
     } else {
       isLoadingOnLocationSuggestion.value = false;
     }
+  }
+
+  Future<String> getAddressFromLatLng(LatLng latLng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        latLng.latitude,
+        latLng.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        final Placemark place = placemarks.first;
+        final address =
+            "${place.subLocality},${place.subAdministrativeArea}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+        return address;
+      } else {
+        return "No address found";
+      }
+    } catch (e) {
+      print("Error getting address: $e");
+      return "Error retrieving address";
+    }
+  }
+
+  Future<void> drawPolylineBetweenPoints(
+    LatLng start,
+    LatLng end,
+    RxSet<Polyline> routePolylines,
+  ) async {
+    final apiKey = GoogleClient.googleMapUrl; // Your API Key
+    final url =
+        'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+    debugPrint("------------------------------");
+    debugPrint(response.body);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      // ✅ Add check here to prevent crash
+      if (data['routes'] != null && data['routes'].isNotEmpty) {
+        final points = data['routes'][0]['overview_polyline']['points'];
+
+        List<LatLng> polylinePoints = decodePolyline(points);
+
+        final polyline = Polyline(
+          polylineId: const PolylineId('route_line'),
+          color: AppColors.kPrimaryColor,
+          width: 5,
+          points: polylinePoints,
+        );
+
+        routePolylines.value = {polyline};
+      } else {
+        print("No route found. Response: ${data}");
+      }
+    } else {
+      print("Failed to fetch directions: ${response.body}");
+    }
+  }
+
+  List<LatLng> decodePolyline(String encoded) {
+    List<LatLng> polyline = [];
+    int index = 0, len = encoded.length;
+    int lat = 0, lng = 0;
+
+    while (index < len) {
+      int b, shift = 0, result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1F) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlat = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1F) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlng = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+      lng += dlng;
+
+      polyline.add(LatLng(lat / 1e5, lng / 1e5));
+    }
+    return polyline;
   }
 
   Future<void> checkUserRole() async {

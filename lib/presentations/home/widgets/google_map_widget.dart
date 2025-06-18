@@ -4,8 +4,23 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../navigation/controllers/navigation_controller.dart';
 
-class GoogleMapWidget extends StatelessWidget {
+class GoogleMapWidget extends StatefulWidget {
   const GoogleMapWidget({super.key});
+
+  @override
+  State<GoogleMapWidget> createState() => _GoogleMapWidgetState();
+}
+
+class _GoogleMapWidgetState extends State<GoogleMapWidget> {
+  @override
+  void initState() {
+    CommonController.to.drawPolylineBetweenPoints(
+      CommonController.to.marketPosition.value,
+      LatLng(23.8168, 90.3675),
+      NavigationController.to.routePolylines,
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +28,7 @@ class GoogleMapWidget extends StatelessWidget {
     return GoogleMap(
       zoomGesturesEnabled: true,
       scrollGesturesEnabled: true,
+      polylines: NavigationController.to.routePolylines,
 
       onMapCreated: CommonController.to.onMapCreated,
       initialCameraPosition: CameraPosition(

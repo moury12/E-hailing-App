@@ -26,6 +26,7 @@ class NavigationController extends GetxController {
   RxString placeName = 'Fetching location...'.obs;
   RxInt currentNavIndex = 0.obs;
   RxBool markerDraging = false.obs;
+  RxSet<Polyline> routePolylines = <Polyline>{}.obs;
 
   @override
   void onInit() {

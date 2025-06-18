@@ -205,6 +205,40 @@ Future<void> showCredentialsDialog() async {
   }
 }
 
+void showComingSoonDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8.h,
+            children: <Widget>[
+              CustomText(text: 'Feature Coming Soon!', style: poppinsBold),
+              CustomText(
+                text:
+                    'This feature is not yet implemented.Please check back in a future update!',
+
+                style: poppinsRegular,
+                color: AppColors.kExtraLightTextColor,
+              ),
+
+              CustomButton(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                title: "OK",
+                // width: ScreenUtil().screenWidth / 3,
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
 Future<void> saveCredentials(
   String email,
   String password,

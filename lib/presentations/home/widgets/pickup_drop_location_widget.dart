@@ -1,17 +1,43 @@
+import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/components/custom_timeline.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
-class PickupDropLocationWidget extends StatelessWidget {
-  const PickupDropLocationWidget({
-    super.key,
-  });
+
+class PickupDropLocationWidget extends StatefulWidget {
+  const PickupDropLocationWidget({super.key});
+
+  @override
+  State<PickupDropLocationWidget> createState() =>
+      _PickupDropLocationWidgetState();
+}
+
+class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
+  @override
+  void initState() {
+    fetchAndSetAddress(CommonController.to.marketPosition.value);
+    HomeController.to.pickupLatLng.value =
+        CommonController.to.marketPosition.value;
+    super.initState();
+  }
+
+  void fetchAndSetAddress(LatLng latLng) async {
+    HomeController
+        .to
+        .pickupLocationController
+        .value
+        .text = await CommonController.to.getAddressFromLatLng(latLng);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,28 +48,58 @@ class PickupDropLocationWidget extends StatelessWidget {
         SvgPicture.asset(dropLocationIcon),
       ],
       children: <Widget>[
-        CustomTextField(
-          borderRadius: 24.r,
-          hintText: AppStaticStrings.pickupLocation,
-          fillColor: AppColors.kWhiteColor,
-          borderColor: AppColors.kGreyColor,
-          height: 38.h,
-          suffixIcon: Padding(
-            padding: padding8,
-            child: SvgPicture.asset(crossCircleIcon),
-          ),
-        ),
-        CustomTextField(
-          borderRadius: 24.r,
-          hintText: AppStaticStrings.dropLocation,
-          fillColor: AppColors.kWhiteColor,
-          borderColor: AppColors.kGreyColor,
-          height: 38.h,
-          suffixIcon: Padding(
-            padding: padding8,
-            child: SvgPicture.asset(crossCircleIcon),
-          ),
-        ),
+        Obx(() {
+          return CustomTextField(
+            borderRadius: 24.r,
+            hintText: AppStaticStrings.pickupLocation,
+            fillColor: AppColors.kWhiteColor,
+            borderColor: AppColors.kGreyColor,
+            height: 45.h,
+            onChanged: (v) {
+              HomeController.to.activeField.value = "pickup";
+              CommonController.to.fetchSuggestedPlaces(v);
+            },
+
+            textEditingController:
+                HomeController.to.pickupLocationController.value,
+            suffixIcon: ButtonTapWidget(
+              onTap: () {
+                HomeController.to.pickupLocationController.value.clear();
+                HomeController.to.pickupLatLng.value = null;
+              },
+              child: Padding(
+                padding: padding12,
+                child: SvgPicture.asset(crossCircleIcon),
+              ),
+            ),
+          );
+        }),
+
+        Obx(() {
+          return CustomTextField(
+            borderRadius: 24.r,
+            hintText: AppStaticStrings.dropLocation,
+            fillColor: AppColors.kWhiteColor,
+            borderColor: AppColors.kGreyColor,
+            textEditingController:
+                HomeController.to.dropOffLocationController.value,
+            height: 45.h,
+            onChanged: (v) {
+              HomeController.to.activeField.value = "dropoff";
+              CommonController.to.fetchSuggestedPlaces(v);
+            },
+            suffixIcon: ButtonTapWidget(
+              onTap: () {
+                HomeController.to.dropOffLocationController.value.clear();
+                HomeController.to.dropoffLatLng.value = null;
+              },
+              child: Padding(
+                padding: padding12,
+                child: SvgPicture.asset(crossCircleIcon),
+              ),
+            ),
+          );
+        }),
       ],
     );
   }
