@@ -162,8 +162,9 @@ class CommonController extends GetxController {
         'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
 
     final response = await http.get(Uri.parse(url));
-    debugPrint("------------------------------");
-    debugPrint(response.body);
+    logger.d("------------------------------");
+    logger.d(response.body);
+    logger.d(response.statusCode.toString());
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -192,7 +193,7 @@ class CommonController extends GetxController {
             await CommonController.to.mapController!.animateCamera(
               CameraUpdate.newLatLngBounds(
                 bounds,
-                150,
+                100,
               ), // More padding for better centering
             );
             debugPrint("Camera animated successfully");
@@ -210,7 +211,7 @@ class CommonController extends GetxController {
           debugPrint("Map controller is null");
         }
       } else {
-        print("No route found. Response: $data");
+        showCustomSnackbar(title: "Sorry!!", message: "No route found.");
       }
     } else {
       print("Failed to fetch directions: ${response.body}");
@@ -367,8 +368,9 @@ class CommonController extends GetxController {
 
   Future<void> getLatLngFromPlace(
     String placeId, {
-    required RxString lat,
-    required RxString lng,
+    RxString? lat,
+    RxString? lng,
+    Rx<LatLng?>? latLng,
     required RxString selectedAddress,
   }) async {
     final String url =
@@ -376,7 +378,7 @@ class CommonController extends GetxController {
 
     try {
       final response = await http.get(Uri.parse(url));
-      logger.d(response);
+      logger.d(response.body);
       if (response.statusCode == 200) {
         // Parse response
         final Map<String, dynamic> data = json.decode(response.body);
@@ -386,10 +388,9 @@ class CommonController extends GetxController {
 
           // Update RxString values
           selectedAddress.value = data['results'][0]['formatted_address'];
-          lat.value = location['lat'].toString();
-          lng.value = location['lng'].toString();
-          debugPrint(lat.value);
-          debugPrint(lng.value);
+          latLng!.value = LatLng(location['lat'], location['lng']);
+          lat!.value = location['lat'].toString();
+          lng!.value = location['lng'].toString();
         } else {
           debugPrint("No results found for the provided placeId.");
         }
