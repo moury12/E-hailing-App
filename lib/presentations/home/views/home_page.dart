@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -100,11 +101,12 @@ class _HomePageState extends State<HomePage>
                 onBack: () {
                   HomeController.to.handleBackNavigation();
                 },
-                onTap: () {
+                onTap: () async {
                   if (HomeController.to.wantToGo.value ||
                       HomeController.to.setPickup.value ||
                       HomeController.to.setDestination.value ||
                       HomeController.to.selectEv.value) {
+                    await CommonController.to.fetchCurrentLocation();
                     HomeController.to.setCurrentLocationOnPickUp();
                   } else {
                     Get.toNamed(NotificationPage.routeName);

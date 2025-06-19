@@ -39,7 +39,7 @@ class AddPlacePage extends StatelessWidget {
                     textEditingController:
                         SaveLocationController.to.searchFieldController.value,
                     onChanged: (val) {
-                      CommonController.to.fetchSuggestedPlaces(val);
+                      CommonController.to.fetchSuggestedPlacesWithRadius(val);
                     },
                     hintText: 'search here...',
                     validator: (value) {
