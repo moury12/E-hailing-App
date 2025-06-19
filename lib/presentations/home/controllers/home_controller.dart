@@ -4,6 +4,7 @@ import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/model/car_model.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -32,6 +33,17 @@ class HomeController extends GetxController {
       TextEditingController().obs;
   AnimationController? controller;
   RxString previousRoute = ''.obs;
+
+  void setCurrentLocationOnPickUp() async {
+    fetchAndSetAddress(CommonController.to.marketPosition.value);
+    HomeController.to.pickupLatLng.value =
+        CommonController.to.marketPosition.value;
+  }
+
+  void fetchAndSetAddress(LatLng latLng) async {
+    pickupLocationController.value.text = await CommonController.to
+        .getAddressFromLatLng(latLng);
+  }
 
   void updatePreviousRoute(String route) {
     previousRoute.value = route;

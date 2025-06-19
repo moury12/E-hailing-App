@@ -5,6 +5,7 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
@@ -128,7 +129,33 @@ class HomeWantToGoContentWidget extends StatelessWidget {
           style: poppinsSemiBold,
         ),
         space8H,
-        PickupDropLocationWidget(),
+        Row(
+          children: [
+            Expanded(child: PickupDropLocationWidget()),
+            FloatingActionButton.small(
+              backgroundColor: AppColors.kPrimaryColor,
+              foregroundColor: AppColors.kWhiteColor,
+              onPressed: () async {
+                if (HomeController.to.pickupLatLng.value != null &&
+                    HomeController.to.dropoffLatLng.value != null) {
+                  await CommonController.to.drawPolylineBetweenPoints(
+                    HomeController.to.pickupLatLng.value!,
+                    HomeController.to.dropoffLatLng.value!,
+                    NavigationController.to.routePolylines,
+                  );
+                } else {
+                  logger.d(HomeController.to.dropoffLatLng.value);
+                  logger.d(HomeController.to.pickupLatLng.value);
+                  showCustomSnackbar(
+                    title: "Warning!!",
+                    message: "Provide pickup drop off location both..",
+                  );
+                }
+              },
+              child: Icon(Icons.arrow_forward),
+            ),
+          ],
+        ),
         locationSuggestionList(),
         IconWithTextWidget(
           icon: setLocationIcon,
@@ -179,16 +206,10 @@ Widget locationSuggestionList() {
             final placeId = address['place_id'];
             await CommonController.to.getLatLngFromPlace(
               placeId,
-              lat:
-                  HomeController.to.dropoffLatLng.value?.latitude
-                      .toString()
-                      .obs ??
-                  ''.obs,
-              lng:
-                  HomeController.to.dropoffLatLng.value?.longitude
-                      .toString()
-                      .obs ??
-                  ''.obs,
+              latLng:
+                  isPickup
+                      ? HomeController.to.pickupLatLng
+                      : HomeController.to.dropoffLatLng,
 
               selectedAddress: HomeController.to.selectedAddress,
             );
@@ -196,14 +217,7 @@ Widget locationSuggestionList() {
             controllerToUpdate.value.text =
                 HomeController.to.selectedAddress.value;
             CommonController.to.addressSuggestion.clear();
-            if (HomeController.to.pickupLatLng.value != null &&
-                HomeController.to.dropoffLatLng.value != null) {
-              CommonController.to.drawPolylineBetweenPoints(
-                HomeController.to.pickupLatLng.value!,
-                HomeController.to.dropoffLatLng.value!,
-                NavigationController.to.routePolylines,
-              );
-            }
+
             HomeController.to.activeField.value = ''; // Reset
           },
         );

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
@@ -25,18 +24,8 @@ class PickupDropLocationWidget extends StatefulWidget {
 class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
   @override
   void initState() {
-    fetchAndSetAddress(CommonController.to.marketPosition.value);
-    HomeController.to.pickupLatLng.value =
-        CommonController.to.marketPosition.value;
+    HomeController.to.setCurrentLocationOnPickUp();
     super.initState();
-  }
-
-  void fetchAndSetAddress(LatLng latLng) async {
-    HomeController
-        .to
-        .pickupLocationController
-        .value
-        .text = await CommonController.to.getAddressFromLatLng(latLng);
   }
 
   @override

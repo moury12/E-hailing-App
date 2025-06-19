@@ -101,7 +101,14 @@ class _HomePageState extends State<HomePage>
                   HomeController.to.handleBackNavigation();
                 },
                 onTap: () {
-                  Get.toNamed(NotificationPage.routeName);
+                  if (HomeController.to.wantToGo.value ||
+                      HomeController.to.setPickup.value ||
+                      HomeController.to.setDestination.value ||
+                      HomeController.to.selectEv.value) {
+                    HomeController.to.setCurrentLocationOnPickUp();
+                  } else {
+                    Get.toNamed(NotificationPage.routeName);
+                  }
                 },
                 isBack:
                     HomeController.to.wantToGo.value ||
