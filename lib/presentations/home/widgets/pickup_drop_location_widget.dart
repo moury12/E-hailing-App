@@ -46,7 +46,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             height: 45.h,
             onChanged: (v) {
               HomeController.to.activeField.value = "pickup";
-              CommonController.to.fetchSuggestedPlaces(v);
+              CommonController.to.fetchSuggestedPlacesWithRadius(v);
             },
 
             textEditingController:
@@ -75,7 +75,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             height: 45.h,
             onChanged: (v) {
               HomeController.to.activeField.value = "dropoff";
-              CommonController.to.fetchSuggestedPlaces(v);
+              CommonController.to.fetchSuggestedPlacesWithRadius(v);
             },
             suffixIcon: ButtonTapWidget(
               onTap: () {

@@ -131,6 +131,39 @@ class CommonController extends GetxController {
     }
   }
 
+  Future<void> fetchSuggestedPlacesWithRadius(
+    String input, {
+    double radiusInMeters = 5000,
+  }) async {
+    isLoadingOnLocationSuggestion.value = true;
+
+    String url =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=${GoogleClient.googleMapUrl}';
+
+    // Add location bias if current location is available
+    if (marketPosition.value.latitude != 0.0 &&
+        marketPosition.value.longitude != 0.0) {
+      url +=
+          '&location=${marketPosition.value.latitude},${marketPosition.value.longitude}';
+      url += '&radius=${radiusInMeters.toInt()}';
+    }
+
+    final response = await http.get(Uri.parse(url));
+    debugPrint(url);
+    debugPrint(response.body);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      addressSuggestion.value = data['predictions'];
+      if (data['predictions'].isEmpty) {
+        fetchCurrentLocation();
+      }
+      isLoadingOnLocationSuggestion.value = false;
+    } else {
+      isLoadingOnLocationSuggestion.value = false;
+    }
+  }
+
   Future<String> getAddressFromLatLng(LatLng latLng) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
