@@ -25,8 +25,29 @@ import '../../navigation/controllers/navigation_controller.dart';
 import '../../navigation/widgets/custom_container_with_border.dart';
 import 'search_field_button_widget.dart';
 
-class HomeSetLocationWidget extends StatelessWidget {
+class HomeSetLocationWidget extends StatefulWidget {
   const HomeSetLocationWidget({super.key});
+
+  @override
+  State<HomeSetLocationWidget> createState() => _HomeSetLocationWidgetState();
+}
+
+class _HomeSetLocationWidgetState extends State<HomeSetLocationWidget> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      HomeController.to.mapDragable.value = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      HomeController.to.mapDragable.value = false;
+    });
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +61,21 @@ class HomeSetLocationWidget extends StatelessWidget {
                   : AppStaticStrings.setYourPickupLocation,
           style: poppinsSemiBold,
         ),
+
         Obx(() {
           return CustomWhiteContainerWithBorder(
             img: pickLocationIcon,
-            text: NavigationController.to.placeName.value,
+            text:
+                HomeController.to.setDestination.value
+                    ? HomeController.to.dropoffAddressText.value
+                    : HomeController.to.pickupAddressText.value,
             cross: ButtonTapWidget(
               onTap: () {
-                NavigationController.to.placeName.value = '';
+                if (HomeController.to.setDestination.value) {
+                  HomeController.to.dropOffLocationController.value.clear();
+                } else {
+                  HomeController.to.pickupLocationController.value.clear();
+                }
               },
               child: Padding(
                 padding: padding6,
@@ -57,17 +86,20 @@ class HomeSetLocationWidget extends StatelessWidget {
         }),
         CustomButton(
           onTap: () {
+            logger.d(HomeController.to.pickupLocationController.value.text);
+
             if (!HomeController.to.setDestination.value) {
               HomeController.to.setDestination.value = true;
               HomeController.to.setPickup.value = false;
             } else {
               // HomeController.to.selectEv.value = false;
-              HomeController.to.selectEv.value = true;
+              HomeController.to.wantToGo.value = true;
               HomeController.to.setDestination.value = false;
             }
           },
           title: AppStaticStrings.continueButton,
         ),
+        space8H,
       ],
     );
   }
@@ -170,7 +202,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
           icon: savedPlaceIcon,
           text: AppStaticStrings.savedPlace,
           onTap: () {
-            Get.toNamed(SavedLocationPage.routeName);
+            Get.toNamed(SavedLocationPage.routeName, arguments: fromHome);
           },
         ),
       ],

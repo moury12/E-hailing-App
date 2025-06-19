@@ -1,23 +1,34 @@
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/save-location/model/save_location_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SaveLocationController extends GetxController {
+  @override
+  void onInit() {
+    getSaveLocationListRequest();
+    super.onInit();
+  }
+
   static SaveLocationController get to => Get.find();
   Rx<TextEditingController> searchFieldController = TextEditingController().obs;
   RxString lat = ''.obs;
   RxString lng = ''.obs;
   RxString selectedAddress = ''.obs;
   RxBool isLoadingSaveLocation = false.obs;
+  RxBool isLoadingSpecificSaveLocation = false.obs;
   RxBool isLoadingDeleteLocation = false.obs;
   RxBool isLoadingSavedLocation = false.obs;
   TextEditingController placeName = TextEditingController();
+  Rx<SaveLocationModel> savedSpecificLocation = SaveLocationModel().obs;
 
   ///====================save location pagination variable========================///
 
@@ -162,5 +173,51 @@ class SaveLocationController extends GetxController {
       isLoadingDeleteLocation.value = false;
       logger.e(e.toString());
     }
+  }
+
+  ///------------------------------ get specific save location method -------------------------///
+
+  Future<void> getSpecificSavedLocationRequest({required String id}) async {
+    try {
+      isLoadingSpecificSaveLocation.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+      final response = await ApiService().request(
+        endpoint: getSpecificSaveLocationEndPoint,
+        method: 'GET',
+        queryParams: {"savedLocationId": id},
+      );
+      isLoadingSpecificSaveLocation.value = false;
+      if (response['success'] == true) {
+        logger.d(response);
+        savedSpecificLocation.value = SaveLocationModel.fromJson(
+          response['data'],
+        );
+      } else {
+        logger.e(response);
+        if (kDebugMode) {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed,
+          );
+        }
+      }
+    } catch (e) {
+      logger.e(e.toString());
+      isLoadingSpecificSaveLocation.value = false;
+    }
+  }
+
+  Future<void> selectLatlngFromSaveLocation({required String id}) async {
+    await getSpecificSavedLocationRequest(id: id);
+    HomeController.to.dropOffLocationController.value.text =
+        savedSpecificLocation.value.locationAddress ??
+        AppStaticStrings.noDataFound;
+    HomeController.to.dropoffLatLng.value = LatLng(
+      savedSpecificLocation.value.location!.coordinates!.last,
+      savedSpecificLocation.value.location!.coordinates!.first,
+    );
+    Get.back();
   }
 }

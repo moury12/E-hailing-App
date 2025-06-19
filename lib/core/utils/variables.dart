@@ -4,17 +4,17 @@ import 'package:e_hailing_app/presentations/driver-statics/model/StaticModel.dar
 import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-var logger = Logger(
-  printer: PrettyPrinter(),
-);
+
+var logger = Logger(printer: PrettyPrinter());
 const String authBox = 'auth';
 const String verifyEmail = 'verifyEmail';
-String roleKey ='role';
+String roleKey = 'role';
 String userBoxName = 'user';
 String initialKey = 'initial';
 String tokenKey = 'token';
 String verifyTokenKey = 'verify token';
 String dummyProfileImage = 'https://picsum.photos/200/300.jpg';
+String fromHome = "Home";
 List<TripCancellationModel> tripCancellationList = [
   TripCancellationModel(
     title: AppStaticStrings.riderNoShow,
@@ -91,8 +91,8 @@ List<StaticModel> earningList = [
     val: 'RM 600',
   ),
 ];
-List<String> paymentMethodList =[
+List<String> paymentMethodList = [
   AppStaticStrings.creditDebitCards,
   AppStaticStrings.handCash,
-  AppStaticStrings.dCoin
+  AppStaticStrings.dCoin,
 ];

@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,16 +28,27 @@ class GoogleMapWidget extends StatelessWidget {
           Marker(
             markerId: const MarkerId("selected_location"),
             position: CommonController.to.marketPosition.value,
-            draggable: false,
+            draggable: HomeController.to.mapDragable.value,
             onTap: () {
               NavigationController.to.markerDraging.value = true;
             },
             onDragStart: (value) {
               NavigationController.to.markerDraging.value = true;
             },
-            onDragEnd: (value) {
+            onDragEnd: (value) async {
               CommonController.to.marketPosition.value = value;
-              NavigationController.to.getPlaceName(value);
+              if (HomeController.to.setDestination.value) {
+                HomeController.to.dropoffLatLng.value = value;
+              } else {
+                HomeController.to.pickupLatLng.value = value;
+              }
+
+              await HomeController.to.getPlaceName(
+                value,
+                HomeController.to.setDestination.value
+                    ? HomeController.to.dropOffLocationController.value
+                    : HomeController.to.pickupLocationController.value,
+              );
               NavigationController.to.markerDraging.value = false;
             },
             infoWindow: const InfoWindow(

@@ -8,7 +8,6 @@ import 'package:e_hailing_app/presentations/my-rides/views/my_ride_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/profile_page.dart';
 import 'package:e_hailing_app/presentations/track-ride/views/track_ride_page.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -23,14 +22,13 @@ import '../model/navigation_model.dart';
 
 class NavigationController extends GetxController {
   static NavigationController get to => Get.find();
-  RxString placeName = 'Fetching location...'.obs;
   RxInt currentNavIndex = 0.obs;
   RxBool markerDraging = false.obs;
   RxSet<Polyline> routePolylines = <Polyline>{}.obs;
 
   @override
   void onInit() {
-    getPlaceName(CommonController.to.marketPosition.value);
+    // getPlaceName(CommonController.to.marketPosition.value);
     CommonController.to.isDriver.value
         ? Get.put(DashBoardController())
         : Get.put(HomeController());
@@ -55,22 +53,6 @@ class NavigationController extends GetxController {
       MessageListPage(),
       ProfilePage(),
     ];
-  }
-
-  Future<void> getPlaceName(LatLng position) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks[0];
-        placeName.value = '${place.street} ${place.locality} ${place.country}';
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-      placeName.value = 'unknown location';
-    }
   }
 
   RxList<NavigationModel> navList =

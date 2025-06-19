@@ -2,6 +2,7 @@ import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/pagination_loading_widget.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/save-location/controllers/save_location_controller.dart';
 import 'package:e_hailing_app/presentations/save-location/model/save_location_model.dart';
 import 'package:e_hailing_app/presentations/save-location/views/add_place_page.dart';
@@ -9,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/components/custom_appbar.dart';
+import '../widgets/empty_widget.dart';
 import '../widgets/saved_location_item_widget.dart';
+import '../widgets/shimmer_save_location_item_widget.dart';
 
 class SavedLocationPage extends StatefulWidget {
   static const String routeName = '/save-location';
@@ -22,6 +25,7 @@ class SavedLocationPage extends StatefulWidget {
 
 class _SavedLocationPageState extends State<SavedLocationPage> {
   final ScrollController scrollController = ScrollController();
+  final arg = Get.arguments;
 
   @override
   void initState() {
@@ -61,9 +65,44 @@ class _SavedLocationPageState extends State<SavedLocationPage> {
             Obx(() {
               return SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  childCount: SaveLocationController.to.saveLocationList.length,
+                  childCount:
+                      SaveLocationController.to.isLoadingSavedLocation.value
+                          ? 6
+                          : SaveLocationController.to.saveLocationList.length,
                   (context, index) {
+                    if (SaveLocationController
+                        .to
+                        .isLoadingSavedLocation
+                        .value) {
+                      return shimmerSavedLocationItem();
+                    } else if (SaveLocationController
+                        .to
+                        .saveLocationList
+                        .isEmpty) {
+                      return EmptyWidget(
+                        text: "Saved Location not available!!",
+                      );
+                    }
                     return SavedLocationItemWidget(
+                      isLoading:
+                          SaveLocationController
+                              .to
+                              .isLoadingSpecificSaveLocation
+                              .value,
+                      onTap:
+                          arg != null && arg == fromHome
+                              ? () {
+                                SaveLocationController.to
+                                    .selectLatlngFromSaveLocation(
+                                      id:
+                                          SaveLocationController
+                                              .to
+                                              .saveLocationList[index]
+                                              .sId
+                                              .toString(),
+                                    );
+                              }
+                              : null,
                       saveLocationModel:
                           SaveLocationController.to.saveLocationList[index],
                     );
