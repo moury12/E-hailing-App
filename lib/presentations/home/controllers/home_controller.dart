@@ -1,12 +1,7 @@
-import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
-import 'package:e_hailing_app/core/api-client/api_service.dart';
-import 'package:e_hailing_app/core/constants/hive_boxes.dart';
-import 'package:e_hailing_app/core/helper/helper_function.dart';
-import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/model/car_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -21,12 +16,15 @@ class HomeController extends GetxController {
   RxBool addStops = false.obs;
   RxBool isLoadingNewTrip = false.obs;
   RxBool isLoadingCar = false.obs;
+  RxBool mapDragable = false.obs;
 
   RxString selectedAddress = ''.obs;
   RxString activeField = ''.obs; // "pickup" or "dropoff"
   Rx<LatLng?> pickupLatLng = Rx<LatLng?>(null);
   Rx<LatLng?> dropoffLatLng = Rx<LatLng?>(null);
   final RxList<CarModel> carList = <CarModel>[].obs;
+  RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;
+  RxString dropoffAddressText = 'Drag pin to set your DropOff location'.obs;
   Rx<TextEditingController> pickupLocationController =
       TextEditingController().obs;
   Rx<TextEditingController> dropOffLocationController =
@@ -121,75 +119,37 @@ class HomeController extends GetxController {
     selectEv.value = true;
   }
 
-  ///====================save location pagination variable========================///
-
-  final RxInt currentPage = 1.obs;
-  final RxInt itemsPerPage = 10.obs;
-  final RxInt totalCarPages = 5.obs;
-  final RxBool isLoadingMore = false.obs;
-
-  ///------------------------------  get car list method -------------------------///
-
-  Future<void> getCarListRequest({bool loadMore = false}) async {
+  Future<void> getPlaceName(
+    LatLng position,
+    TextEditingController controller,
+  ) async {
     try {
-      if (loadMore && currentPage.value >= totalCarPages.value) {
-        return;
-      }
-
-      if (loadMore) {
-        currentPage.value++;
-        isLoadingMore.value = true;
-      } else {
-        isLoadingCar.value = true;
-        currentPage.value = 1;
-      }
-      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
-
-      final response = await ApiService().request(
-        endpoint: getCarEndPoint,
-        method: 'GET',
-        queryParams: {
-          'page': currentPage.value.toString(),
-          'limit': itemsPerPage.value.toString(),
-          'sort': 'updatedAt',
-          // 'order': 'desc',
-        },
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
       );
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        String address =
+            '${place.subLocality} ${place.locality} ${place.country}';
+        controller.text = address;
 
-      isLoadingCar.value = false;
-      isLoadingMore.value = false;
-      if (response['success'] == true) {
-        if (response['data']['meta'] != null) {
-          currentPage.value = response['data']['meta']['page'] ?? 1;
-          totalCarPages.value =
-              response['data']['meta']['totalPage'] ?? 1; // Add this line
-
-          itemsPerPage.value = response['data']['meta']['limit'] ?? 10;
-        }
-        final newLocation =
-            (response['data']["result"] as List)
-                .map((e) => CarModel.fromJson(e))
-                .toList();
-
-        if (loadMore) {
-          carList.addAll(newLocation); // Append for load more
+        // ✅ Also update the observable string
+        if (setDestination.value) {
+          dropoffAddressText.value = address;
         } else {
-          carList.value = newLocation; // Replace for refresh
-        }
-        logger.d(response);
-      } else {
-        logger.e(response);
-        if (kDebugMode) {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed,
-          );
+          pickupAddressText.value = address;
         }
       }
     } catch (e) {
-      logger.e(e.toString());
-      isLoadingCar.value = false;
+      debugPrint(e.toString());
+      controller.text = 'unknown location';
+
+      if (setDestination.value) {
+        dropoffAddressText.value = 'unknown location';
+      } else {
+        pickupAddressText.value = 'unknown location';
+      }
     }
   }
 }

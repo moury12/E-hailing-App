@@ -24,7 +24,9 @@ class PickupDropLocationWidget extends StatefulWidget {
 class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
   @override
   void initState() {
-    HomeController.to.setCurrentLocationOnPickUp();
+    if (HomeController.to.pickupLocationController.value.text.isEmpty) {
+      HomeController.to.setCurrentLocationOnPickUp();
+    }
     super.initState();
   }
 

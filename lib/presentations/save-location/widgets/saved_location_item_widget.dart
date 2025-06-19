@@ -19,6 +19,7 @@ class SavedLocationItemWidget extends StatelessWidget {
   final String? title;
   final Function()? onTap;
   final String? subText;
+  final bool? isLoading;
 
   const SavedLocationItemWidget({
     super.key,
@@ -29,6 +30,7 @@ class SavedLocationItemWidget extends StatelessWidget {
     this.subText,
     this.onTap,
     required this.saveLocationModel,
+    this.isLoading = false,
   });
 
   @override
@@ -40,61 +42,67 @@ class SavedLocationItemWidget extends StatelessWidget {
         color: AppColors.kWhiteColor,
         border: Border.all(color: AppColors.kPrimaryColor, width: 1.w),
       ),
-      child: ButtonTapWidget(
-        radius: 16.r,
-        onTap: onTap ?? () {},
-        child: Padding(
-          padding: padding8,
-          child: Row(
-            spacing: 6.w,
-            children: [
-              SvgPicture.asset(img ?? homeLocationIcon, height: 25),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text:
-                        title ??
-                        saveLocationModel.locationName ??
-                        AppStaticStrings.noDataFound,
-                    style: poppinsSemiBold,
-                  ),
-                  subText != null
-                      ? CustomText(
-                        text:
-                            subText ??
-                            saveLocationModel.locationAddress ??
-                            AppStaticStrings.noDataFound,
-                        style: poppinsThin,
-                        color: AppColors.kLightBlackColor,
-                      )
-                      : SizedBox.shrink(),
-                ],
-              ),
-              Spacer(),
-              trailingImg != null
-                  ? SvgPicture.asset(trailingImg ?? deleteAccountIcon)
-                  : SaveLocationController.to.isLoadingDeleteLocation.value
-                  ? PaginationLoadingWidget()
-                  : ButtonTapWidget(
-                    onTap: () {
-                      SaveLocationController.to.deletePlaceRequest(
-                        locationID: saveLocationModel.sId ?? "",
-                      );
-                    },
-                    child: Padding(
-                      padding: padding6,
-                      child: Icon(
-                        CupertinoIcons.delete,
-                        size: 20.sp,
-                        color: AppColors.kPrimaryColor,
+      child:
+          isLoading == true
+              ? Padding(padding: padding12, child: PaginationLoadingWidget())
+              : ButtonTapWidget(
+                radius: 16.r,
+                onTap: onTap ?? () {},
+                child: Padding(
+                  padding: padding8,
+                  child: Row(
+                    spacing: 6.w,
+                    children: [
+                      SvgPicture.asset(img ?? homeLocationIcon, height: 25),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text:
+                                title ??
+                                saveLocationModel.locationName ??
+                                AppStaticStrings.noDataFound,
+                            style: poppinsSemiBold,
+                          ),
+                          subText != null
+                              ? CustomText(
+                                text:
+                                    subText ??
+                                    saveLocationModel.locationAddress ??
+                                    AppStaticStrings.noDataFound,
+                                style: poppinsThin,
+                                color: AppColors.kLightBlackColor,
+                              )
+                              : SizedBox.shrink(),
+                        ],
                       ),
-                    ),
+                      Spacer(),
+                      trailingImg != null
+                          ? SvgPicture.asset(trailingImg ?? deleteAccountIcon)
+                          : SaveLocationController
+                              .to
+                              .isLoadingDeleteLocation
+                              .value
+                          ? PaginationLoadingWidget()
+                          : ButtonTapWidget(
+                            onTap: () {
+                              SaveLocationController.to.deletePlaceRequest(
+                                locationID: saveLocationModel.sId ?? "",
+                              );
+                            },
+                            child: Padding(
+                              padding: padding6,
+                              child: Icon(
+                                CupertinoIcons.delete,
+                                size: 20.sp,
+                                color: AppColors.kPrimaryColor,
+                              ),
+                            ),
+                          ),
+                    ],
                   ),
-            ],
-          ),
-        ),
-      ),
+                ),
+              ),
     );
   }
 }

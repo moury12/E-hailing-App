@@ -171,11 +171,14 @@ class _HomePageState extends State<HomePage>
                               if (HomeController.to.wantToGo.value) {
                                 return HomeWantToGoContentWidget();
                               } else if (HomeController.to.setPickup.value) {
+                                HomeController.to.activeField.value = "pickup";
                                 return HomeSetLocationWidget();
                               } else if (HomeController
                                   .to
                                   .setDestination
                                   .value) {
+                                HomeController.to.activeField.value = "dropoff";
+
                                 return HomeSetLocationWidget();
                               } else if (HomeController.to.selectEv.value) {
                                 return HomeSelectEvWidget();
