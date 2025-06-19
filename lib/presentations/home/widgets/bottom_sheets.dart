@@ -175,6 +175,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                     HomeController.to.dropoffLatLng.value!,
                     NavigationController.to.routePolylines,
                   );
+                  HomeController.to.goToSelectEv();
                 } else {
                   logger.d(HomeController.to.dropoffLatLng.value);
                   logger.d(HomeController.to.pickupLatLng.value);
@@ -184,6 +185,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                   );
                 }
               },
+              shape: CircleBorder(),
               child: Icon(Icons.arrow_forward),
             ),
           ],
