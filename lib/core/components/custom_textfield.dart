@@ -1,4 +1,3 @@
-import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +38,7 @@ class CustomTextField extends StatefulWidget {
     this.focusedBorder,
     this.enabledBorder,
     this.fillColor = Colors.transparent,
-    this.borderColor ,
+    this.borderColor,
     this.contentPadding = const EdgeInsets.only(left: 10),
     this.title,
     this.isEnable = true,
@@ -97,129 +96,142 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        widget.title != null
-            ? Row(
-              children: [
-                Text(
-                  widget.title ?? '',
-                  style: poppinsMedium.copyWith(
-                    color: AppColors.kTextDarkBlueColor,
-                    fontSize: getFontSizeSemiSmall(),
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          widget.title != null
+              ? Row(
+                children: [
+                  Text(
+                    widget.title ?? '',
+                    style: poppinsMedium.copyWith(
+                      color: AppColors.kTextDarkBlueColor,
+                      fontSize: getFontSizeSemiSmall(),
+                    ),
                   ),
-                ),
-                widget.isRequired == true
-                    ? Padding(
-                      padding: const EdgeInsets.only(left: 4),
-                      child: Text(
-                        '*',
-                        style: poppinsRegular.copyWith(
-                          color: Colors.red,
-                          fontSize: getFontSizeSemiSmall(),
+                  widget.isRequired == true
+                      ? Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Text(
+                          '*',
+                          style: poppinsRegular.copyWith(
+                            color: Colors.red,
+                            fontSize: getFontSizeSemiSmall(),
+                          ),
                         ),
-                      ),
-                    )
-                    : const SizedBox.shrink(),
-              ],
-            )
-            : const SizedBox.shrink(),
-        widget.title != null ? space8H : const SizedBox.shrink(),
-        SizedBox(
-          height: widget.height, // Set the desired height here
-          child: TextFormField(
-            textAlign: widget.textAlign,
-            onTap: widget.onTap,
-            enabled: widget.isEnable,
-            autovalidateMode: AutovalidateMode.disabled,
-            inputFormatters: widget.inputFormatters,
-            onFieldSubmitted: widget.onFieldSubmitted,
-            readOnly: widget.readOnly,
-            controller: widget.textEditingController,
-            focusNode: widget.focusNode,
-            maxLength: widget.maxLength,
-            keyboardType: widget.keyboardType,
-            textInputAction: widget.textInputAction,
-            cursorColor: widget.cursorColor,
-            style:
-                widget.inputTextStyle ??
-                TextStyle(
-                  color: AppColors.kTextDarkBlueColor,
-                  fontWeight: FontWeight.w400,
-                  fontSize: getFontSizeSemiSmall(),
-                ),
-            onChanged: widget.onChanged,
-            maxLines: widget.maxLines,
-            obscureText: widget.isPassword ? obscureText : false,
-            validator: widget.validator,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 16.sp,
-                vertical: widget.maxLines! > 1 ? 12.sp : 12.sp,
-              ), // Adjust vertical padding
-              fillColor: widget.fillColor,
-              isCollapsed: widget.isCollapsed,
-              isDense: widget.isDense,
-              errorMaxLines: 2,
-              hintText: widget.hintText,
-              hintStyle:
-                  widget.hintStyle ??
+                      )
+                      : const SizedBox.shrink(),
+                ],
+              )
+              : const SizedBox.shrink(),
+          widget.title != null ? space8H : const SizedBox.shrink(),
+          SizedBox(
+            height: widget.height, // Set the desired height here
+            child: TextFormField(
+              textAlign: widget.textAlign,
+              onTap: widget.onTap,
+              enabled: widget.isEnable,
+              autovalidateMode: AutovalidateMode.disabled,
+              inputFormatters: widget.inputFormatters,
+              onFieldSubmitted: widget.onFieldSubmitted,
+              readOnly: widget.readOnly,
+              controller: widget.textEditingController,
+              focusNode: widget.focusNode,
+              maxLength: widget.maxLength,
+              keyboardType: widget.keyboardType,
+              textInputAction: widget.textInputAction,
+              cursorColor: widget.cursorColor,
+              style:
+                  widget.inputTextStyle ??
                   TextStyle(
                     color: AppColors.kTextDarkBlueColor,
                     fontWeight: FontWeight.w400,
-                    fontSize: getFontSizeSmall(),
+                    fontSize: getFontSizeSemiSmall(),
                   ),
-              filled: true,
-              prefixIcon: widget.prefixIcon,
-              suffixIcon:
-                  widget.isPassword
-                      ? GestureDetector(
-                        onTap: toggle,
-                        child: obscureText 
-                            ? const Icon(
-                              Icons.visibility_off_outlined,
-                              color: AppColors.kTextColor,
-                            )
-                            : const Icon(
-                              Icons.visibility_outlined,
-                              color: AppColors.kTextColor,
-                            ),
-                      )
-                      : widget.suffixIcon,
-              suffixIconColor: widget.suffixIconColor,
-              disabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius ?? 8.r),
-                borderSide: BorderSide(
-                  color: widget.borderColor ?? Colors.black,
-                  width: 1,
+              onChanged: widget.onChanged,
+              maxLines: widget.maxLines,
+              obscureText: widget.isPassword ? obscureText : false,
+              validator: widget.validator,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16.sp,
+                  vertical: widget.maxLines! > 1 ? 12.sp : 12.sp,
                 ),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius ?? 8.r),
-                borderSide: BorderSide(
-                  color:  widget.borderColor ?? Colors.black,
-                  width: 1,
+                // Adjust vertical padding
+                fillColor: widget.fillColor,
+                isCollapsed: widget.isCollapsed,
+                isDense: widget.isDense,
+                errorMaxLines: 2,
+                hintText: widget.hintText,
+                hintStyle:
+                    widget.hintStyle ??
+                    TextStyle(
+                      color: AppColors.kTextDarkBlueColor,
+                      fontWeight: FontWeight.w400,
+                      fontSize: getFontSizeSmall(),
+                    ),
+                filled: true,
+                prefixIcon: widget.prefixIcon,
+                suffixIcon:
+                    widget.isPassword
+                        ? GestureDetector(
+                          onTap: toggle,
+                          child:
+                              obscureText
+                                  ? const Icon(
+                                    Icons.visibility_off_outlined,
+                                    color: AppColors.kTextColor,
+                                  )
+                                  : const Icon(
+                                    Icons.visibility_outlined,
+                                    color: AppColors.kTextColor,
+                                  ),
+                        )
+                        : widget.suffixIcon,
+                suffixIconColor: widget.suffixIconColor,
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? 8.r,
+                  ),
+                  borderSide: BorderSide(
+                    color: widget.borderColor ?? Colors.black,
+                    width: 1,
+                  ),
                 ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius ?? 8.r),
-                borderSide: BorderSide(
-                  color:  widget.borderColor ?? Colors.black,
-                  width: 1,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? 8.r,
+                  ),
+                  borderSide: BorderSide(
+                    color: widget.borderColor ?? Colors.black,
+                    width: 1,
+                  ),
                 ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius ?? 8.r),
-                borderSide: BorderSide(
-                  color:  widget.borderColor ?? Colors.black,
-                  width: 1,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? 8.r,
+                  ),
+                  borderSide: BorderSide(
+                    color: widget.borderColor ?? Colors.black,
+                    width: 1,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? 8.r,
+                  ),
+                  borderSide: BorderSide(
+                    color: widget.borderColor ?? Colors.black,
+                    width: 1,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

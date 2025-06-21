@@ -114,35 +114,31 @@ class HomeSelectEvWidget extends StatelessWidget {
       spacing: 12.h,
       children: [
         CustomText(text: AppStaticStrings.selectYourEv, style: poppinsSemiBold),
-        ...List.generate(
-          4,
-          (index) =>
-              index == 3
-                  ? CarDetailsCardWidget(
-                    onTap: () {
-                      //   HomeController.to.resetAllStates();
-                      //   HomeController.to.isLoadingNewTrip.value = true;
-                      //   Future.delayed(Duration(seconds: 4), () {
-                      //     HomeController.to.isLoadingNewTrip.value = false;
-                      //     Get.toNamed(RequestTripPage.routeName);
-                      //   });
-                      // },
-                      Get.toNamed(RequestTripPage.routeName);
-                    },
-                  )
-                  : SelectCarITemWidget(
-                    onTap: () {
-                      // HomeController.to.resetAllStates();
-                      // HomeController.to.isLoadingNewTrip.value = true;
-                      // Future.delayed(Duration(seconds: 4), () {
-                      //   HomeController.to.isLoadingNewTrip.value = false;
-                      //   Get.toNamed(RequestTripPage.routeName);
-                      // });
+        // CarDetailsCardWidget(
+        //   onTap: () {
+        //     //   HomeController.to.resetAllStates();
+        //     //   HomeController.to.isLoadingNewTrip.value = true;
+        //     //   Future.delayed(Duration(seconds: 4), () {
+        //     //     HomeController.to.isLoadingNewTrip.value = false;
+        //     //     Get.toNamed(RequestTripPage.routeName);
+        //     //   });
+        //     // },
+        //     Get.toNamed(RequestTripPage.routeName);
+        //   },
+        // ),
+        SelectCarITemWidget(
+          onTap: () {
+            // HomeController.to.resetAllStates();
+            // HomeController.to.isLoadingNewTrip.value = true;
+            // Future.delayed(Duration(seconds: 4), () {
+            //   HomeController.to.isLoadingNewTrip.value = false;
+            //   Get.toNamed(RequestTripPage.routeName);
+            // });
 
-                      Get.toNamed(RequestTripPage.routeName);
-                    },
-                  ),
+            Get.toNamed(RequestTripPage.routeName);
+          },
         ),
+        space12H,
       ],
     );
   }
@@ -170,12 +166,30 @@ class HomeWantToGoContentWidget extends StatelessWidget {
               onPressed: () async {
                 if (HomeController.to.pickupLatLng.value != null &&
                     HomeController.to.dropoffLatLng.value != null) {
-                  await CommonController.to.drawPolylineBetweenPoints(
-                    HomeController.to.pickupLatLng.value!,
-                    HomeController.to.dropoffLatLng.value!,
-                    NavigationController.to.routePolylines,
-                  );
-                  HomeController.to.goToSelectEv();
+                  final pickup = HomeController.to.pickupLatLng.value!;
+                  final dropoff = HomeController.to.dropoffLatLng.value!;
+                  HomeController.to.dropOffFocusNode.unfocus();
+                  HomeController.to.pickupFocusNode.unfocus();
+                  // Only draw if coordinates changed or polyline doesn't exist
+                  if (!HomeController.to.isPolylineDrawn.value ||
+                      HomeController.to.lastPickupLatLng != pickup ||
+                      HomeController.to.lastDropoffLatLng != dropoff) {
+                    await CommonController.to.drawPolylineBetweenPoints(
+                      pickup,
+                      dropoff,
+                      NavigationController.to.routePolylines,
+                    );
+
+                    // Update cache
+                    HomeController.to.lastPickupLatLng = pickup;
+                    HomeController.to.lastDropoffLatLng = dropoff;
+                    HomeController.to.isPolylineDrawn.value = true;
+                    Future.delayed(Duration(seconds: 2), () {
+                      Get.toNamed(RequestTripPage.routeName);
+                    });
+                  } else {
+                    Get.toNamed(RequestTripPage.routeName);
+                  }
                 } else {
                   logger.d(HomeController.to.dropoffLatLng.value);
                   logger.d(HomeController.to.pickupLatLng.value);
@@ -253,6 +267,8 @@ Widget locationSuggestionList() {
             CommonController.to.addressSuggestion.clear();
 
             HomeController.to.activeField.value = ''; // Reset
+            HomeController.to.dropOffFocusNode.unfocus();
+            HomeController.to.pickupFocusNode.unfocus();
           },
         );
       }),
