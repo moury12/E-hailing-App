@@ -185,69 +185,101 @@ class CommonController extends GetxController {
     }
   }
 
-  Future<void> drawPolylineBetweenPoints(
+  Future<bool> drawPolylineBetweenPoints(
     LatLng start,
     LatLng end,
-    RxSet<Polyline> routePolylines,
+    RxSet routePolylines,
   ) async {
-    final apiKey = GoogleClient.googleMapUrl;
-    final url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
+    try {
+      final apiKey = GoogleClient.googleMapUrl;
+      final url =
+          'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
 
-    final response = await http.get(Uri.parse(url));
-    logger.d("------------------------------");
-    logger.d(response.body);
-    logger.d(response.statusCode.toString());
+      final response = await http.get(Uri.parse(url));
+      logger.d("------------------------------");
+      logger.d(response.body);
+      logger.d(response.statusCode.toString());
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-      if (data['routes'] != null && data['routes'].isNotEmpty) {
-        final points = data['routes'][0]['overview_polyline']['points'];
-        List<LatLng> polylinePoints = decodePolyline(points);
+        if (data['routes'] != null && data['routes'].isNotEmpty) {
+          final points = data['routes'][0]['overview_polyline']['points'];
+          List<LatLng> polylinePoints = decodePolyline(points);
 
-        final polyline = Polyline(
-          polylineId: const PolylineId('route_line'),
-          color: AppColors.kPrimaryColor,
-          width: 5,
-          points: polylinePoints,
-        );
+          final polyline = Polyline(
+            polylineId: const PolylineId('route_line'),
+            color: AppColors.kPrimaryColor,
+            width: 2,
+            points: polylinePoints,
+          );
 
-        routePolylines.value = {polyline};
+          // Alternative if you still have issues:
+          Set<Polyline> newPolylines = <Polyline>{};
+          newPolylines.add(polyline);
+          routePolylines.value = newPolylines;
+          // Animate camera to show the route
+          await _animateCameraToRoute(polylinePoints);
 
-        // Wait a bit to ensure map controller is ready
-        await Future.delayed(const Duration(milliseconds: 500));
-
-        // Check if map controller is available
-        if (CommonController.to.mapController != null) {
-          LatLngBounds bounds = getBoundsFromPoints(polylinePoints);
-          try {
-            // Try with better centering and more padding
-            await CommonController.to.mapController!.animateCamera(
-              CameraUpdate.newLatLngBounds(
-                bounds,
-                100,
-              ), // More padding for better centering
-            );
-            debugPrint("Camera animated successfully");
-          } catch (e) {
-            debugPrint("Error animating camera: $e");
-            // Better fallback: Calculate center and appropriate zoom level
-            LatLng center = _calculateCenter(polylinePoints);
-            double zoom = _calculateZoomLevel(bounds);
-
-            await CommonController.to.mapController!.animateCamera(
-              CameraUpdate.newLatLngZoom(center, zoom),
-            );
-          }
+          return true; // Successfully drew polyline
         } else {
-          debugPrint("Map controller is null");
+          showCustomSnackbar(
+            title: "Sorry!!",
+            message: "No route found between selected locations.",
+          );
+          return false;
         }
       } else {
-        showCustomSnackbar(title: "Sorry!!", message: "No route found.");
+        print("Failed to fetch directions: ${response.body}");
+        showCustomSnackbar(
+          title: "Error!!",
+          message: "Failed to get route. Please try again.",
+        );
+        return false;
+      }
+    } catch (e) {
+      debugPrint("Error in drawPolylineBetweenPoints: $e");
+      showCustomSnackbar(
+        title: "Error!!",
+        message: "Something went wrong. Please try again.",
+      );
+      return false;
+    }
+  }
+
+  // Separate method for camera animation with better error handling
+  Future<void> _animateCameraToRoute(List<LatLng> polylinePoints) async {
+    // Wait a bit to ensure map controller is ready
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // Check if map controller is available
+    if (CommonController.to.mapController != null) {
+      try {
+        LatLngBounds bounds = getBoundsFromPoints(polylinePoints);
+
+        await CommonController.to.mapController!.animateCamera(
+          CameraUpdate.newLatLngBounds(bounds, 100),
+        );
+
+        debugPrint("Camera animated successfully");
+      } catch (e) {
+        debugPrint("Error animating camera: $e");
+        // Fallback: Calculate center and appropriate zoom level
+        try {
+          LatLng center = _calculateCenter(polylinePoints);
+          double zoom = _calculateZoomLevel(
+            getBoundsFromPoints(polylinePoints),
+          );
+
+          await CommonController.to.mapController!.animateCamera(
+            CameraUpdate.newLatLngZoom(center, zoom),
+          );
+        } catch (fallbackError) {
+          debugPrint("Fallback camera animation also failed: $fallbackError");
+        }
       }
     } else {
-      print("Failed to fetch directions: ${response.body}");
+      debugPrint("Map controller is null");
     }
   }
 

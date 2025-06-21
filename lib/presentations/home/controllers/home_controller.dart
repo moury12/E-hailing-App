@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/model/car_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,6 +45,14 @@ class HomeController extends GetxController {
         lastDropoffLatLng != HomeController.to.dropoffLatLng.value;
   }
 
+  void resetLocationState() {
+    clearAllFocus();
+    // Reset polyline state if needed
+    isPolylineDrawn.value = false;
+    lastPickupLatLng = null;
+    lastDropoffLatLng = null;
+  }
+
   void setCurrentLocationOnPickUp() async {
     fetchAndSetAddress(CommonController.to.marketPosition.value);
     HomeController.to.pickupLatLng.value =
@@ -53,6 +62,9 @@ class HomeController extends GetxController {
   void fetchAndSetAddress(LatLng latLng) async {
     pickupLocationController.value.text = await CommonController.to
         .getAddressFromLatLng(latLng);
+    pickupAddressText.value = await CommonController.to.getAddressFromLatLng(
+      latLng,
+    );
   }
 
   void updatePreviousRoute(String route) {
@@ -102,6 +114,12 @@ class HomeController extends GetxController {
     return false;
   }
 
+  void clearAllFocus() {
+    pickupFocusNode.unfocus();
+    dropOffFocusNode.unfocus();
+    activeField.value = "";
+  }
+
   // Helper method to reset all states
   void resetAllStates() {
     wantToGo.value = false;
@@ -142,8 +160,9 @@ class HomeController extends GetxController {
       );
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
+        logger.d(place.toString());
         String address =
-            '${place.subLocality} ${place.locality} ${place.country}';
+            ' ${place.subLocality ?? place.subAdministrativeArea} ${place.locality} ${place.country}';
         controller.text = address;
 
         // ✅ Also update the observable string

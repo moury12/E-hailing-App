@@ -27,7 +27,9 @@ class GoogleMapWidget extends StatelessWidget {
         markers: {
           Marker(
             markerId: const MarkerId("selected_location"),
-            position: CommonController.to.marketPosition.value,
+            position:
+                HomeController.to.dropoffLatLng.value ??
+                CommonController.to.marketPosition.value,
             draggable: HomeController.to.mapDragable.value,
             onTap: () {
               NavigationController.to.markerDraging.value = true;
