@@ -17,12 +17,17 @@ class HomeController extends GetxController {
   RxBool isLoadingNewTrip = false.obs;
   RxBool isLoadingCar = false.obs;
   RxBool mapDragable = false.obs;
-
+  LatLng? lastPickupLatLng;
+  LatLng? lastDropoffLatLng;
+  RxBool isPolylineDrawn = false.obs;
   RxString selectedAddress = ''.obs;
   RxString activeField = ''.obs; // "pickup" or "dropoff"
   Rx<LatLng?> pickupLatLng = Rx<LatLng?>(null);
   Rx<LatLng?> dropoffLatLng = Rx<LatLng?>(null);
   final RxList<CarModel> carList = <CarModel>[].obs;
+  FocusNode pickupFocusNode = FocusNode();
+  FocusNode dropOffFocusNode = FocusNode();
+
   RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;
   RxString dropoffAddressText = 'Drag pin to set your DropOff location'.obs;
   Rx<TextEditingController> pickupLocationController =
@@ -31,6 +36,13 @@ class HomeController extends GetxController {
       TextEditingController().obs;
   AnimationController? controller;
   RxString previousRoute = ''.obs;
+
+  bool shouldRedrawPolyline() {
+    // Compare current coordinates with previously stored ones
+    // Return true if they're different
+    return lastPickupLatLng != HomeController.to.pickupLatLng.value ||
+        lastDropoffLatLng != HomeController.to.dropoffLatLng.value;
+  }
 
   void setCurrentLocationOnPickUp() async {
     fetchAndSetAddress(CommonController.to.marketPosition.value);

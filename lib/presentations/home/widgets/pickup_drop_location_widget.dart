@@ -45,7 +45,13 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             hintText: AppStaticStrings.pickupLocation,
             fillColor: AppColors.kWhiteColor,
             borderColor: AppColors.kGreyColor,
+            onTap: () {
+              print("focused");
+              HomeController.to.activeField.value = "pickup";
+              HomeController.to.pickupFocusNode.requestFocus(); // 👈 Add this
+            },
             height: 45.h,
+            focusNode: HomeController.to.pickupFocusNode,
             onChanged: (v) {
               HomeController.to.activeField.value = "pickup";
               CommonController.to.fetchSuggestedPlacesWithRadius(v);
@@ -68,7 +74,12 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
 
         Obx(() {
           return CustomTextField(
+            focusNode: HomeController.to.dropOffFocusNode,
             borderRadius: 24.r,
+            onTap: () {
+              HomeController.to.activeField.value = "dropoff";
+              HomeController.to.dropOffFocusNode.requestFocus(); // 👈 Add this
+            },
             hintText: AppStaticStrings.dropLocation,
             fillColor: AppColors.kWhiteColor,
             borderColor: AppColors.kGreyColor,
