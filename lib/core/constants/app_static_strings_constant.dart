@@ -285,6 +285,9 @@ class AppStaticStrings {
   static const String faqs = 'FAQs';
   static const String delete = 'Delete';
   static const String update = ' Update';
+  static const String tripDistance = 'Trip Distance (Meter)';
+
+  // static const String tripDuration = 'Trip Duration (min)';
   static const String howToBook = 'How to book an appointment?';
   static const String successfulDelivery =
       'How do I report a successful delivery?';

@@ -188,8 +188,10 @@ class CommonController extends GetxController {
   Future<bool> drawPolylineBetweenPoints(
     LatLng start,
     LatLng end,
-    RxSet routePolylines,
-  ) async {
+    RxSet routePolylines, {
+    required RxInt distance,
+    required RxInt duration,
+  }) async {
     try {
       final apiKey = GoogleClient.googleMapUrl;
       final url =
@@ -206,6 +208,7 @@ class CommonController extends GetxController {
         if (data['routes'] != null && data['routes'].isNotEmpty) {
           final points = data['routes'][0]['overview_polyline']['points'];
           List<LatLng> polylinePoints = decodePolyline(points);
+          final leg = data['routes'][0]['legs'][0];
 
           final polyline = Polyline(
             polylineId: const PolylineId('route_line'),
@@ -213,7 +216,10 @@ class CommonController extends GetxController {
             width: 2,
             points: polylinePoints,
           );
+          distance.value = leg['distance']['value']; // e.g., 4690
 
+          // ✅ Duration in seconds
+          duration.value = (leg['duration']['value'] / 60).ceil();
           // Alternative if you still have issues:
           Set<Polyline> newPolylines = <Polyline>{};
           newPolylines.add(polyline);

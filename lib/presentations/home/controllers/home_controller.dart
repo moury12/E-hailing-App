@@ -28,7 +28,8 @@ class HomeController extends GetxController {
   final RxList<CarModel> carList = <CarModel>[].obs;
   FocusNode pickupFocusNode = FocusNode();
   FocusNode dropOffFocusNode = FocusNode();
-
+  RxInt distance = 0.obs;
+  RxInt duration = 0.obs;
   RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;
   RxString dropoffAddressText = 'Drag pin to set your DropOff location'.obs;
   Rx<TextEditingController> pickupLocationController =
@@ -37,6 +38,7 @@ class HomeController extends GetxController {
       TextEditingController().obs;
   AnimationController? controller;
   RxString previousRoute = ''.obs;
+  Map<String, dynamic> tripArgs = {};
 
   bool shouldRedrawPolyline() {
     // Compare current coordinates with previously stored ones
