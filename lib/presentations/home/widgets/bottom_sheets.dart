@@ -170,7 +170,10 @@ class HomeWantToGoContentWidget extends StatelessWidget {
 
                 // Validate both locations are selected
                 if (HomeController.to.pickupLatLng.value == null ||
-                    HomeController.to.dropoffLatLng.value == null) {
+                    HomeController.to.dropoffLatLng.value ==
+                        null /*||
+                    HomeController.to.distance.value == 0 ||
+                    HomeController.to.duration.value == 0*/ ) {
                   logger.d("Pickup: ${HomeController.to.pickupLatLng.value}");
                   logger.d("Dropoff: ${HomeController.to.dropoffLatLng.value}");
 
@@ -203,6 +206,8 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                         pickup,
                         dropoff,
                         NavigationController.to.routePolylines,
+                        distance: HomeController.to.distance,
+                        duration: HomeController.to.duration,
                       );
 
                   if (polylineSuccess) {
@@ -210,10 +215,31 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                     HomeController.to.lastPickupLatLng = pickup;
                     HomeController.to.lastDropoffLatLng = dropoff;
                     HomeController.to.isPolylineDrawn.value = true;
-
+                    HomeController.to.tripArgs = {
+                      "pickUpAddress":
+                          HomeController.to.pickupLocationController.value.text,
+                      "pickUpLat": pickup.latitude,
+                      "pickUpLong": pickup.longitude,
+                      "dropOffAddress":
+                          HomeController
+                              .to
+                              .dropOffLocationController
+                              .value
+                              .text,
+                      "dropOffLat": dropoff.latitude,
+                      "dropOffLong": dropoff.longitude,
+                      "duration": HomeController.to.duration.value,
+                      // in minutes
+                      "distance": HomeController.to.distance.value,
+                      // in meters
+                      // "coupon" will be added later from RequestTripPage
+                    };
                     // Navigate to request trip page after successful polyline draw
                     await Future.delayed(const Duration(seconds: 3));
-                    Get.toNamed(RequestTripPage.routeName);
+                    Get.toNamed(
+                      RequestTripPage.routeName,
+                      arguments: HomeController.to.tripArgs,
+                    );
                   } else {
                     // Don't navigate if polyline failed
                     showCustomSnackbar(
@@ -224,7 +250,10 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                   }
                 } else {
                   // Polyline already exists and locations haven't changed
-                  Get.toNamed(RequestTripPage.routeName);
+                  Get.toNamed(
+                    RequestTripPage.routeName,
+                    arguments: HomeController.to.tripArgs,
+                  );
                 }
               },
               shape: const CircleBorder(),
