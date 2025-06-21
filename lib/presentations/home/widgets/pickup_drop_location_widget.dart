@@ -46,9 +46,14 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             fillColor: AppColors.kWhiteColor,
             borderColor: AppColors.kGreyColor,
             onTap: () {
-              print("focused");
+              Future.delayed(Duration(milliseconds: 50), () {
+                FocusScope.of(
+                  context,
+                ).requestFocus(HomeController.to.pickupFocusNode);
+              });
               HomeController.to.activeField.value = "pickup";
-              HomeController.to.pickupFocusNode.requestFocus(); // 👈 Add this
+              // // FocusScope.of(context).unfocus();
+              // HomeController.to.pickupFocusNode.requestFocus(); // 👈 Add this
             },
             height: 45.h,
             focusNode: HomeController.to.pickupFocusNode,
@@ -77,8 +82,13 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             focusNode: HomeController.to.dropOffFocusNode,
             borderRadius: 24.r,
             onTap: () {
+              // FocusScope.of(context).unfocus();
               HomeController.to.activeField.value = "dropoff";
-              HomeController.to.dropOffFocusNode.requestFocus(); // 👈 Add this
+              Future.delayed(Duration(milliseconds: 50), () {
+                FocusScope.of(
+                  context,
+                ).requestFocus(HomeController.to.dropOffFocusNode);
+              });
             },
             hintText: AppStaticStrings.dropLocation,
             fillColor: AppColors.kWhiteColor,
