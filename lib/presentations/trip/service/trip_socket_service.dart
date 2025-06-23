@@ -12,6 +12,10 @@ class TripSocketService {
   IO.Socket? _socket;
   bool _isConnected = false;
   Function(Map<String, dynamic>)? onTripRequested;
+  Function(Map<String, dynamic>)? onTripNoDriverFound;
+  Function(Map<String, dynamic>)? onTripAccepted;
+  Function(Map<String, dynamic>)? onTripDriverLocationUpdate;
+  Function(Map<String, dynamic>)? onTripUpdateStatus;
   Function(String)? onSocketError;
   Function()? onConnected;
   Function()? onDisconnected;
@@ -45,35 +49,46 @@ class TripSocketService {
           onTripRequested?.call(data);
         }
       });
-    } catch (e) {}
+      _socket?.on('trip_no_driver_found', (data) {
+        logger.d('No driver found: $data');
+        if (data is Map<String, dynamic>) {
+          onTripNoDriverFound?.call(data);
+        }
+      });
+      _socket?.on('trip_accepted', (data) {
+        logger.d('Trip accepted: $data');
+        if (data is Map<String, dynamic>) {
+          onTripAccepted?.call(data);
+        }
+      });
+      _socket?.on('trip_driver_location_update', (data) {
+        logger.d('Driver location update: $data');
+        if (data is Map<String, dynamic>) {
+          onTripDriverLocationUpdate?.call(data);
+        }
+      });
+
+      _socket?.on('trip_update_status', (data) {
+        logger.d('Trip status update: $data');
+        if (data is Map<String, dynamic>) {
+          onTripUpdateStatus?.call(data);
+        }
+      });
+      _socket?.on('socket_error', (data) {
+        logger.d('Socket error: $data');
+        onSocketError?.call(data.toString());
+      });
+    } catch (e) {
+      logger.e('Error connecting to socket: $e');
+    }
   }
 
-  void requestTrip({
-    required String pickupAddress,
-    required double pickupLat,
-    required double pickupLong,
-    required String dropOffAddress,
-    required double dropOffLat,
-    required double dropOffLong,
-    required int duration,
-    required int distance,
-    String? coupon,
-  }) {
+  void requestTrip({required Map<String, dynamic> body}) {
     if (!_isConnected) {
       logger.e('Socket not connected');
       return;
     }
-    final tripData = {
-      'pickupAddress': pickupAddress,
-      'pickupLat': pickupLat,
-      'pickupLong': pickupLong,
-      'dropOffAddress': dropOffAddress,
-      'dropOffLat': dropOffLat,
-      'dropOffLong': dropOffLong,
-      'duration': duration,
-      'distance': distance,
-      if (coupon != null && coupon.isNotEmpty) 'coupon': coupon,
-    };
+    final tripData = body;
     _socket?.emit("trip_requested", tripData);
     logger.d('Trip requested with data: $tripData');
   }

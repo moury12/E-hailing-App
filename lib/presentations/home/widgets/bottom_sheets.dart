@@ -134,8 +134,6 @@ class HomeSelectEvWidget extends StatelessWidget {
             //   HomeController.to.isLoadingNewTrip.value = false;
             //   Get.toNamed(RequestTripPage.routeName);
             // });
-
-            Get.toNamed(RequestTripPage.routeName);
           },
         ),
         space12H,

@@ -23,7 +23,8 @@ class RequestTripPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args = Get.arguments as Map<String, dynamic>;
+    final Map<String, dynamic> args =
+        (Get.arguments ?? {}) as Map<String, dynamic>;
     logger.d(args);
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.requestYourTrip),
@@ -150,6 +151,9 @@ class RequestTripPage extends StatelessWidget {
               space6H,
               CustomButton(
                 onTap: () {
+                  if (args.isNotEmpty) {
+                    TripController.to.requestTrip(body: args);
+                  }
                   // TripController.to.r
                   // showDialog(
                   //   context: context,
