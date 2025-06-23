@@ -47,4 +47,42 @@ class TripSocketService {
       });
     } catch (e) {}
   }
+
+  void requestTrip({
+    required String pickupAddress,
+    required double pickupLat,
+    required double pickupLong,
+    required String dropOffAddress,
+    required double dropOffLat,
+    required double dropOffLong,
+    required int duration,
+    required int distance,
+    String? coupon,
+  }) {
+    if (!_isConnected) {
+      logger.e('Socket not connected');
+      return;
+    }
+    final tripData = {
+      'pickupAddress': pickupAddress,
+      'pickupLat': pickupLat,
+      'pickupLong': pickupLong,
+      'dropOffAddress': dropOffAddress,
+      'dropOffLat': dropOffLat,
+      'dropOffLong': dropOffLong,
+      'duration': duration,
+      'distance': distance,
+      if (coupon != null && coupon.isNotEmpty) 'coupon': coupon,
+    };
+    _socket?.emit("trip_requested", tripData);
+    logger.d('Trip requested with data: $tripData');
+  }
+
+  void disconnect() {
+    _socket?.disconnect();
+    _socket?.dispose();
+    _isConnected = false;
+  }
+
+  bool get isConnected => _isConnected;
 }
