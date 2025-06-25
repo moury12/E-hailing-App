@@ -38,8 +38,8 @@ class EditProfilePage extends StatelessWidget {
                         ? CustomNetworkImage(
                           imageUrl:
                               "${ApiService().baseUrl}/${CommonController.to.userModel.value.img}",
-                          height: 100.w,
-                          width: 100.w,
+                          height: 150.w,
+                          width: 150.w,
                           boxShape: BoxShape.circle,
                         )
                         : ClipOval(
@@ -51,8 +51,8 @@ class EditProfilePage extends StatelessWidget {
                                   .value,
                             ),
                             fit: BoxFit.cover,
-                            height: 100.w,
-                            width: 100.w,
+                            height: 150.w,
+                            width: 150.w,
                           ),
                         ),
                     Positioned(
@@ -77,7 +77,7 @@ class EditProfilePage extends StatelessWidget {
                             padding: padding8,
                             child: Icon(
                               Icons.add_a_photo_outlined,
-                              size: 15.sp,
+                              size: 25.sp,
                               color: AppColors.kTextColor,
                             ),
                           ),

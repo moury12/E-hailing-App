@@ -64,7 +64,9 @@ class NavigationPage extends StatelessWidget {
             children: [
               currentIndex == 0 ||
                       (currentIndex == 2 && !CommonController.to.isDriver.value)
-                  ? GoogleMapWidget()
+                  ? CommonController.to.isDriver.value
+                      ? GoogleMapWidgetForDriver()
+                      : GoogleMapWidget()
                   : SizedBox.shrink(),
               IndexedStack(
                 clipBehavior: Clip.none,

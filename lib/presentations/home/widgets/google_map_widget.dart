@@ -63,3 +63,61 @@ class GoogleMapWidget extends StatelessWidget {
     });
   }
 }
+
+class GoogleMapWidgetForDriver extends StatelessWidget {
+  const GoogleMapWidgetForDriver({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // logger.d("---------------------------------------");
+    return Obx(() {
+      final position = CommonController.to.marketPosition.value;
+      return GoogleMap(
+        zoomGesturesEnabled: true,
+        scrollGesturesEnabled: true,
+        polylines: NavigationController.to.routePolylines.value,
+
+        onMapCreated: CommonController.to.onMapCreated,
+        initialCameraPosition: CameraPosition(target: position, zoom: 13),
+        myLocationEnabled: true,
+        myLocationButtonEnabled: false,
+        zoomControlsEnabled: true,
+        markers: {
+          Marker(
+            markerId: const MarkerId("selected_location"),
+            position:
+                // HomeController.to.dropoffLatLng.value ??
+                CommonController.to.marketPosition.value,
+            // draggable: HomeController.to.mapDragable.value,
+            onTap: () {
+              NavigationController.to.markerDraging.value = true;
+            },
+            onDragStart: (value) {
+              NavigationController.to.markerDraging.value = true;
+            },
+            onDragEnd: (value) async {
+              //   CommonController.to.marketPosition.value = value;
+              //   if (HomeController.to.setDestination.value) {
+              //     HomeController.to.dropoffLatLng.value = value;
+              //   } else {
+              //     HomeController.to.pickupLatLng.value = value;
+              //   }
+              //
+              //   await HomeController.to.getPlaceName(
+              //     value,
+              //     HomeController.to.setDestination.value
+              //         ? HomeController.to.dropOffLocationController.value
+              //         : HomeController.to.pickupLocationController.value,
+              //   );
+              //   NavigationController.to.markerDraging.value = false;
+            },
+            infoWindow: const InfoWindow(
+              title: "Selected Location",
+              snippet: "This is the chosen spot.",
+            ),
+          ),
+        },
+      );
+    });
+  }
+}

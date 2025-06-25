@@ -8,7 +8,6 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
-import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/views/edit_profile_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
@@ -34,59 +33,74 @@ class AccountInformationPage extends StatelessWidget {
       }),
     );
     AccountInformationController.to.tabContent.add(
-      Column(
-        spacing: 12.h,
-        children: [
-          ProfileCardItemWidget(
-            title: AppStaticStrings.nationalIdPassport,
-            value:
-                CommonController.to.userModel.value.idOrPassportNo ??
-                AppStaticStrings.noDataFound,
-          ),
-          ProfileCardItemWidget(
-            title: AppStaticStrings.drivingLicense,
-            value: 'robertsmith34@gmail.com',
-          ),
-          ProfileCardItemWidget(
-            title: AppStaticStrings.licenseType,
-            value: '+3489 9999 9778',
-          ),
-          ProfileCardItemWidget(
-            title: AppStaticStrings.licenseExpire,
-            value: 'Juvenal Ridge, Port Vestach',
-          ),
-          ProfileCardItemWidget(
-            title: AppStaticStrings.evpNumber,
-            value: 'Juvenal Ridge, Port Vestach',
-          ),
-          ProfileCardItemWidget(
-            title: AppStaticStrings.evpValidityPeriod,
-            value: 'Juvenal Ridge, Port Vestach',
-          ),
-        ],
-      ),
+      Obx(() {
+        return Column(
+          spacing: 12.h,
+          children: [
+            ProfileCardItemWidget(
+              title: AppStaticStrings.nationalIdPassport,
+              value:
+                  CommonController.to.userModel.value.idOrPassportNo ??
+                  AppStaticStrings.noDataFound,
+            ),
+            ProfileCardItemWidget(
+              title: AppStaticStrings.drivingLicense,
+              value:
+                  CommonController.to.userModel.value.drivingLicenseNo ??
+                  AppStaticStrings.noDataFound,
+            ),
+            ProfileCardItemWidget(
+              title: AppStaticStrings.licenseType,
+              value:
+                  CommonController.to.userModel.value.licenseType ??
+                  AppStaticStrings.noDataFound,
+            ),
+            ProfileCardItemWidget(
+              title: AppStaticStrings.licenseExpire,
+              value:
+                  CommonController.to.userModel.value.licenseExpiry ??
+                  AppStaticStrings.noDataFound,
+            ),
+            // ProfileCardItemWidget(
+            //   title: AppStaticStrings.evpNumber,
+            //   value: CommonController.to.userModel.value. ??
+            //       AppStaticStrings.noDataFound,
+            // ),
+            // ProfileCardItemWidget(
+            //   title: AppStaticStrings.evpValidityPeriod,
+            //   value: 'Juvenal Ridge, Port Vestach',
+            // ),
+          ],
+        );
+      }),
     );
     AccountInformationController.to.tabContent.add(
       SizedBox(
         width: ScreenUtil().screenWidth,
-        child: Column(
-          spacing: 8.h,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomText(text: AppStaticStrings.nationalIdPassport),
-            CustomNetworkImage(
-              imageUrl: dummyProfileImage,
-              width: 60.w,
-              height: 60.w,
-            ),
-            CustomText(text: AppStaticStrings.nationalIdPassport),
-            CustomNetworkImage(
-              imageUrl: dummyProfileImage,
-              width: 60.w,
-              height: 60.w,
-            ),
-          ],
-        ),
+        child: Obx(() {
+          return Column(
+            spacing: 8.h,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(text: AppStaticStrings.drivingLicense),
+              CustomNetworkImage(
+                isImagePreview: true,
+                imageUrl:
+                    "${ApiService().baseUrl}/${CommonController.to.userModel.value.drivingLicenseImage}",
+                width: 150.w,
+                height: 150.w,
+              ),
+              CustomText(text: AppStaticStrings.nationalIdPassport),
+              CustomNetworkImage(
+                isImagePreview: true,
+                imageUrl:
+                    "${ApiService().baseUrl}/${CommonController.to.userModel.value.idOrPassportImage}",
+                width: 150.w,
+                height: 150.w,
+              ),
+            ],
+          );
+        }),
       ),
     );
     return Scaffold(
