@@ -20,3 +20,13 @@ enum DefaultSocketEvent {
 
   final String value;
 }
+
+enum RideState {
+  findingRide,
+  rideRequest,
+  pickup,
+  arrived,
+  tripStarted,
+  tripEnd,
+  paymentRequest,
+}

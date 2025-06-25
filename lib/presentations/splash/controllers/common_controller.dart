@@ -19,6 +19,7 @@ import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/utils/google_map_api_key.dart';
+import '../../navigation/controllers/app_controller.dart';
 
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
@@ -472,6 +473,25 @@ class CommonController extends GetxController {
       }
     } catch (e) {
       debugPrint(e.toString());
+    }
+  }
+
+  void onLoginSuccess() {
+    // Other login logic...
+
+    // Load AppController permanently
+    if (!Get.isRegistered<AppController>()) {
+      Get.put(AppController(), permanent: true);
+    }
+  }
+
+  void onLogout() {
+    Boxes.getUserData().delete(tokenKey);
+    Boxes.getUserData().delete(roleKey);
+    Boxes.getUserRole().delete(role);
+    if (Get.isRegistered<AppController>()) {
+      Get.find<AppController>().socketService.disconnect();
+      Get.delete<AppController>();
     }
   }
 }

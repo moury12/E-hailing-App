@@ -170,6 +170,7 @@ class AuthController extends GetxController {
 
       if (response['success'] == true) {
         logger.d(response);
+        CommonController.to.onLoginSuccess();
         if (isRememberMe.value) {
           saveCredentials(
             AuthController.to.emailLoginController.text,

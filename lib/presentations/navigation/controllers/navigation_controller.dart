@@ -28,7 +28,7 @@ class NavigationController extends GetxController {
 
   @override
   void onInit() {
-    // getPlaceName(CommonController.to.marketPosition.value);
+    CommonController.to.onLoginSuccess();
     CommonController.to.isDriver.value
         ? Get.put(DashBoardController())
         : Get.put(HomeController());
