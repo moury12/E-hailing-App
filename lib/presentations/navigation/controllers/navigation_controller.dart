@@ -28,7 +28,6 @@ class NavigationController extends GetxController {
 
   @override
   void onInit() async {
-    // CommonController.to.onLoginSuccess();
     CommonController.to.isDriver.value
         ? Get.put(DashBoardController())
         : Get.put(HomeController());

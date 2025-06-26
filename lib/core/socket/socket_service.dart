@@ -29,7 +29,7 @@ class SocketService {
         'autoConnect': false,
         'query': {'userId': userId},
       });
-
+      logger.d("Socket URL: ${_socket?.io.uri}");
       _setupCommonEventListeners();
       _socket?.connect();
     } catch (e) {

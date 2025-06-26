@@ -49,11 +49,7 @@ class CommonController extends GetxController {
   void onInit() async {
     debugPrint(Boxes.getUserRole().get(role, defaultValue: user).toString());
     requestLocationPermission();
-    final token = Boxes.getAuthData().get(tokenKey);
-    if (token != null && token.isNotEmpty) {
-      await getUserProfileRequest();
-      setupGlobalSocketListeners();
-    }
+
     // Register AppController here directly — not inside a method
     // Get.put(AppController(), permanent: true);
     super.onInit();
@@ -141,6 +137,67 @@ class CommonController extends GetxController {
       isLoadingOnLocationSuggestion.value = false;
     }
   }
+
+  void setupGlobalSocketListeners() {
+    socketService.onConnected = () {
+      socketStatus.value = 'Connected';
+      logger.i('Socket connected');
+    };
+
+    socketService.onDisconnected = () {
+      socketStatus.value = 'Disconnected';
+      logger.w('Socket disconnected');
+    };
+
+    socketService.onSocketError = (error) {
+      socketStatus.value = 'Error: $error';
+      logger.e('Socket error: $error');
+    };
+
+    // You can even auto-connect here if you want:
+    final userId = userModel.value.sId ?? "";
+    if (userId.isNotEmpty) {
+      socketService.connect(userId);
+    }
+  }
+
+  // Future<void> setupGlobalSocketListeners() async {
+  //   await getUserProfileRequest();
+  //
+  //   socketService.onConnected = () {
+  //     socketStatus.value = 'Connected';
+  //     logger.i('Socket connected');
+  //   };
+  //
+  //   socketService.onDisconnected = () {
+  //     socketStatus.value = 'Disconnected';
+  //     logger.w('Socket disconnected');
+  //   };
+  //
+  //   socketService.onSocketError = (error) {
+  //     socketStatus.value = 'Error: $error';
+  //     logger.e('Socket error: $error');
+  //   };
+  //
+  //   // Connect and wait for connection
+  //   final userId = userModel.value.sId ?? "";
+  //   if (userId.isNotEmpty) {
+  //     socketService.connect(userId);
+  //     //
+  //     // // Wait for connection to be established
+  //     // int retryCount = 0;
+  //     // while (!socketService.isConnected && retryCount < 10) {
+  //     //   await Future.delayed(Duration(milliseconds: 500));
+  //     //   retryCount++;
+  //     // }
+  //
+  //     if (socketService.isConnected) {
+  //       logger.i('Socket connection established successfully');
+  //     } else {
+  //       logger.e('Failed to establish socket connection after retries');
+  //     }
+  //   }
+  // }
 
   Future<void> fetchSuggestedPlacesWithRadius(
     String input, {
@@ -486,39 +543,16 @@ class CommonController extends GetxController {
     }
   }
 
+  @override
+  void onClose() {
+    socketService.disconnect();
+    super.onClose();
+  }
+
   void onLogout() {
     Boxes.getUserData().delete(tokenKey);
     Boxes.getUserData().delete(roleKey);
     Boxes.getUserRole().delete(role);
     socketService.disconnect();
-  }
-
-  void setupGlobalSocketListeners() {
-    socketService.onConnected = () {
-      socketStatus.value = 'Connected';
-      logger.i('Socket connected');
-    };
-
-    socketService.onDisconnected = () {
-      socketStatus.value = 'Disconnected';
-      logger.w('Socket disconnected');
-    };
-
-    socketService.onSocketError = (error) {
-      socketStatus.value = 'Error: $error';
-      logger.e('Socket error: $error');
-    };
-
-    // You can even auto-connect here if you want:
-    final userId = userModel.value.sId ?? "";
-    if (userId.isNotEmpty) {
-      socketService.connect(userId);
-    }
-  }
-
-  @override
-  void onClose() {
-    socketService.disconnect();
-    super.onClose();
   }
 }
