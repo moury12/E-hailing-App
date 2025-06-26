@@ -1,4 +1,3 @@
-import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/socket/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:get/get.dart';
@@ -28,18 +27,14 @@ class DashBoardController extends GetxController {
   }
 
   void initializeSocket() {
-    if (socket.isConnected) {
-      _registerDriverListeners();
-    } else {
-      socket.onConnected = () {
-        status.value = 'Connected';
-        _registerDriverListeners();
-      };
+    _registerDriverListeners(); // ✅ Always register
+    if (!socket.isConnected) {
+      logger.w("⚠️ Socket not yet connected, but listener registered");
     }
   }
 
   void _registerDriverListeners() {
-    socket.on(DriverEvent.driverOnlineStatus, (data) {
+    socket.on("online_status", (data) {
       logger.d("✅ DriverEvent.driverOnlineStatus received");
       logger.d(data.toString());
     });
