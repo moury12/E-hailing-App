@@ -18,13 +18,17 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../core/dependency-injection/dependency_injection.dart';
+import '../../../core/socket/socket_service.dart';
 import '../../../core/utils/google_map_api_key.dart';
-import '../../navigation/controllers/app_controller.dart';
 
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
   RxBool isLoadingProfile = false.obs;
   Rx<LatLng> marketPosition = LatLng(23.8168, 90.3675).obs;
+  final SocketService socketService = getIt<SocketService>();
+
+  RxString socketStatus = "Disconnected".obs;
 
   // Rx<LatLng> marketPosition = LatLng(23.8168, 90.3675).obs;
   // GoogleMapController? mapController;
@@ -42,10 +46,16 @@ class CommonController extends GetxController {
   RxList<dynamic> addressSuggestion = [].obs;
 
   @override
-  void onInit() {
+  void onInit() async {
     debugPrint(Boxes.getUserRole().get(role, defaultValue: user).toString());
     requestLocationPermission();
-
+    final token = Boxes.getAuthData().get(tokenKey);
+    if (token != null && token.isNotEmpty) {
+      await getUserProfileRequest();
+      setupGlobalSocketListeners();
+    }
+    // Register AppController here directly — not inside a method
+    // Get.put(AppController(), permanent: true);
     super.onInit();
   }
 
@@ -476,22 +486,39 @@ class CommonController extends GetxController {
     }
   }
 
-  void onLoginSuccess() {
-    // Other login logic...
-
-    // Load AppController permanently
-    if (!Get.isRegistered<AppController>()) {
-      Get.put(AppController(), permanent: true);
-    }
-  }
-
   void onLogout() {
     Boxes.getUserData().delete(tokenKey);
     Boxes.getUserData().delete(roleKey);
     Boxes.getUserRole().delete(role);
-    if (Get.isRegistered<AppController>()) {
-      Get.find<AppController>().socketService.disconnect();
-      Get.delete<AppController>();
+    socketService.disconnect();
+  }
+
+  void setupGlobalSocketListeners() {
+    socketService.onConnected = () {
+      socketStatus.value = 'Connected';
+      logger.i('Socket connected');
+    };
+
+    socketService.onDisconnected = () {
+      socketStatus.value = 'Disconnected';
+      logger.w('Socket disconnected');
+    };
+
+    socketService.onSocketError = (error) {
+      socketStatus.value = 'Error: $error';
+      logger.e('Socket error: $error');
+    };
+
+    // You can even auto-connect here if you want:
+    final userId = userModel.value.sId ?? "";
+    if (userId.isNotEmpty) {
+      socketService.connect(userId);
     }
+  }
+
+  @override
+  void onClose() {
+    socketService.disconnect();
+    super.onClose();
   }
 }
