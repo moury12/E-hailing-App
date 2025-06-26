@@ -1,5 +1,4 @@
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
-import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
 import 'package:get/get.dart';
 
 import '../../presentations/auth/controllers/auth_controller.dart';

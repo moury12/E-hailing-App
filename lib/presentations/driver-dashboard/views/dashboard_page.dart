@@ -92,9 +92,16 @@ class _DashboardPageState extends State<DashboardPage>
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Column(children: [CustomAppBarForHomeWidget(isDriver: true,onTap: () {
-          Get.toNamed(NotificationPage.routeName);
-        },)]),
+        Column(
+          children: [
+            CustomAppBarForHomeWidget(
+              isDriver: true,
+              onTap: () {
+                Get.toNamed(NotificationPage.routeName);
+              },
+            ),
+          ],
+        ),
         Positioned(
           bottom: 0,
           left: 0,
@@ -122,9 +129,8 @@ class _DashboardPageState extends State<DashboardPage>
                         height: 4.w,
                         width: 40.w,
                         decoration: BoxDecoration(
-                          color:
-                              AppColors
-                                  .kPrimaryColor, // Replace with your AppColors.kPrimaryColor
+                          color: AppColors.kPrimaryColor,
+                          // Replace with your AppColors.kPrimaryColor
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -158,4 +164,3 @@ class _DashboardPageState extends State<DashboardPage>
     );
   }
 }
-

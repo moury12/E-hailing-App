@@ -11,7 +11,7 @@ class SocketService {
   SocketService._internal();
 
   IO.Socket? _socket;
-  bool _isConnected = false;
+  bool isConnected = false;
 
   Function(String)? onSocketError;
   Function()? onConnected;
@@ -19,7 +19,7 @@ class SocketService {
   final Map<String, Function> _customEventHandlers = {};
 
   void connect(String userId) {
-    if (_isConnected) {
+    if (isConnected) {
       logger.d('Socket already connected');
       return;
     }
@@ -41,13 +41,13 @@ class SocketService {
   void _setupCommonEventListeners() {
     _socket?.on(DefaultSocketEvent.connect.value, (data) {
       logger.d('Connected to socket server');
-      _isConnected = true;
+      isConnected = true;
       onConnected?.call();
     });
 
     _socket?.on(DefaultSocketEvent.disconnect.value, (data) {
       logger.d('Disconnected from socket server');
-      _isConnected = false;
+      isConnected = false;
       onDisconnected?.call();
     });
 
@@ -98,7 +98,7 @@ class SocketService {
 
   void on(String eventName, Function handler) {
     _customEventHandlers[eventName] = handler;
-    if (_isConnected && _socket != null) {
+    if (isConnected && _socket != null) {
       _setupCustomEventListener(eventName);
     }
   }
@@ -109,7 +109,7 @@ class SocketService {
   }
 
   void emit(String eventName, [dynamic data]) {
-    if (!_isConnected) {
+    if (!isConnected) {
       logger.e('Socket not connected');
       return;
     }
@@ -123,7 +123,7 @@ class SocketService {
       _socket?.dispose();
       _socket = null;
     }
-    _isConnected = false;
+    isConnected = false;
     _customEventHandlers.clear();
   }
 

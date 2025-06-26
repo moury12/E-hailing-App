@@ -1,4 +1,6 @@
+import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/socket/socket_service.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:get/get.dart';
 
 import '../../../core/dependency-injection/dependency_injection.dart';
@@ -14,6 +16,7 @@ class DashBoardController extends GetxController {
   RxBool isTripStarted = false.obs;
   RxBool isTripEnd = false.obs;
   RxBool isArrived = false.obs;
+  RxBool isDriverActive = false.obs;
   RxString status = "Disconnected".obs;
 
   final SocketService socket = getIt<SocketService>();
@@ -24,7 +27,23 @@ class DashBoardController extends GetxController {
     super.onInit();
   }
 
-  void initializeSocket() {}
+  void initializeSocket() {
+    if (socket.isConnected) {
+      _registerDriverListeners();
+    } else {
+      socket.onConnected = () {
+        status.value = 'Connected';
+        _registerDriverListeners();
+      };
+    }
+  }
+
+  void _registerDriverListeners() {
+    socket.on(DriverEvent.driverOnlineStatus, (data) {
+      logger.d("✅ DriverEvent.driverOnlineStatus received");
+      logger.d(data.toString());
+    });
+  }
 
   bool handleBackNavigation() {
     if (arrive.value) {

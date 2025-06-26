@@ -27,8 +27,8 @@ class NavigationController extends GetxController {
   RxSet<Polyline> routePolylines = <Polyline>{}.obs;
 
   @override
-  void onInit() {
-    CommonController.to.onLoginSuccess();
+  void onInit() async {
+    // CommonController.to.onLoginSuccess();
     CommonController.to.isDriver.value
         ? Get.put(DashBoardController())
         : Get.put(HomeController());
