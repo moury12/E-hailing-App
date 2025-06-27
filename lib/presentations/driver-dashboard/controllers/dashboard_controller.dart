@@ -1,5 +1,7 @@
+import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/socket/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:get/get.dart';
 
 import '../../../core/dependency-injection/dependency_injection.dart';
@@ -27,14 +29,21 @@ class DashBoardController extends GetxController {
   }
 
   void initializeSocket() {
-    _registerDriverListeners(); // ✅ Always register
-    if (!socket.isConnected) {
-      logger.w("⚠️ Socket not yet connected, but listener registered");
+    if (socket.isConnected) {
+      registerDriverListeners();
+    } else {
+      socket.onConnected = () {
+        status.value = 'Connected';
+        registerDriverListeners();
+      };
     }
   }
 
-  void _registerDriverListeners() {
-    socket.on("online_status", (data) {
+  void registerDriverListeners() {
+    logger.d("✅----------------------------");
+    logger.d("✅${CommonController.to.socketService.isConnected.toString()}");
+
+    socket.on(DriverEvent.driverOnlineStatus, (data) {
       logger.d("✅ DriverEvent.driverOnlineStatus received");
       logger.d(data.toString());
     });

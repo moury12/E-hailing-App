@@ -6,6 +6,7 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/trip/controller/trip_controller.dart';
@@ -35,7 +36,12 @@ class RequestTripPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 6.h,
             children: [
-              CarDetailsCardWidget(onTap: () {}),
+              Obx(() {
+                return CarDetailsCardWidget(
+                  onTap: () {},
+                  fare: HomeController.to.estimatedFare.value,
+                );
+              }),
               PickupDropLocationWidget(),
               Text(
                 "Payment Method",

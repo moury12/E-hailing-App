@@ -12,7 +12,6 @@ import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.
 import 'package:e_hailing_app/presentations/save-location/views/add_place_page.dart';
 import 'package:e_hailing_app/presentations/save-location/views/saved_location_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
-import 'package:e_hailing_app/presentations/trip/views/request_trip_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,6 +22,7 @@ import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
 import '../../navigation/controllers/navigation_controller.dart';
 import '../../navigation/widgets/custom_container_with_border.dart';
+import '../../trip/views/request_trip_page.dart';
 import 'search_field_button_widget.dart';
 
 class HomeSetLocationWidget extends StatefulWidget {
@@ -126,16 +126,19 @@ class HomeSelectEvWidget extends StatelessWidget {
         //     Get.toNamed(RequestTripPage.routeName);
         //   },
         // ),
-        SelectCarITemWidget(
-          onTap: () {
-            // HomeController.to.resetAllStates();
-            // HomeController.to.isLoadingNewTrip.value = true;
-            // Future.delayed(Duration(seconds: 4), () {
-            //   HomeController.to.isLoadingNewTrip.value = false;
-            //   Get.toNamed(RequestTripPage.routeName);
-            // });
-          },
-        ),
+        Obx(() {
+          return SelectCarITemWidget(
+            fare: HomeController.to.estimatedFare.value,
+            onTap: () async {
+              // HomeController.to.resetAllStates();
+              await Future.delayed(const Duration(seconds: 3));
+              Get.toNamed(
+                RequestTripPage.routeName,
+                arguments: HomeController.to.tripArgs,
+              );
+            },
+          );
+        }),
         space12H,
       ],
     );
@@ -232,12 +235,18 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                       // in meters
                       // "coupon" will be added later from RequestTripPage
                     };
-                    // Navigate to request trip page after successful polyline draw
-                    await Future.delayed(const Duration(seconds: 3));
-                    Get.toNamed(
-                      RequestTripPage.routeName,
-                      arguments: HomeController.to.tripArgs,
+                    await HomeController.to.getTripFare(
+                      duration: HomeController.to.duration.value,
+                      distance: HomeController.to.distance.value,
                     );
+
+                    HomeController.to.goToSelectEv();
+                    // Navigate to request trip page after successful polyline draw
+                    // await Future.delayed(const Duration(seconds: 3));
+                    // Get.toNamed(
+                    //   RequestTripPage.routeName,
+                    //   arguments: HomeController.to.tripArgs,
+                    // );
                   } else {
                     // Don't navigate if polyline failed
                     showCustomSnackbar(
@@ -247,11 +256,18 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                     );
                   }
                 } else {
-                  // Polyline already exists and locations haven't changed
-                  Get.toNamed(
-                    RequestTripPage.routeName,
-                    arguments: HomeController.to.tripArgs,
+                  await HomeController.to.getTripFare(
+                    duration: HomeController.to.duration.value,
+                    distance: HomeController.to.distance.value,
                   );
+
+                  HomeController.to.goToSelectEv();
+
+                  // // Polyline already exists and locations haven't changed
+                  // Get.toNamed(
+                  //   RequestTripPage.routeName,
+                  //   arguments: HomeController.to.tripArgs,
+                  // );
                 }
               },
               shape: const CircleBorder(),

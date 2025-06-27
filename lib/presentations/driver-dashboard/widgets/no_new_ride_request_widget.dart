@@ -8,20 +8,21 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../controllers/dashboard_controller.dart';
 
 class NoNewRideReqWidget extends StatelessWidget {
-  const NoNewRideReqWidget({
-    super.key,
-  });
+  const NoNewRideReqWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       spacing: 12.h,
       children: [
-        GestureDetector(onTap: () {
-          DashBoardController.to.findingRide.value= false;
-          DashBoardController.to.rideRequest.value= true;
-        },
-            child: SvgPicture.asset(carPrimaryIcon)),
+        GestureDetector(
+          onTap: () {
+            DashBoardController.to.registerDriverListeners();
+            // DashBoardController.to.findingRide.value= false;
+            // DashBoardController.to.rideRequest.value= true;
+          },
+          child: SvgPicture.asset(carPrimaryIcon),
+        ),
         CustomText(text: AppStaticStrings.noNewRideReq),
       ],
     );
