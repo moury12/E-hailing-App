@@ -156,6 +156,7 @@ class CommonController extends GetxController {
 
     // You can even auto-connect here if you want:
     final userId = userModel.value.sId ?? "";
+    logger.d(userId);
     if (userId.isNotEmpty) {
       socketService.connect(userId);
     }

@@ -1,10 +1,16 @@
+import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/model/car_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../../core/api-client/api_service.dart';
+import '../../../core/constants/hive_boxes.dart';
 
 class HomeController extends GetxController {
   static HomeController get to => Get.find();
@@ -18,6 +24,8 @@ class HomeController extends GetxController {
   RxBool isLoadingNewTrip = false.obs;
   RxBool isLoadingCar = false.obs;
   RxBool mapDragable = false.obs;
+  RxBool isLoadingPostFair = false.obs;
+  RxInt estimatedFare = 0.obs;
   LatLng? lastPickupLatLng;
   LatLng? lastDropoffLatLng;
   RxBool isPolylineDrawn = false.obs;
@@ -94,7 +102,7 @@ class HomeController extends GetxController {
     if (selectEv.value) {
       // From Select EV screen -> go back to Set Destination
       selectEv.value = false;
-      setDestination.value = true;
+      wantToGo.value = true;
       return true; // Handled - don't exit app
     } else if (setDestination.value) {
       // From Set Destination screen -> go back to Set Pickup
@@ -149,6 +157,36 @@ class HomeController extends GetxController {
   void goToSelectEv() {
     resetAllStates();
     selectEv.value = true;
+  }
+
+  ///------------------------------  get trip fare method -------------------------///
+
+  Future<void> getTripFare({
+    required int duration,
+    required int distance,
+  }) async {
+    try {
+      isLoadingPostFair.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+      final response = await ApiService().request(
+        endpoint: getTripFareEndpoint,
+        method: 'POST',
+        body: {"duration": duration, "distance": distance},
+      );
+      isLoadingPostFair.value = false;
+      if (response['success'] == true) {
+        estimatedFare.value = response['data']['estimatedFare'];
+        goToSelectEv();
+        logger.d(response);
+      } else {
+        logger.e(response);
+        showCustomSnackbar(title: 'Failed', message: response['message']);
+      }
+    } catch (e) {
+      isLoadingPostFair.value = false;
+      logger.e(e.toString());
+    }
   }
 
   Future<void> getPlaceName(
