@@ -4,8 +4,6 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:get/get.dart';
 
-import '../../../core/dependency-injection/dependency_injection.dart';
-
 class DashBoardController extends GetxController {
   static DashBoardController get to => Get.find();
   RxBool findingRide = true.obs;
@@ -20,19 +18,26 @@ class DashBoardController extends GetxController {
   RxBool isDriverActive = false.obs;
   RxString status = "Disconnected".obs;
 
-  final SocketService socket = getIt<SocketService>();
+  final SocketService socketService = SocketService();
 
   @override
-  void onInit() {
-    initializeSocket();
-    super.onInit();
+  void onReady() {
+    registerDriverListeners();
+    super.onReady();
   }
 
   void initializeSocket() {
-    if (socket.isConnected) {
+    socketService.onConnected = () {
+      status.value = 'Connected';
+    };
+    socketService.onDisconnected = () {
+      status.value = 'Disconnected';
+    };
+
+    if (socketService.isConnected) {
       registerDriverListeners();
     } else {
-      socket.onConnected = () {
+      socketService.onConnected = () {
         status.value = 'Connected';
         registerDriverListeners();
       };
@@ -41,9 +46,10 @@ class DashBoardController extends GetxController {
 
   void registerDriverListeners() {
     logger.d("✅----------------------------");
-    logger.d("✅${CommonController.to.socketService.isConnected.toString()}");
-
-    socket.on(DriverEvent.driverOnlineStatus, (data) {
+    logger.d("✅${socketService.isConnected.toString()}");
+    logger.d("✅${CommonController.to.userModel.value.sId.toString()}");
+    socketService.off(DriverEvent.driverOnlineStatus);
+    socketService.on("online_status", (data) {
       logger.d("✅ DriverEvent.driverOnlineStatus received");
       logger.d(data.toString());
     });
@@ -97,5 +103,11 @@ class DashBoardController extends GetxController {
     isTripStarted.value = false;
     isTripEnd.value = false;
     arrive.value = false;
+  }
+
+  @override
+  void onClose() {
+    socketService.off("online_status");
+    super.onClose();
   }
 }

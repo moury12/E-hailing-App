@@ -18,7 +18,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../core/dependency-injection/dependency_injection.dart';
 import '../../../core/socket/socket_service.dart';
 import '../../../core/utils/google_map_api_key.dart';
 
@@ -26,7 +25,7 @@ class CommonController extends GetxController {
   static CommonController get to => Get.find();
   RxBool isLoadingProfile = false.obs;
   Rx<LatLng> marketPosition = LatLng(23.8168, 90.3675).obs;
-  final SocketService socketService = getIt<SocketService>();
+  final SocketService socketService = SocketService();
 
   RxString socketStatus = "Disconnected".obs;
 

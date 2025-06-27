@@ -10,11 +10,13 @@ class SocketService {
 
   SocketService._internal();
 
-  IO.Socket? _socket;
+  IO.Socket? socket;
   bool isConnected = false;
 
   Function(String)? onSocketError;
   Function()? onConnected;
+
+  Function()? onDriverRegister;
   Function()? onDisconnected;
   final Map<String, Function> _customEventHandlers = {};
 
@@ -24,14 +26,14 @@ class SocketService {
       return;
     }
     try {
-      _socket = IO.io(ApiService().baseUrl, <String, dynamic>{
+      socket = IO.io(ApiService().baseUrl, <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
         'query': {'userId': userId},
       });
-      logger.d("Socket URL: ${_socket?.io.uri}");
+      logger.d("Socket URL: ${socket?.io.uri}");
       _setupCommonEventListeners();
-      _socket?.connect();
+      socket?.connect();
     } catch (e) {
       logger.e('Error connecting to socket: $e');
       onSocketError?.call(e.toString());
@@ -39,29 +41,45 @@ class SocketService {
   }
 
   void _setupCommonEventListeners() {
-    _socket?.on(DefaultSocketEvent.connect.value, (data) {
+    socket?.on(DefaultSocketEvent.connect.value, (data) {
       logger.d('Connected to socket server');
       isConnected = true;
       onConnected?.call();
     });
-
-    _socket?.on(DefaultSocketEvent.disconnect.value, (data) {
+    // socket?.on("online_status", (data) {
+    //   logger.d('---------------------------driver$data');
+    //   isConnected = true;
+    //   onDriverRegister?.call();
+    // });
+    socket?.on(DefaultSocketEvent.disconnect.value, (data) {
       logger.d('Disconnected from socket server');
       isConnected = false;
       onDisconnected?.call();
     });
 
-    _socket?.on(DefaultSocketEvent.connectError.value, (error) {
+    socket?.on(DefaultSocketEvent.connectError.value, (error) {
       logger.e('Connection error: $error');
       onSocketError?.call(error.toString());
     });
 
-    _socket?.on(DefaultSocketEvent.socketError.value, (data) {
+    socket?.on(DefaultSocketEvent.socketError.value, (data) {
       logger.e('Socket error: $data');
       onSocketError?.call(data.toString());
     });
 
     _setupCustomEventListeners();
+  }
+
+  bool listenDriverOnlineStatus() {
+    bool isActive = false;
+
+    socket?.on("online_status", (data) {
+      logger.d('---------------------------driver$data');
+      isConnected = true;
+      onDriverRegister?.call();
+      isActive = data['data']["isOnline"];
+    });
+    return isActive;
   }
 
   void _setupCustomEventListeners() {
@@ -71,7 +89,7 @@ class SocketService {
   }
 
   void _setupCustomEventListener(String eventName) {
-    _socket?.on(eventName, (data) {
+    socket?.on(eventName, (data) {
       logger.d('Custom event [$eventName]: $data');
       final handler = _customEventHandlers[eventName];
       if (handler != null) {
@@ -98,14 +116,14 @@ class SocketService {
 
   void on(String eventName, Function handler) {
     _customEventHandlers[eventName] = handler;
-    if (isConnected && _socket != null) {
+    if (isConnected && socket != null) {
       _setupCustomEventListener(eventName);
     }
   }
 
   void off(String eventName) {
     _customEventHandlers.remove(eventName);
-    _socket?.off(eventName);
+    socket?.off(eventName);
   }
 
   void emit(String eventName, [dynamic data]) {
@@ -113,15 +131,15 @@ class SocketService {
       logger.e('Socket not connected');
       return;
     }
-    _socket?.emit(eventName, data);
+    socket?.emit(eventName, data);
     logger.d('Emitted [$eventName] with data: $data');
   }
 
   void disconnect() {
-    if (_socket != null) {
-      _socket?.disconnect();
-      _socket?.dispose();
-      _socket = null;
+    if (socket != null) {
+      socket?.disconnect();
+      socket?.dispose();
+      socket = null;
     }
     isConnected = false;
     _customEventHandlers.clear();
@@ -129,7 +147,7 @@ class SocketService {
 
   void clearCustomEventHandlers() {
     for (var eventName in _customEventHandlers.keys) {
-      _socket?.off(eventName);
+      socket?.off(eventName);
     }
     _customEventHandlers.clear();
   }

@@ -17,9 +17,9 @@ class NoNewRideReqWidget extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            DashBoardController.to.registerDriverListeners();
-            // DashBoardController.to.findingRide.value= false;
-            // DashBoardController.to.rideRequest.value= true;
+            // DashBoardController.to.registerDriverListeners();
+            DashBoardController.to.findingRide.value = false;
+            DashBoardController.to.rideRequest.value = true;
           },
           child: SvgPicture.asset(carPrimaryIcon),
         ),
