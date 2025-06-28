@@ -30,3 +30,14 @@ enum RideState {
   tripEnd,
   paymentRequest,
 }
+
+enum TripStateDriver {
+  requested,
+  accepted,
+  on_the_way,
+  arrived,
+  picked_up,
+  started,
+  completed,
+  cancelled,
+}

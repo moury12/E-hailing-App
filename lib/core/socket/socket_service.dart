@@ -12,6 +12,7 @@ class SocketService {
 
   IO.Socket? socket;
   bool isConnected = false;
+  bool isDriverActive = false;
 
   Function(String)? onSocketError;
   Function()? onConnected;
@@ -20,7 +21,7 @@ class SocketService {
   Function()? onDisconnected;
   final Map<String, Function> _customEventHandlers = {};
 
-  void connect(String userId) {
+  void connect(String userId, bool isDriver) {
     if (isConnected) {
       logger.d('Socket already connected');
       return;
@@ -32,7 +33,7 @@ class SocketService {
         'query': {'userId': userId},
       });
       logger.d("Socket URL: ${socket?.io.uri}");
-      _setupCommonEventListeners();
+      _setupCommonEventListeners(isDriver);
       socket?.connect();
     } catch (e) {
       logger.e('Error connecting to socket: $e');
@@ -40,17 +41,19 @@ class SocketService {
     }
   }
 
-  void _setupCommonEventListeners() {
+  void _setupCommonEventListeners(bool isDriver) {
     socket?.on(DefaultSocketEvent.connect.value, (data) {
       logger.d('Connected to socket server');
       isConnected = true;
       onConnected?.call();
     });
-    // socket?.on("online_status", (data) {
-    //   logger.d('---------------------------driver$data');
-    //   isConnected = true;
-    //   onDriverRegister?.call();
-    // });
+    if (isDriver) {
+      socket?.on("online_status", (data) {
+        logger.d('---------------------------driver$data');
+        isDriverActive = data['data']['isOnline'];
+        onDriverRegister?.call();
+      });
+    }
     socket?.on(DefaultSocketEvent.disconnect.value, (data) {
       logger.d('Disconnected from socket server');
       isConnected = false;

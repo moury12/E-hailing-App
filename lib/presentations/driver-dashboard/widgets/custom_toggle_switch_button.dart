@@ -36,7 +36,7 @@ class _CustomToggleSwitchState extends State<CustomToggleSwitch> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _changeAlignment();
+        // _changeAlignment();
       },
       child: Obx(() {
         return AnimatedContainer(

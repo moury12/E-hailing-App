@@ -1,5 +1,6 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -136,6 +137,8 @@ class _DashboardPageState extends State<DashboardPage>
                       ),
                       space12H,
                       Obx(() {
+                        DriverCurrentTripModel driverTrip =
+                            DashBoardController.to.currentTrip.value;
                         return DashBoardController.to.findingRide.value
                             ? NoNewRideReqWidget()
                             : DashBoardController.to.rideRequest.value
@@ -147,9 +150,17 @@ class _DashboardPageState extends State<DashboardPage>
                             : DashBoardController.to.isTripStarted.value
                             ? TripStartWidget()
                             : DashBoardController.to.isTripEnd.value
-                            ? TrimTimeDetails()
+                            ? TripTimeDetails(
+                              tripDistance: driverTrip.distance.toString(),
+                              dropOffAddress: driverTrip.dropOffAddress,
+                              pickUpAddress: driverTrip.pickUpAddress,
+                              estimatedTime: driverTrip.duration.toString(),
+                            )
                             : DashBoardController.to.arrive.value
-                            ? SendPaymentRequestWidget()
+                            ? SendPaymentRequestWidget(
+                              dropOffAddress: driverTrip.dropOffAddress,
+                              tripId: driverTrip.sId.toString(),
+                            )
                             : SizedBox.shrink();
                       }),
                       space12H,

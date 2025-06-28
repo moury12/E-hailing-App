@@ -9,6 +9,7 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/car_information_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,11 +22,23 @@ import '../widgets/payment_card_item.dart';
 
 class PaymentPage extends StatelessWidget {
   static const String routeName = '/payment';
+
   const PaymentPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final arg = Get.arguments;
+    DriverTripResponseModel driverTripResponseModel =
+        arg['driver'] ?? DriverTripResponseModel();
+    String role = arg['role'] ?? "";
+    logger.i(driverTripResponseModel.toJson().toString());
+    // String rent =
+    //     "${(driverTripResponseModel.finalFare ?? 0) - (driverTripResponseModel.extraCharge ?? 0)}";
+    String rent = "${driverTripResponseModel.estimatedFare ?? 0}";
+    String tollFee = "${driverTripResponseModel.tollFee ?? 0}";
+    String extraCharge = "${driverTripResponseModel.extraCharge ?? 0}";
+    String finalFee =
+        "${(driverTripResponseModel.estimatedFare ?? 0) + (driverTripResponseModel.tollFee ?? 0) + (driverTripResponseModel.extraCharge ?? 0)}";
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.payment),
       body: SingleChildScrollView(
@@ -51,56 +64,65 @@ class PaymentPage extends StatelessWidget {
                 ),
                 CarInformationWidget(
                   title: AppStaticStrings.rent,
-                  value: 'RM 150',
+                  value: 'RM $rent',
                 ),
                 CarInformationWidget(
                   title: AppStaticStrings.tollFee,
-                  value: 'RM 150',
+                  value: 'RM $tollFee',
+                ),
+                CarInformationWidget(
+                  title: AppStaticStrings.extraCharge,
+                  value: 'RM $extraCharge',
                 ),
                 Divider(color: AppColors.kGreyColor, height: 2, thickness: 2),
                 CarInformationWidget(
                   title: AppStaticStrings.totalPayment,
-                  value: 'RM 150',
+                  value: 'RM $finalFee',
                 ),
                 space12H,
-               PaymentCardItem(
-                 img: cardsIcon,
-                 title: AppStaticStrings.creditDebitCards,
-                 onTap: () {},
-               ),
+                PaymentCardItem(
+                  img: cardsIcon,
+                  title: AppStaticStrings.creditDebitCards,
+                  onTap: () {},
+                ),
 
-               PaymentCardItem(
-                 img: handCashIcon,
-                 title: AppStaticStrings.handCash,
-                 onTap: () {
-                   showHandCashDialogs(context);
-                 },
-               ),
+                PaymentCardItem(
+                  img: handCashIcon,
+                  title: AppStaticStrings.handCash,
+                  onTap: () {
+                    showHandCashDialogs(context);
+                  },
+                ),
 
-               PaymentCardItem(
-                 img: coinIcon,
-                 title: AppStaticStrings.dCoin,
-                 onTap: () {
-                   showDialog(
-                     context: context,
-                     builder:
-                         (context) => DCoinDialogPaymentWidget(),
-                   );
-                 },
-               ),
-                arg!=null&& arg==driver?Column(
-                  spacing: 8.h,
-                  children: [
-                    CustomButton(onTap: () {
-
-                    },
-                    title: AppStaticStrings.confirm,), CustomButton(onTap: () {
-
-                    },fillColor: Colors.transparent,
-                      textColor: AppColors.kPrimaryColor,
-                    title: AppStaticStrings.notYet,),
-                  ],
-                ):SizedBox.shrink()
+                PaymentCardItem(
+                  img: coinIcon,
+                  title: AppStaticStrings.dCoin,
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => DCoinDialogPaymentWidget(),
+                    );
+                  },
+                ),
+                arg != null && role == driver
+                    ? Column(
+                      spacing: 8.h,
+                      children: [
+                        CustomButton(
+                          onTap: () {},
+                          title: AppStaticStrings.confirm,
+                        ),
+                        CustomButton(
+                          onTap: () {
+                            Get.back();
+                          },
+                          fillColor: Colors.transparent,
+                          textColor: AppColors.kPrimaryColor,
+                          title: AppStaticStrings.notYet,
+                        ),
+                      ],
+                    )
+                    : SizedBox.shrink(),
               ],
             ),
           ),
@@ -109,4 +131,3 @@ class PaymentPage extends StatelessWidget {
     );
   }
 }
-
