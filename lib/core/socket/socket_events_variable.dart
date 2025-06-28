@@ -13,4 +13,5 @@ class DriverEvent {
   static const String driverLocationUpdate = 'trip_driver_location_update';
   static const String tripAvailableStatus = 'trip_available';
   static const String tripAcceptedStatus = 'trip_accepted';
+  static const String tripUpdateStatus = 'trip_update_status';
 }

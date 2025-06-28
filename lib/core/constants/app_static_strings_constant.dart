@@ -84,6 +84,7 @@ class AppStaticStrings {
   // Payment Details
   static const String rent = "Rent";
   static const String tollFee = "Toll fee";
+  static const String extraCharge = "Extra Charge";
   static const String totalPayment = "Total payment";
 
   // Payment Methods

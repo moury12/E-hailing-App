@@ -7,9 +7,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../controllers/dashboard_controller.dart';
 
-class TrimTimeDetails extends StatelessWidget {
-  const TrimTimeDetails({
+class TripTimeDetails extends StatelessWidget {
+  final String? tripDistance;
+  final String? estimatedTime;
+  final String? pickUpAddress;
+  final String? dropOffAddress;
+
+  const TripTimeDetails({
     super.key,
+    this.tripDistance,
+    this.estimatedTime,
+    this.pickUpAddress,
+    this.dropOffAddress,
   });
 
   @override
@@ -17,19 +26,19 @@ class TrimTimeDetails extends StatelessWidget {
     return Column(
       spacing: 8.h,
       children: [
-        TitleTextWidget(
-          title: 'Trip Time',
-          text: '00:31 hr',
-        ),
+        TitleTextWidget(title: "Distance", text: "$tripDistance km" ?? '00 km'),
         TitleTextWidget(
           title: 'Estimated Time',
-          text: '00:31 hr',
+          text: "$estimatedTime min" ?? '00:00 min',
         ),
-        FromToTimeLine(),
+        FromToTimeLine(
+          pickUpAddress: pickUpAddress,
+          dropOffAddress: dropOffAddress,
+        ),
         CustomButton(
           onTap: () {
-            DashBoardController.to.isTripEnd.value =false;
-            DashBoardController.to.arrive.value =true;
+            DashBoardController.to.isTripEnd.value = false;
+            DashBoardController.to.arrive.value = true;
           },
           title: AppStaticStrings.arrived,
         ),
@@ -41,6 +50,7 @@ class TrimTimeDetails extends StatelessWidget {
 class TitleTextWidget extends StatelessWidget {
   final String title;
   final String text;
+
   const TitleTextWidget({super.key, required this.title, required this.text});
 
   @override

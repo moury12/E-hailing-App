@@ -7,6 +7,7 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
@@ -157,7 +158,7 @@ class CommonController extends GetxController {
     final userId = userModel.value.sId ?? "";
     logger.d(userId);
     if (userId.isNotEmpty) {
-      socketService.connect(userId);
+      socketService.connect(userId, userModel.value.role == "DRIVER");
     }
   }
 
@@ -248,7 +249,6 @@ class CommonController extends GetxController {
         return "No address found";
       }
     } catch (e) {
-      print("Error getting address: $e");
       return "Error retrieving address";
     }
   }
@@ -304,7 +304,6 @@ class CommonController extends GetxController {
           return false;
         }
       } else {
-        print("Failed to fetch directions: ${response.body}");
         showCustomSnackbar(
           title: "Error!!",
           message: "Failed to get route. Please try again.",
@@ -553,6 +552,7 @@ class CommonController extends GetxController {
     Boxes.getUserData().delete(tokenKey);
     Boxes.getUserData().delete(roleKey);
     Boxes.getUserRole().delete(role);
+    socketService.off(DriverEvent.driverOnlineStatus);
     socketService.disconnect();
   }
 }

@@ -80,7 +80,10 @@ class TripController extends GetxController {
     });
     String userId = CommonController.to.userModel.value.sId ?? "";
     if (userId.isNotEmpty) {
-      socket.connect(userId);
+      socket.connect(
+        userId,
+        CommonController.to.userModel.value.role == "DRIVER",
+      );
     } else {
       logger.e('User ID is empty, cannot connect to socket');
     }
@@ -110,7 +113,7 @@ class TripController extends GetxController {
             ),
           ),
     );
-    socket.emit("trip_requested", body);
+    socket.emit(TripEvents.tripRequested, body);
     Future.delayed(Duration(seconds: 30), () {
       if (isRequestingTrip.value) {
         isRequestingTrip.value = false;
