@@ -555,4 +555,11 @@ class CommonController extends GetxController {
     socketService.off(DriverEvent.driverOnlineStatus);
     socketService.disconnect();
   }
+
+  Future<void> initialSetUp() async {
+    await checkUserRole();
+    await getUserProfileRequest();
+    setupGlobalSocketListeners();
+    await fetchCurrentLocation();
+  }
 }

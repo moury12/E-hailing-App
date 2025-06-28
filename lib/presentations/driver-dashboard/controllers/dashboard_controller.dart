@@ -4,6 +4,7 @@ import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/socket/socket_service.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_trip_response_model.dart';
@@ -23,15 +24,16 @@ class DashBoardController extends GetxController {
   RxBool isTripStarted = false.obs;
   RxBool isTripEnd = false.obs;
   RxBool isArrived = false.obs;
-  RxBool isLoadingCurrentTrip = false.obs;
-  RxBool isLoadingUpdateTollFee = false.obs;
   RxBool isDriverActive = false.obs;
   RxString status = "Disconnected".obs;
   Rx<DriverCurrentTripModel> currentTrip = DriverCurrentTripModel().obs;
+  Rx<DriverCurrentTripModel> availableTrip = DriverCurrentTripModel().obs;
   Rx<DriverTripResponseModel> driverTripResponse =
       DriverTripResponseModel().obs;
   TextEditingController extraCost = TextEditingController();
   final SocketService socketService = SocketService();
+  RxBool isLoadingCurrentTrip = false.obs;
+  RxBool isLoadingUpdateTollFee = false.obs;
 
   @override
   void onInit() async {
@@ -40,8 +42,15 @@ class DashBoardController extends GetxController {
     if (currentTrip.value.sId != null) {
       isTripEnd.value = true;
       findingRide.value = false;
+    } else if (availableTrip.value.sId != null) {
+      showAvailableTrip();
     }
     super.onInit();
+  }
+
+  void showAvailableTrip() {
+    rideRequest.value = true;
+    resetRideFlow(rideType: RideFlowState.rideRequest);
   }
 
   void initializeSocket() {
@@ -80,15 +89,19 @@ class DashBoardController extends GetxController {
             type: SnackBarType.failed,
           );
         }
-        // currentTrip.value = data;
-        // status.value = 'Trip requested successfully';
-        // isRequestingTrip.value = false;
-        // hasActiveTrip.value = true;
-        // showCustomSnackbar(
-        //   title: 'Success',
-        //   message: 'Trip requested successfully! Looking for nearby drivers...',
-        // );
       });
+
+      socketService.onAvailableTrip = (data) {
+        availableTrip.value = DriverCurrentTripModel.fromJson(data);
+        showAvailableTrip();
+      };
+      // socketService.on(DriverEvent.tripAvailableStatus, (data) {
+      //   logger.d(data);
+      //   if (data["success"]) {
+      //     availableTrip.value = DriverCurrentTripModel.fromJson(data);
+      //     showAvailableTrip();
+      //   }
+      // });
     } else {
       socketService.onConnected = () {
         isDriverActive.value = socketService.isDriverActive;
@@ -227,8 +240,8 @@ class DashBoardController extends GetxController {
     return true;
   }
 
-  void resetRideFlow(DashBoardController controller) {
-    // Reset all flow states to their default values
+  void resetRideFlow({required RideFlowState rideType}) {
+    // Reset all to false
     findingRide.value = false;
     rideRequest.value = false;
     pickup.value = false;
@@ -236,6 +249,31 @@ class DashBoardController extends GetxController {
     isTripStarted.value = false;
     isTripEnd.value = false;
     arrive.value = false;
+
+    // Enable only the provided one
+    switch (rideType) {
+      case RideFlowState.findingRide:
+        findingRide.value = true;
+        break;
+      case RideFlowState.rideRequest:
+        rideRequest.value = true;
+        break;
+      case RideFlowState.pickup:
+        pickup.value = true;
+        break;
+      case RideFlowState.isArrived:
+        isArrived.value = true;
+        break;
+      case RideFlowState.isTripStarted:
+        isTripStarted.value = true;
+        break;
+      case RideFlowState.isTripEnd:
+        isTripEnd.value = true;
+        break;
+      case RideFlowState.arrive:
+        arrive.value = true;
+        break;
+    }
   }
 
   @override

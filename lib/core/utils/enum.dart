@@ -21,14 +21,14 @@ enum DefaultSocketEvent {
   final String value;
 }
 
-enum RideState {
+enum RideFlowState {
   findingRide,
   rideRequest,
   pickup,
-  arrived,
-  tripStarted,
-  tripEnd,
-  paymentRequest,
+  isArrived,
+  isTripStarted,
+  isTripEnd,
+  arrive,
 }
 
 enum TripStateDriver {
