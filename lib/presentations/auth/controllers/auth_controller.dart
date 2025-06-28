@@ -170,7 +170,6 @@ class AuthController extends GetxController {
 
       if (response['success'] == true) {
         logger.d(response);
-        // CommonController.to.setupGlobalSocketListeners();
         if (isRememberMe.value) {
           saveCredentials(
             AuthController.to.emailLoginController.text,
@@ -182,7 +181,8 @@ class AuthController extends GetxController {
         Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
         // NavigationController.to.isLoggedIn;
         ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
-        await CommonController.to.checkUserRole();
+        await CommonController.to.initialSetUp();
+
         Get.offAllNamed(NavigationPage.routeName);
       } else {
         logger.e(response);

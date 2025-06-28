@@ -75,7 +75,8 @@ class DriverTripResponseModel {
     estimatedFare = json['estimatedFare'];
     tollFee = json['tollFee'];
     extraCharge = json['extraCharge'];
-    cancellationReason = json['cancellationReason'].cast<String>();
+    cancellationReason =
+        (json['cancellationReason'] as List?)?.cast<String>() ?? [];
     status = json['status'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -130,7 +131,7 @@ class PickUpCoordinates {
   PickUpCoordinates({this.coordinates, this.type});
 
   PickUpCoordinates.fromJson(Map<String, dynamic> json) {
-    coordinates = json['coordinates'].cast<double>();
+    coordinates = (json['coordinates'] as List?)?.cast<double>() ?? [];
     type = json['type'];
   }
 

@@ -69,7 +69,8 @@ class DriverCurrentTripModel {
     extraCharge = json['extraCharge'];
     isPeakHourApplied = json['isPeakHourApplied'];
     isCouponApplied = json['isCouponApplied'];
-    cancellationReason = json['cancellationReason'].cast<String>();
+    cancellationReason =
+        (json['cancellationReason'] as List?)?.cast<String>() ?? [];
     status = json['status'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -119,6 +120,7 @@ class User {
   String? sId;
   String? name;
   String? profileImage;
+  String? phoneNumber;
 
   User({this.sId, this.name, this.profileImage});
 
@@ -126,6 +128,7 @@ class User {
     sId = json['_id'];
     name = json['name'];
     profileImage = json['profile_image'];
+    phoneNumber = json['phoneNumber'];
   }
 
   Map<String, dynamic> toJson() {

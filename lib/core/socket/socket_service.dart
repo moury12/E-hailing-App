@@ -1,4 +1,5 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
+import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -19,6 +20,7 @@ class SocketService {
 
   Function()? onDriverRegister;
   Function()? onDisconnected;
+  Function(Map<String, dynamic>)? onAvailableTrip;
   final Map<String, Function> _customEventHandlers = {};
 
   void connect(String userId, bool isDriver) {
@@ -48,14 +50,22 @@ class SocketService {
       onConnected?.call();
     });
     if (isDriver) {
-      socket?.on("online_status", (data) {
+      socket?.on(DriverEvent.driverOnlineStatus, (data) {
         logger.d('---------------------------driver$data');
         isDriverActive = data['data']['isOnline'];
         onDriverRegister?.call();
       });
+      socket?.on(DriverEvent.tripAvailableStatus, (data) {
+        logger.d(
+          '---------------------------available trip------------\n$data',
+        );
+        if (data['success']) {
+          onAvailableTrip?.call(data);
+        }
+      });
     }
     socket?.on(DefaultSocketEvent.disconnect.value, (data) {
-      logger.d('Disconnected from socket server');
+      logger.t('Disconnected from socket server');
       isConnected = false;
       onDisconnected?.call();
     });
