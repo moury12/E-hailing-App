@@ -1,4 +1,7 @@
+import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
@@ -139,24 +142,48 @@ class _DashboardPageState extends State<DashboardPage>
                       Obx(() {
                         DriverCurrentTripModel driverTrip =
                             DashBoardController.to.currentTrip.value;
+                        DriverCurrentTripModel availableTrip =
+                            DashBoardController.to.availableTrip.value;
                         return DashBoardController.to.findingRide.value
                             ? NoNewRideReqWidget()
                             : DashBoardController.to.rideRequest.value
-                            ? RideRequestCardWidget()
-                            : DashBoardController.to.pickup.value
-                            ? PickUpCardWidget()
-                            : DashBoardController.to.isArrived.value
-                            ? PickUpStartedWidget()
-                            : DashBoardController.to.isTripStarted.value
-                            ? TripStartWidget()
-                            : DashBoardController.to.isTripEnd.value
-                            ? TripTimeDetails(
+                            ? RideRequestCardWidget(
+                              userName: availableTrip.user?.name,
+                              userImg:
+                                  "${ApiService().baseUrl}/${availableTrip.user?.name}",
+
+                              fare: availableTrip.estimatedFare.toString(),
+                              dateTime: formatDateTime(
+                                availableTrip.createdAt ??
+                                    AppStaticStrings.noDataFound,
+                              ),
+                              distance: availableTrip.distance.toString(),
+                              fromAddress: availableTrip.pickUpAddress,
+                              rideType: AppStaticStrings.rideReq,
+                              toAddress: availableTrip.dropOffAddress,
+                            )
+                            : DashBoardController.to.afterAccepted.value
+                            ? DriverAfterAcceptedWidget(
+                              user: driverTrip.user,
+                              fare: driverTrip.estimatedFare.toString(),
+
+                              fromAddress: driverTrip.pickUpAddress,
+                              time: driverTrip.duration.toString(),
+                            )
+                            : DashBoardController.to.afterArrived.value
+                            ? AfterArrivedPickupLocationWidget(
+                              tripId: driverTrip.sId,
+                            )
+                            : DashBoardController.to.afterPickeup.value
+                            ? AfterPickedUpWidget()
+                            : DashBoardController.to.AftertripStarted.value
+                            ? AfterTripStartedWidget(
                               tripDistance: driverTrip.distance.toString(),
                               dropOffAddress: driverTrip.dropOffAddress,
                               pickUpAddress: driverTrip.pickUpAddress,
                               estimatedTime: driverTrip.duration.toString(),
                             )
-                            : DashBoardController.to.arrive.value
+                            : DashBoardController.to.destinationReached.value
                             ? SendPaymentRequestWidget(
                               dropOffAddress: driverTrip.dropOffAddress,
                               tripId: driverTrip.sId.toString(),

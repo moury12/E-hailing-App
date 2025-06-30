@@ -14,8 +14,10 @@ import 'package:get/get.dart';
 
 import '../../../core/constants/color_constants.dart';
 
-class PickUpStartedWidget extends StatelessWidget {
-  const PickUpStartedWidget({super.key});
+class AfterArrivedPickupLocationWidget extends StatelessWidget {
+  final String? tripId;
+
+  const AfterArrivedPickupLocationWidget({super.key, this.tripId});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +31,13 @@ class PickUpStartedWidget extends StatelessWidget {
         SvgPicture.asset(pickUpLocationIcon),
         CustomButton(
           onTap: () {
-            DashBoardController.to.isArrived.value = false;
-            DashBoardController.to.isTripStarted.value = true;
+            DashBoardController.to.driverTripUpdateStatus(
+              tripId: tripId.toString(),
+              newStatus: TripStateDriver.picked_up.name.toString(),
+            );
+
+            // DashBoardController.to.isArrived.value = false;
+            // DashBoardController.to.isTripStarted.value = true;
           },
           title: AppStaticStrings.pickup,
         ),

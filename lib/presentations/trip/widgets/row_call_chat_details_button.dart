@@ -12,12 +12,21 @@ import 'package:get/get.dart';
 
 import '../../../core/constants/image_constant.dart';
 import '../../../core/helper/helper_function.dart';
+
 class RowCallChatDetailsButton extends StatelessWidget {
   final String? lastItemName;
+  final String? phoneNumber;
+  final String? userId;
   final bool? showLastButton;
   final Function()? onTap;
+
   const RowCallChatDetailsButton({
-    super.key,  this.lastItemName, this.onTap, this.showLastButton =true,
+    super.key,
+    this.lastItemName,
+    this.onTap,
+    this.showLastButton = true,
+    this.phoneNumber,
+    this.userId,
   });
 
   @override
@@ -27,38 +36,43 @@ class RowCallChatDetailsButton extends StatelessWidget {
       children: [
         Expanded(
           child: CustomButton(
-            onTap: () { callOnPhone(phoneNumber: '01716773054');},
+            onTap: () {
+              callOnPhone(phoneNumber: phoneNumber ?? '01716773054');
+            },
             padding: padding8,
-            child: SvgPicture.asset(callIcon,height: 24.w,),
+            child: SvgPicture.asset(callIcon, height: 24.w),
           ),
         ),
         Expanded(
           child: CustomButton(
             padding: padding8,
             onTap: () {},
-            child: SvgPicture.asset(chatIcon,height: 24.w,),
+            child: SvgPicture.asset(chatIcon, height: 24.w),
           ),
         ),
-      showLastButton==true?  Expanded(
-          child: CustomButton(
-            onTap:onTap?? () {
-              HomeController.to.updatePreviousRoute(Get.currentRoute);
-              Get.toNamed(
-                NavigationPage.routeName,
-                arguments: pickupDestination,
-              );
-            },
-            title:lastItemName?? AppStaticStrings.track,
-          ),
-        ):SizedBox.shrink(),
+        showLastButton == true
+            ? Expanded(
+              child: CustomButton(
+                onTap:
+                    onTap ??
+                    () {
+                      HomeController.to.updatePreviousRoute(Get.currentRoute);
+                      Get.toNamed(
+                        NavigationPage.routeName,
+                        arguments: pickupDestination,
+                      );
+                    },
+                title: lastItemName ?? AppStaticStrings.track,
+              ),
+            )
+            : SizedBox.shrink(),
       ],
     );
   }
 }
+
 class CancelTripButtonWidget extends StatelessWidget {
-  const CancelTripButtonWidget({
-    super.key,
-  });
+  const CancelTripButtonWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

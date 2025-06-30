@@ -1,8 +1,10 @@
+import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/row_call_chat_details_button.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +13,24 @@ import 'package:get/get.dart';
 
 import '../../../core/constants/color_constants.dart';
 
-class PickUpCardWidget extends StatelessWidget {
-  const PickUpCardWidget({super.key});
+class DriverAfterAcceptedWidget extends StatelessWidget {
+  final String? dateTime;
+
+  final User? user;
+  final String? rideType;
+  final String? fare;
+  final String? time;
+  final String? fromAddress;
+
+  const DriverAfterAcceptedWidget({
+    super.key,
+    this.dateTime,
+    this.user,
+    this.rideType,
+    this.fare,
+    this.time,
+    this.fromAddress,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,28 +41,39 @@ class PickUpCardWidget extends StatelessWidget {
           text: AppStaticStrings.pickup,
           fontSize: getFontSizeDefault(),
         ),
-        DriverDetails(),
-        FromToTimeLine(showTo: false),
-        RowCallChatDetailsButton(showLastButton: false),
+        DriverDetails(
+          userName: user != null ? user?.name : AppStaticStrings.noDataFound,
+          userImg:
+              user != null
+                  ? "${ApiService().baseUrl}/${user?.name}"
+                  : AppStaticStrings.noDataFound,
+          fare: fare,
+          value: "$time min",
+        ),
+        FromToTimeLine(showTo: false, pickUpAddress: fromAddress),
+        RowCallChatDetailsButton(
+          showLastButton: false,
+          phoneNumber: user != null ? user?.phoneNumber : "000",
+        ),
         Obx(() {
           return CustomButton(
             onTap: () {
-              DashBoardController.to.arrive.value = true;
-              if (DashBoardController.to.arrive.value) {
-                DashBoardController.to.pickup.value = false;
-                DashBoardController.to.isArrived.value = true;
+              DashBoardController.to.destinationReached.value = true;
+              if (DashBoardController.to.destinationReached.value) {
+                DashBoardController.to.afterAccepted.value = false;
+                DashBoardController.to.afterArrived.value = true;
               }
             },
             title:
-                DashBoardController.to.arrive.value
+                DashBoardController.to.destinationReached.value
                     ? AppStaticStrings.arrive
                     : AppStaticStrings.pickUpWithin,
             fillColor:
-                DashBoardController.to.arrive.value
+                DashBoardController.to.destinationReached.value
                     ? AppColors.kPrimaryColor
                     : AppColors.kWhiteColor,
             textColor:
-                DashBoardController.to.arrive.value
+                DashBoardController.to.destinationReached.value
                     ? AppColors.kWhiteColor
                     : AppColors.kPrimaryColor,
           );

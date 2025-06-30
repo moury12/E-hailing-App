@@ -52,17 +52,18 @@ class SocketService {
     if (isDriver) {
       socket?.on(DriverEvent.driverOnlineStatus, (data) {
         logger.d('---------------------------driver$data');
+
         isDriverActive = data['data']['isOnline'];
         onDriverRegister?.call();
       });
-      socket?.on(DriverEvent.tripAvailableStatus, (data) {
-        logger.d(
-          '---------------------------available trip------------\n$data',
-        );
-        if (data['success']) {
-          onAvailableTrip?.call(data);
-        }
-      });
+      // socket?.on(DriverEvent.tripAvailableStatus, (data) {
+      //   logger.d('--------------available trip------------\n$data');
+      //   if (data['success'] == true) {
+      //     logger.i("calling from controller");
+      //
+      //     onAvailableTrip?.call(data);
+      //   }
+      // });
     }
     socket?.on(DefaultSocketEvent.disconnect.value, (data) {
       logger.t('Disconnected from socket server');
