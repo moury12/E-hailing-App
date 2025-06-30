@@ -1,5 +1,7 @@
+import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -7,9 +9,25 @@ import '../../../core/components/custom_button.dart';
 import '../../../core/constants/fontsize_constant.dart';
 import '../../home/widgets/trip_details_card_widget.dart';
 import '../controllers/dashboard_controller.dart';
+import '../model/driver_current_trip_model.dart';
 
 class AfterPickedUpWidget extends StatelessWidget {
-  const AfterPickedUpWidget({super.key});
+  final User? user;
+  final String? duration;
+  final String? fare;
+  final String? fromAddress;
+  final String? toAddress;
+  final String? tripId;
+
+  const AfterPickedUpWidget({
+    super.key,
+    this.user,
+    this.duration,
+    this.fromAddress,
+    this.toAddress,
+    this.fare,
+    this.tripId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +38,19 @@ class AfterPickedUpWidget extends StatelessWidget {
           text: AppStaticStrings.tripStarted,
           fontSize: getFontSizeDefault(),
         ),
-        DriverDetails(),
-        FromToTimeLine(),
+        DriverDetails(
+          userName: user != null ? user?.name : AppStaticStrings.noDataFound,
+          userImg: "${ApiService().baseUrl}/${user?.profileImage}",
+          fare: fare,
+          value: "$duration min",
+        ),
+        FromToTimeLine(pickUpAddress: fromAddress, dropOffAddress: toAddress),
         CustomButton(
           onTap: () {
-            DashBoardController.to.afterPickeup.value = false;
-            DashBoardController.to.AftertripStarted.value = true;
+            DashBoardController.to.driverTripUpdateStatus(
+              tripId: tripId.toString(),
+              newStatus: DriverTripStatus.started.name.toString(),
+            );
           },
           title: AppStaticStrings.startTrip,
         ),

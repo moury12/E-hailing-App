@@ -33,7 +33,7 @@ class AfterArrivedPickupLocationWidget extends StatelessWidget {
           onTap: () {
             DashBoardController.to.driverTripUpdateStatus(
               tripId: tripId.toString(),
-              newStatus: TripStateDriver.picked_up.name.toString(),
+              newStatus: DriverTripStatus.picked_up.name.toString(),
             );
 
             // DashBoardController.to.isArrived.value = false;
@@ -90,9 +90,9 @@ class SendPaymentRequestWidget extends StatelessWidget {
                   tripId: tripId,
                 );
               }
-              logger.d(TripStateDriver.arrived.name.toString());
+              logger.d(DriverTripStatus.arrived.name.toString());
               DashBoardController.to.driverTripUpdateStatus(
-                newStatus: TripStateDriver.arrived.name.toString(),
+                newStatus: DriverTripStatus.arrived.name.toString(),
                 tripId: tripId,
               );
             },

@@ -115,7 +115,7 @@ class PaymentPage extends StatelessWidget {
                             DashBoardController.to.driverTripUpdateStatus(
                               tripId: driverTripResponseModel.sId.toString(),
                               newStatus:
-                                  TripStateDriver.destination_reached.name
+                                  DriverTripStatus.destination_reached.name
                                       .toString(),
                               duration:
                                   driverTripResponseModel.duration?.toInt(),

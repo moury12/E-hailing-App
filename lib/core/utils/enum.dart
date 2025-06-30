@@ -31,7 +31,7 @@ enum RideFlowState {
   arrive,
 }
 
-enum TripStateDriver {
+enum DriverTripStatus {
   requested,
   accepted,
   on_the_way,
