@@ -175,7 +175,14 @@ class _DashboardPageState extends State<DashboardPage>
                               tripId: driverTrip.sId,
                             )
                             : DashBoardController.to.afterPickeup.value
-                            ? AfterPickedUpWidget()
+                            ? AfterPickedUpWidget(
+                              tripId: driverTrip.sId,
+                              fare: driverTrip.estimatedFare.toString(),
+                              fromAddress: driverTrip.pickUpAddress,
+                              toAddress: driverTrip.dropOffAddress,
+                              user: driverTrip.user,
+                              duration: driverTrip.duration.toString(),
+                            )
                             : DashBoardController.to.AftertripStarted.value
                             ? AfterTripStartedWidget(
                               tripDistance: driverTrip.distance.toString(),
