@@ -37,7 +37,8 @@ enum TripStateDriver {
   on_the_way,
   arrived,
   picked_up,
-  started,
   completed,
+  started,
+  destination_reached,
   cancelled,
 }

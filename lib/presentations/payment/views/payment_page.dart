@@ -8,8 +8,10 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_trip_response_model.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/car_information_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,8 +30,8 @@ class PaymentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final arg = Get.arguments;
-    DriverTripResponseModel driverTripResponseModel =
-        arg['driver'] ?? DriverTripResponseModel();
+    DriverCurrentTripModel driverTripResponseModel =
+        arg['driver'] ?? DriverCurrentTripModel();
     String role = arg['role'] ?? "";
     logger.i(driverTripResponseModel.toJson().toString());
     // String rent =
@@ -109,7 +111,32 @@ class PaymentPage extends StatelessWidget {
                       spacing: 8.h,
                       children: [
                         CustomButton(
-                          onTap: () {},
+                          onTap: () {
+                            DashBoardController.to.driverTripUpdateStatus(
+                              tripId: driverTripResponseModel.sId.toString(),
+                              newStatus:
+                                  TripStateDriver.destination_reached.name
+                                      .toString(),
+                              duration:
+                                  driverTripResponseModel.duration?.toInt(),
+                              distance:
+                                  driverTripResponseModel.distance?.toInt(),
+                              dropOffAddress:
+                                  driverTripResponseModel.dropOffAddress,
+                              dropOffLat:
+                                  driverTripResponseModel
+                                      .dropOffCoordinates
+                                      ?.coordinates
+                                      ?.last
+                                      .toDouble(),
+                              dropOffLong:
+                                  driverTripResponseModel
+                                      .dropOffCoordinates
+                                      ?.coordinates
+                                      ?.first
+                                      .toDouble(),
+                            );
+                          },
                           title: AppStaticStrings.confirm,
                         ),
                         CustomButton(

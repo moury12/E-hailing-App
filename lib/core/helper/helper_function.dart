@@ -18,6 +18,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../presentations/payment/widgets/ratting_dialog_widget.dart';
@@ -303,6 +304,20 @@ void showCustomSnackbar({
             )
             : null,
   );
+}
+
+String formatDateTime(String input) {
+  try {
+    final utcDate = DateTime.parse(input); // Parse the ISO string
+    final localDate = utcDate.toLocal(); // Convert to local timezone
+
+    final datePart = DateFormat('dd MMM yyyy').format(localDate);
+    final timePart = DateFormat('hh:mm a').format(localDate);
+
+    return '$datePart at $timePart';
+  } catch (e) {
+    return 'Invalid date';
+  }
 }
 
 void callOnPhone({required String phoneNumber}) async {

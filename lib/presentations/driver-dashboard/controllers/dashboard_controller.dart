@@ -7,7 +7,7 @@ import 'package:e_hailing_app/core/socket/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
-import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_trip_response_model.dart';
+import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -19,17 +19,16 @@ class DashBoardController extends GetxController {
   RxBool rideRequest = false.obs;
   RxBool acceptRideRequest = false.obs;
   RxBool isPreBookRequest = false.obs;
-  RxBool pickup = false.obs;
-  RxBool arrive = false.obs;
-  RxBool isTripStarted = false.obs;
-  RxBool isTripEnd = false.obs;
-  RxBool isArrived = false.obs;
+  RxBool afterAccepted = false.obs;
+  RxBool destinationReached = false.obs;
+  RxBool afterPickeup = false.obs;
+  RxBool AftertripStarted = false.obs;
+  RxBool afterArrived = false.obs;
   RxBool isDriverActive = false.obs;
   RxString status = "Disconnected".obs;
   Rx<DriverCurrentTripModel> currentTrip = DriverCurrentTripModel().obs;
   Rx<DriverCurrentTripModel> availableTrip = DriverCurrentTripModel().obs;
-  Rx<DriverTripResponseModel> driverTripResponse =
-      DriverTripResponseModel().obs;
+
   TextEditingController extraCost = TextEditingController();
   final SocketService socketService = SocketService();
   RxBool isLoadingCurrentTrip = false.obs;
@@ -40,16 +39,65 @@ class DashBoardController extends GetxController {
     initializeSocket();
     await getDriverCurrentTripRequest();
     if (currentTrip.value.sId != null) {
-      isTripEnd.value = true;
-      findingRide.value = false;
-    } else if (availableTrip.value.sId != null) {
-      showAvailableTrip();
+      if (currentTrip.value.status ==
+          TripStateDriver.accepted.name.toString()) {
+        afterAccepted.value = true;
+        resetRideFlow(rideType: RideFlowState.pickup);
+      } else if (currentTrip.value.status ==
+          TripStateDriver.picked_up.name.toString()) {
+        afterPickeup.value = true;
+        resetRideFlow(rideType: RideFlowState.isTripStarted);
+      } else if (currentTrip.value.status ==
+          TripStateDriver.arrived.name.toString()) {
+        afterArrived.value = true;
+        resetRideFlow(rideType: RideFlowState.isArrived);
+      }
     }
+    /*else if (availableTrip.value.sId != null) {
+      showAvailableTrip();
+    }*/
     super.onInit();
+  }
+
+  void resetRideFlow({required RideFlowState rideType}) {
+    // Reset all to false
+    findingRide.value = false;
+    rideRequest.value = false;
+    afterAccepted.value = false;
+    afterArrived.value = false;
+    afterPickeup.value = false;
+    AftertripStarted.value = false;
+    destinationReached.value = false;
+
+    // Enable only the provided one
+    switch (rideType) {
+      case RideFlowState.findingRide:
+        findingRide.value = true;
+        break;
+      case RideFlowState.rideRequest:
+        rideRequest.value = true;
+        break;
+      case RideFlowState.pickup:
+        afterAccepted.value = true;
+        break;
+      case RideFlowState.isArrived:
+        afterArrived.value = true;
+        break;
+      case RideFlowState.isTripStarted:
+        afterPickeup.value = true;
+        break;
+      case RideFlowState.isTripEnd:
+        AftertripStarted.value = true;
+        break;
+      case RideFlowState.arrive:
+        destinationReached.value = true;
+        break;
+    }
   }
 
   void showAvailableTrip() {
     rideRequest.value = true;
+    logger.d(availableTrip.value.sId);
     resetRideFlow(rideType: RideFlowState.rideRequest);
   }
 
@@ -62,26 +110,47 @@ class DashBoardController extends GetxController {
     };
 
     if (socketService.isConnected) {
+      logger.i(socketService.isDriverActive);
       isDriverActive.value = socketService.isDriverActive;
+      socketService.on(DriverEvent.tripAvailableStatus, (data) {
+        logger.d(data);
+        if (data["success"]) {
+          logger.i("onAvailableTrip assigned");
+          availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
+
+          showAvailableTrip();
+        }
+      });
+
       socketService.on(DriverEvent.tripUpdateStatus, (data) {
         logger.d(data);
         if (data['success'] == true) {
-          driverTripResponse.value = DriverTripResponseModel.fromJson(
-            data['data'],
-          );
+          currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
 
           showCustomSnackbar(
             title: 'Success',
             message: data['message'],
             type: SnackBarType.success,
           );
-          Get.toNamed(
-            PaymentPage.routeName,
-            arguments: {
-              "driver": DriverTripResponseModel.fromJson(data['data']),
-              "role": driver,
-            },
-          );
+          if (data['data']['status'] ==
+              TripStateDriver.destination_reached.name.toString()) {
+            // driverTripUpdateStatus(tripId: tripId, newStatus: newStatus)
+          } else if (data['data']['status'] ==
+              TripStateDriver.picked_up.name.toString()) {
+            afterPickeup.value = true;
+            resetRideFlow(rideType: RideFlowState.isTripStarted);
+          } else if (data['data']['status'] ==
+              TripStateDriver.completed.name.toString()) {
+            Get.offAllNamed(NavigationPage.routeName);
+          } else {
+            Get.toNamed(
+              PaymentPage.routeName,
+              arguments: {
+                "driver": DriverCurrentTripModel.fromJson(data['data']),
+                "role": driver,
+              },
+            );
+          }
         } else {
           showCustomSnackbar(
             title: 'Failed',
@@ -90,18 +159,38 @@ class DashBoardController extends GetxController {
           );
         }
       });
+      socketService.on(DriverEvent.tripAcceptedStatus, (data) {
+        logger.d(data);
+        if (data['success'] == true) {
+          currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
 
-      socketService.onAvailableTrip = (data) {
-        availableTrip.value = DriverCurrentTripModel.fromJson(data);
-        showAvailableTrip();
-      };
-      // socketService.on(DriverEvent.tripAvailableStatus, (data) {
-      //   logger.d(data);
-      //   if (data["success"]) {
-      //     availableTrip.value = DriverCurrentTripModel.fromJson(data);
-      //     showAvailableTrip();
-      //   }
-      // });
+          showCustomSnackbar(
+            title: 'Success',
+            message: data['message'],
+            type: SnackBarType.success,
+          );
+          DashBoardController.to.afterAccepted.value = true;
+          resetRideFlow(rideType: RideFlowState.pickup);
+          // Get.toNamed(
+          //   PaymentPage.routeName,
+          //   arguments: {
+          //     "driver": DriverTripResponseModel.fromJson(data['data']),
+          //     "role": driver,
+          //   },
+          // );
+        } else {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: data['message'],
+            type: SnackBarType.failed,
+          );
+        }
+      });
+      // socketService.onAvailableTrip = (data) {
+      //   logger.i("onAvailableTrip assigned");
+      //   availableTrip.value = DriverCurrentTripModel.fromJson(data);
+      //   showAvailableTrip();
+      // };
     } else {
       socketService.onConnected = () {
         isDriverActive.value = socketService.isDriverActive;
@@ -154,6 +243,11 @@ class DashBoardController extends GetxController {
   Future<void> driverTripUpdateStatus({
     required String tripId,
     required String newStatus,
+    String? dropOffAddress,
+    double? dropOffLat,
+    double? dropOffLong,
+    int? duration,
+    int? distance,
   }) async {
     if (!socketService.isConnected) {
       showCustomSnackbar(
@@ -167,6 +261,30 @@ class DashBoardController extends GetxController {
     socketService.emit(DriverEvent.tripUpdateStatus, {
       "tripId": tripId,
       "newStatus": newStatus,
+      if (dropOffAddress != null) "dropOffAddress": dropOffAddress,
+      if (dropOffLat != null) "dropOffLat": dropOffLat,
+      if (dropOffLong != null) "dropOffLong": dropOffLong,
+      if (duration != null) "duration": duration,
+      if (distance != null) "distance": distance,
+    });
+  }
+
+  Future<void> driverTripAccept({
+    required String tripId,
+    required double lat,
+    required double lng,
+  }) async {
+    if (!socketService.isConnected) {
+      showCustomSnackbar(
+        title: 'Connection Error',
+        message: 'Not connected to server. Please wait and try again.',
+        type: SnackBarType.failed,
+      );
+      return;
+    }
+
+    socketService.emit(DriverEvent.tripAcceptedStatus, {
+      {"tripId": tripId, "long": lat, "lat": lng},
     });
   }
 
@@ -202,29 +320,29 @@ class DashBoardController extends GetxController {
   }
 
   bool handleBackNavigation() {
-    if (arrive.value) {
+    if (destinationReached.value) {
       // From payment request back to trip end
-      arrive.value = false;
-      isTripEnd.value = true;
+      destinationReached.value = false;
+      AftertripStarted.value = true;
       return false;
-    } else if (isTripEnd.value) {
+    } else if (AftertripStarted.value) {
       // From trip end back to trip started
-      isTripEnd.value = false;
-      isTripStarted.value = true;
+      AftertripStarted.value = false;
+      afterPickeup.value = true;
       return false;
-    } else if (isTripStarted.value) {
+    } else if (afterPickeup.value) {
       // From trip started back to pickup started
-      isTripStarted.value = false;
-      isArrived.value = true;
+      afterPickeup.value = false;
+      afterArrived.value = true;
       return false;
-    } else if (isArrived.value) {
+    } else if (afterArrived.value) {
       // From pickup started back to pickup
-      isArrived.value = false;
-      pickup.value = true;
+      afterArrived.value = false;
+      afterAccepted.value = true;
       return false;
-    } else if (pickup.value) {
+    } else if (afterAccepted.value) {
       // From pickup back to ride request
-      pickup.value = false;
+      afterAccepted.value = false;
       rideRequest.value = true;
       return false;
     } else if (rideRequest.value) {
@@ -238,42 +356,6 @@ class DashBoardController extends GetxController {
 
     // Default case: allow the back navigation to occur normally
     return true;
-  }
-
-  void resetRideFlow({required RideFlowState rideType}) {
-    // Reset all to false
-    findingRide.value = false;
-    rideRequest.value = false;
-    pickup.value = false;
-    isArrived.value = false;
-    isTripStarted.value = false;
-    isTripEnd.value = false;
-    arrive.value = false;
-
-    // Enable only the provided one
-    switch (rideType) {
-      case RideFlowState.findingRide:
-        findingRide.value = true;
-        break;
-      case RideFlowState.rideRequest:
-        rideRequest.value = true;
-        break;
-      case RideFlowState.pickup:
-        pickup.value = true;
-        break;
-      case RideFlowState.isArrived:
-        isArrived.value = true;
-        break;
-      case RideFlowState.isTripStarted:
-        isTripStarted.value = true;
-        break;
-      case RideFlowState.isTripEnd:
-        isTripEnd.value = true;
-        break;
-      case RideFlowState.arrive:
-        arrive.value = true;
-        break;
-    }
   }
 
   @override

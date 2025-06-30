@@ -173,6 +173,7 @@ class AppStaticStrings {
   static const String findAnother = 'Find Another';
   static const String accept = 'Accept';
   static const String noNewRideReq = 'No New Ride Request';
+  static const String rideReq = 'Ride Request';
   static const String pleaseGoOnlineRide = 'Please Go Online Ride Request';
   static const String pickUpWithin = 'Pick up WithIn 04:10 PM';
   static const String arrive = 'Arrive';
@@ -240,6 +241,7 @@ class AppStaticStrings {
   static const String addPlace = 'Add place';
   static const String finalCost = 'Final cost';
   static const String tripDuration = 'Trip Duration';
+  static const String tripDistance = 'Trip Distance';
   static const String from = 'From:';
   static const String to = 'To:';
 
@@ -286,7 +288,6 @@ class AppStaticStrings {
   static const String faqs = 'FAQs';
   static const String delete = 'Delete';
   static const String update = ' Update';
-  static const String tripDistance = 'Trip Distance (Meter)';
 
   // static const String tripDuration = 'Trip Duration (min)';
   static const String howToBook = 'How to book an appointment?';

@@ -63,8 +63,18 @@ class TripDetailsPickupCard extends StatelessWidget {
 class DriverDetails extends StatelessWidget {
   final String? title;
   final String? value;
+  final String? userImg;
+  final String? userName;
+  final String? fare;
 
-  const DriverDetails({super.key, this.title, this.value});
+  const DriverDetails({
+    super.key,
+    this.title,
+    this.value,
+    this.userImg,
+    this.userName,
+    this.fare,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +82,7 @@ class DriverDetails extends StatelessWidget {
       spacing: 12.w,
       children: [
         CustomNetworkImage(
-          imageUrl: dummyProfileImage,
+          imageUrl: userImg ?? dummyProfileImage,
           boxShape: BoxShape.circle,
           height: 42.w,
           width: 42.w,
@@ -83,11 +93,14 @@ class DriverDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
-                text: 'Darrell Steward',
+                text: userName ?? AppStaticStrings.noDataFound,
                 style: poppinsSemiBold,
                 fontSize: getFontSizeDefault(),
               ),
-              CustomText(text: 'RM 30.00', color: AppColors.kLightBlackColor),
+              CustomText(
+                text: 'RM ${fare ?? 00.00}',
+                color: AppColors.kLightBlackColor,
+              ),
             ],
           ),
         ),
@@ -97,6 +110,7 @@ class DriverDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               CustomText(
+                textAlign: TextAlign.right,
                 text: title ?? 'Estimated Time',
                 color: AppColors.kLightBlackColor,
               ),

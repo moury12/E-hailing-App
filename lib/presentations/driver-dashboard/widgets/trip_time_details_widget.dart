@@ -7,13 +7,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../controllers/dashboard_controller.dart';
 
-class TripTimeDetails extends StatelessWidget {
+class AfterTripStartedWidget extends StatelessWidget {
   final String? tripDistance;
   final String? estimatedTime;
   final String? pickUpAddress;
   final String? dropOffAddress;
 
-  const TripTimeDetails({
+  const AfterTripStartedWidget({
     super.key,
     this.tripDistance,
     this.estimatedTime,
@@ -37,8 +37,8 @@ class TripTimeDetails extends StatelessWidget {
         ),
         CustomButton(
           onTap: () {
-            DashBoardController.to.isTripEnd.value = false;
-            DashBoardController.to.arrive.value = true;
+            DashBoardController.to.AftertripStarted.value = false;
+            DashBoardController.to.destinationReached.value = true;
           },
           title: AppStaticStrings.arrived,
         ),

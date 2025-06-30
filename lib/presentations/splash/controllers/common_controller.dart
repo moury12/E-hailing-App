@@ -138,7 +138,8 @@ class CommonController extends GetxController {
     }
   }
 
-  void setupGlobalSocketListeners() {
+  Future<void> setupGlobalSocketListeners() async {
+    await getUserProfileRequest();
     socketService.onConnected = () {
       socketStatus.value = 'Connected';
       logger.i('Socket connected');
@@ -558,8 +559,8 @@ class CommonController extends GetxController {
 
   Future<void> initialSetUp() async {
     await checkUserRole();
-    await getUserProfileRequest();
-    setupGlobalSocketListeners();
+
+    await setupGlobalSocketListeners();
     await fetchCurrentLocation();
   }
 }

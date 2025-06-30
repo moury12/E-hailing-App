@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,7 +11,26 @@ import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
 
 class RideRequestCardWidget extends StatelessWidget {
-  const RideRequestCardWidget({super.key});
+  final String? dateTime;
+  final String? userImg;
+  final String? userName;
+  final String? rideType;
+  final String? fare;
+  final String? distance;
+  final String? fromAddress;
+  final String? toAddress;
+
+  const RideRequestCardWidget({
+    super.key,
+    this.dateTime,
+    this.userImg,
+    this.userName,
+    this.rideType,
+    this.fare,
+    this.distance,
+    this.fromAddress,
+    this.toAddress,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +39,9 @@ class RideRequestCardWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: CustomText(text: AppStaticStrings.preBookRide)),
+            Expanded(
+              child: CustomText(text: rideType ?? AppStaticStrings.preBookRide),
+            ),
             Expanded(
               flex: 2,
               child: Container(
@@ -30,19 +52,29 @@ class RideRequestCardWidget extends StatelessWidget {
                 ),
                 padding: padding6,
                 child: CustomText(
-                  text: '01 jan 2025 at 04:10 PM',
+                  text: dateTime ?? '00 00 0000 at 00:00 PM',
                   color: AppColors.kWhiteColor,
                 ),
               ),
             ),
           ],
         ),
-        DriverDetails(title: AppStaticStrings.tripDuration, value: '7.68 km'),
-        FromToTimeLine(),
+        DriverDetails(
+          title: AppStaticStrings.tripDistance,
+          value: "$distance km" ?? '0.00 km',
+          fare: fare,
+          userImg: userImg,
+          userName: userName,
+        ),
+        FromToTimeLine(pickUpAddress: fromAddress, dropOffAddress: toAddress),
         CustomButton(
           onTap: () {
-            DashBoardController.to.rideRequest.value = false;
-            DashBoardController.to.pickup.value = true;
+            // DashBoardController.to.rideRequest.value = false;
+            DashBoardController.to.driverTripAccept(
+              tripId: DashBoardController.to.availableTrip.value.sId.toString(),
+              lat: CommonController.to.marketPosition.value.latitude,
+              lng: CommonController.to.marketPosition.value.longitude,
+            );
           },
           title: AppStaticStrings.accept,
         ),
