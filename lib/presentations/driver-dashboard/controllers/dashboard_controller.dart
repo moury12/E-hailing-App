@@ -21,8 +21,8 @@ class DashBoardController extends GetxController {
   RxBool isPreBookRequest = false.obs;
   RxBool afterAccepted = false.obs;
   RxBool destinationReached = false.obs;
-  RxBool afterPickeup = false.obs;
-  RxBool AftertripStarted = false.obs;
+  RxBool afterPickup = false.obs;
+  RxBool afterTripStarted = false.obs;
   RxBool afterArrived = false.obs;
   RxBool isDriverActive = false.obs;
   RxString status = "Disconnected".obs;
@@ -45,12 +45,16 @@ class DashBoardController extends GetxController {
         resetRideFlow(rideType: RideFlowState.pickup);
       } else if (currentTrip.value.status ==
           DriverTripStatus.picked_up.name.toString()) {
-        afterPickeup.value = true;
+        afterPickup.value = true;
         resetRideFlow(rideType: RideFlowState.isTripStarted);
       } else if (currentTrip.value.status ==
           DriverTripStatus.arrived.name.toString()) {
         afterArrived.value = true;
         resetRideFlow(rideType: RideFlowState.isArrived);
+      } else if (currentTrip.value.status ==
+          DriverTripStatus.started.name.toString()) {
+        afterTripStarted.value = true;
+        resetRideFlow(rideType: RideFlowState.isTripEnd);
       }
     }
     /*else if (availableTrip.value.sId != null) {
@@ -65,8 +69,8 @@ class DashBoardController extends GetxController {
     rideRequest.value = false;
     afterAccepted.value = false;
     afterArrived.value = false;
-    afterPickeup.value = false;
-    AftertripStarted.value = false;
+    afterPickup.value = false;
+    afterTripStarted.value = false;
     destinationReached.value = false;
 
     // Enable only the provided one
@@ -84,10 +88,10 @@ class DashBoardController extends GetxController {
         afterArrived.value = true;
         break;
       case RideFlowState.isTripStarted:
-        afterPickeup.value = true;
+        afterPickup.value = true;
         break;
       case RideFlowState.isTripEnd:
-        AftertripStarted.value = true;
+        afterTripStarted.value = true;
         break;
       case RideFlowState.arrive:
         destinationReached.value = true;
@@ -121,7 +125,6 @@ class DashBoardController extends GetxController {
           showAvailableTrip();
         }
       });
-
       socketService.on(DriverEvent.tripUpdateStatus, (data) {
         logger.d(data);
         if (data['success'] == true) {
@@ -137,7 +140,7 @@ class DashBoardController extends GetxController {
             // driverTripUpdateStatus(tripId: tripId, newStatus: newStatus)
           } else if (data['data']['status'] ==
               DriverTripStatus.picked_up.name.toString()) {
-            afterPickeup.value = true;
+            afterPickup.value = true;
             resetRideFlow(rideType: RideFlowState.isTripStarted);
           } else if (data['data']['status'] ==
               DriverTripStatus.completed.name.toString()) {
@@ -186,11 +189,6 @@ class DashBoardController extends GetxController {
           );
         }
       });
-      // socketService.onAvailableTrip = (data) {
-      //   logger.i("onAvailableTrip assigned");
-      //   availableTrip.value = DriverCurrentTripModel.fromJson(data);
-      //   showAvailableTrip();
-      // };
     } else {
       socketService.onConnected = () {
         isDriverActive.value = socketService.isDriverActive;
@@ -323,16 +321,16 @@ class DashBoardController extends GetxController {
     if (destinationReached.value) {
       // From payment request back to trip end
       destinationReached.value = false;
-      AftertripStarted.value = true;
+      afterTripStarted.value = true;
       return false;
-    } else if (AftertripStarted.value) {
+    } else if (afterTripStarted.value) {
       // From trip end back to trip started
-      AftertripStarted.value = false;
-      afterPickeup.value = true;
+      afterTripStarted.value = false;
+      afterPickup.value = true;
       return false;
-    } else if (afterPickeup.value) {
+    } else if (afterPickup.value) {
       // From trip started back to pickup started
-      afterPickeup.value = false;
+      afterPickup.value = false;
       afterArrived.value = true;
       return false;
     } else if (afterArrived.value) {

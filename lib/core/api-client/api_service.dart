@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-
+import 'package:http_parser/http_parser.dart';
 
 class ApiService {
   // Base URL for your API
@@ -14,16 +13,18 @@ class ApiService {
 
   // Singleton pattern for API service
   static final ApiService _instance = ApiService._internal();
+
   factory ApiService() => _instance;
+
   ApiService._internal();
 
   // Headers that will be used in all requests
   Map<String, String> get _headers => {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        // Add auth token if available
-        if (_authToken != null) 'Authorization': 'Bearer $_authToken',
-      };
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    // Add auth token if available
+    if (_authToken != null) 'Authorization': 'Bearer $_authToken',
+  };
 
   // Auth token storage
   String? _authToken;
@@ -38,40 +39,35 @@ class ApiService {
     _authToken = null;
   }
 
-  // Check internet connectivity
-  Future<bool> checkInternetConnection() async {
-    // final connectionChecker = InternetConnectionCheckerPlus.createInstance(
-    //   checkInterval: const Duration(seconds: 5),
-    // );
-
+  Future<bool> checkInternetConnection({
+    Duration timeout = const Duration(seconds: 5),
+  }) async {
     try {
-      bool result = await InternetConnection().hasInternetAccess;
+      final result = await InternetAddress.lookup(
+        'google.com',
+      ).timeout(timeout);
 
-      // connectionChecker.onStatusChange.listen((status) {
-      //   if (status == InternetConnectionStatus.disconnected) {
-      //   }
-      // });
-
-      return result;
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      debugPrint('❌ No internet connection (SocketException)');
+      return false;
     } catch (e) {
-      debugPrint('Connection check error: $e');
+      debugPrint('Unexpected error: $e');
       return false;
     }
-  }  // Generic HTTP request method
+  }
+
+  // Generic HTTP request method
   Future<dynamic> request({
     required String endpoint,
     required String method,
     Map<String, dynamic>? body,
     Map<String, String>? queryParams,
     bool useAuth = true,
-  })
-  async {
+  }) async {
     bool isConnected = await checkInternetConnection();
     if (!isConnected) {
-      return {
-        'success': false,
-        'message': 'No internet connection',
-      };
+      return {'success': false, 'message': 'No internet connection'};
     }
 
     // Build the URL with query parameters if provided
@@ -79,7 +75,7 @@ class ApiService {
     if (queryParams != null && queryParams.isNotEmpty) {
       uri = uri.replace(queryParameters: queryParams);
     }
-logger.d(uri.toString());
+    logger.d(uri.toString());
     http.Response response;
     final headers = {
       'Content-Type': 'application/json',
@@ -122,11 +118,10 @@ logger.d(uri.toString());
         default:
           throw Exception('Unsupported HTTP method: $method');
       }
-if(body!=null){
-  logger.d(body);
-  logger.d(uri.toString());
-}
-
+      if (body != null) {
+        logger.d(body);
+        logger.d(uri.toString());
+      }
 
       // Parse response
       var responseData = json.decode(response.body);
@@ -137,35 +132,29 @@ if(body!=null){
       } else {
         return {
           'success': false,
-          'message': responseData['message'] ??
+          'message':
+              responseData['message'] ??
               'Request failed with status: ${response.statusCode}',
           'statusCode': response.statusCode,
           'data': responseData,
         };
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Request failed: ${e.toString()}',
-      };
+      return {'success': false, 'message': 'Request failed: ${e.toString()}'};
     }
   }
-
 
   Future<dynamic> multipartRequest({
     required String endpoint,
     required String method,
     required Map<String, String> fields,
-    required Map<String, dynamic> files, // Use dynamic to support both single files and lists
-  })
-  async {
+    required Map<String, dynamic>
+    files, // Use dynamic to support both single files and lists
+  }) async {
     // Check internet connection first
     bool isConnected = await checkInternetConnection();
     if (!isConnected) {
-      return {
-        'success': false,
-        'message': AppStaticStrings.noInternet,
-      };
+      return {'success': false, 'message': AppStaticStrings.noInternet};
     }
 
     var uri = Uri.parse('$baseUrl/$endpoint');
@@ -185,7 +174,9 @@ if(body!=null){
     logger.d('➡️ Fields: ${request.fields}');
     logger.d('➡️ Files:');
     for (var f in request.files) {
-      print('  - Field: ${f.field}, Filename: ${f.filename}, Length: ${f.length}');
+      print(
+        '  - Field: ${f.field}, Filename: ${f.filename}, Length: ${f.length}',
+      );
     }
     // Function to determine MediaType based on file extension
     MediaType getMediaType(String path) {
@@ -205,9 +196,15 @@ if(body!=null){
         case 'doc':
           return MediaType('application', 'msword');
         case 'docx':
-          return MediaType('application', 'vnd.openxmlformats-officedocument.wordprocessingml.document');
+          return MediaType(
+            'application',
+            'vnd.openxmlformats-officedocument.wordprocessingml.document',
+          );
         default:
-          return MediaType('application', 'octet-stream'); // Default binary data
+          return MediaType(
+            'application',
+            'octet-stream',
+          ); // Default binary data
       }
     }
 
@@ -229,8 +226,7 @@ if(body!=null){
           contentType: getMediaType(value.path),
         );
         request.files.add(multipartFile);
-      }
-      else if (value is List) {
+      } else if (value is List) {
         // List of files
         for (var file in value) {
           if (file is File) {
@@ -261,16 +257,15 @@ if(body!=null){
       } else {
         return {
           'success': false,
-          'message': jsonResponse['message'] ?? 'Request failed with status: ${response.statusCode}',
+          'message':
+              jsonResponse['message'] ??
+              'Request failed with status: ${response.statusCode}',
           'statusCode': response.statusCode,
           'data': jsonResponse,
         };
       }
     } catch (e) {
-      return {
-        'success': false,
-        'message': 'Request failed: ${e.toString()}',
-      };
+      return {'success': false, 'message': 'Request failed: ${e.toString()}'};
     }
   }
 }
