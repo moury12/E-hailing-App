@@ -18,7 +18,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../core/components/custom_checkbox_widget.dart';
-import '../../../core/helper/helper_function.dart';
 import '../widgets/auth_scaffold_structure_widget.dart';
 import '../widgets/auth_text_widgets.dart';
 import '../widgets/social_media_auth_widget.dart';
@@ -35,16 +34,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    /*WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) => ,
-    )*/
-    Future.delayed(Duration(seconds: 1), () {
-      return showCredentialsDialog();
-    });
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   /*WidgetsBinding.instance.addPostFrameCallback(
+  //     (timeStamp) => ,
+  //   )*/
+  //   Future.delayed(Duration(seconds: 1), () {
+  //     return showCredentialsDialog();
+  //   });
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
