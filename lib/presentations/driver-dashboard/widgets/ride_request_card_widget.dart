@@ -61,7 +61,7 @@ class RideRequestCardWidget extends StatelessWidget {
         ),
         DriverDetails(
           title: AppStaticStrings.tripDistance,
-          value: "$distance km" ?? '0.00 km',
+          value: "${(int.parse(distance ?? "0") / 1000).toString()} km",
           fare: fare,
           userImg: userImg,
           userName: userName,

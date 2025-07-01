@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/components/custom_timeline.dart';
@@ -13,6 +14,7 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
+import 'package:e_hailing_app/presentations/trip/model/trip_accepted_model.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -128,7 +130,9 @@ class DriverDetails extends StatelessWidget {
 }
 
 class TripDetailsDestinationCard extends StatelessWidget {
-  const TripDetailsDestinationCard({super.key});
+  final TripResponseModel? tripModel;
+
+  const TripDetailsDestinationCard({super.key, this.tripModel});
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +179,13 @@ class TripDetailsDestinationCard extends StatelessWidget {
               Icon(CupertinoIcons.info_circle_fill),
             ],
           ),
-          DriverDetails(title: AppStaticStrings.tripDuration, value: '7.68 km'),
+          DriverDetails(
+            userName: tripModel?.driver?.name,
+            userImg:
+                "${ApiService().baseUrl}/${tripModel?.driver?.profileImage}",
+            title: AppStaticStrings.tripDuration,
+            value: '7.68 km',
+          ),
 
           ButtonTapWidget(
             onTap: () {
@@ -185,7 +195,11 @@ class TripDetailsDestinationCard extends StatelessWidget {
                 Get.toNamed(PaymentPage.routeName);
               });
             },
-            child: FromToTimeLine(showTo: true),
+            child: FromToTimeLine(
+              showTo: true,
+              pickUpAddress: tripModel?.pickUpAddress,
+              dropOffAddress: tripModel?.dropOffAddress,
+            ),
           ),
           RowCallChatDetailsButton(
             lastItemName: AppStaticStrings.details,

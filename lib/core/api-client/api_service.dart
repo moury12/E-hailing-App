@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
@@ -49,10 +48,10 @@ class ApiService {
 
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
     } on SocketException catch (_) {
-      debugPrint('❌ No internet connection (SocketException)');
+      logger.e('❌ No internet connection (SocketException)');
       return false;
     } catch (e) {
-      debugPrint('Unexpected error: $e');
+      logger.e('Unexpected error: $e');
       return false;
     }
   }
@@ -65,7 +64,7 @@ class ApiService {
     Map<String, String>? queryParams,
     bool useAuth = true,
   }) async {
-    bool isConnected = await checkInternetConnection();
+    bool isConnected = true /* await checkInternetConnection()*/;
     if (!isConnected) {
       return {'success': false, 'message': 'No internet connection'};
     }

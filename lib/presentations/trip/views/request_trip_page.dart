@@ -158,7 +158,7 @@ class RequestTripPage extends StatelessWidget {
               CustomButton(
                 onTap: () {
                   if (args.isNotEmpty) {
-                    TripController.to.requestTrip(body: args);
+                    HomeController.to.requestTrip(body: args);
                   }
                   // TripController.to.r
                   // showDialog(

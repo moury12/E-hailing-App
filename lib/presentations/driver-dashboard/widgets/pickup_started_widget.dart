@@ -5,7 +5,6 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
-import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +93,6 @@ class SendPaymentRequestWidget extends StatelessWidget {
                   tripId: tripId,
                 );
               }
-              logger.d(DriverTripStatus.arrived.name.toString());
               DashBoardController.to.driverTripUpdateStatus(
                 tripId: driverTripResponseModel.sId.toString(),
                 newStatus: DriverTripStatus.destination_reached.name.toString(),
@@ -114,10 +112,6 @@ class SendPaymentRequestWidget extends StatelessWidget {
                         ?.first
                         .toDouble(),
               );
-              // DashBoardController.to.driverTripUpdateStatus(
-              //   newStatus: DriverTripStatus.arrived.name.toString(),
-              //   tripId: tripId,
-              // );
             },
             title: AppStaticStrings.sendPaymentRequest,
           );

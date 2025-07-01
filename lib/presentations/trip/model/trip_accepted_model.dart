@@ -1,4 +1,4 @@
-class TripAcceptedModel {
+class TripResponseModel {
   PickUpCoordinates? pickUpCoordinates;
   PickUpCoordinates? dropOffCoordinates;
   PickUpCoordinates? driverCoordinates;
@@ -21,7 +21,7 @@ class TripAcceptedModel {
   Driver? driver;
   String? driverTripAcceptedAt;
 
-  TripAcceptedModel({
+  TripResponseModel({
     this.pickUpCoordinates,
     this.dropOffCoordinates,
     this.driverCoordinates,
@@ -45,7 +45,7 @@ class TripAcceptedModel {
     this.driverTripAcceptedAt,
   });
 
-  TripAcceptedModel.fromJson(Map<String, dynamic> json) {
+  TripResponseModel.fromJson(Map<String, dynamic> json) {
     pickUpCoordinates =
         json['pickUpCoordinates'] != null
             ? PickUpCoordinates.fromJson(json['pickUpCoordinates'])
