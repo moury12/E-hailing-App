@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../controllers/dashboard_controller.dart';
-
 class NoNewRideReqWidget extends StatelessWidget {
   const NoNewRideReqWidget({super.key});
 
@@ -15,14 +13,7 @@ class NoNewRideReqWidget extends StatelessWidget {
     return Column(
       spacing: 12.h,
       children: [
-        GestureDetector(
-          onTap: () {
-            // DashBoardController.to.registerDriverListeners();
-            DashBoardController.to.findingRide.value = false;
-            DashBoardController.to.rideRequest.value = true;
-          },
-          child: SvgPicture.asset(carPrimaryIcon),
-        ),
+        SvgPicture.asset(carPrimaryIcon),
         CustomText(text: AppStaticStrings.noNewRideReq),
       ],
     );

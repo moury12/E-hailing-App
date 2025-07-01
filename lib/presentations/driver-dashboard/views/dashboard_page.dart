@@ -4,6 +4,7 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/widgets/after_destination_reached_widget.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -166,7 +167,7 @@ class _DashboardPageState extends State<DashboardPage>
                             ? DriverAfterAcceptedWidget(
                               user: driverTrip.user,
                               fare: driverTrip.estimatedFare.toString(),
-
+                              tripId: driverTrip.sId,
                               fromAddress: driverTrip.pickUpAddress,
                               time: driverTrip.duration.toString(),
                             )
@@ -190,11 +191,16 @@ class _DashboardPageState extends State<DashboardPage>
                               pickUpAddress: driverTrip.pickUpAddress,
                               estimatedTime: driverTrip.duration.toString(),
                             )
-                            : DashBoardController.to.destinationReached.value
+                            : DashBoardController.to.sendPaymentReq.value
                             ? SendPaymentRequestWidget(
-                              dropOffAddress: driverTrip.dropOffAddress,
+                              driverTripResponseModel: driverTrip,
                               tripId: driverTrip.sId.toString(),
                             )
+                            : DashBoardController
+                                .to
+                                .afterDestinationReached
+                                .value
+                            ? AfterDestinationReachedWidget()
                             : SizedBox.shrink();
                       }),
                       space12H,
