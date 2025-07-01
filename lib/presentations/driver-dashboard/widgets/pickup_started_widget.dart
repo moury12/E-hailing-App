@@ -7,6 +7,7 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -47,13 +48,14 @@ class AfterArrivedPickupLocationWidget extends StatelessWidget {
 }
 
 class SendPaymentRequestWidget extends StatelessWidget {
-  final String? dropOffAddress;
+  final DriverCurrentTripModel driverTripResponseModel;
   final String tripId;
 
   const SendPaymentRequestWidget({
     super.key,
-    this.dropOffAddress,
+
     required this.tripId,
+    required this.driverTripResponseModel,
   });
 
   @override
@@ -68,7 +70,9 @@ class SendPaymentRequestWidget extends StatelessWidget {
             SvgPicture.asset(locationIcon),
             Expanded(
               child: CustomText(
-                text: dropOffAddress ?? AppStaticStrings.noDataFound,
+                text:
+                    driverTripResponseModel.dropOffAddress ??
+                    AppStaticStrings.noDataFound,
               ),
             ),
           ],
@@ -92,9 +96,28 @@ class SendPaymentRequestWidget extends StatelessWidget {
               }
               logger.d(DriverTripStatus.arrived.name.toString());
               DashBoardController.to.driverTripUpdateStatus(
-                newStatus: DriverTripStatus.arrived.name.toString(),
-                tripId: tripId,
+                tripId: driverTripResponseModel.sId.toString(),
+                newStatus: DriverTripStatus.destination_reached.name.toString(),
+                duration: driverTripResponseModel.duration?.toInt(),
+                distance: driverTripResponseModel.distance?.toInt(),
+                dropOffAddress: driverTripResponseModel.dropOffAddress,
+                dropOffLat:
+                    driverTripResponseModel
+                        .dropOffCoordinates
+                        ?.coordinates
+                        ?.last
+                        .toDouble(),
+                dropOffLong:
+                    driverTripResponseModel
+                        .dropOffCoordinates
+                        ?.coordinates
+                        ?.first
+                        .toDouble(),
               );
+              // DashBoardController.to.driverTripUpdateStatus(
+              //   newStatus: DriverTripStatus.arrived.name.toString(),
+              //   tripId: tripId,
+              // );
             },
             title: AppStaticStrings.sendPaymentRequest,
           );

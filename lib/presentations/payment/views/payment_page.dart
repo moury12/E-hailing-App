@@ -114,27 +114,9 @@ class PaymentPage extends StatelessWidget {
                           onTap: () {
                             DashBoardController.to.driverTripUpdateStatus(
                               tripId: driverTripResponseModel.sId.toString(),
+
                               newStatus:
-                                  DriverTripStatus.destination_reached.name
-                                      .toString(),
-                              duration:
-                                  driverTripResponseModel.duration?.toInt(),
-                              distance:
-                                  driverTripResponseModel.distance?.toInt(),
-                              dropOffAddress:
-                                  driverTripResponseModel.dropOffAddress,
-                              dropOffLat:
-                                  driverTripResponseModel
-                                      .dropOffCoordinates
-                                      ?.coordinates
-                                      ?.last
-                                      .toDouble(),
-                              dropOffLong:
-                                  driverTripResponseModel
-                                      .dropOffCoordinates
-                                      ?.coordinates
-                                      ?.first
-                                      .toDouble(),
+                                  DriverTripStatus.completed.name.toString(),
                             );
                           },
                           title: AppStaticStrings.confirm,

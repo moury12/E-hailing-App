@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
@@ -15,6 +16,7 @@ import '../../../core/constants/color_constants.dart';
 
 class DriverAfterAcceptedWidget extends StatelessWidget {
   final String? dateTime;
+  final String? tripId;
 
   final User? user;
   final String? rideType;
@@ -30,6 +32,7 @@ class DriverAfterAcceptedWidget extends StatelessWidget {
     this.fare,
     this.time,
     this.fromAddress,
+    this.tripId,
   });
 
   @override
@@ -56,27 +59,33 @@ class DriverAfterAcceptedWidget extends StatelessWidget {
           phoneNumber: user != null ? user?.phoneNumber : "000",
         ),
         Obx(() {
-          return CustomButton(
-            onTap: () {
-              DashBoardController.to.destinationReached.value = true;
-              if (DashBoardController.to.destinationReached.value) {
-                DashBoardController.to.afterAccepted.value = false;
-                DashBoardController.to.afterArrived.value = true;
-              }
-            },
-            title:
-                DashBoardController.to.destinationReached.value
-                    ? AppStaticStrings.arrive
-                    : AppStaticStrings.pickUpWithin,
-            fillColor:
-                DashBoardController.to.destinationReached.value
-                    ? AppColors.kPrimaryColor
-                    : AppColors.kWhiteColor,
-            textColor:
-                DashBoardController.to.destinationReached.value
-                    ? AppColors.kWhiteColor
-                    : AppColors.kPrimaryColor,
-          );
+          return DashBoardController.to.afterOnTheWay.value
+              ? CustomButton(
+                onTap: () {
+                  if (tripId != null) {
+                    DashBoardController.to.driverTripUpdateStatus(
+                      tripId: tripId.toString(),
+                      newStatus: DriverTripStatus.arrived.name.toString(),
+                    );
+                  }
+                },
+                title: AppStaticStrings.arrive,
+                fillColor: AppColors.kPrimaryColor,
+                textColor: AppColors.kWhiteColor,
+              )
+              : CustomButton(
+                onTap: () {
+                  if (tripId != null) {
+                    DashBoardController.to.driverTripUpdateStatus(
+                      tripId: tripId.toString(),
+                      newStatus: DriverTripStatus.on_the_way.name.toString(),
+                    );
+                  }
+                },
+                title: AppStaticStrings.pickUpWithin,
+                fillColor: AppColors.kWhiteColor,
+                textColor: AppColors.kPrimaryColor,
+              );
         }),
       ],
     );

@@ -28,6 +28,7 @@ enum RideFlowState {
   isArrived,
   isTripStarted,
   isTripEnd,
+  destinationReached,
   arrive,
 }
 

@@ -38,7 +38,7 @@ class AfterTripStartedWidget extends StatelessWidget {
         CustomButton(
           onTap: () {
             DashBoardController.to.afterTripStarted.value = false;
-            DashBoardController.to.destinationReached.value = true;
+            DashBoardController.to.sendPaymentReq.value = true;
           },
           title: AppStaticStrings.arrived,
         ),
