@@ -139,8 +139,11 @@ class _HomePageState extends State<HomePage>
               position: offset,
               child: Obx(() {
                 return HomeController.to.previousRoute.value ==
-                        TripDetailsPage.routeName
-                    ? TripDetailsDestinationCard()
+                            TripDetailsPage.routeName ||
+                        HomeController.to.showTripDetailsCard.value
+                    ? TripDetailsDestinationCard(
+                      tripModel: HomeController.to.tripAcceptedModel.value,
+                    )
                     : Container(
                       // margin: EdgeInsets.only(bottom: 83),
                       decoration: BoxDecoration(

@@ -153,6 +153,7 @@ class CommonController extends GetxController {
     socketService.onSocketError = (error) {
       socketStatus.value = 'Error: $error';
       logger.e('Socket error: $error');
+      showCustomSnackbar(title: "Error", message: 'Socket error: $error');
     };
 
     // You can even auto-connect here if you want:

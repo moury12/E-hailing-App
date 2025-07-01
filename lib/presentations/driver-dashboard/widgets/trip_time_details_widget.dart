@@ -26,7 +26,10 @@ class AfterTripStartedWidget extends StatelessWidget {
     return Column(
       spacing: 8.h,
       children: [
-        TitleTextWidget(title: "Distance", text: "$tripDistance km" ?? '00 km'),
+        TitleTextWidget(
+          title: "Distance",
+          text: "${(int.parse(tripDistance ?? "0") / 1000).toString()} km",
+        ),
         TitleTextWidget(
           title: 'Estimated Time',
           text: "$estimatedTime min" ?? '00:00 min',

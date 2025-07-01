@@ -12,6 +12,7 @@ import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
+import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/car_information_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -123,7 +124,7 @@ class PaymentPage extends StatelessWidget {
                         ),
                         CustomButton(
                           onTap: () {
-                            Get.back();
+                            Get.offAllNamed(NavigationPage.routeName);
                           },
                           fillColor: Colors.transparent,
                           textColor: AppColors.kPrimaryColor,

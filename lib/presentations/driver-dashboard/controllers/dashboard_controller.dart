@@ -143,6 +143,7 @@ class DashBoardController extends GetxController {
 
           showCustomSnackbar(
             title: 'Success',
+            position: SnackPosition.TOP,
             message: data['message'],
             type: SnackBarType.success,
           );
@@ -335,11 +336,11 @@ class DashBoardController extends GetxController {
       } else {
         logger.e(response);
         if (kDebugMode) {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed,
-          );
+          // showCustomSnackbar(
+          //   title: 'Failed',
+          //   message: response['message'],
+          //   type: SnackBarType.failed,
+          // );
         }
       }
     } catch (e) {
