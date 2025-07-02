@@ -8,6 +8,7 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/navigation/widgets/custom_container_with_border.dart';
@@ -38,7 +39,9 @@ class TripDetailsPage extends StatelessWidget {
             return Column(
               spacing: 12.h,
               children: [
-                CarDetailsCardWidget(fare: trip.estimatedFare),
+                CarDetailsCardWidget(
+                  fare: int.parse(trip.estimatedFare.toString()),
+                ),
 
                 Container(
                   decoration: BoxDecoration(
@@ -118,15 +121,21 @@ class TripDetailsPage extends StatelessWidget {
                           children: [
                             CarInformationWidget(
                               title: AppStaticStrings.carType,
-                              value: 'Honda HRV',
+                              value:
+                                  trip.driver?.assignedCar?.type ??
+                                  AppStaticStrings.noDataFound,
                             ),
                             CarInformationWidget(
                               title: AppStaticStrings.carColor,
-                              value: 'Red',
+                              value:
+                                  trip.driver?.assignedCar?.color ??
+                                  AppStaticStrings.noDataFound,
                             ),
                             CarInformationWidget(
                               title: AppStaticStrings.carNumber,
-                              value: 'A89BT',
+                              value:
+                                  trip.driver?.assignedCar?.carNumber ??
+                                  AppStaticStrings.noDataFound,
                             ),
                             CarInformationWidget(
                               title: AppStaticStrings.carSeat,
@@ -134,11 +143,15 @@ class TripDetailsPage extends StatelessWidget {
                             ),
                             CarInformationWidget(
                               title: AppStaticStrings.evpNumber,
-                              value: 'EV -A89BT',
+                              value:
+                                  trip.driver?.assignedCar?.evpNumber ??
+                                  AppStaticStrings.noDataFound,
                             ),
                             CarInformationWidget(
                               title: AppStaticStrings.evpValidityPeriod,
-                              value: 'June 2025',
+                              value:
+                                  trip.driver?.assignedCar?.evpExpiry ??
+                                  AppStaticStrings.noDataFound,
                             ),
                             space6H,
                             CustomTimeline(
@@ -168,7 +181,15 @@ class TripDetailsPage extends StatelessWidget {
                   ),
                 ),
                 RowCallChatDetailsButton(phoneNumber: trip.driver?.phoneNumber),
-                CancelTripButtonWidget(),
+                CancelTripButtonWidget(
+                  onSubmit: () {
+                    HomeController.to.updateUserTrip(
+                      tripId: trip.sId.toString(),
+                      status: DriverTripStatus.cancelled.name.toString(),
+                      reason: HomeController.to.cancelReason,
+                    );
+                  },
+                ),
               ],
             );
           }),

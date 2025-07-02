@@ -13,7 +13,7 @@ class GoogleMapWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // logger.d("---------------------------------------");
     return Obx(() {
-      final position = CommonController.to.marketPosition.value;
+      final position = CommonController.to.markerPosition.value;
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
@@ -29,7 +29,7 @@ class GoogleMapWidget extends StatelessWidget {
             markerId: const MarkerId("selected_location"),
             position:
                 HomeController.to.dropoffLatLng.value ??
-                CommonController.to.marketPosition.value,
+                CommonController.to.markerPosition.value,
             draggable: HomeController.to.mapDragable.value,
             onTap: () {
               NavigationController.to.markerDraging.value = true;
@@ -38,7 +38,7 @@ class GoogleMapWidget extends StatelessWidget {
               NavigationController.to.markerDraging.value = true;
             },
             onDragEnd: (value) async {
-              CommonController.to.marketPosition.value = value;
+              CommonController.to.markerPosition.value = value;
               if (HomeController.to.setDestination.value) {
                 HomeController.to.dropoffLatLng.value = value;
               } else {
@@ -71,7 +71,7 @@ class GoogleMapWidgetForDriver extends StatelessWidget {
   Widget build(BuildContext context) {
     // logger.d("---------------------------------------");
     return Obx(() {
-      final position = CommonController.to.marketPosition.value;
+      final position = CommonController.to.markerPosition.value;
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
@@ -87,7 +87,7 @@ class GoogleMapWidgetForDriver extends StatelessWidget {
             markerId: const MarkerId("selected_location"),
             position:
                 // HomeController.to.dropoffLatLng.value ??
-                CommonController.to.marketPosition.value,
+                CommonController.to.markerPosition.value,
             // draggable: HomeController.to.mapDragable.value,
             onTap: () {
               NavigationController.to.markerDraging.value = true;

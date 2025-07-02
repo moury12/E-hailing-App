@@ -1,13 +1,15 @@
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/socket/socket_service.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/model/car_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
-import 'package:e_hailing_app/presentations/trip/model/trip_accepted_model.dart';
+import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
@@ -27,6 +29,7 @@ class HomeController extends GetxController {
   RxBool selectEv = false.obs;
   RxBool showTripDetailsCard = false.obs;
   RxBool isLoadingNewTrip = false.obs;
+  RxBool isLoadingUserCurrentTrip = false.obs;
   RxBool isLoadingCar = false.obs;
   RxBool mapDragable = false.obs;
   RxBool isLoadingPostFair = false.obs;
@@ -58,63 +61,79 @@ class HomeController extends GetxController {
   RxBool hasActiveTrip = false.obs;
   Rx<Map<String, dynamic>?> currentTrip = Rx<Map<String, dynamic>?>(null);
   Rx<TripResponseModel> tripAcceptedModel = TripResponseModel().obs;
+  List<String> cancelReason = [];
 
   @override
-  void onInit() {
+  void onInit() async {
     initializeSocket();
+    await getUserCurrentTrip();
+    if (tripAcceptedModel.value.sId != null) {
+      HomeController.to.showTripDetailsCard.value = true;
+    }
     super.onInit();
   }
 
   void initializeSocket() {
-    socket.on(TripEvents.tripRequested, (data) {
-      logger.d(data);
-      currentTrip.value = data;
-      status.value = 'Trip requested successfully';
-      isRequestingTrip.value = false;
-      hasActiveTrip.value = true;
-      showCustomSnackbar(
-        title: 'Success',
-        message: 'Trip requested successfully! Looking for nearby drivers...',
-      );
-    });
-    socket.on(TripEvents.tripNoDriverFound, (data) {
-      status.value = "No drivers available";
-      isRequestingTrip.value = false;
-      hasActiveTrip.value = false;
-      if (Get.isDialogOpen == true) {
-        Get.back();
-      }
-      showCustomSnackbar(
-        title: 'No Drivers Available',
-        message:
-            'Sorry, no drivers are available in your area right now. Please try again later.',
-      );
-      socket.off(TripEvents.tripRequested);
-      Future.delayed(Duration(seconds: 3), () {
-        Get.offAllNamed(NavigationPage.routeName);
+    if (socket.isConnected) {
+      socket.on(TripEvents.tripRequested, (data) {
+        logger.d(data);
+        currentTrip.value = data;
+        status.value = 'Trip requested successfully';
+        isRequestingTrip.value = false;
+        hasActiveTrip.value = true;
+        showCustomSnackbar(
+          title: 'Success',
+          message: 'Trip requested successfully! Looking for nearby drivers...',
+        );
       });
+      socket.on(TripEvents.tripNoDriverFound, (data) {
+        status.value = "No drivers available";
+        isRequestingTrip.value = false;
+        hasActiveTrip.value = false;
+        if (Get.isDialogOpen == true) {
+          Get.back();
+        }
+        showCustomSnackbar(
+          title: 'No Drivers Available',
+          message:
+              'Sorry, no drivers are available in your area right now. Please try again later.',
+        );
+        socket.off(TripEvents.tripRequested);
+        Future.delayed(Duration(seconds: 3), () {
+          Get.offAllNamed(NavigationPage.routeName);
+        });
 
-      logger.d('No driver found: $data');
-    });
-    socket.on(TripEvents.tripAccepted, (data) {
-      status.value = "Driver found! Trip accepted";
-      isRequestingTrip.value = false;
-      hasActiveTrip.value = true;
-      if (Get.isDialogOpen == true) {
-        Get.back();
-      }
-      tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
-      Get.toNamed(TripDetailsPage.routeName);
-      logger.d(data);
-    });
-    socket.on(TripEvents.tripUpdateStatus, (data) {
-      logger.d(data);
+        logger.d('No driver found: $data');
+      });
+      socket.on(TripEvents.tripAccepted, (data) {
+        status.value = "Driver found! Trip accepted";
+        isRequestingTrip.value = false;
+        hasActiveTrip.value = true;
+        if (Get.isDialogOpen == true) {
+          Get.back();
+        }
+        tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
+        Get.toNamed(TripDetailsPage.routeName);
+        logger.d(data);
+      });
+      socket.on(TripEvents.tripUpdateStatus, (data) {
+        logger.d(data);
+        showCustomSnackbar(title: "Trip Status", message: data['message']);
+        tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
+        HomeController.to.showTripDetailsCard.value = true;
+        if (data['data']['status'] == DriverTripStatus.cancelled.name) {
+          Get.offAllNamed(NavigationPage.routeName);
+          socket.off(TripEvents.tripUpdateStatus);
+        }
+      });
+    } else {
+      socketConnection();
+    }
+  }
 
-      tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
-      HomeController.to.showTripDetailsCard.value = true;
-      // Get.toNamed(TripDetailsPage.routeName);
-    });
+  void socketConnection() {
     String userId = CommonController.to.userModel.value.sId ?? "";
+
     if (userId.isNotEmpty) {
       socket.connect(
         userId,
@@ -141,9 +160,9 @@ class HomeController extends GetxController {
   }
 
   void setCurrentLocationOnPickUp() async {
-    fetchAndSetAddress(CommonController.to.marketPosition.value);
+    fetchAndSetAddress(CommonController.to.markerPosition.value);
     HomeController.to.pickupLatLng.value =
-        CommonController.to.marketPosition.value;
+        CommonController.to.markerPosition.value;
   }
 
   void fetchAndSetAddress(LatLng latLng) async {
@@ -266,6 +285,33 @@ class HomeController extends GetxController {
     }
   }
 
+  ///------------------------------  get current trip method -------------------------///
+
+  Future<void> getUserCurrentTrip() async {
+    try {
+      isLoadingUserCurrentTrip.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+      final response = await ApiService().request(
+        endpoint: getUserCurrentTripEndpoint,
+        method: 'GET',
+      );
+      logger.d(response);
+      isLoadingUserCurrentTrip.value = false;
+      if (response['success'] == true) {
+        tripAcceptedModel.value = TripResponseModel.fromJson(response['data']);
+      } else {
+        logger.e(response);
+        if (kDebugMode) {
+          showCustomSnackbar(title: 'Failed', message: response['message']);
+        }
+      }
+    } catch (e) {
+      isLoadingUserCurrentTrip.value = false;
+      logger.e(e.toString());
+    }
+  }
+
   Future<void> getPlaceName(
     LatLng position,
     TextEditingController controller,
@@ -308,6 +354,7 @@ class HomeController extends GetxController {
         message: 'Not connected to server. Please wait and try again.',
         type: SnackBarType.failed,
       );
+      socketConnection();
       return;
     }
     isRequestingTrip.value = true;
@@ -340,6 +387,29 @@ class HomeController extends GetxController {
         );
       }
     });
+  }
+
+  Future<void> updateUserTrip({
+    required String tripId,
+    required String status,
+    List<String>? reason,
+  }) async {
+    if (!socket.isConnected) {
+      showCustomSnackbar(
+        title: 'Connection Error',
+        message: 'Not connected to server. Please wait and try again.',
+        type: SnackBarType.failed,
+      );
+      socketConnection();
+
+      return;
+    } else {
+      socket.emit(DriverEvent.tripUpdateStatus, {
+        "tripId": tripId,
+        "newStatus": status,
+        if (reason != null) "reason": reason,
+      });
+    }
   }
 
   @override

@@ -19,10 +19,10 @@ class SplashController extends GetxController {
     Future.delayed(Duration(seconds: 2), () async {
       if (Boxes.getUserData().get(tokenKey) != null &&
           Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
+        await CommonController.to.startRealTimeLocationTracking();
         await CommonController.to.checkUserRole();
         await CommonController.to.getUserProfileRequest();
         CommonController.to.setupGlobalSocketListeners();
-        await CommonController.to.fetchCurrentLocation();
         // Wait a bit more to ensure socket is fully connected
         await Future.delayed(Duration(milliseconds: 500));
 
