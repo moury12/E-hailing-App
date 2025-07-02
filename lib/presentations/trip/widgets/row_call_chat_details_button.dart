@@ -72,13 +72,15 @@ class RowCallChatDetailsButton extends StatelessWidget {
 }
 
 class CancelTripButtonWidget extends StatelessWidget {
-  const CancelTripButtonWidget({super.key});
+  final Function()? onSubmit;
+
+  const CancelTripButtonWidget({super.key, this.onSubmit});
 
   @override
   Widget build(BuildContext context) {
     return CustomButton(
       onTap: () {
-        tripCancellationDialog();
+        tripCancellationDialog(onSubmit: onSubmit);
       },
       title: AppStaticStrings.cancelTrip,
     );

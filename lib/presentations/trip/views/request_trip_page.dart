@@ -160,19 +160,6 @@ class RequestTripPage extends StatelessWidget {
                   if (args.isNotEmpty) {
                     HomeController.to.requestTrip(body: args);
                   }
-                  // TripController.to.r
-                  // showDialog(
-                  //   context: context,
-                  //   builder:
-                  //       (context) => AlertDialog(
-                  //         backgroundColor: Colors.transparent,
-                  //         contentPadding: EdgeInsets.zero,
-                  //         content: TripRequestLoadingWidget(),
-                  //       ),
-                  // );
-                  // Future.delayed(Duration(seconds: 2), () {
-                  //   Get.toNamed(TripDetailsPage.routeName);
-                  // });
                 },
                 title: AppStaticStrings.confirm,
               ),

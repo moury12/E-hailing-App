@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
@@ -25,7 +26,7 @@ import '../../../core/utils/google_map_api_key.dart';
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
   RxBool isLoadingProfile = false.obs;
-  Rx<LatLng> marketPosition = LatLng(23.8168, 90.3675).obs;
+  Rx<LatLng> markerPosition = LatLng(23.8168, 90.3675).obs;
   final SocketService socketService = SocketService();
 
   RxString socketStatus = "Disconnected".obs;
@@ -47,11 +48,11 @@ class CommonController extends GetxController {
 
   @override
   void onInit() async {
-    debugPrint(Boxes.getUserRole().get(role, defaultValue: user).toString());
+    logger.d(
+      "--check role----${Boxes.getUserRole().get(role, defaultValue: user).toString()}",
+    );
     requestLocationPermission();
 
-    // Register AppController here directly — not inside a method
-    // Get.put(AppController(), permanent: true);
     super.onInit();
   }
 
@@ -72,19 +73,17 @@ class CommonController extends GetxController {
     }
   }
 
-  Future<void> fetchCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  StreamSubscription<Position>? positionStream;
 
-    // Check if location services are enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  Future<void> startTrackingUserLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       Get.snackbar('Location Disabled', 'Please enable location services');
+      await Geolocator.openLocationSettings();
       return;
     }
 
-    // Check for permissions
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -96,8 +95,62 @@ class CommonController extends GetxController {
     if (permission == LocationPermission.deniedForever) {
       Get.snackbar(
         'Permission Denied',
+        'Please enable location permission from settings',
+      );
+      await Geolocator.openAppSettings();
+      return;
+    }
+
+    // Cancel any existing stream to avoid duplicates
+    positionStream?.cancel();
+
+    positionStream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5, // minimum movement (in meters) before update
+      ),
+    ).listen((Position position) {
+      markerPosition.value = LatLng(position.latitude, position.longitude);
+
+      // Optional: animate camera to new position
+      mapController?.animateCamera(
+        CameraUpdate.newLatLng(markerPosition.value),
+      );
+    });
+  }
+
+  Future<void> fetchCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      Get.snackbar('Location Disabled', 'Please enable location services');
+      await Geolocator.openLocationSettings();
+      return;
+    }
+
+    // Check for permissions
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Get.snackbar('Permission Denied', 'Location permission denied');
+        await Geolocator.openAppSettings();
+
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      Get.snackbar(
+        'Permission Denied',
         'Location permission permanently denied. Please enable in settings.',
       );
+      await Geolocator.openAppSettings();
+
+      openAppSettings();
       return;
     }
 
@@ -108,16 +161,16 @@ class CommonController extends GetxController {
       );
 
       // Set new position - THIS WAS MISSING
-      marketPosition.value = LatLng(position.latitude, position.longitude);
-      await getAddressFromLatLng(marketPosition.value);
+      markerPosition.value = LatLng(position.latitude, position.longitude);
+      await getAddressFromLatLng(markerPosition.value);
       mapController?.animateCamera(
-        CameraUpdate.newLatLng(marketPosition.value),
+        CameraUpdate.newLatLng(markerPosition.value),
       );
     } catch (e) {
       Get.snackbar('Error', 'Could not get current location: ${e.toString()}');
 
       // Use fallback if error occurs
-      marketPosition.value = LatLng(23.8168, 90.3675); // Dhaka, Bangladesh
+      markerPosition.value = LatLng(23.8168, 90.3675); // Dhaka, Bangladesh
     }
   }
 
@@ -212,10 +265,10 @@ class CommonController extends GetxController {
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=${GoogleClient.googleMapUrl}';
 
     // Add location bias if current location is available
-    if (marketPosition.value.latitude != 0.0 &&
-        marketPosition.value.longitude != 0.0) {
+    if (markerPosition.value.latitude != 0.0 &&
+        markerPosition.value.longitude != 0.0) {
       url +=
-          '&location=${marketPosition.value.latitude},${marketPosition.value.longitude}';
+          '&location=${markerPosition.value.latitude},${markerPosition.value.longitude}';
       url += '&radius=${radiusInMeters.toInt()}';
     }
 

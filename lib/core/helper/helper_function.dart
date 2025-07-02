@@ -24,7 +24,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../presentations/payment/widgets/ratting_dialog_widget.dart';
 import '../../presentations/trip/widgets/trip_cancellation_reason_card_item.dart';
 
-Future<dynamic> tripCancellationDialog() {
+Future<dynamic> tripCancellationDialog({Function()? onSubmit}) {
   return Get.defaultDialog(
     backgroundColor: AppColors.kWhiteColor,
     radius: 8.r,
@@ -45,9 +45,11 @@ Future<dynamic> tripCancellationDialog() {
         Padding(
           padding: padding12,
           child: CustomButton(
-            onTap: () {
-              Get.back();
-            },
+            onTap:
+                onSubmit ??
+                () {
+                  Get.back();
+                },
             title: AppStaticStrings.submit,
           ),
         ),
@@ -155,50 +157,54 @@ Future<void> showCredentialsDialog() async {
   if (credentials.isNotEmpty && credentials['rememberMe'] == true) {
     Get.dialog(
       AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomText(
-              textAlign: TextAlign.center,
-              text: 'Email: ${credentials['email']}',
-              color: AppColors.kExtraLightTextColor,
-              fontSize: getFontSizeSemiSmall(),
-            ),
-            CustomText(
-              textAlign: TextAlign.center,
-              text: 'Password: ${'•' * (credentials['password']?.length ?? 0)}',
-              color: AppColors.kExtraLightTextColor,
-              fontSize: getFontSizeSemiSmall(),
-            ),
-            space8H,
-            Row(
-              spacing: 8.w,
-              children: [
-                Expanded(
-                  child: CustomButton(
-                    textColor: AppColors.kPrimaryColor,
-                    fillColor: Colors.transparent,
-                    onTap: () => Get.back(),
-                    title: AppStaticStrings.cancel.tr,
+        content: SizedBox(
+          width: Get.width * .8,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(
+                textAlign: TextAlign.center,
+                text: 'Email: ${credentials['email']}',
+                color: AppColors.kExtraLightTextColor,
+                fontSize: getFontSizeSemiSmall(),
+              ),
+              CustomText(
+                textAlign: TextAlign.center,
+                text:
+                    'Password: ${'•' * (credentials['password']?.length ?? 0)}',
+                color: AppColors.kExtraLightTextColor,
+                fontSize: getFontSizeSemiSmall(),
+              ),
+              space8H,
+              Row(
+                spacing: 8.w,
+                children: [
+                  Expanded(
+                    child: CustomButton(
+                      textColor: AppColors.kPrimaryColor,
+                      fillColor: Colors.transparent,
+                      onTap: () => Get.back(),
+                      title: AppStaticStrings.cancel.tr,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: CustomButton(
-                    onTap: () {
-                      AuthController.to.emailLoginController.text =
-                          credentials['email'];
-                      AuthController.to.passLoginController.text =
-                          credentials['password'];
+                  Expanded(
+                    child: CustomButton(
+                      onTap: () {
+                        AuthController.to.emailLoginController.text =
+                            credentials['email'];
+                        AuthController.to.passLoginController.text =
+                            credentials['password'];
 
-                      Get.back();
-                    },
-                    title: AppStaticStrings.confirm.tr,
+                        Get.back();
+                      },
+                      title: AppStaticStrings.confirm.tr,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       barrierDismissible: true,

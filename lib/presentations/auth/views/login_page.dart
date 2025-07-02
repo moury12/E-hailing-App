@@ -8,6 +8,7 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/auth/views/signup_page.dart';
@@ -34,16 +35,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  // @override
-  // void initState() {
-  //   /*WidgetsBinding.instance.addPostFrameCallback(
-  //     (timeStamp) => ,
-  //   )*/
-  //   Future.delayed(Duration(seconds: 1), () {
-  //     return showCredentialsDialog();
-  //   });
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    /*WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) => ,
+    )*/
+    Future.delayed(Duration(seconds: 1), () {
+      return showCredentialsDialog();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -157,6 +157,11 @@ class DashBoardController extends GetxController {
             resetRideFlow(rideType: RideFlowState.isTripStarted);
           } else if (data['data']['status'] ==
               DriverTripStatus.completed.name.toString()) {
+            socketService.off(DriverEvent.tripUpdateStatus);
+            Get.offAllNamed(NavigationPage.routeName);
+          } else if (data['data']['status'] ==
+              DriverTripStatus.cancelled.name.toString()) {
+            socketService.off(DriverEvent.tripUpdateStatus);
             Get.offAllNamed(NavigationPage.routeName);
           } else if (data['data']['status'] ==
               DriverTripStatus.started.name.toString()) {

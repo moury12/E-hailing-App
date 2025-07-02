@@ -14,7 +14,7 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
-import 'package:e_hailing_app/presentations/trip/model/trip_accepted_model.dart';
+import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -159,7 +159,9 @@ class TripDetailsDestinationCard extends StatelessWidget {
 
                   children: [
                     CustomText(
-                      text: "BYD Atto 3",
+                      text:
+                          "${tripModel?.driver?.assignedCar?.brand ?? AppStaticStrings.noDataFound} "
+                          "${tripModel?.driver?.assignedCar?.model} ",
                       fontSize: getFontSizeDefault(),
                     ),
                     Container(
@@ -169,7 +171,8 @@ class TripDetailsDestinationCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: CustomText(
-                        text: "VKL8266(WHITE)",
+                        text:
+                            "${tripModel?.driver?.assignedCar?.carNumber}(${tripModel?.driver?.assignedCar?.color})",
                         color: AppColors.kWhiteColor,
                       ),
                     ),
@@ -184,7 +187,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
             userImg:
                 "${ApiService().baseUrl}/${tripModel?.driver?.profileImage}",
             title: AppStaticStrings.tripDuration,
-            value: '7.68 km',
+            value: '${tripModel?.distance.toString()} km',
           ),
 
           ButtonTapWidget(
@@ -203,6 +206,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
           ),
           RowCallChatDetailsButton(
             lastItemName: AppStaticStrings.details,
+            phoneNumber: tripModel?.driver?.phoneNumber,
             onTap: () {
               Get.toNamed(TripDetailsPage.routeName);
             },
