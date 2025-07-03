@@ -202,14 +202,13 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                     message: "Finding the best route for you.",
                   );
 
-                  bool polylineSuccess = await CommonController.to
-                      .drawPolylineBetweenPoints(
-                        pickup,
-                        dropoff,
-                        NavigationController.to.routePolylines,
-                        distance: HomeController.to.distance,
-                        duration: HomeController.to.duration,
-                      );
+                  bool polylineSuccess = await drawPolylineBetweenPoints(
+                    pickup,
+                    dropoff,
+                    NavigationController.to.routePolylines,
+                    distance: HomeController.to.distance,
+                    duration: HomeController.to.duration,
+                  );
 
                   if (polylineSuccess) {
                     // Update cache only on success

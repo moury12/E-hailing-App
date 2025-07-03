@@ -1,7 +1,10 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketService {
@@ -34,7 +37,6 @@ class SocketService {
         'autoConnect': false,
         'query': {'userId': userId},
       });
-      logger.d("Socket URL: ${socket?.io.uri}");
       _setupCommonEventListeners(isDriver);
       socket?.connect();
     } catch (e) {
@@ -51,9 +53,12 @@ class SocketService {
     });
     if (isDriver) {
       socket?.on(DriverEvent.driverOnlineStatus, (data) {
-        logger.d('---------------------------driver$data');
+        logger.d(
+          '---------------------------driver----------------------$data',
+        );
 
         isDriverActive = data['data']['isOnline'];
+        logger.w("-------driver active-----$isDriverActive");
         onDriverRegister?.call();
       });
       // socket?.on(DriverEvent.tripAvailableStatus, (data) {
@@ -147,6 +152,13 @@ class SocketService {
     }
     socket?.emit(eventName, data);
     logger.d('Emitted [$eventName] with data: $data');
+    if (kDebugMode) {
+      showCustomSnackbar(
+        position: SnackPosition.TOP,
+        title: eventName.toString(),
+        message: data.toString(),
+      );
+    }
   }
 
   void disconnect() {
