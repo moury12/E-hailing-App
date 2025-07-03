@@ -3,9 +3,9 @@ import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
-import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/widgets/after_destination_reached_widget.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
+import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -141,9 +141,9 @@ class _DashboardPageState extends State<DashboardPage>
                       ),
                       space12H,
                       Obx(() {
-                        DriverCurrentTripModel driverTrip =
+                        TripResponseModel driverTrip =
                             DashBoardController.to.currentTrip.value;
-                        DriverCurrentTripModel availableTrip =
+                        TripResponseModel availableTrip =
                             DashBoardController.to.availableTrip.value;
                         return DashBoardController.to.findingRide.value
                             ? NoNewRideReqWidget()

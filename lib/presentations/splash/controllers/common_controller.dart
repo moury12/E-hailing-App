@@ -101,7 +101,6 @@ class CommonController extends GetxController {
 
     // Cancel any existing stream to avoid duplicates
     positionStream?.cancel();
-    LatLng? _lastEmittedPosition;
 
     positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(

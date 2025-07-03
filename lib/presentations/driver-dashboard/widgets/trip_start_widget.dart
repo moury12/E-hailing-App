@@ -2,6 +2,7 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
+import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,7 +10,6 @@ import '../../../core/components/custom_button.dart';
 import '../../../core/constants/fontsize_constant.dart';
 import '../../home/widgets/trip_details_card_widget.dart';
 import '../controllers/dashboard_controller.dart';
-import '../model/driver_current_trip_model.dart';
 
 class AfterPickedUpWidget extends StatelessWidget {
   final User? user;

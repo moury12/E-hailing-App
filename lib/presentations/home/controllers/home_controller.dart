@@ -3,7 +3,7 @@ import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/socket/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/home/model/car_model.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
@@ -18,6 +18,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../core/api-client/api_service.dart';
 import '../../../core/constants/hive_boxes.dart';
 import '../../../core/socket/socket_events_variable.dart';
+import '../../navigation/controllers/navigation_controller.dart';
 
 class HomeController extends GetxController {
   static HomeController get to => Get.find();
@@ -41,7 +42,6 @@ class HomeController extends GetxController {
   RxString activeField = ''.obs; // "pickup" or "dropoff"
   Rx<LatLng?> pickupLatLng = Rx<LatLng?>(null);
   Rx<LatLng?> dropoffLatLng = Rx<LatLng?>(null);
-  final RxList<CarModel> carList = <CarModel>[].obs;
   FocusNode pickupFocusNode = FocusNode();
   FocusNode dropOffFocusNode = FocusNode();
   RxInt distance = 0.obs;
@@ -61,7 +61,10 @@ class HomeController extends GetxController {
   RxBool hasActiveTrip = false.obs;
   Rx<Map<String, dynamic>?> currentTrip = Rx<Map<String, dynamic>?>(null);
   Rx<TripResponseModel> tripAcceptedModel = TripResponseModel().obs;
+  Rx<DriverLocationUpdateModel> driverLocationUpdate =
+      DriverLocationUpdateModel().obs;
   List<String> cancelReason = [];
+  Rx<LatLng?> driverPosition = Rx<LatLng?>(null);
 
   @override
   void onInit() async {
@@ -69,6 +72,45 @@ class HomeController extends GetxController {
     await getUserCurrentTrip();
     if (tripAcceptedModel.value.sId != null) {
       HomeController.to.showTripDetailsCard.value = true;
+      await drawPolylineBetweenPoints(
+        LatLng(
+          double.parse(
+            tripAcceptedModel.value.pickUpCoordinates!.coordinates!.last
+                .toString(),
+          ),
+          double.parse(
+            tripAcceptedModel.value.pickUpCoordinates!.coordinates!.first
+                .toString(),
+          ),
+        ),
+        LatLng(
+          double.parse(
+            tripAcceptedModel.value.dropOffCoordinates!.coordinates!.last
+                .toString(),
+          ),
+          double.parse(
+            tripAcceptedModel.value.dropOffCoordinates!.coordinates!.first
+                .toString(),
+          ),
+        ),
+        NavigationController.to.routePolylines,
+        distance: int.parse(tripAcceptedModel.value.distance.toString()).obs,
+        duration: int.parse(tripAcceptedModel.value.duration.toString()).obs,
+      );
+      final updateCoords = driverLocationUpdate.value.coordinates;
+      final fallbackCoords =
+          tripAcceptedModel.value.driver?.locationCoordinates?.coordinates;
+
+      if (updateCoords != null && updateCoords.length >= 2) {
+        driverPosition.value = LatLng(updateCoords.last, updateCoords.first);
+      } else if (fallbackCoords != null && fallbackCoords.length >= 2) {
+        driverPosition.value = LatLng(
+          fallbackCoords.last,
+          fallbackCoords.first,
+        );
+      } else {
+        driverPosition.value = null;
+      }
     }
     super.onInit();
   }
@@ -115,6 +157,12 @@ class HomeController extends GetxController {
         tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
         Get.toNamed(TripDetailsPage.routeName);
         logger.d(data);
+      });
+      socket.on(TripEvents.tripDriverLocationUpdate, (data) {
+        logger.d(data);
+        driverLocationUpdate.value = DriverLocationUpdateModel.fromJson(
+          data['data'],
+        );
       });
       socket.on(TripEvents.tripUpdateStatus, (data) {
         logger.d(data);

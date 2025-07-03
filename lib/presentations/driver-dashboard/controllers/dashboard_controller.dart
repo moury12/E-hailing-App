@@ -6,14 +6,16 @@ import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/socket/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
+import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../navigation/controllers/navigation_controller.dart';
 import '../../splash/controllers/common_controller.dart';
 
 class DashBoardController extends GetxController {
@@ -31,10 +33,10 @@ class DashBoardController extends GetxController {
   RxBool afterDestinationReached = false.obs;
   RxBool isDriverActive = true.obs;
   RxString status = "Disconnected".obs;
-  Rx<DriverCurrentTripModel> currentTrip = DriverCurrentTripModel().obs;
+  Rx<TripResponseModel> currentTrip = TripResponseModel().obs;
   Rx<DriverLocationUpdateModel> driverUpdatedLocation =
       DriverLocationUpdateModel().obs;
-  Rx<DriverCurrentTripModel> availableTrip = DriverCurrentTripModel().obs;
+  Rx<TripResponseModel> availableTrip = TripResponseModel().obs;
 
   TextEditingController extraCost = TextEditingController();
   final SocketService socketService = SocketService();
@@ -46,7 +48,27 @@ class DashBoardController extends GetxController {
     initializeSocket();
     await getDriverCurrentTripRequest();
     if (currentTrip.value.sId != null) {
-      // await drawPolylineBetweenPoints(currentTrip.value., end, routePolylines, distance: distance, duration: duration)
+      await drawPolylineBetweenPoints(
+        LatLng(
+          double.parse(
+            currentTrip.value.pickUpCoordinates!.coordinates!.last.toString(),
+          ),
+          double.parse(
+            currentTrip.value.pickUpCoordinates!.coordinates!.first.toString(),
+          ),
+        ),
+        LatLng(
+          double.parse(
+            currentTrip.value.dropOffCoordinates!.coordinates!.last.toString(),
+          ),
+          double.parse(
+            currentTrip.value.dropOffCoordinates!.coordinates!.first.toString(),
+          ),
+        ),
+        NavigationController.to.routePolylines,
+        distance: int.parse(currentTrip.value.distance.toString()).obs,
+        duration: int.parse(currentTrip.value.duration.toString()).obs,
+      );
       await CommonController.to.startTrackingUserLocation(
         tripId: currentTrip.value.sId,
       );
@@ -143,7 +165,7 @@ class DashBoardController extends GetxController {
         logger.d(data);
         if (data["success"]) {
           logger.i("onAvailableTrip assigned");
-          availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
+          availableTrip.value = TripResponseModel.fromJson(data['data']);
 
           showAvailableTrip();
         }
@@ -151,7 +173,7 @@ class DashBoardController extends GetxController {
       socketService.on(DriverEvent.tripUpdateStatus, (data) {
         logger.d(data);
         if (data['success'] == true) {
-          currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
+          currentTrip.value = TripResponseModel.fromJson(data['data']);
 
           showCustomSnackbar(
             title: 'Success',
@@ -212,7 +234,7 @@ class DashBoardController extends GetxController {
       socketService.on(DriverEvent.tripAcceptedStatus, (data) {
         logger.d(data);
         if (data['success'] == true) {
-          currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
+          currentTrip.value = TripResponseModel.fromJson(data['data']);
 
           showCustomSnackbar(
             title: 'Success',
@@ -369,7 +391,7 @@ class DashBoardController extends GetxController {
       isLoadingCurrentTrip.value = false;
       if (response['success'] == true) {
         logger.d(response);
-        currentTrip.value = DriverCurrentTripModel.fromJson(response['data']);
+        currentTrip.value = TripResponseModel.fromJson(response['data']);
       } else {
         logger.e(response);
         if (kDebugMode) {
