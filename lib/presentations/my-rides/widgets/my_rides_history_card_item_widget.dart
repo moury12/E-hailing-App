@@ -8,18 +8,21 @@ import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
+import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../trip/widgets/rating_info_widget.dart';
 
 class MyRidesHistoryCardItemWidget extends StatelessWidget {
-  const MyRidesHistoryCardItemWidget({super.key});
+  final TripResponseModel rideModel;
+
+  const MyRidesHistoryCardItemWidget({super.key, required this.rideModel});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 6.h ),
+      margin: EdgeInsets.symmetric(vertical: 6.h),
       decoration: BoxDecoration(
         color: AppColors.kWhiteColor,
         borderRadius: BorderRadius.circular(8.r),
@@ -37,7 +40,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           ),
           space6H,
           Row(
-            spacing: 8.w,
+            spacing: 6.w,
             children: [
               ///============================dynamic driver image==============================///
               CustomNetworkImage(
@@ -86,6 +89,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
 class MyRidesHistoryTripInfoWidget extends StatelessWidget {
   final String title;
   final String text;
+
   const MyRidesHistoryTripInfoWidget({
     super.key,
     required this.title,

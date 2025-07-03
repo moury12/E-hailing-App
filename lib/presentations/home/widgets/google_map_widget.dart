@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
@@ -6,14 +7,36 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../navigation/controllers/navigation_controller.dart';
 
-class GoogleMapWidget extends StatelessWidget {
+class GoogleMapWidget extends StatefulWidget {
   const GoogleMapWidget({super.key});
+
+  @override
+  State<GoogleMapWidget> createState() => _GoogleMapWidgetState();
+}
+
+class _GoogleMapWidgetState extends State<GoogleMapWidget> {
+  Rxn<BitmapDescriptor> customIcon = Rxn<BitmapDescriptor>();
+
+  Future<void> loadCustomMarker() async {
+    final bitmap = await BitmapDescriptor.asset(
+      const ImageConfiguration(size: Size(50, 50)),
+      purpleCarImage2, // your actual asset path
+    );
+    customIcon.value = bitmap;
+  }
+
+  @override
+  void initState() {
+    loadCustomMarker();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     // logger.d("---------------------------------------");
     return Obx(() {
       final position = CommonController.to.markerPosition.value;
+
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
@@ -24,41 +47,52 @@ class GoogleMapWidget extends StatelessWidget {
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: true,
-        markers: {
-          Marker(
-            markerId: const MarkerId("selected_location"),
-            position:
-                HomeController.to.dropoffLatLng.value ??
-                CommonController.to.markerPosition.value,
-            draggable: HomeController.to.mapDragable.value,
-            onTap: () {
-              NavigationController.to.markerDraging.value = true;
-            },
-            onDragStart: (value) {
-              NavigationController.to.markerDraging.value = true;
-            },
-            onDragEnd: (value) async {
-              CommonController.to.markerPosition.value = value;
-              if (HomeController.to.setDestination.value) {
-                HomeController.to.dropoffLatLng.value = value;
-              } else {
-                HomeController.to.pickupLatLng.value = value;
-              }
 
-              await HomeController.to.getPlaceName(
-                value,
-                HomeController.to.setDestination.value
-                    ? HomeController.to.dropOffLocationController.value
-                    : HomeController.to.pickupLocationController.value,
-              );
-              NavigationController.to.markerDraging.value = false;
-            },
-            infoWindow: const InfoWindow(
-              title: "Selected Location",
-              snippet: "This is the chosen spot.",
-            ),
-          ),
-        },
+        markers:
+            NavigationController.to.routePolylines.isNotEmpty
+                ? {
+                  if (HomeController.to.driverPosition.value != null)
+                    Marker(
+                      markerId: const MarkerId("fdf"),
+                      position: HomeController.to.driverPosition.value!,
+                      icon: customIcon.value!,
+                    ),
+                }
+                : {
+                  Marker(
+                    markerId: const MarkerId("selected_location"),
+                    position:
+                        HomeController.to.dropoffLatLng.value ??
+                        CommonController.to.markerPosition.value,
+                    draggable: HomeController.to.mapDragable.value,
+                    onTap: () {
+                      NavigationController.to.markerDraging.value = true;
+                    },
+                    onDragStart: (value) {
+                      NavigationController.to.markerDraging.value = true;
+                    },
+                    onDragEnd: (value) async {
+                      CommonController.to.markerPosition.value = value;
+                      if (HomeController.to.setDestination.value) {
+                        HomeController.to.dropoffLatLng.value = value;
+                      } else {
+                        HomeController.to.pickupLatLng.value = value;
+                      }
+
+                      await HomeController.to.getPlaceName(
+                        value,
+                        HomeController.to.setDestination.value
+                            ? HomeController.to.dropOffLocationController.value
+                            : HomeController.to.pickupLocationController.value,
+                      );
+                      NavigationController.to.markerDraging.value = false;
+                    },
+                    infoWindow: const InfoWindow(
+                      title: "Selected Location",
+                      snippet: "This is the chosen spot.",
+                    ),
+                  ),
+                },
       );
     });
   }

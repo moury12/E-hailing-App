@@ -81,7 +81,7 @@ class DriverDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      spacing: 12.w,
+      spacing: 6.w,
       children: [
         CustomNetworkImage(
           imageUrl: userImg ?? dummyProfileImage,
@@ -97,10 +97,12 @@ class DriverDetails extends StatelessWidget {
               CustomText(
                 text: userName ?? AppStaticStrings.noDataFound,
                 style: poppinsSemiBold,
-                fontSize: getFontSizeDefault(),
+                fontSize: getFontSizeSemiSmall(),
               ),
               CustomText(
                 text: 'RM ${fare ?? 00.00}',
+                fontSize: getFontSizeSemiSmall(),
+
                 color: AppColors.kLightBlackColor,
               ),
             ],
@@ -108,6 +110,8 @@ class DriverDetails extends StatelessWidget {
         ),
 
         Expanded(
+          flex: 2,
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -115,11 +119,14 @@ class DriverDetails extends StatelessWidget {
                 textAlign: TextAlign.right,
                 text: title ?? 'Estimated Time',
                 color: AppColors.kLightBlackColor,
+                fontSize: getFontSizeSemiSmall(),
               ),
               CustomText(
+                textAlign: TextAlign.right,
+                fontSize: getFontSizeSemiSmall(),
+
                 text: value ?? '4.00 Min',
                 style: poppinsSemiBold,
-                fontSize: getFontSizeDefault(),
               ),
             ],
           ),
@@ -162,7 +169,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
                       text:
                           "${tripModel?.driver?.assignedCar?.brand ?? AppStaticStrings.noDataFound} "
                           "${tripModel?.driver?.assignedCar?.model} ",
-                      fontSize: getFontSizeDefault(),
+                      fontSize: getFontSizeSmall(),
                     ),
                     Container(
                       padding: EdgeInsets.all(4.r),
@@ -171,6 +178,8 @@ class TripDetailsDestinationCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: CustomText(
+                        fontSize: getFontSizeSmall(),
+
                         text:
                             "${tripModel?.driver?.assignedCar?.carNumber}(${tripModel?.driver?.assignedCar?.color})",
                         color: AppColors.kWhiteColor,
@@ -187,7 +196,8 @@ class TripDetailsDestinationCard extends StatelessWidget {
             userImg:
                 "${ApiService().baseUrl}/${tripModel?.driver?.profileImage}",
             title: AppStaticStrings.tripDuration,
-            value: '${tripModel?.distance.toString()} km',
+            value:
+                '${int.parse(tripModel?.distance.toString() ?? "0") / 1000} km',
           ),
 
           ButtonTapWidget(

@@ -68,8 +68,8 @@ Future<bool> drawPolylineBetweenPoints(
   LatLng start,
   LatLng end,
   RxSet routePolylines, {
-  required RxInt distance,
-  required RxInt duration,
+  RxInt? distance,
+  RxInt? duration,
 }) async {
   try {
     final apiKey = GoogleClient.googleMapUrl;
@@ -92,13 +92,27 @@ Future<bool> drawPolylineBetweenPoints(
         final polyline = Polyline(
           polylineId: const PolylineId('route_line'),
           color: AppColors.kPrimaryColor,
-          width: 2,
+          width: 6,
+          // startCap: Cap.customCapFromBitmap(
+          //   await BitmapDescriptor.asset(
+          //     ImageConfiguration(size: Size(48, 48)),
+          //     "assets/icons/circle_icon.png",
+          //   ),
+          // ),
+          // endCap: Cap.customCapFromBitmap(
+          //   await BitmapDescriptor.asset(
+          //     ImageConfiguration(size: Size(48, 48)),
+          //     "assets/icons/circle_icon.png",
+          //   ),
+          // ),
           points: polylinePoints,
         );
-        distance.value = leg['distance']['value']; // e.g., 4690
+        if (distance != null && duration != null) {
+          distance.value = leg['distance']['value']; // e.g., 4690
 
-        // ✅ Duration in seconds
-        duration.value = (leg['duration']['value'] / 60).ceil();
+          // ✅ Duration in seconds
+          duration.value = (leg['duration']['value'] / 60).ceil();
+        }
         // Alternative if you still have issues:
         Set<Polyline> newPolylines = <Polyline>{};
         newPolylines.add(polyline);

@@ -135,72 +135,103 @@ class PickUpCoordinates {
 }
 
 class User {
-  PickUpCoordinates? locationCoordinates;
   String? sId;
   String? authId;
   String? name;
   String? email;
+  String? role;
+  String? profileImage;
+  String? phoneNumber;
+  String? address;
   bool? isOnline;
+  String? idOrPassportImage;
+  bool? isAvailable;
+  String? idOrPassportNo;
+  String? drivingLicenseNo;
+  String? licenseType;
+  String? licenseExpiry;
+  String? psvLicenseImage;
+  String? drivingLicenseImage;
   String? userAccountStatus;
+  int? outstandingFee;
   String? createdAt;
   String? updatedAt;
-  num? iV;
-  String? role;
-  String? phoneNumber;
-  num? outstandingFee;
+  int? iV;
 
   User({
-    this.locationCoordinates,
     this.sId,
     this.authId,
     this.name,
     this.email,
+    this.role,
+    this.profileImage,
+    this.phoneNumber,
+    this.address,
     this.isOnline,
+    this.idOrPassportImage,
+    this.isAvailable,
+    this.idOrPassportNo,
+    this.drivingLicenseNo,
+    this.licenseType,
+    this.licenseExpiry,
+    this.psvLicenseImage,
+    this.drivingLicenseImage,
     this.userAccountStatus,
+    this.outstandingFee,
     this.createdAt,
     this.updatedAt,
     this.iV,
-    this.role,
-    this.phoneNumber,
-    this.outstandingFee,
   });
 
   User.fromJson(Map<String, dynamic> json) {
-    locationCoordinates =
-        json['locationCoordinates'] != null
-            ? PickUpCoordinates.fromJson(json['locationCoordinates'])
-            : null;
     sId = json['_id'];
     authId = json['authId'];
     name = json['name'];
     email = json['email'];
+    role = json['role'];
+    profileImage = json['profile_image'];
+    phoneNumber = json['phoneNumber'];
+    address = json['address'];
     isOnline = json['isOnline'];
+    idOrPassportImage = json['id_or_passport_image'];
+    isAvailable = json['isAvailable'];
+    idOrPassportNo = json['idOrPassportNo'];
+    drivingLicenseNo = json['drivingLicenseNo'];
+    licenseType = json['licenseType'];
+    licenseExpiry = json['licenseExpiry'];
+    psvLicenseImage = json['psv_license_image'];
+    drivingLicenseImage = json['driving_license_image'];
     userAccountStatus = json['userAccountStatus'];
+    outstandingFee = json['outstandingFee'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
-    role = json['role'];
-    phoneNumber = json['phoneNumber'];
-    outstandingFee = json['outstandingFee'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (locationCoordinates != null) {
-      data['locationCoordinates'] = locationCoordinates!.toJson();
-    }
-    data['_id'] = sId;
-    data['authId'] = authId;
-    data['name'] = name;
-    data['email'] = email;
-    data['isOnline'] = isOnline;
-    data['userAccountStatus'] = userAccountStatus;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['__v'] = iV;
-    data['role'] = role;
-    data['phoneNumber'] = phoneNumber;
-    data['outstandingFee'] = outstandingFee;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['authId'] = this.authId;
+    data['name'] = this.name;
+    data['email'] = this.email;
+    data['role'] = this.role;
+    data['profile_image'] = this.profileImage;
+    data['phoneNumber'] = this.phoneNumber;
+    data['address'] = this.address;
+    data['isOnline'] = this.isOnline;
+    data['id_or_passport_image'] = this.idOrPassportImage;
+    data['isAvailable'] = this.isAvailable;
+    data['idOrPassportNo'] = this.idOrPassportNo;
+    data['drivingLicenseNo'] = this.drivingLicenseNo;
+    data['licenseType'] = this.licenseType;
+    data['licenseExpiry'] = this.licenseExpiry;
+    data['psv_license_image'] = this.psvLicenseImage;
+    data['driving_license_image'] = this.drivingLicenseImage;
+    data['userAccountStatus'] = this.userAccountStatus;
+    data['outstandingFee'] = this.outstandingFee;
+    data['createdAt'] = this.createdAt;
+    data['updatedAt'] = this.updatedAt;
+    data['__v'] = this.iV;
     return data;
   }
 }
