@@ -7,11 +7,14 @@ import 'package:e_hailing_app/core/socket/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+
+import '../../splash/controllers/common_controller.dart';
 
 class DashBoardController extends GetxController {
   static DashBoardController get to => Get.find();
@@ -26,9 +29,11 @@ class DashBoardController extends GetxController {
   RxBool afterArrived = false.obs;
   RxBool sendPaymentReq = false.obs;
   RxBool afterDestinationReached = false.obs;
-  RxBool isDriverActive = false.obs;
+  RxBool isDriverActive = true.obs;
   RxString status = "Disconnected".obs;
   Rx<DriverCurrentTripModel> currentTrip = DriverCurrentTripModel().obs;
+  Rx<DriverLocationUpdateModel> driverUpdatedLocation =
+      DriverLocationUpdateModel().obs;
   Rx<DriverCurrentTripModel> availableTrip = DriverCurrentTripModel().obs;
 
   TextEditingController extraCost = TextEditingController();
@@ -41,6 +46,11 @@ class DashBoardController extends GetxController {
     initializeSocket();
     await getDriverCurrentTripRequest();
     if (currentTrip.value.sId != null) {
+      // await drawPolylineBetweenPoints(currentTrip.value., end, routePolylines, distance: distance, duration: duration)
+      await CommonController.to.startTrackingUserLocation(
+        tripId: currentTrip.value.sId,
+      );
+
       if (currentTrip.value.status ==
           DriverTripStatus.accepted.name.toString()) {
         afterAccepted.value = true;
@@ -120,13 +130,15 @@ class DashBoardController extends GetxController {
     socketService.onConnected = () {
       status.value = 'Connected';
     };
-    socketService.onDisconnected = () {
-      status.value = 'Disconnected';
-    };
+    // socketService.onDisconnected = () {
+    //   status.value = 'Disconnected';
+    // };
 
     if (socketService.isConnected) {
-      logger.i(socketService.isDriverActive);
-      isDriverActive.value = socketService.isDriverActive;
+      logger.i(
+        "---------is driver online?---------------${socketService.isDriverActive}",
+      );
+      // isDriverActive.value = socketService.isDriverActive;
       socketService.on(DriverEvent.tripAvailableStatus, (data) {
         logger.d(data);
         if (data["success"]) {
@@ -176,8 +188,6 @@ class DashBoardController extends GetxController {
             afterOnTheWay.value = true;
           } else if (data['data']['status'] ==
               DriverTripStatus.destination_reached.name.toString()) {
-            print("---------------------");
-
             Get.toNamed(
               PaymentPage.routeName,
               arguments: {
@@ -209,6 +219,9 @@ class DashBoardController extends GetxController {
             message: data['message'],
             type: SnackBarType.success,
           );
+          CommonController.to.startTrackingUserLocation(
+            tripId: currentTrip.value.sId,
+          );
           DashBoardController.to.afterAccepted.value = true;
           resetRideFlow(rideType: RideFlowState.pickup);
           // Get.toNamed(
@@ -226,12 +239,31 @@ class DashBoardController extends GetxController {
           );
         }
       });
-    } else {
-      socketService.onConnected = () {
-        isDriverActive.value = socketService.isDriverActive;
+      socketService.on(DriverEvent.driverLocationUpdate, (data) {
+        logger.d(data);
+        if (data['success'] == true) {
+          driverUpdatedLocation.value = DriverLocationUpdateModel.fromJson(
+            data['data'],
+          );
 
-        status.value = 'Connected';
-      };
+          showCustomSnackbar(
+            title: 'Success',
+            message: data['message'],
+            type: SnackBarType.success,
+          );
+        } else {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: data['message'],
+            type: SnackBarType.failed,
+          );
+        }
+      });
+    } else {
+      socketService.connect(
+        CommonController.to.userModel.value.sId.toString(),
+        CommonController.to.userModel.value.role == "DRIVER",
+      );
     }
   }
 
