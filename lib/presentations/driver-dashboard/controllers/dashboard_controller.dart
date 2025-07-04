@@ -6,10 +6,10 @@ import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/socket/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
-import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -33,10 +33,10 @@ class DashBoardController extends GetxController {
   RxBool afterDestinationReached = false.obs;
   RxBool isDriverActive = true.obs;
   RxString status = "Disconnected".obs;
-  Rx<TripResponseModel> currentTrip = TripResponseModel().obs;
+  Rx<DriverCurrentTripModel> currentTrip = DriverCurrentTripModel().obs;
   Rx<DriverLocationUpdateModel> driverUpdatedLocation =
       DriverLocationUpdateModel().obs;
-  Rx<TripResponseModel> availableTrip = TripResponseModel().obs;
+  Rx<DriverCurrentTripModel> availableTrip = DriverCurrentTripModel().obs;
 
   TextEditingController extraCost = TextEditingController();
   final SocketService socketService = SocketService();
@@ -47,57 +47,6 @@ class DashBoardController extends GetxController {
   void onInit() async {
     initializeSocket();
     await getDriverCurrentTripRequest();
-    if (currentTrip.value.sId != null) {
-      await drawPolylineBetweenPoints(
-        LatLng(
-          double.parse(
-            currentTrip.value.pickUpCoordinates!.coordinates!.last.toString(),
-          ),
-          double.parse(
-            currentTrip.value.pickUpCoordinates!.coordinates!.first.toString(),
-          ),
-        ),
-        LatLng(
-          double.parse(
-            currentTrip.value.dropOffCoordinates!.coordinates!.last.toString(),
-          ),
-          double.parse(
-            currentTrip.value.dropOffCoordinates!.coordinates!.first.toString(),
-          ),
-        ),
-        NavigationController.to.routePolylines,
-        distance: int.parse(currentTrip.value.distance.toString()).obs,
-        duration: int.parse(currentTrip.value.duration.toString()).obs,
-      );
-      await CommonController.to.startTrackingUserLocation(
-        tripId: currentTrip.value.sId,
-      );
-
-      if (currentTrip.value.status ==
-          DriverTripStatus.accepted.name.toString()) {
-        afterAccepted.value = true;
-        resetRideFlow(rideType: RideFlowState.pickup);
-      } else if (currentTrip.value.status ==
-          DriverTripStatus.on_the_way.toString()) {
-        afterOnTheWay.value = true;
-      } else if (currentTrip.value.status ==
-          DriverTripStatus.arrived.name.toString()) {
-        afterArrived.value = true;
-        resetRideFlow(rideType: RideFlowState.isArrived);
-      } else if (currentTrip.value.status ==
-          DriverTripStatus.picked_up.name.toString()) {
-        afterPickup.value = true;
-        resetRideFlow(rideType: RideFlowState.isTripStarted);
-      } else if (currentTrip.value.status ==
-          DriverTripStatus.started.name.toString()) {
-        afterTripStarted.value = true;
-        resetRideFlow(rideType: RideFlowState.isTripEnd);
-      } else if (currentTrip.value.status ==
-          DriverTripStatus.destination_reached.name.toString()) {
-        afterDestinationReached.value = true;
-        resetRideFlow(rideType: RideFlowState.destinationReached);
-      }
-    }
 
     super.onInit();
   }
@@ -140,6 +89,33 @@ class DashBoardController extends GetxController {
         afterOnTheWay.value = true;
         break;
     }
+    logger.i("Flow set to: $rideType");
+  }
+
+  void updateRideFlowState(String? status) {
+    switch (status) {
+      case 'accepted':
+        resetRideFlow(rideType: RideFlowState.pickup);
+        break;
+      case 'on_the_way':
+        resetRideFlow(rideType: RideFlowState.arrive);
+        break;
+      case 'arrived':
+        resetRideFlow(rideType: RideFlowState.isArrived);
+        break;
+      case 'picked_up':
+        resetRideFlow(rideType: RideFlowState.isTripStarted);
+        break;
+      case 'started':
+        resetRideFlow(rideType: RideFlowState.isTripEnd);
+        break;
+      case 'destination_reached':
+        resetRideFlow(rideType: RideFlowState.destinationReached);
+        break;
+      default:
+        // If status is unknown, keep everything false
+        resetRideFlow(rideType: RideFlowState.findingRide);
+    }
   }
 
   void showAvailableTrip() {
@@ -165,7 +141,7 @@ class DashBoardController extends GetxController {
         logger.d(data);
         if (data["success"]) {
           logger.i("onAvailableTrip assigned");
-          availableTrip.value = TripResponseModel.fromJson(data['data']);
+          availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
 
           showAvailableTrip();
         }
@@ -173,7 +149,7 @@ class DashBoardController extends GetxController {
       socketService.on(DriverEvent.tripUpdateStatus, (data) {
         logger.d(data);
         if (data['success'] == true) {
-          currentTrip.value = TripResponseModel.fromJson(data['data']);
+          currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
 
           showCustomSnackbar(
             title: 'Success',
@@ -234,7 +210,7 @@ class DashBoardController extends GetxController {
       socketService.on(DriverEvent.tripAcceptedStatus, (data) {
         logger.d(data);
         if (data['success'] == true) {
-          currentTrip.value = TripResponseModel.fromJson(data['data']);
+          currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
 
           showCustomSnackbar(
             title: 'Success',
@@ -249,7 +225,7 @@ class DashBoardController extends GetxController {
           // Get.toNamed(
           //   PaymentPage.routeName,
           //   arguments: {
-          //     "driver": DriverTripResponseModel.fromJson(data['data']),
+          //     "driver": DriverDriverCurrentTripModel).fromJson(data['data']),
           //     "role": driver,
           //   },
           // );
@@ -377,9 +353,7 @@ class DashBoardController extends GetxController {
     });
   }
 
-  Future<void> getDriverCurrentTripRequest({
-    bool needReinitilaize = false,
-  }) async {
+  Future<void> getDriverCurrentTripRequest() async {
     try {
       isLoadingCurrentTrip.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
@@ -391,7 +365,23 @@ class DashBoardController extends GetxController {
       isLoadingCurrentTrip.value = false;
       if (response['success'] == true) {
         logger.d(response);
-        currentTrip.value = TripResponseModel.fromJson(response['data']);
+        currentTrip.value = DriverCurrentTripModel.fromJson(response['data']);
+        final trip = currentTrip.value;
+        final coords = trip.pickUpCoordinates?.coordinates;
+        final dropCoords = trip.dropOffCoordinates?.coordinates;
+        if (trip.sId != null && coords != null && dropCoords != null) {
+          await drawPolylineBetweenPoints(
+            LatLng(coords.last.toDouble(), coords.first.toDouble()),
+            LatLng(dropCoords.last.toDouble(), dropCoords.first.toDouble()),
+            NavigationController.to.routePolylines,
+            distance: int.tryParse(trip.distance.toString())?.obs ?? 0.obs,
+            duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
+          );
+
+          await CommonController.to.startTrackingUserLocation(tripId: trip.sId);
+
+          updateRideFlowState(trip.status);
+        }
       } else {
         logger.e(response);
         if (kDebugMode) {

@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../core/constants/padding_constant.dart';class StaticsGridViewWidget extends StatelessWidget {
-  const StaticsGridViewWidget({
-    super.key,
-  });
+import '../../../core/constants/padding_constant.dart';
+
+class StaticsGridViewWidget extends StatelessWidget {
+  const StaticsGridViewWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,8 @@ import '../../../core/constants/padding_constant.dart';class StaticsGridViewWidg
         crossAxisSpacing: 8.w,
         mainAxisSpacing: 8.w,
       ),
-      itemBuilder: (context, index) => StaticsCardItemWidget(static: staticList[index],),
+      itemBuilder:
+          (context, index) => StaticsCardItemWidget(static: staticList[index]),
       itemCount: staticList.length,
     );
   }
@@ -31,6 +32,7 @@ import '../../../core/constants/padding_constant.dart';class StaticsGridViewWidg
 
 class StaticsCardItemWidget extends StatelessWidget {
   final StaticModel static;
+
   const StaticsCardItemWidget({super.key, required this.static});
 
   @override
@@ -45,7 +47,7 @@ class StaticsCardItemWidget extends StatelessWidget {
           BoxShadow(
             color: AppColors.kExtraLightTextColor.withValues(alpha: .6),
             blurRadius: 4.r,
-            spreadRadius: -2
+            spreadRadius: -2,
           ),
         ],
       ),

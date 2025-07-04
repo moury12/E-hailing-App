@@ -2,7 +2,7 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
-import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

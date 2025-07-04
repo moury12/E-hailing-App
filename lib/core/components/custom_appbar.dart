@@ -107,7 +107,6 @@ class PrimaryCircleButtonWidget extends StatelessWidget {
       ),
       child: ButtonTapWidget(
         onTap: onTap,
-
         child: Padding(
           padding: padding12,
           child: SvgPicture.asset(

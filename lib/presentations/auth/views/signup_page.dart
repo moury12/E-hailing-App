@@ -3,8 +3,6 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
-import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
-import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/auth_text_widgets.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +60,7 @@ class _SignupPageState extends State<SignupPage> {
                 isRequired: true,
 
                 textEditingController:
-                AuthController.to.emailSignUpController.value,
+                    AuthController.to.emailSignUpController.value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppStaticStrings.emailRequired.tr;
@@ -106,7 +104,7 @@ class _SignupPageState extends State<SignupPage> {
                 title: AppStaticStrings.confirmPassword,
                 isPassword: true,
                 textEditingController:
-                AuthController.to.confirmPassSignUpController,
+                    AuthController.to.confirmPassSignUpController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppStaticStrings.passRequired.tr;
@@ -143,8 +141,7 @@ class _SignupPageState extends State<SignupPage> {
         Obx(() {
           return CustomButton(
             isLoading:
-            AuthController.to.loadingProcess.value ==
-                AuthProcess.signUp,
+                AuthController.to.loadingProcess.value == AuthProcess.signUp,
             onTap: () {
               AuthController.to.signUpRequest();
               // Get.toNamed(VerifyEmailPage.routeName);
