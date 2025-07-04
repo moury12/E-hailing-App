@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
@@ -13,7 +11,6 @@ import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
-import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -199,24 +196,20 @@ class TripDetailsDestinationCard extends StatelessWidget {
             value:
                 '${int.parse(tripModel?.distance.toString() ?? "0") / 1000} km',
           ),
-
-          ButtonTapWidget(
-            onTap: () {
-              Timer(Duration(seconds: 1), () {
-                HomeController.to.updatePreviousRoute(Get.currentRoute);
-                HomeController.to.resetAllStates();
-                Get.toNamed(PaymentPage.routeName);
-              });
-            },
-            child: FromToTimeLine(
-              showTo: true,
-              pickUpAddress: tripModel?.pickUpAddress,
-              dropOffAddress: tripModel?.dropOffAddress,
-            ),
+          FromToTimeLine(
+            showTo: true,
+            pickUpAddress: tripModel?.pickUpAddress,
+            dropOffAddress: tripModel?.dropOffAddress,
           ),
+
           RowCallChatDetailsButton(
             lastItemName: AppStaticStrings.details,
             phoneNumber: tripModel?.driver?.phoneNumber,
+            onChat: () {
+              if (tripModel?.driver != null) {
+                HomeController.to.startChat(tripModel?.driver!.sId);
+              }
+            },
             onTap: () {
               Get.toNamed(TripDetailsPage.routeName);
             },

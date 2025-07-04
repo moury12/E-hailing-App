@@ -21,10 +21,19 @@ class HistoryListStructureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (myRides == null ||
-        (rideModel is DriverCurrentTripModel && rideModel.sId == null) ||
-        (rideModel is TripResponseModel && rideModel.sId == null)) {
-      return EmptyWidget(text: "No Ride Found!!");
+    if (!isSingleItem) {
+      if (myRides == null || myRides!.isEmpty) {
+        return EmptyWidget(text: "No Ride Found!!");
+      }
+    } else {
+      if ((isDriver &&
+              rideModel is DriverCurrentTripModel &&
+              rideModel.sId == null) ||
+          (!isDriver &&
+              rideModel is TripResponseModel &&
+              rideModel.sId == null)) {
+        return EmptyWidget(text: "No Ride Found!!");
+      }
     }
 
     return Column(

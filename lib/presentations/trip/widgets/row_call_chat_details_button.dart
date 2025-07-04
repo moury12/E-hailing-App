@@ -19,6 +19,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
   final String? userId;
   final bool? showLastButton;
   final Function()? onTap;
+  final Function()? onChat;
 
   const RowCallChatDetailsButton({
     super.key,
@@ -27,6 +28,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
     this.showLastButton = true,
     this.phoneNumber,
     this.userId,
+    this.onChat,
   });
 
   @override
@@ -46,7 +48,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
         Expanded(
           child: CustomButton(
             padding: padding8,
-            onTap: () {},
+            onTap: onChat ?? () {},
             child: SvgPicture.asset(chatIcon, height: 24.w),
           ),
         ),
