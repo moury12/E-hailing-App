@@ -7,17 +7,17 @@ import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart'
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../core/api-client/api_endpoints.dart';
 
 class MyRideController extends GetxController {
   static MyRideController get to => Get.find();
-  RxList<TripResponseModel> myRides = <TripResponseModel>[].obs;
 
   ///====================ride pagination variable========================///
 
   final RxInt currentProductPage = 1.obs;
-  final RxInt itemsProductPerPage = 10.obs;
+  final RxInt itemsProductPerPage = 5.obs;
   final RxInt totalProductPages = 5.obs;
   final RxBool isProductLoadingMore = false.obs;
   RxString rideStatus = "completed".obs;
@@ -32,62 +32,64 @@ class MyRideController extends GetxController {
 
   @override
   void onInit() {
-    getAllRideRequest();
+    initPaging();
     super.onInit();
   }
 
-  Future<void> getAllRideRequest({bool loadMore = false}) async {
-    try {
-      // Don't load more if we've reached the last page
-      if (loadMore && currentProductPage.value >= totalProductPages.value) {
-        return;
+  void initPaging() {
+    pagingController.addPageRequestListener((pageKey) {
+      if (!isAllTripLoading.value) {
+        getAllRideRequest(pageKey: pageKey);
       }
+    });
+  }
 
-      if (loadMore) {
-        isProductLoadingMore.value = true;
-        currentProductPage.value++;
-        // Don't increment page here - we'll do it after successful response
-      } else {
-        isAllTripLoading.value = true;
-        currentProductPage.value = 1;
-      }
+  void initializeData() {
+    if (pagingController.itemList == null ||
+        pagingController.itemList!.isEmpty) {
+      pagingController.refresh();
+    }
+  }
+
+  final PagingController<int, TripResponseModel> pagingController =
+      PagingController(firstPageKey: 1);
+
+  Future<void> getAllRideRequest({required int pageKey}) async {
+    if (isAllTripLoading.value) return;
+    isAllTripLoading.value = true;
+
+    try {
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
       final response = await ApiService().request(
         endpoint: getAllTripEndpoint,
         method: 'GET',
         useAuth: true,
         queryParams: {
-          'page': currentProductPage.value.toString(),
-          'limit': itemsProductPerPage.value.toString(),
+          'page': pageKey.toString(),
+          'limit': "5",
           'status': rideStatus.value,
         },
       );
 
-      isAllTripLoading.value = false;
-      isProductLoadingMore.value = false;
-
       if (response['success'] == true) {
-        if (response["data"]["meta"] != null) {
-          currentProductPage.value = response["data"]["meta"]['page'] ?? 1;
-          totalProductPages.value =
-              response["data"]["meta"]['total'] ?? 1; // Add this line
-          itemsProductPerPage.value = response["data"]["meta"]['limit'] ?? 10;
-        }
+        final meta = response['data']['meta'];
 
-        final newRide =
-            (response['data']["trips"] as List)
+        final newItems =
+            (response['data']['trips'] as List)
                 .map((e) => TripResponseModel.fromJson(e))
                 .toList();
 
-        if (loadMore) {
-          // Only increment page after successful load
+        logger.d(newItems.length);
 
-          myRides.addAll(newRide);
+        if (newItems.isEmpty) {
+          pagingController.appendLastPage(newItems);
         } else {
-          myRides.value = newRide;
+          final nextPageKey = pageKey + 1;
+          pagingController.appendPage(newItems, nextPageKey);
         }
-        logger.d(response);
       } else {
+        pagingController.error = 'Error fetching data';
+
         logger.e(response);
         if (kDebugMode) {
           showCustomSnackbar(
@@ -99,8 +101,19 @@ class MyRideController extends GetxController {
       }
     } catch (e) {
       logger.e(e.toString());
+      pagingController.error = 'An error occurred';
+    } finally {
       isAllTripLoading.value = false;
-      isProductLoadingMore.value = false;
     }
+  }
+
+  @override
+  void onClose() {
+    pagingController.dispose();
+    super.onClose();
+  }
+
+  void disposeResources() {
+    pagingController.dispose();
   }
 }

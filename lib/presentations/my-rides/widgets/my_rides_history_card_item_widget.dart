@@ -6,21 +6,71 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
-import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/api-client/api_service.dart';
+import '../../trip/model/trip_response_model.dart';
 import '../../trip/widgets/rating_info_widget.dart';
 
 class MyRidesHistoryCardItemWidget extends StatelessWidget {
-  final TripResponseModel rideModel;
+  final dynamic rideModel;
+  final bool isDriver;
 
-  const MyRidesHistoryCardItemWidget({super.key, required this.rideModel});
+  const MyRidesHistoryCardItemWidget({
+    super.key,
+    required this.rideModel,
+    required this.isDriver,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Fallback/default values
+    String driverName = 'Unknown Driver';
+    String driverImage = dummyProfileImage;
+    String rating = '5.0';
+    String cost = 'RM 0';
+    String distance = '0 km';
+    String dateTime = 'N/A';
+    String? pickup;
+    String? dropOff;
+
+    if (rideModel is DriverCurrentTripModel) {
+      final model = rideModel as DriverCurrentTripModel;
+
+      driverName = model.user?.name ?? driverName;
+      driverImage =
+          model.user?.profileImage != null
+              ? "${ApiService().baseUrl}/${model.user!.profileImage}"
+              : driverImage;
+      cost = 'RM ${model.estimatedFare?.toStringAsFixed(2) ?? "0"}';
+      distance = '${model.distance ?? 0} km';
+      dateTime = formatDateTime(model.createdAt.toString());
+      pickup = model.pickUpAddress;
+      dropOff = model.dropOffAddress; // define this method below
+    } else if (rideModel is TripResponseModel) {
+      final model = rideModel as TripResponseModel;
+
+      driverName =
+          (isDriver
+              ? model.user?.name.toString()
+              : model.driver?.name.toString()) ??
+          AppStaticStrings.noDataFound;
+      driverImage =
+          model.driver?.profileImage != null
+              ? "${ApiService().baseUrl}/${(isDriver ? model.user?.profileImage.toString() : model.driver?.profileImage.toString())}"
+              : driverImage;
+      cost = 'RM ${model.estimatedFare?.toStringAsFixed(2) ?? "0"}';
+      distance = '${model.distance ?? 0} km';
+      dateTime = formatDateTime(model.createdAt.toString());
+      pickup = model.pickUpAddress;
+      dropOff = model.dropOffAddress;
+    }
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 6.h),
       decoration: BoxDecoration(
@@ -34,7 +84,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
         children: [
           ///============================dynamic date==============================///
           CustomText(
-            text: '27-3-2025, 07:00 am',
+            text: dateTime,
             style: poppinsSemiBold,
             fontSize: getFontSizeExtraLarge(),
           ),
@@ -44,7 +94,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
             children: [
               ///============================dynamic driver image==============================///
               CustomNetworkImage(
-                imageUrl: dummyProfileImage,
+                imageUrl: driverImage,
                 boxShape: BoxShape.circle,
                 height: 42.w,
                 width: 42.w,
@@ -55,31 +105,32 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
                   children: [
                     ///============================dynamic driver name rating ==============================///
                     CustomText(
-                      text: 'Fig Nelson',
+                      text: driverName,
                       maxLines: 1,
                       fontSize: getFontSizeDefault(),
                     ),
-                    RatingInfoWidget(rating: '5.0'),
+                    RatingInfoWidget(rating: rating),
                   ],
                 ),
               ),
               Expanded(
                 child: MyRidesHistoryTripInfoWidget(
                   title: AppStaticStrings.finalCost,
-                  text: 'RM 250',
+                  text: cost,
                 ),
               ),
               Expanded(
                 child: MyRidesHistoryTripInfoWidget(
                   title: AppStaticStrings.tripDuration,
-                  text: '1.07 km',
+                  text: distance,
                 ),
               ),
             ],
           ),
           space4H,
 
-          FromToTimeLine(),
+          ///============================Timeline==============================///
+          FromToTimeLine(pickUpAddress: pickup, dropOffAddress: dropOff),
         ],
       ),
     );

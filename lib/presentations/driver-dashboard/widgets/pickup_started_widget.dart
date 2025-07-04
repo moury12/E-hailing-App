@@ -6,7 +6,7 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
-import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -47,7 +47,7 @@ class AfterArrivedPickupLocationWidget extends StatelessWidget {
 }
 
 class SendPaymentRequestWidget extends StatelessWidget {
-  final TripResponseModel driverTripResponseModel;
+  final DriverCurrentTripModel driverTripResponseModel;
   final String tripId;
 
   const SendPaymentRequestWidget({

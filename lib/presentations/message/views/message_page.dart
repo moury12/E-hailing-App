@@ -8,34 +8,11 @@ import '../widgets/message_card_item_widget.dart';
 
 class MessageListPage extends StatelessWidget {
   static const String routeName = '/message';
+
   const MessageListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    MessageController.to.tabContent.add(
-      Padding(
-        padding: padding12V.copyWith(top: 0),
-        child: Column(
-          spacing: 12.h,
-          children: List.generate(
-            4,
-                (index) =>
-                MessageCardItemWidget(isRead: index % 2 == 0 ? true : false),
-          ),
-        ),
-      ),
-    );
-    MessageController.to.tabContent.add(
-      Padding(
-        padding: padding12V.copyWith(top: 0),
-        child: Column(
-          spacing: 12.h,
-          children: List.generate(
-            4,
-            (index) => MessageCardItemWidget(isRead: false),
-          ),
-        ),
-      ),
-    );
     return SingleChildScrollView(
       child: Padding(
         padding: padding16H.copyWith(top: 0),
@@ -43,9 +20,23 @@ class MessageListPage extends StatelessWidget {
           children: [
             DynamicTabWidget(
               tabs: MessageController.to.tabLabels,
-              tabContent: MessageController.to.tabContent,
+              tabContent: [messageListItemWidget(), messageListItemWidget()],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Padding messageListItemWidget() {
+    return Padding(
+      padding: padding12V.copyWith(top: 0),
+      child: Column(
+        spacing: 12.h,
+        children: List.generate(
+          4,
+          (index) =>
+              MessageCardItemWidget(isRead: index % 2 == 0 ? true : false),
         ),
       ),
     );

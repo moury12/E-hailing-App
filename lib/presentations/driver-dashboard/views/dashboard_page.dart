@@ -1,11 +1,12 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/widgets/after_destination_reached_widget.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
-import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -94,124 +95,130 @@ class _DashboardPageState extends State<DashboardPage>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Column(
-          children: [
-            CustomAppBarForHomeWidget(
-              isDriver: true,
-              onTap: () {
-                Get.toNamed(NotificationPage.routeName);
-              },
-            ),
-          ],
-        ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: GestureDetector(
-            onVerticalDragUpdate: _handleDragUpdate,
-            onVerticalDragEnd: _handleDragEnd,
-            child: SlideTransition(
-              position: offset,
-              child: Container(
-                // margin: EdgeInsets.only(bottom: 83),
-                decoration: BoxDecoration(
-                  color: AppColors.kWhiteColor,
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(34.r),
+    return CustomRefreshIndicator(
+      onRefresh: () {
+        return DashBoardController.to.getDriverCurrentTripRequest();
+      },
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Column(
+            children: [
+              CustomAppBarForHomeWidget(
+                isDriver: true,
+                onTap: () {
+                  Get.toNamed(NotificationPage.routeName);
+                },
+              ),
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: GestureDetector(
+              onVerticalDragUpdate: _handleDragUpdate,
+              onVerticalDragEnd: _handleDragEnd,
+              child: SlideTransition(
+                position: offset,
+                child: Container(
+                  // margin: EdgeInsets.only(bottom: 83),
+                  decoration: BoxDecoration(
+                    color: AppColors.kWhiteColor,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(34.r),
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: padding12,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Handle indicator
-                      Container(
-                        height: 4.w,
-                        width: 40.w,
-                        decoration: BoxDecoration(
-                          color: AppColors.kPrimaryColor,
-                          // Replace with your AppColors.kPrimaryColor
-                          borderRadius: BorderRadius.circular(2),
+                  child: Padding(
+                    padding: padding12,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Handle indicator
+                        Container(
+                          height: 4.w,
+                          width: 40.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.kPrimaryColor,
+                            // Replace with your AppColors.kPrimaryColor
+                            borderRadius: BorderRadius.circular(2),
+                          ),
                         ),
-                      ),
-                      space12H,
-                      Obx(() {
-                        TripResponseModel driverTrip =
-                            DashBoardController.to.currentTrip.value;
-                        TripResponseModel availableTrip =
-                            DashBoardController.to.availableTrip.value;
-                        return DashBoardController.to.findingRide.value
-                            ? NoNewRideReqWidget()
-                            : DashBoardController.to.rideRequest.value
-                            ? RideRequestCardWidget(
-                              userName: availableTrip.user?.name,
-                              userImg:
-                                  "${ApiService().baseUrl}/${availableTrip.user?.name}",
+                        space12H,
+                        Obx(() {
+                          DriverCurrentTripModel driverTrip =
+                              DashBoardController.to.currentTrip.value;
+                          DriverCurrentTripModel availableTrip =
+                              DashBoardController.to.availableTrip.value;
+                          return DashBoardController.to.findingRide.value
+                              ? NoNewRideReqWidget()
+                              : DashBoardController.to.rideRequest.value
+                              ? RideRequestCardWidget(
+                                userName: availableTrip.user?.name,
+                                userImg:
+                                    "${ApiService().baseUrl}/${availableTrip.user?.name}",
 
-                              fare: availableTrip.estimatedFare.toString(),
-                              dateTime: formatDateTime(
-                                availableTrip.createdAt ??
-                                    AppStaticStrings.noDataFound,
-                              ),
-                              distance: availableTrip.distance.toString(),
-                              fromAddress: availableTrip.pickUpAddress,
-                              rideType: AppStaticStrings.rideReq,
-                              toAddress: availableTrip.dropOffAddress,
-                            )
-                            : DashBoardController.to.afterAccepted.value
-                            ? DriverAfterAcceptedWidget(
-                              user: driverTrip.user,
-                              fare: driverTrip.estimatedFare.toString(),
-                              tripId: driverTrip.sId,
-                              fromAddress: driverTrip.pickUpAddress,
-                              time: driverTrip.duration.toString(),
-                            )
-                            : DashBoardController.to.afterArrived.value
-                            ? AfterArrivedPickupLocationWidget(
-                              tripId: driverTrip.sId,
-                            )
-                            : DashBoardController.to.afterPickup.value
-                            ? AfterPickedUpWidget(
-                              tripId: driverTrip.sId,
-                              fare: driverTrip.estimatedFare.toString(),
-                              fromAddress: driverTrip.pickUpAddress,
-                              toAddress: driverTrip.dropOffAddress,
-                              user: driverTrip.user,
-                              duration: driverTrip.duration.toString(),
-                            )
-                            : DashBoardController.to.afterTripStarted.value
-                            ? AfterTripStartedWidget(
-                              tripDistance: driverTrip.distance.toString(),
-                              dropOffAddress: driverTrip.dropOffAddress,
-                              pickUpAddress: driverTrip.pickUpAddress,
-                              estimatedTime: driverTrip.duration.toString(),
-                            )
-                            : DashBoardController.to.sendPaymentReq.value
-                            ? SendPaymentRequestWidget(
-                              driverTripResponseModel: driverTrip,
-                              tripId: driverTrip.sId.toString(),
-                            )
-                            : DashBoardController
-                                .to
-                                .afterDestinationReached
-                                .value
-                            ? AfterDestinationReachedWidget()
-                            : SizedBox.shrink();
-                      }),
-                      space12H,
-                    ],
+                                fare: availableTrip.estimatedFare.toString(),
+                                dateTime: formatDateTime(
+                                  availableTrip.createdAt ??
+                                      AppStaticStrings.noDataFound,
+                                ),
+                                distance: availableTrip.distance.toString(),
+                                fromAddress: availableTrip.pickUpAddress,
+                                rideType: AppStaticStrings.rideReq,
+                                toAddress: availableTrip.dropOffAddress,
+                              )
+                              : DashBoardController.to.afterAccepted.value ||
+                                  DashBoardController.to.afterOnTheWay.value
+                              ? DriverAfterAcceptedWidget(
+                                user: driverTrip.user,
+                                fare: driverTrip.estimatedFare.toString(),
+                                tripId: driverTrip.sId,
+                                fromAddress: driverTrip.pickUpAddress,
+                                time: driverTrip.duration.toString(),
+                              )
+                              : DashBoardController.to.afterArrived.value
+                              ? AfterArrivedPickupLocationWidget(
+                                tripId: driverTrip.sId,
+                              )
+                              : DashBoardController.to.afterPickup.value
+                              ? AfterPickedUpWidget(
+                                tripId: driverTrip.sId,
+                                fare: driverTrip.estimatedFare.toString(),
+                                fromAddress: driverTrip.pickUpAddress,
+                                toAddress: driverTrip.dropOffAddress,
+                                user: driverTrip.user,
+                                duration: driverTrip.duration.toString(),
+                              )
+                              : DashBoardController.to.afterTripStarted.value
+                              ? AfterTripStartedWidget(
+                                tripDistance: driverTrip.distance.toString(),
+                                dropOffAddress: driverTrip.dropOffAddress,
+                                pickUpAddress: driverTrip.pickUpAddress,
+                                estimatedTime: driverTrip.duration.toString(),
+                              )
+                              : DashBoardController.to.sendPaymentReq.value
+                              ? SendPaymentRequestWidget(
+                                driverTripResponseModel: driverTrip,
+                                tripId: driverTrip.sId.toString(),
+                              )
+                              : DashBoardController
+                                  .to
+                                  .afterDestinationReached
+                                  .value
+                              ? AfterDestinationReachedWidget()
+                              : SizedBox.shrink();
+                        }),
+                        space12H,
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
