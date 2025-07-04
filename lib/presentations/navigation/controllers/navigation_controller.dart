@@ -7,7 +7,6 @@ import 'package:e_hailing_app/presentations/message/views/message_page.dart';
 import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
 import 'package:e_hailing_app/presentations/my-rides/views/my_ride_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/profile_page.dart';
-import 'package:e_hailing_app/presentations/track-ride/views/track_ride_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,7 +17,6 @@ import '../../driver-dashboard/controllers/dashboard_controller.dart';
 import '../../driver-dashboard/views/dashboard_page.dart';
 import '../../home/controllers/home_controller.dart';
 import '../../splash/controllers/common_controller.dart';
-import '../../track-ride/controllers/track_ride_controller.dart';
 import '../model/navigation_model.dart';
 
 class NavigationController extends GetxController {
@@ -34,9 +32,10 @@ class NavigationController extends GetxController {
         : Get.put(HomeController());
     Get.put(MessageController());
     Get.put(MyRideController());
-    CommonController.to.isDriver.value
-        ? Get.put(StaticsController())
-        : Get.put(TrackRideController());
+    if (CommonController.to.isDriver.value) {
+      Get.put(StaticsController());
+    }
+
     logger.d("---user id------${CommonController.to.userModel.value.sId}");
     super.onInit();
   }
@@ -49,7 +48,7 @@ class NavigationController extends GetxController {
     return [
       CommonController.to.isDriver.value ? DashboardPage() : HomePage(),
       MyRidePage(),
-      CommonController.to.isDriver.value ? StaticsPage() : TrackRidePage(),
+      if (CommonController.to.isDriver.value) StaticsPage(),
       MessageListPage(),
       ProfilePage(),
     ];
@@ -73,17 +72,13 @@ class NavigationController extends GetxController {
           img: rideIcon,
           index: 1,
         ),
-        CommonController.to.isDriver.value
-            ? NavigationModel(
-              title: AppStaticStrings.statics,
-              img: staticsIcon,
-              index: 2,
-            )
-            : NavigationModel(
-              title: AppStaticStrings.trackRides,
-              img: locationIcon,
-              index: 2,
-            ),
+        if (CommonController.to.isDriver.value)
+          NavigationModel(
+            title: AppStaticStrings.statics,
+            img: staticsIcon,
+            index: 2,
+          ),
+
         NavigationModel(
           title: AppStaticStrings.messages,
           img: messageIcon,

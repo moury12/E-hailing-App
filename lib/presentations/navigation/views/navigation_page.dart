@@ -54,7 +54,7 @@ class NavigationPage extends StatelessWidget {
           appBar:
               currentIndex == 1
                   ? CustomAppBar(title: AppStaticStrings.myRides)
-                  : currentIndex == 3
+                  : currentIndex == 2
                   ? CustomAppBar(title: AppStaticStrings.messages)
                   : currentIndex == 2 && CommonController.to.isDriver.value
                   ? CustomAppBar(title: AppStaticStrings.statics)
@@ -62,8 +62,7 @@ class NavigationPage extends StatelessWidget {
           body: Stack(
             clipBehavior: Clip.none,
             children: [
-              currentIndex == 0 ||
-                      (currentIndex == 2 && !CommonController.to.isDriver.value)
+              currentIndex == 0
                   ? CommonController.to.isDriver.value
                       ? GoogleMapWidgetForDriver()
                       : GoogleMapWidget()

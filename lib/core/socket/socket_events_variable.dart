@@ -15,3 +15,10 @@ class DriverEvent {
   static const String tripAcceptedStatus = 'trip_accepted';
   static const String tripUpdateStatus = 'trip_update_status';
 }
+
+class ChatEvent {
+  static const String startChat = 'start-chat';
+  static const String error = 'error';
+  static const String sendMessage = 'send_message';
+  static const String onlineStatus = 'online_status';
+}

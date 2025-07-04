@@ -6,6 +6,7 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
+import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
@@ -94,23 +95,7 @@ class HomeController extends GetxController {
           ),
         ),
         NavigationController.to.routePolylines,
-        distance: int.parse(tripAcceptedModel.value.distance.toString()).obs,
-        duration: int.parse(tripAcceptedModel.value.duration.toString()).obs,
       );
-      final updateCoords = driverLocationUpdate.value.coordinates;
-      final fallbackCoords =
-          tripAcceptedModel.value.driver?.locationCoordinates?.coordinates;
-
-      if (updateCoords != null && updateCoords.length >= 2) {
-        driverPosition.value = LatLng(updateCoords.last, updateCoords.first);
-      } else if (fallbackCoords != null && fallbackCoords.length >= 2) {
-        driverPosition.value = LatLng(
-          fallbackCoords.last,
-          fallbackCoords.first,
-        );
-      } else {
-        driverPosition.value = null;
-      }
     }
     super.onInit();
   }
@@ -163,6 +148,7 @@ class HomeController extends GetxController {
         driverLocationUpdate.value = DriverLocationUpdateModel.fromJson(
           data['data'],
         );
+        updateDriverLocation();
       });
       socket.on(TripEvents.tripUpdateStatus, (data) {
         logger.d(data);
@@ -172,7 +158,17 @@ class HomeController extends GetxController {
         if (data['data']['status'] == DriverTripStatus.cancelled.name) {
           Get.offAllNamed(NavigationPage.routeName);
           socket.off(TripEvents.tripUpdateStatus);
+        } else if (data['data']['status'] ==
+            DriverTripStatus.destination_reached.name) {
+          Get.toNamed(
+            PaymentPage.routeName,
+            arguments: {"user": tripAcceptedModel.value, "role": user},
+          );
+          // socket.off(TripEvents.tripUpdateStatus);
         }
+      });
+      socket.on(ChatEvent.startChat, (data) {
+        logger.d(data);
       });
     } else {
       socketConnection();
@@ -224,6 +220,12 @@ class HomeController extends GetxController {
   void updatePreviousRoute(String route) {
     previousRoute.value = route;
     update(); // Force rebuild
+  }
+
+  void startChat(String? id) {
+    if (id != null) {
+      socket.emit(ChatEvent.startChat, {"receiverId": id});
+    }
   }
 
   bool handleBackNavigation() {
@@ -333,6 +335,20 @@ class HomeController extends GetxController {
     }
   }
 
+  updateDriverLocation() {
+    final updateCoords = driverLocationUpdate.value.coordinates;
+    final fallbackCoords =
+        tripAcceptedModel.value.driver?.locationCoordinates?.coordinates;
+
+    if (updateCoords != null && updateCoords.length >= 2) {
+      driverPosition.value = LatLng(updateCoords.last, updateCoords.first);
+    } else if (fallbackCoords != null && fallbackCoords.length >= 2) {
+      driverPosition.value = LatLng(fallbackCoords.last, fallbackCoords.first);
+    } else {
+      driverPosition.value = null;
+    }
+  }
+
   ///------------------------------  get current trip method -------------------------///
 
   Future<void> getUserCurrentTrip() async {
@@ -348,6 +364,7 @@ class HomeController extends GetxController {
       isLoadingUserCurrentTrip.value = false;
       if (response['success'] == true) {
         tripAcceptedModel.value = TripResponseModel.fromJson(response['data']);
+        updateDriverLocation();
       } else {
         logger.e(response);
         if (kDebugMode) {

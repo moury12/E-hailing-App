@@ -1,6 +1,7 @@
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/components/tab-bar/dynamic_tab_widget.dart';
+import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
@@ -85,19 +86,27 @@ class _MyRidePageState extends State<MyRidePage>
     return CustomRefreshIndicator(
       onRefresh: () async {
         MyRideController.to.pagingController.refresh();
+        final isDriver = CommonController.to.isDriver.value;
+        if (isDriver) {
+        } else {
+          HomeController.to.getUserCurrentTrip();
+        }
       },
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            DynamicTabWidget(
-              tabs: MyRideController.to.tabLabels,
-              tabContent: [
-                _buildOngoingTab(),
-                _buildUpcomingTab(),
-                _buildCompletedTab(),
-              ],
-            ),
-          ],
+        child: Padding(
+          padding: padding12H,
+          child: Column(
+            children: [
+              DynamicTabWidget(
+                tabs: MyRideController.to.tabLabels,
+                tabContent: [
+                  _buildOngoingTab(),
+                  _buildUpcomingTab(),
+                  _buildCompletedTab(),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -13,6 +13,7 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
+import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/car_information_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,13 +34,23 @@ class PaymentPage extends StatelessWidget {
     final arg = Get.arguments;
     DriverCurrentTripModel driverTripResponseModel =
         arg['driver'] ?? DriverCurrentTripModel();
+    TripResponseModel userTripResponse = arg['user'] ?? TripResponseModel();
     String role = arg['role'] ?? "";
     logger.i(driverTripResponseModel.toJson().toString());
     // String rent =
     //     "${(driverTripResponseModel.finalFare ?? 0) - (driverTripResponseModel.extraCharge ?? 0)}";
-    String rent = "${driverTripResponseModel.estimatedFare ?? 0}";
-    String tollFee = "${driverTripResponseModel.tollFee ?? 0}";
-    String extraCharge = "${driverTripResponseModel.extraCharge ?? 0}";
+    String rent =
+        role == "driver"
+            ? "${driverTripResponseModel.estimatedFare ?? 0}"
+            : "${userTripResponse.estimatedFare ?? 0}";
+    String tollFee =
+        role == "driver"
+            ? "${driverTripResponseModel.tollFee ?? 0}"
+            : "${userTripResponse.tollFee ?? 0}";
+    String extraCharge =
+        role == "driver"
+            ? "${driverTripResponseModel.extraCharge ?? 0}"
+            : "${userTripResponse.extraCharge ?? 0}";
     String finalFee =
         "${(driverTripResponseModel.estimatedFare ?? 0) + (driverTripResponseModel.tollFee ?? 0) + (driverTripResponseModel.extraCharge ?? 0)}";
     return Scaffold(
