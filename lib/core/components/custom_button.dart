@@ -75,7 +75,10 @@ class CustomButton extends StatelessWidget {
         ),
         child:
             isLoading == true
-                ? const DefaultProgressIndicator(strokeWidth: 2)
+                ? const DefaultProgressIndicator(
+                  strokeWidth: 2,
+                  padding: EdgeInsets.zero,
+                )
                 : child ??
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -112,13 +115,19 @@ class CustomButton extends StatelessWidget {
 class DefaultProgressIndicator extends StatelessWidget {
   final Color? color;
   final double? strokeWidth;
+  final EdgeInsets? padding;
 
-  const DefaultProgressIndicator({super.key, this.color, this.strokeWidth});
+  const DefaultProgressIndicator({
+    super.key,
+    this.color,
+    this.strokeWidth,
+    this.padding,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding12,
+      padding: padding ?? padding12,
       child: Center(
         child: SizedBox(
           height: 15.w,

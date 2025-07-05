@@ -531,6 +531,19 @@ String formatDateTime(String input) {
   }
 }
 
+String formatDate(String input) {
+  try {
+    final utcDate = DateTime.parse(input); // Parse the ISO string
+    final localDate = utcDate.toLocal(); // Convert to local timezone
+
+    final datePart = DateFormat('dd MMM yyyy').format(localDate);
+
+    return datePart;
+  } catch (e) {
+    return 'Invalid date';
+  }
+}
+
 void callOnPhone({required String phoneNumber}) async {
   final url = Uri.parse('tel:$phoneNumber');
   if (await canLaunchUrl(url)) {

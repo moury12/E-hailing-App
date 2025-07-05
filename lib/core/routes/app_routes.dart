@@ -132,7 +132,7 @@ class AppRoutes {
     GetPage(
       name: ChangePasswordPage.routeName,
       page: () => ChangePasswordPage(),
-      // binding: NavigationBinding(),
+      binding: AccountInformationBinding(),
     ),
     GetPage(
       name: VehicleDetailsPage.routeName,

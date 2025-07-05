@@ -8,6 +8,7 @@ import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 class AccountInformationController extends GetxController {
@@ -22,6 +23,7 @@ class AccountInformationController extends GetxController {
       ].obs;
   var tabContent = <Widget>[].obs;
   RxString profileImgPath = "".obs;
+  RxBool isLoadingChangePass = false.obs;
 
   ///=====================add dynmic name ====================///
   Rx<TextEditingController> nameController = TextEditingController().obs;
@@ -82,6 +84,47 @@ class AccountInformationController extends GetxController {
     } catch (e) {
       logger.e(e.toString());
       isLoadingUpdateProfile.value = false;
+    }
+  }
+
+  ///------------------------------ change pass method -------------------------///
+
+  Future<void> changePassRequest({
+    required String oldPass,
+    required String newPass,
+    required String confirmPass,
+  }) async {
+    try {
+      isLoadingChangePass.value = true;
+      final response = await ApiService().request(
+        endpoint: changePasswordEndPoint,
+        method: 'PATCH',
+        body: {
+          "oldPassword": oldPass,
+          "newPassword": newPass,
+          "confirmPassword": confirmPass,
+        },
+      );
+      isLoadingChangePass.value = false;
+      if (response['success'] == true) {
+        showCustomSnackbar(title: 'Success', message: response['message']);
+        Get.back();
+        logger.d(response);
+        // Get.back();
+      } else {
+        logger.e(response);
+        if (kDebugMode) {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed,
+          );
+        }
+      }
+    } catch (e) {
+      isLoadingChangePass.value = false;
+
+      logger.e(e.toString());
     }
   }
 

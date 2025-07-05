@@ -1,44 +1,89 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
+import 'package:e_hailing_app/presentations/message/model/chat_message_model.dart';
+import 'package:e_hailing_app/presentations/message/widgets/chat_message_card_item_widget.dart';
+import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import '../widgets/chat_message_card_item_widget.dart';
-
-class ChattingPage extends StatelessWidget {
+class ChattingPage extends StatefulWidget {
   static const String routeName = '/chatting';
+
   const ChattingPage({super.key});
+
+  @override
+  State<ChattingPage> createState() => _ChattingPageState();
+}
+
+class _ChattingPageState extends State<ChattingPage> {
+  TextEditingController messageController = TextEditingController();
+  final chatId = Get.arguments;
+
+  Participants? getOtherUser(ChatModel? meta) {
+    final myId = CommonController.to.userModel.value.sId;
+
+    if (meta == null || meta.participants == null) return null;
+
+    return meta.participants!.firstWhere(
+      (p) => p.sId != myId,
+      orElse: () => Participants(name: 'Unknown', profileImage: null),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Alex Wheeler',
-        action: [
-          Padding(
-            padding: EdgeInsets.only(right: 12.w),
-            child: PrimaryCircleButtonWidget(actionIcon: callIcon),
-          ),
-        ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: Obx(() {
+          final other = getOtherUser(MessageController.to.chatMetaModel.value);
+          return CustomAppBar(
+            title: other?.name ?? "User Name Loading...",
+            action: [
+              MessageController.to.isLoadingMessage.value
+                  ? DefaultProgressIndicator()
+                  : Padding(
+                    padding: EdgeInsets.only(right: 12.w),
+                    child: PrimaryCircleButtonWidget(
+                      actionIcon: callIcon,
+                      onTap: () {
+                        if (other != null) {
+                          callOnPhone(
+                            phoneNumber: other.phoneNumber ?? '00000000000',
+                          );
+                        }
+                      },
+                    ),
+                  ),
+            ],
+          );
+        }),
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              itemCount: MessageController.to.messages.length,
-              itemBuilder: (context, index) {
-                final message = MessageController.to.messages[index];
-                final isDriverMessage = message.isFromDriver;
-                return ChatMessageCardItemWidget(
-                  isDriverMessage: isDriverMessage,
-                  message: message,
-                );
-              },
+            child: PagedListView<int, Messages>(
+              pagingController: MessageController.to.messagePagingController,
+              builderDelegate: PagedChildBuilderDelegate<Messages>(
+                itemBuilder:
+                    (context, item, index) => ChatMessageCardItemWidget(
+                      isDriverMessage: false,
+                      message: item,
+                    ),
+                firstPageProgressIndicatorBuilder:
+                    (_) => DefaultProgressIndicator(),
+                noItemsFoundIndicatorBuilder:
+                    (_) => EmptyWidget(text: "No messages."),
+              ),
             ),
           ),
           Padding(
@@ -51,12 +96,32 @@ class ChattingPage extends StatelessWidget {
                     borderColor: Colors.transparent,
                     fillColor: AppColors.kWhiteColor,
                     borderRadius: 16.r,
+                    textEditingController: messageController,
                   ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.send, color: AppColors.kBrightBlueColor),
-                ),
+                Obx(() {
+                  final other = getOtherUser(
+                    MessageController.to.chatMetaModel.value,
+                  );
+
+                  return MessageController.to.isLoadingMessage.value
+                      ? DefaultProgressIndicator()
+                      : IconButton(
+                        onPressed: () {
+                          MessageController.to.sendMessageSocket(
+                            body: {
+                              "chatId": chatId,
+                              "receiverId": other!.sId.toString(),
+                              "message": messageController.text,
+                            },
+                          );
+                        },
+                        icon: Icon(
+                          Icons.send,
+                          color: AppColors.kBrightBlueColor,
+                        ),
+                      );
+                }),
               ],
             ),
           ),

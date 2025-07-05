@@ -1,32 +1,45 @@
+import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
-import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
+import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
+
 class MessageCardItemWidget extends StatelessWidget {
+  final ConversationModel chatModel;
   final bool? isRead;
-  const MessageCardItemWidget({super.key, this.isRead = false});
+
+  const MessageCardItemWidget({
+    super.key,
+    this.isRead = false,
+    required this.chatModel,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final otherUser = MessageController.to.getOtherUser(chatModel);
     return Container(
       decoration: BoxDecoration(
-        color: isRead == false ? AppColors.kUnreadMessageColor : AppColors.kWhiteColor,
+        color:
+            isRead == false
+                ? AppColors.kUnreadMessageColor
+                : AppColors.kWhiteColor,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [BoxShadow(color: AppColors.kLightBlackColor)],
       ),
       child: ButtonTapWidget(
         radius: 16.r,
-        onTap: () {
-Get.toNamed(ChattingPage.routeName);
+        onTap: () async {
+          MessageController.to.getMessages(chatId: chatModel.sId.toString());
         },
         child: Padding(
           padding: padding12,
@@ -34,7 +47,7 @@ Get.toNamed(ChattingPage.routeName);
             spacing: 12.w,
             children: [
               CustomNetworkImage(
-                imageUrl: dummyProfileImage,
+                imageUrl: "${ApiService().baseUrl}/${otherUser!.profileImage}",
                 boxShape: BoxShape.circle,
                 height: 50.w,
                 width: 50.w,
@@ -44,27 +57,33 @@ Get.toNamed(ChattingPage.routeName);
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ///=============================dynamic user name =============================///
-                    CustomText(text: 'Alex Wheeler', style: poppinsBold),
+                    CustomText(
+                      text: otherUser.name ?? AppStaticStrings.noDataFound,
+                      style: poppinsBold,
+                    ),
 
                     ///=============================dynamic message count =============================///
                     CustomText(
-                      text: 'No New Message',
+                      text:
+                          chatModel.unRead! > 0
+                              ? "${chatModel.unRead} New Message"
+                              : 'No New Message',
                       style: poppinsRegular,
                       fontSize: getFontSizeSmall(),
                       color: AppColors.kExtraLightBlackColor,
                     ),
 
-                    ///=============================dynamic message =============================///
-                    CustomText(
-                      text: 'Hello! Im available to pick you up. Ill be th..',
-                      style: poppinsRegular,
-                      fontSize: getFontSizeSmall(),
-                    ),
+                    // ///=============================dynamic message =============================///
+                    // CustomText(
+                    //   text: 'Hello! Im available to pick you up. Ill be th..',
+                    //   style: poppinsRegular,
+                    //   fontSize: getFontSizeSmall(),
+                    // ),
                   ],
                 ),
               ),
               CustomText(
-                text: '09/27/24',
+                text: formatDate(chatModel.createdAt.toString()),
                 style: poppinsBold,
                 fontSize: getFontSizeSmall(),
               ),

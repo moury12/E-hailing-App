@@ -2,18 +2,21 @@ import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
+import 'package:e_hailing_app/core/socket/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/message/model/chat_message_model.dart';
+import 'package:e_hailing_app/presentations/message/model/conversation_model.dart'
+    as convo;
 import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../core/constants/app_static_strings_constant.dart';
-import '../model/chat_message_model.dart';
 
 class MessageController extends GetxController {
-  final messages = <ChatMessage>[].obs;
   RxBool isLoadingCreateConversation = false.obs;
   RxBool isLoadingCreateMessage = false.obs;
   RxBool isLoadingConversation = false.obs;
@@ -35,37 +38,64 @@ class MessageController extends GetxController {
   static MessageController get to => Get.find();
   RxList<String> tabLabels =
       [AppStaticStrings.allMessages, AppStaticStrings.newMessages].obs;
-  var tabContent = <Widget>[].obs;
   final PagingController<int, ConversationModel> pagingController =
       PagingController(firstPageKey: 1);
+  final SocketService socket = SocketService();
+  PagingController<int, Messages> messagePagingController = PagingController(
+    firstPageKey: 1,
+  );
+  Rx<ChatModel?> chatMetaModel = Rx<ChatModel?>(null);
 
   @override
   void onInit() {
     super.onInit();
-    // Add static message examples
-    messages.addAll([
-      ChatMessage(
-        content: "Hello! I'm available to pick you up. I'll be there in about",
-        time: "02:15 PM",
-        isFromDriver: true,
-      ),
-      ChatMessage(
-        content: "Thankyou Sir" * 10,
-        time: "02:20 PM",
-        isFromDriver: false,
-      ),
-      ChatMessage(
-        content:
-            "I've arrived at Location. Look for a Red Car with the license plate XXXX.",
-        time: "02:35 PM",
-        isFromDriver: true,
-      ),
-      ChatMessage(
-        content: "Great! I'll be there in a minute.",
-        time: "02:36 PM",
-        isFromDriver: false,
-      ),
-    ]);
+    pagingController.addPageRequestListener((pageKey) {
+      getConversationListRequest(pageKey: pageKey);
+    });
+    initializeSocket();
+  }
+
+  void getMessages({required String chatId}) {
+    // Dispose the old controller
+    messagePagingController.dispose();
+
+    // Create a new controller
+    messagePagingController = PagingController<int, Messages>(firstPageKey: 1);
+
+    // Add page listener
+    messagePagingController.addPageRequestListener((pageKey) {
+      fetchMessagesPage(chatId, pageKey);
+    });
+
+    // Navigate after setup
+    Get.toNamed(ChattingPage.routeName, arguments: chatId);
+  }
+
+  void initializeSocket() {
+    if (socket.isConnected) {
+      socket.on(ChatEvent.sendMessage, (data) {
+        logger.d("-------send message---------");
+        logger.d(data);
+        messagePagingController.addPageRequestListener((pageKey) {
+          fetchMessagesPage(data['data']['chatId'], pageKey);
+        });
+      });
+    } else {
+      socketConnection();
+    }
+  }
+
+  void socketConnection() {
+    String userId = CommonController.to.userModel.value.sId ?? "";
+
+    if (userId.isNotEmpty) {
+      socket.connect(
+        userId,
+        CommonController.to.userModel.value.role == "DRIVER",
+      );
+    } else {
+      logger.e('User ID is empty, cannot connect to socket');
+    }
   }
 
   ///------------------------------  get conversation list method -------------------------///
@@ -77,17 +107,12 @@ class MessageController extends GetxController {
       final response = await ApiService().request(
         endpoint: getAlChatEndpoint,
         method: 'GET',
-        queryParams: {
-          'page': pageKey.toString(),
-          'limit': itemsPerPage.value.toString(),
-          'sort': 'updatedAt',
-          'order': 'desc',
-        },
+        queryParams: {'page': pageKey.toString()},
       );
-
+      logger.d(response);
       if (response['success'] == true) {
         final newItems =
-            (response['data'] as List)
+            (response['data']['chats'] as List)
                 .map((e) => ConversationModel.fromJson(e))
                 .toList();
 
@@ -108,79 +133,40 @@ class MessageController extends GetxController {
 
   ///------------------------------ get message list method -------------------------///
 
-  Future<void> getMessageListRequest({
-    required String conversationId,
-    bool loadMore = false,
-  }) async {
+  Future<void> fetchMessagesPage(String chatId, int pageKey) async {
     try {
-      if (loadMore && messageCurrentPage.value >= totalMessagePages.value) {
-        return;
-      }
-
-      if (loadMore) {
-        messageCurrentPage.value++;
-        isLoadingMoreMessages.value = true;
-      } else {
-        messageCurrentPage.value = 1;
-        isLoadingMessage.value = true;
-      }
-
-      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+      isLoadingMessage.value = true;
 
       final response = await ApiService().request(
         endpoint: getChatMessagesEndpoint,
-        queryParams: {
-          "conversation_id": conversationId,
-          "page": messageCurrentPage.value.toString(),
-          "limit": messageItemsPerPage.value.toString(),
-          "sort": "createdAt",
-          "order": "desc", // or "asc" depending on your display order
-        },
         method: 'GET',
+        queryParams: {'chatId': chatId, 'page': pageKey.toString()},
       );
-
-      isLoadingMessage.value = false;
-      isLoadingMoreMessages.value = false;
-
+      logger.d(response);
       if (response['success'] == true) {
-        logger.d(response);
-
-        if (response['pagination'] != null) {
-          messageCurrentPage.value = response['pagination']['currentPage'] ?? 1;
-          totalMessagePages.value = response['pagination']['totalPages'] ?? 1;
-          messageItemsPerPage.value =
-              response['pagination']['itemsPerPage'] ?? 20;
+        final data = response['data'];
+        if (pageKey == 1) {
+          chatMetaModel.value = ChatModel.fromJson(data);
         }
-
-        // final newMessages =
-        //     (response['data'] as List)
-        //         .map((e) => MessageModel.fromJson(e))
-        //         .toList();
-        // final imageUrls =
-        //     newMessages
-        //         .map((cat) => "${ApiService().baseUrl}/${cat.img}")
-        //         .where((url) => url.isNotEmpty)
-        //         .toList();
-        // preloadImagesFromUrls(imageUrls);
-        // if (loadMore) {
-        //   messageList.addAll(newMessages); // append
-        // } else {
-        //   messageList.value = newMessages; // reset
-        // }
+        final List<Messages> messages =
+            (data['messages'] as List)
+                .map((e) => Messages.fromJson(e))
+                .toList();
+        final totalPages = data['meta']['totalPage'] ?? 1;
+        final isLastPage = pageKey >= totalPages;
+        if (isLastPage) {
+          messagePagingController.appendLastPage(messages);
+        } else {
+          final nextPageKey = pageKey + 1;
+          messagePagingController.appendPage(messages, nextPageKey);
+        }
       } else {
-        logger.e(response);
-        if (kDebugMode) {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed,
-          );
-        }
+        messagePagingController.error = response['message'];
       }
     } catch (e) {
-      logger.e(e.toString());
+      messagePagingController.error = e;
+    } finally {
       isLoadingMessage.value = false;
-      isLoadingMoreMessages.value = false;
     }
   }
 
@@ -215,5 +201,34 @@ class MessageController extends GetxController {
       isLoadingCreateConversation.value = false;
       logger.e(e.toString());
     }
+  }
+
+  Future<void> sendMessageSocket({required Map<String, dynamic> body}) async {
+    if (!socket.isConnected) {
+      showCustomSnackbar(
+        title: 'Connection Error',
+        message: 'Not connected to server. Please wait and try again.',
+        type: SnackBarType.failed,
+      );
+      socketConnection();
+      return;
+    }
+
+    socket.emit(ChatEvent.sendMessage, body);
+  }
+
+  convo.Participants? getOtherUser(ConversationModel chatModel) {
+    final myId = CommonController.to.userModel.value.sId;
+    return chatModel.participants?.firstWhere(
+      (p) => p.sId != myId,
+      orElse: () => convo.Participants(name: 'Unknown', profileImage: null),
+    );
+  }
+
+  @override
+  void onClose() {
+    messagePagingController.dispose();
+    pagingController.dispose();
+    super.onClose();
   }
 }

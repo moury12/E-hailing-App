@@ -222,12 +222,6 @@ class HomeController extends GetxController {
     update(); // Force rebuild
   }
 
-  void startChat(String? id) {
-    if (id != null) {
-      socket.emit(ChatEvent.startChat, {"receiverId": id});
-    }
-  }
-
   bool handleBackNavigation() {
     debugPrint('Previous route: ${Get.previousRoute}');
     debugPrint('Current route: ${Get.currentRoute}');
