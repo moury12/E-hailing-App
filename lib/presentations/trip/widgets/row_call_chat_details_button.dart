@@ -41,7 +41,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
         Expanded(
           child: CustomButton(
             onTap: () {
-              callOnPhone(phoneNumber: phoneNumber ?? '01716773054');
+              callOnPhone(phoneNumber: phoneNumber ?? '00000000000');
             },
             padding: padding8,
             child: SvgPicture.asset(callIcon, height: 24.w),

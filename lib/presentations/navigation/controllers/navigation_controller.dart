@@ -82,12 +82,12 @@ class NavigationController extends GetxController {
         NavigationModel(
           title: AppStaticStrings.messages,
           img: messageIcon,
-          index: 3,
+          index: CommonController.to.isDriver.value ? 3 : 2,
         ),
         NavigationModel(
           title: AppStaticStrings.profile,
           img: profileIcon,
-          index: 4,
+          index: CommonController.to.isDriver.value ? 4 : 3,
         ),
       ].obs;
 }

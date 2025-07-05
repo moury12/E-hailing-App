@@ -5,6 +5,7 @@ String activeAccEndPoint = 'auth/activate-account';
 String forgetPassEndPoint = 'auth/forgot-password';
 String verifyOtpEndPoint = 'auth/forget-pass-otp-verify';
 String resetPasswordEndPoint = 'auth/reset-password';
+String changePasswordEndPoint = 'auth/change-password';
 String socialLoginEndPoint = 'auth/social-login';
 String getProfileEndPoint = 'user/profile';
 String editProfileEndPoint = 'user/edit-profile';
