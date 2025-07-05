@@ -3,9 +3,11 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../model/chat_message_model.dart';
@@ -34,6 +36,8 @@ class MessageController extends GetxController {
   RxList<String> tabLabels =
       [AppStaticStrings.allMessages, AppStaticStrings.newMessages].obs;
   var tabContent = <Widget>[].obs;
+  final PagingController<int, ConversationModel> pagingController =
+      PagingController(firstPageKey: 1);
 
   @override
   void onInit() {
@@ -66,78 +70,39 @@ class MessageController extends GetxController {
 
   ///------------------------------  get conversation list method -------------------------///
 
-  Future<void> getConversationListRequest({bool loadMore = false}) async {
+  Future<void> getConversationListRequest({required int pageKey}) async {
     try {
-      if (loadMore && currentPage.value >= totalCategoryPages.value) {
-        return;
-      }
-
-      if (loadMore) {
-        currentPage.value++;
-        isLoadingMore.value = true;
-      } else {
-        isLoadingConversation.value = true;
-        currentPage.value = 1;
-      }
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
       final response = await ApiService().request(
         endpoint: getAlChatEndpoint,
         method: 'GET',
         queryParams: {
-          'page': currentPage.value.toString(),
+          'page': pageKey.toString(),
           'limit': itemsPerPage.value.toString(),
           'sort': 'updatedAt',
           'order': 'desc',
         },
       );
 
-      isLoadingConversation.value = false;
-      isLoadingMore.value = false;
       if (response['success'] == true) {
-        if (response['pagination'] != null) {
-          currentPage.value = response['pagination']['currentPage'] ?? 1;
-          totalCategoryPages.value =
-              response['pagination']['totalPages'] ?? 1; // Add this line
+        final newItems =
+            (response['data'] as List)
+                .map((e) => ConversationModel.fromJson(e))
+                .toList();
 
-          itemsPerPage.value = response['pagination']['itemsPerPage'] ?? 10;
+        final isLastPage = newItems.length < itemsPerPage.value;
+        if (isLastPage) {
+          pagingController.appendLastPage(newItems);
+        } else {
+          final nextPageKey = pageKey + 1;
+          pagingController.appendPage(newItems, nextPageKey);
         }
-        // final newCategories =
-        //     (response['data'] as List)
-        //         .map((e) => ConversationModel.fromJson(e))
-        //         .toList();
-        // final imageUrls =
-        //     newCategories
-        //         .map((cat) => "${ApiService().baseUrl}/${cat.users!.first.img}")
-        //         .where((url) => url.isNotEmpty)
-        //         .toList();
-        // final imageUrls1 =
-        //     newCategories
-        //         .map((cat) => "${ApiService().baseUrl}/${cat.users!.last.img}")
-        //         .where((url) => url.isNotEmpty)
-        //         .toList();
-        //
-        // preloadImagesFromUrls(imageUrls);
-        // preloadImagesFromUrls(imageUrls1);
-        // if (loadMore) {
-        //   conversationList.addAll(newCategories); // Append for load more
-        // } else {
-        //   conversationList.value = newCategories; // Replace for refresh
-        // }
-        // logger.d(response);
       } else {
-        logger.e(response);
-        if (kDebugMode) {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed,
-          );
-        }
+        pagingController.error = response['message'] ?? 'Something went wrong';
       }
     } catch (e) {
-      logger.e(e.toString());
-      isLoadingConversation.value = false;
+      pagingController.error = e.toString();
     }
   }
 
@@ -229,20 +194,20 @@ class MessageController extends GetxController {
       final response = await ApiService().request(
         endpoint: postChatEndpoint,
         method: 'POST',
-        body: {"user": userId},
+        body: {"receiverId": userId},
       );
 
       if (response['success'] == true) {
         logger.d(response);
 
         showCustomSnackbar(title: 'Success', message: response['message']);
-        await getConversationListRequest();
+        // await getConversationListRequest();
         // NavigationController.to.selectedNavIndex.value = 3;
         // isLoadingCreateConversation.value = false;
         // Get.toNamed(NavigationPage.routeName);
       } else {
         logger.e(response);
-        //
+
         // NavigationController.to.selectedNavIndex.value = 3;
         // Get.toNamed(NavigationPage.routeName);
       }

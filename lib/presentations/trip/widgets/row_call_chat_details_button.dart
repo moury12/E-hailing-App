@@ -18,6 +18,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
   final String? phoneNumber;
   final String? userId;
   final bool? showLastButton;
+  final bool? isChatLoading;
   final Function()? onTap;
   final Function()? onChat;
 
@@ -29,6 +30,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
     this.phoneNumber,
     this.userId,
     this.onChat,
+    this.isChatLoading,
   });
 
   @override
@@ -47,6 +49,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
         ),
         Expanded(
           child: CustomButton(
+            isLoading: isChatLoading,
             padding: padding8,
             onTap: onChat ?? () {},
             child: SvgPicture.asset(chatIcon, height: 24.w),

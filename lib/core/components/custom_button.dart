@@ -117,13 +117,16 @@ class DefaultProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        height: 15.w,
-        width: 15.w,
-        child: CircularProgressIndicator(
-          color: color ?? AppColors.kPrimaryLightColor,
-          strokeWidth: strokeWidth ?? 2,
+    return Padding(
+      padding: padding12,
+      child: Center(
+        child: SizedBox(
+          height: 15.w,
+          width: 15.w,
+          child: CircularProgressIndicator(
+            color: color ?? AppColors.kPrimaryLightColor,
+            strokeWidth: strokeWidth ?? 2,
+          ),
         ),
       ),
     );

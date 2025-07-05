@@ -9,8 +9,8 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
+import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -202,18 +202,23 @@ class TripDetailsDestinationCard extends StatelessWidget {
             dropOffAddress: tripModel?.dropOffAddress,
           ),
 
-          RowCallChatDetailsButton(
-            lastItemName: AppStaticStrings.details,
-            phoneNumber: tripModel?.driver?.phoneNumber,
-            onChat: () {
-              if (tripModel?.driver != null) {
-                HomeController.to.startChat(tripModel?.driver!.sId);
-              }
-            },
-            onTap: () {
-              Get.toNamed(TripDetailsPage.routeName);
-            },
-          ),
+          Obx(() {
+            return RowCallChatDetailsButton(
+              lastItemName: AppStaticStrings.details,
+              phoneNumber: tripModel?.driver?.phoneNumber,
+              isChatLoading: MessageController.to.isLoadingCreateMessage.value,
+              onChat: () {
+                if (tripModel?.driver != null) {
+                  MessageController.to.createConversationRequest(
+                    userId: tripModel!.driver!.sId.toString(),
+                  );
+                }
+              },
+              onTap: () {
+                Get.toNamed(TripDetailsPage.routeName);
+              },
+            );
+          }),
         ],
       ),
     );
