@@ -531,6 +531,29 @@ String formatDateTime(String input) {
   }
 }
 
+bool isTodayFunction(String isoDateString) {
+  final date = DateTime.parse(isoDateString).toLocal();
+  final now = DateTime.now();
+
+  return date.year == now.year &&
+      date.month == now.month &&
+      date.day == now.day;
+}
+
+String formatTime(String input) {
+  try {
+    final utcDate = DateTime.parse(input); // Parse the ISO string
+    final localDate = utcDate.toLocal(); // Convert to local timezone
+
+    // final datePart = DateFormat('dd MMM yyyy').format(localDate);
+    final timePart = DateFormat('hh:mm a').format(localDate);
+
+    return timePart;
+  } catch (e) {
+    return 'Invalid date';
+  }
+}
+
 String formatDate(String input) {
   try {
     final utcDate = DateTime.parse(input); // Parse the ISO string

@@ -102,7 +102,7 @@ class AppRoutes {
     GetPage(
       name: ChattingPage.routeName,
       page: () => ChattingPage(),
-      // binding: NavigationBinding(),
+      binding: ChattingBinding(),
     ),
     GetPage(
       name: AccountInformationPage.routeName,

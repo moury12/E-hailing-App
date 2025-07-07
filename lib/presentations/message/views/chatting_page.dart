@@ -5,7 +5,7 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
-import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
+import 'package:e_hailing_app/presentations/message/controllers/chatting_controller.dart';
 import 'package:e_hailing_app/presentations/message/model/chat_message_model.dart';
 import 'package:e_hailing_app/presentations/message/widgets/chat_message_card_item_widget.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
@@ -40,8 +40,9 @@ class _ChattingPageState extends State<ChattingPage> {
 
   @override
   void initState() {
+    ChattingController.to.getMessages(chatId: chatId);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      MessageController.to.updateSeenRequest(chatId: chatId);
+      ChattingController.to.updateSeenRequest(chatId: chatId);
     });
     super.initState();
   }
@@ -52,11 +53,11 @@ class _ChattingPageState extends State<ChattingPage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: Obx(() {
-          final other = getOtherUser(MessageController.to.chatMetaModel.value);
+          final other = getOtherUser(ChattingController.to.chatMetaModel.value);
           return CustomAppBar(
             title: other?.name ?? "User Name Loading...",
             action: [
-              MessageController.to.isLoadingMessage.value
+              ChattingController.to.isLoadingMessage.value
                   ? DefaultProgressIndicator()
                   : Padding(
                     padding: EdgeInsets.only(right: 12.w),
@@ -80,7 +81,7 @@ class _ChattingPageState extends State<ChattingPage> {
           Expanded(
             child: PagedListView<int, Messages>(
               reverse: true,
-              pagingController: MessageController.to.messagePagingController,
+              pagingController: ChattingController.to.messagePagingController,
               builderDelegate: PagedChildBuilderDelegate<Messages>(
                 itemBuilder:
                     (context, item, index) => ChatMessageCardItemWidget(
@@ -89,7 +90,7 @@ class _ChattingPageState extends State<ChattingPage> {
                           item.sender,
                       message: item,
                       chatModel:
-                          MessageController.to.chatMetaModel.value ??
+                          ChattingController.to.chatMetaModel.value ??
                           ChatModel(),
                     ),
                 firstPageProgressIndicatorBuilder:
@@ -114,29 +115,29 @@ class _ChattingPageState extends State<ChattingPage> {
                     maxLines: 4,
                     minLines: 1,
                     textEditingController:
-                        MessageController.to.messageTextController,
+                        ChattingController.to.messageTextController,
                   ),
                 ),
                 Obx(() {
                   final other = getOtherUser(
-                    MessageController.to.chatMetaModel.value,
+                    ChattingController.to.chatMetaModel.value,
                   );
 
-                  return MessageController.to.isLoadingMessage.value
+                  return ChattingController.to.isLoadingMessage.value
                       ? DefaultProgressIndicator()
                       : IconButton(
                         onPressed: () {
-                          if (MessageController
+                          if (ChattingController
                               .to
                               .messageTextController
                               .text
                               .isNotEmpty) {
-                            MessageController.to.sendMessageSocket(
+                            ChattingController.to.sendMessageSocket(
                               body: {
                                 "chatId": chatId,
                                 "receiverId": other!.sId.toString(),
                                 "message":
-                                    MessageController
+                                    ChattingController
                                         .to
                                         .messageTextController
                                         .text,

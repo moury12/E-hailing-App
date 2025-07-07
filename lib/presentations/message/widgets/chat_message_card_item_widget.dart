@@ -35,8 +35,13 @@ class ChatMessageCardItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isToday = isTodayFunction(message.createdAt.toString());
+    String createdDate =
+        isToday
+            ? formatTime(message.createdAt.toString())
+            : formatDate(message.createdAt.toString());
     return Padding(
-      padding: EdgeInsets.only(bottom: 24),
+      padding: EdgeInsets.only(bottom: 12),
       child: Row(
         mainAxisAlignment:
             sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -64,7 +69,7 @@ class ChatMessageCardItemWidget extends StatelessWidget {
                     left: sendByMe ? 0 : 8,
                     right: sendByMe ? 8 : 0,
                   ),
-                  constraints: BoxConstraints(maxWidth: Get.width * 0.7),
+                  constraints: BoxConstraints(maxWidth: Get.width * 0.8),
                   padding: paddingH12V8,
 
                   decoration: BoxDecoration(
@@ -94,7 +99,7 @@ class ChatMessageCardItemWidget extends StatelessWidget {
                     right: sendByMe ? 8 : 0,
                   ),
                   child: Text(
-                    formatDateTime(message.createdAt.toString()),
+                    createdDate,
                     style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   ),
                 ),
