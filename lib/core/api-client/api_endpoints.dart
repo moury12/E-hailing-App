@@ -19,6 +19,7 @@ String getTripFareEndpoint = 'trip/get-fare';
 String updateTollFeeEndpoint = 'trip/update-toll-fee';
 String getAllTripEndpoint = 'trip/get-all-trips';
 String getAlChatEndpoint = 'chat/get-all-chats';
+String updateMessageSeenEndpoint = 'chat/update-message-as-seen';
 String postChatEndpoint = 'chat/post-chat';
 String getChatMessagesEndpoint = 'chat/get-chat-messages';
 String getUserCurrentTripEndpoint = 'trip/get-user-current-trip';
