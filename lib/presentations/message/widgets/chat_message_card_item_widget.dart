@@ -1,6 +1,9 @@
+import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
-import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -10,12 +13,25 @@ import '../model/chat_message_model.dart';
 class ChatMessageCardItemWidget extends StatelessWidget {
   const ChatMessageCardItemWidget({
     super.key,
-    required this.isDriverMessage,
+    required this.sendByMe,
     required this.message,
+    required this.chatModel,
   });
 
-  final bool isDriverMessage;
+  final bool sendByMe;
   final Messages message;
+  final ChatModel chatModel;
+
+  Participants? getOtherUser() {
+    final myId = CommonController.to.userModel.value.sId;
+
+    if (chatModel.participants == null) return null;
+
+    return chatModel.participants!.firstWhere(
+      (p) => p.sId != myId,
+      orElse: () => Participants(name: 'Unknown', profileImage: null),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,36 +39,37 @@ class ChatMessageCardItemWidget extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 24),
       child: Row(
         mainAxisAlignment:
-            isDriverMessage ? MainAxisAlignment.start : MainAxisAlignment.end,
+            sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Driver avatar (only for driver messages)
-          if (isDriverMessage)
-            CustomNetworkImage(
-              imageUrl: dummyProfileImage,
-              height: 50.w,
-              boxShape: BoxShape.circle,
-              width: 50.w,
+          if (!sendByMe)
+            Padding(
+              padding: EdgeInsets.only(left: 12),
+              child: CustomNetworkImage(
+                imageUrl:
+                    "${ApiService().baseUrl}/${getOtherUser()!.profileImage.toString()}",
+                height: 50.w,
+                boxShape: BoxShape.circle,
+                width: 50.w,
+              ),
             ),
-
           Expanded(
             child: Column(
               crossAxisAlignment:
-                  isDriverMessage
-                      ? CrossAxisAlignment.start
-                      : CrossAxisAlignment.end,
+                  sendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
                 // Message container
                 Container(
                   margin: EdgeInsets.only(
-                    left: isDriverMessage ? 8 : 0,
-                    right: isDriverMessage ? 0 : 8,
+                    left: sendByMe ? 0 : 8,
+                    right: sendByMe ? 8 : 0,
                   ),
                   constraints: BoxConstraints(maxWidth: Get.width * 0.7),
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: paddingH12V8,
+
                   decoration: BoxDecoration(
                     color:
-                        isDriverMessage
+                        sendByMe
                             ? AppColors.kLightGreyColor
                             : AppColors.kBrightBlueColor,
                     borderRadius: BorderRadius.circular(20),
@@ -61,7 +78,7 @@ class ChatMessageCardItemWidget extends StatelessWidget {
                     message.message.toString(),
                     style: TextStyle(
                       color:
-                          isDriverMessage
+                          sendByMe
                               ? AppColors.kTextColor
                               : AppColors.kWhiteColor,
                       fontSize: 15,
@@ -73,11 +90,11 @@ class ChatMessageCardItemWidget extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(
                     top: 4,
-                    left: isDriverMessage ? 8 : 0,
-                    right: isDriverMessage ? 0 : 8,
+                    left: sendByMe ? 0 : 8,
+                    right: sendByMe ? 8 : 0,
                   ),
                   child: Text(
-                    message.createdAt.toString(),
+                    formatDateTime(message.createdAt.toString()),
                     style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   ),
                 ),
@@ -86,13 +103,6 @@ class ChatMessageCardItemWidget extends StatelessWidget {
           ),
 
           // User avatar (only for user messages)
-          if (!isDriverMessage)
-            CustomNetworkImage(
-              imageUrl: dummyProfileImage,
-              height: 50.w,
-              boxShape: BoxShape.circle,
-              width: 50.w,
-            ),
         ],
       ),
     );

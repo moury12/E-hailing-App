@@ -11,6 +11,7 @@ import 'package:e_hailing_app/presentations/message/model/conversation_model.dar
 import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
 import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -21,6 +22,7 @@ class MessageController extends GetxController {
   RxBool isLoadingCreateMessage = false.obs;
   RxBool isLoadingConversation = false.obs;
   RxBool isLoadingMessage = false.obs;
+  TextEditingController messageTextController = TextEditingController();
 
   ///====================conversation pagination variable========================///
 
@@ -76,7 +78,16 @@ class MessageController extends GetxController {
       socket.on(ChatEvent.sendMessage, (data) {
         logger.d("-------send message---------");
         logger.d(data);
-        messagePagingController.refresh();
+        if (data["success"]) {
+          // Convert the new message from JSON
+          final newMessage = Messages.fromJson(data['data']);
+
+          // Add message at the top (or bottom based on your order)
+          final oldItems = messagePagingController.itemList ?? [];
+          if (!oldItems.any((element) => element.sId == newMessage.sId)) {
+            messagePagingController.itemList = [newMessage, ...oldItems];
+          }
+        }
       });
     } else {
       socketConnection();
@@ -201,6 +212,34 @@ class MessageController extends GetxController {
     }
   }
 
+  ///------------------------------  seen conversation method -------------------------///
+
+  Future<void> updateSeenRequest({required String chatId}) async {
+    try {
+      isLoadingCreateConversation.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+      final response = await ApiService().request(
+        endpoint: updateMessageSeenEndpoint,
+        method: 'PATCH',
+        body: {"chatId": chatId},
+      );
+
+      if (response['success'] == true) {
+        logger.d(response);
+
+        // {
+        //   showCustomSnackbar(title: 'Success', message: response['message']);
+        // }
+      } else {
+        logger.e(response);
+      }
+    } catch (e) {
+      isLoadingCreateConversation.value = false;
+      logger.e(e.toString());
+    }
+  }
+
   Future<void> sendMessageSocket({required Map<String, dynamic> body}) async {
     if (!socket.isConnected) {
       showCustomSnackbar(
@@ -213,6 +252,7 @@ class MessageController extends GetxController {
     }
 
     socket.emit(ChatEvent.sendMessage, body);
+    messageTextController.clear();
   }
 
   convo.Participants? getOtherUser(ConversationModel chatModel) {

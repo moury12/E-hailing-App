@@ -25,7 +25,6 @@ class ChattingPage extends StatefulWidget {
 }
 
 class _ChattingPageState extends State<ChattingPage> {
-  TextEditingController messageController = TextEditingController();
   final chatId = Get.arguments;
 
   Participants? getOtherUser(ChatModel? meta) {
@@ -37,6 +36,14 @@ class _ChattingPageState extends State<ChattingPage> {
       (p) => p.sId != myId,
       orElse: () => Participants(name: 'Unknown', profileImage: null),
     );
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      MessageController.to.updateSeenRequest(chatId: chatId);
+    });
+    super.initState();
   }
 
   @override
@@ -72,12 +79,18 @@ class _ChattingPageState extends State<ChattingPage> {
         children: [
           Expanded(
             child: PagedListView<int, Messages>(
+              reverse: true,
               pagingController: MessageController.to.messagePagingController,
               builderDelegate: PagedChildBuilderDelegate<Messages>(
                 itemBuilder:
                     (context, item, index) => ChatMessageCardItemWidget(
-                      isDriverMessage: false,
+                      sendByMe:
+                          CommonController.to.userModel.value.sId ==
+                          item.sender,
                       message: item,
+                      chatModel:
+                          MessageController.to.chatMetaModel.value ??
+                          ChatModel(),
                     ),
                 firstPageProgressIndicatorBuilder:
                     (_) => DefaultProgressIndicator(),
@@ -96,7 +109,12 @@ class _ChattingPageState extends State<ChattingPage> {
                     borderColor: Colors.transparent,
                     fillColor: AppColors.kWhiteColor,
                     borderRadius: 16.r,
-                    textEditingController: messageController,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
+                    maxLines: 4,
+                    minLines: 1,
+                    textEditingController:
+                        MessageController.to.messageTextController,
                   ),
                 ),
                 Obx(() {
@@ -108,13 +126,23 @@ class _ChattingPageState extends State<ChattingPage> {
                       ? DefaultProgressIndicator()
                       : IconButton(
                         onPressed: () {
-                          MessageController.to.sendMessageSocket(
-                            body: {
-                              "chatId": chatId,
-                              "receiverId": other!.sId.toString(),
-                              "message": messageController.text,
-                            },
-                          );
+                          if (MessageController
+                              .to
+                              .messageTextController
+                              .text
+                              .isNotEmpty) {
+                            MessageController.to.sendMessageSocket(
+                              body: {
+                                "chatId": chatId,
+                                "receiverId": other!.sId.toString(),
+                                "message":
+                                    MessageController
+                                        .to
+                                        .messageTextController
+                                        .text,
+                              },
+                            );
+                          }
                         },
                         icon: Icon(
                           Icons.send,

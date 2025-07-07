@@ -26,7 +26,10 @@ class MessageListPage extends StatelessWidget {
           pagingController: MessageController.to.pagingController,
           builderDelegate: PagedChildBuilderDelegate<ConversationModel>(
             itemBuilder: (context, item, index) {
-              return MessageCardItemWidget(chatModel: item); // your item widget
+              return MessageCardItemWidget(
+                chatModel: item,
+                isRead: item.unRead!.toInt() <= 0,
+              ); // your item widget
             },
 
             // Show when initially loading the first page
