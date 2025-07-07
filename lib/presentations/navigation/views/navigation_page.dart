@@ -51,14 +51,26 @@ class NavigationPage extends StatelessWidget {
           }
         },
         child: Scaffold(
-          appBar:
-              currentIndex == 1
-                  ? CustomAppBar(title: AppStaticStrings.myRides)
-                  : currentIndex == 2
-                  ? CustomAppBar(title: AppStaticStrings.messages)
-                  : currentIndex == 2 && CommonController.to.isDriver.value
-                  ? CustomAppBar(title: AppStaticStrings.statics)
-                  : null,
+          appBar: () {
+            if (currentIndex == 1) {
+              return CustomAppBar(title: AppStaticStrings.myRides);
+            }
+
+            if (CommonController.to.isDriver.value) {
+              if (currentIndex == 2) {
+                return CustomAppBar(title: AppStaticStrings.statics);
+              } else if (currentIndex == 3) {
+                return CustomAppBar(title: AppStaticStrings.messages);
+              }
+            } else {
+              if (currentIndex == 2) {
+                return CustomAppBar(title: AppStaticStrings.messages);
+              }
+            }
+
+            return null;
+          }(),
+
           body: Stack(
             clipBehavior: Clip.none,
             children: [

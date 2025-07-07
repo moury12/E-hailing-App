@@ -8,8 +8,10 @@ import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
 import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
+import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
@@ -27,6 +29,11 @@ class MessageCardItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final otherUser = MessageController.to.getOtherUser(chatModel);
+    bool isToday = isTodayFunction(chatModel.updatedAt.toString());
+    String createdDate =
+        isToday
+            ? formatTime(chatModel.updatedAt.toString())
+            : formatDate(chatModel.updatedAt.toString());
     return Container(
       decoration: BoxDecoration(
         color:
@@ -39,7 +46,10 @@ class MessageCardItemWidget extends StatelessWidget {
       child: ButtonTapWidget(
         radius: 16.r,
         onTap: () async {
-          MessageController.to.getMessages(chatId: chatModel.sId.toString());
+          Get.toNamed(
+            ChattingPage.routeName,
+            arguments: chatModel.sId.toString(),
+          );
         },
         child: Padding(
           padding: padding12,
@@ -83,7 +93,7 @@ class MessageCardItemWidget extends StatelessWidget {
                 ),
               ),
               CustomText(
-                text: formatDate(chatModel.createdAt.toString()),
+                text: createdDate,
                 style: poppinsBold,
                 fontSize: getFontSizeSmall(),
               ),

@@ -2,6 +2,7 @@ import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_
 import 'package:get/get.dart';
 
 import '../../presentations/auth/controllers/auth_controller.dart';
+import '../../presentations/message/controllers/chatting_controller.dart';
 import '../../presentations/navigation/controllers/navigation_controller.dart';
 import '../../presentations/profile/controllers/account_information_controller.dart';
 import '../../presentations/save-location/controllers/save_location_controller.dart';
@@ -56,6 +57,13 @@ class NavigationBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(NavigationController());
+  }
+}
+
+class ChattingBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(ChattingController());
   }
 }
 
