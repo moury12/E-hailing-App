@@ -168,6 +168,7 @@ class ChattingController extends GetxController {
   @override
   void onClose() {
     messagePagingController.dispose();
+    socket.off(ChatEvent.sendMessage);
     super.onClose();
   }
 }
