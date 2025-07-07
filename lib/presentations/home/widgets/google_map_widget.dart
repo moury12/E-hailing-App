@@ -14,26 +14,76 @@ class GoogleMapWidget extends StatefulWidget {
   State<GoogleMapWidget> createState() => _GoogleMapWidgetState();
 }
 
-class _GoogleMapWidgetState extends State<GoogleMapWidget> {
+class _GoogleMapWidgetState extends State<GoogleMapWidget>
+    with AutomaticKeepAliveClientMixin {
   Rxn<BitmapDescriptor> customIcon = Rxn<BitmapDescriptor>();
+  GoogleMapController? _mapController;
+  bool _isMapReady = false;
 
   Future<void> loadCustomMarker() async {
-    final bitmap = await BitmapDescriptor.asset(
-      const ImageConfiguration(size: Size(50, 50)),
-      purpleCarImage2, // your actual asset path
-    );
-    customIcon.value = bitmap;
+    try {
+      final bitmap = await BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(50, 50)),
+        purpleCarImage2,
+      );
+      customIcon.value = bitmap;
+    } catch (e) {
+      print('Error loading custom marker: $e');
+      // Fallback to default marker if custom marker fails
+      customIcon.value = BitmapDescriptor.defaultMarker;
+    }
   }
 
   @override
   void initState() {
-    loadCustomMarker();
     super.initState();
+    loadCustomMarker();
+  }
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    super.dispose();
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _mapController = controller;
+    _isMapReady = true;
+
+    // Call the original onMapCreated if it exists
+    if (CommonController.to.onMapCreated != null) {
+      CommonController.to.onMapCreated!(controller);
+    }
+  }
+
+  // Safe method to animate camera with error handling
+  Future<void> _animateCameraToPosition(LatLng position) async {
+    if (!_isMapReady || _mapController == null) return;
+
+    try {
+      await _mapController!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: position, zoom: 13),
+        ),
+      );
+    } catch (e) {
+      print('Error animating camera: $e');
+      // Fallback to moving camera without animation
+      try {
+        await _mapController!.moveCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: position, zoom: 13),
+          ),
+        );
+      } catch (e2) {
+        print('Error moving camera: $e2');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // logger.d("---------------------------------------");
+    super.build(context);
     return Obx(() {
       final position = CommonController.to.markerPosition.value;
 
@@ -41,19 +91,24 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
         polylines: NavigationController.to.routePolylines.value,
-
-        onMapCreated: CommonController.to.onMapCreated,
+        onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: true,
+        // Add these properties for better stability
+        mapToolbarEnabled: false,
+        compassEnabled: true,
+        rotateGesturesEnabled: true,
+        tiltGesturesEnabled: true,
 
         markers:
             NavigationController.to.routePolylines.isNotEmpty
                 ? {
-                  if (HomeController.to.driverPosition.value != null)
+                  if (HomeController.to.driverPosition.value != null &&
+                      customIcon.value != null)
                     Marker(
-                      markerId: const MarkerId("fdf"),
+                      markerId: const MarkerId("driver_marker"),
                       position: HomeController.to.driverPosition.value!,
                       icon: customIcon.value!,
                     ),
@@ -72,20 +127,31 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                       NavigationController.to.markerDraging.value = true;
                     },
                     onDragEnd: (value) async {
-                      CommonController.to.markerPosition.value = value;
-                      if (HomeController.to.setDestination.value) {
-                        HomeController.to.dropoffLatLng.value = value;
-                      } else {
-                        HomeController.to.pickupLatLng.value = value;
-                      }
+                      try {
+                        CommonController.to.markerPosition.value = value;
+                        if (HomeController.to.setDestination.value) {
+                          HomeController.to.dropoffLatLng.value = value;
+                        } else {
+                          HomeController.to.pickupLatLng.value = value;
+                        }
 
-                      await HomeController.to.getPlaceName(
-                        value,
-                        HomeController.to.setDestination.value
-                            ? HomeController.to.dropOffLocationController.value
-                            : HomeController.to.pickupLocationController.value,
-                      );
-                      NavigationController.to.markerDraging.value = false;
+                        await HomeController.to.getPlaceName(
+                          value,
+                          HomeController.to.setDestination.value
+                              ? HomeController
+                                  .to
+                                  .dropOffLocationController
+                                  .value
+                              : HomeController
+                                  .to
+                                  .pickupLocationController
+                                  .value,
+                        );
+                        NavigationController.to.markerDraging.value = false;
+                      } catch (e) {
+                        print('Error in marker drag end: $e');
+                        NavigationController.to.markerDraging.value = false;
+                      }
                     },
                     infoWindow: const InfoWindow(
                       title: "Selected Location",
@@ -96,6 +162,10 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       );
     });
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class GoogleMapWidgetForDriver extends StatelessWidget {

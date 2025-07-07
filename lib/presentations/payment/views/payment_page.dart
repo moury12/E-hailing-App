@@ -40,15 +40,15 @@ class PaymentPage extends StatelessWidget {
     // String rent =
     //     "${(driverTripResponseModel.finalFare ?? 0) - (driverTripResponseModel.extraCharge ?? 0)}";
     String rent =
-        role == "driver"
+        role == driver
             ? "${driverTripResponseModel.estimatedFare ?? 0}"
             : "${userTripResponse.estimatedFare ?? 0}";
     String tollFee =
-        role == "driver"
+        role == driver
             ? "${driverTripResponseModel.tollFee ?? 0}"
             : "${userTripResponse.tollFee ?? 0}";
     String extraCharge =
-        role == "driver"
+        role == driver
             ? "${driverTripResponseModel.extraCharge ?? 0}"
             : "${userTripResponse.extraCharge ?? 0}";
     String finalFee =
@@ -118,7 +118,7 @@ class PaymentPage extends StatelessWidget {
                     );
                   },
                 ),
-                arg != null && role == driver
+                role == driver
                     ? Column(
                       spacing: 8.h,
                       children: [

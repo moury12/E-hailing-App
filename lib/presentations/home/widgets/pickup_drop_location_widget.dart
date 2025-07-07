@@ -55,7 +55,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
               // // FocusScope.of(context).unfocus();
               // HomeController.to.pickupFocusNode.requestFocus(); // 👈 Add this
             },
-            height: 45.h,
+            // height: 45.h,
             focusNode: HomeController.to.pickupFocusNode,
             onChanged: (v) {
               HomeController.to.activeField.value = "pickup";
@@ -95,7 +95,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             borderColor: AppColors.kGreyColor,
             textEditingController:
                 HomeController.to.dropOffLocationController.value,
-            height: 45.h,
+            // height: 45.h,
             onChanged: (v) {
               HomeController.to.activeField.value = "dropoff";
               CommonController.to.fetchSuggestedPlacesWithRadius(v);

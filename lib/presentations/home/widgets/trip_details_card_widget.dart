@@ -9,6 +9,7 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
@@ -151,10 +152,15 @@ class TripDetailsDestinationCard extends StatelessWidget {
       child: Column(
         spacing: 8.h,
         children: [
-          CustomText(
-            text: AppStaticStrings.destination,
-            fontSize: getFontSizeDefault(),
-          ),
+          Obx(() {
+            return CustomText(
+              text:
+                  HomeController.to.driverStatus.value.isEmpty
+                      ? "Driver Status"
+                      : HomeController.to.driverStatus.value,
+              fontSize: getFontSizeDefault(),
+            );
+          }),
           Row(
             children: [
               Expanded(
@@ -190,6 +196,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
           ),
           DriverDetails(
             userName: tripModel?.driver?.name,
+            fare: tripModel?.estimatedFare.toString(),
             userImg:
                 "${ApiService().baseUrl}/${tripModel?.driver?.profileImage}",
             title: AppStaticStrings.tripDuration,

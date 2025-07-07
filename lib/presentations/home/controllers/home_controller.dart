@@ -55,6 +55,7 @@ class HomeController extends GetxController {
       TextEditingController().obs;
   AnimationController? controller;
   RxString previousRoute = ''.obs;
+  RxString driverStatus = ''.obs;
   Map<String, dynamic> tripArgs = {};
   final SocketService socket = SocketService();
   RxString status = "Disconnected".obs;
@@ -96,6 +97,13 @@ class HomeController extends GetxController {
         ),
         NavigationController.to.routePolylines,
       );
+      if (tripAcceptedModel.value.status ==
+          DriverTripStatus.destination_reached.name) {
+        Get.toNamed(
+          PaymentPage.routeName,
+          arguments: {"user": tripAcceptedModel.value, "role": user},
+        );
+      }
     }
     super.onInit();
   }
@@ -152,19 +160,23 @@ class HomeController extends GetxController {
       });
       socket.on(TripEvents.tripUpdateStatus, (data) {
         logger.d(data);
-        showCustomSnackbar(title: "Trip Status", message: data['message']);
-        tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
-        HomeController.to.showTripDetailsCard.value = true;
-        if (data['data']['status'] == DriverTripStatus.cancelled.name) {
-          Get.offAllNamed(NavigationPage.routeName);
-          socket.off(TripEvents.tripUpdateStatus);
-        } else if (data['data']['status'] ==
-            DriverTripStatus.destination_reached.name) {
-          Get.toNamed(
-            PaymentPage.routeName,
-            arguments: {"user": tripAcceptedModel.value, "role": user},
-          );
-          // socket.off(TripEvents.tripUpdateStatus);
+        if (data['success']) {
+          showCustomSnackbar(title: "Trip Status", message: data['message']);
+          tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
+          driverStatus.value = data['message'];
+          HomeController.to.showTripDetailsCard.value = true;
+          if (data['data']['status'] == DriverTripStatus.cancelled.name ||
+              data['data']['status'] == DriverTripStatus.completed.name) {
+            Get.offAllNamed(NavigationPage.routeName);
+            socket.off(TripEvents.tripUpdateStatus);
+          } else if (data['data']['status'] ==
+              DriverTripStatus.destination_reached.name) {
+            Get.toNamed(
+              PaymentPage.routeName,
+              arguments: {"user": tripAcceptedModel.value, "role": user},
+            );
+            // socket.off(TripEvents.tripUpdateStatus);
+          }
         }
       });
       socket.on(ChatEvent.startChat, (data) {
@@ -179,10 +191,7 @@ class HomeController extends GetxController {
     String userId = CommonController.to.userModel.value.sId ?? "";
 
     if (userId.isNotEmpty) {
-      socket.connect(
-        userId,
-        CommonController.to.userModel.value.role == "DRIVER",
-      );
+      socket.connect(userId, false);
     } else {
       logger.e('User ID is empty, cannot connect to socket');
     }
@@ -358,6 +367,7 @@ class HomeController extends GetxController {
       isLoadingUserCurrentTrip.value = false;
       if (response['success'] == true) {
         tripAcceptedModel.value = TripResponseModel.fromJson(response['data']);
+        driverStatus.value = tripAcceptedModel.value.status.toString();
         updateDriverLocation();
       } else {
         logger.e(response);

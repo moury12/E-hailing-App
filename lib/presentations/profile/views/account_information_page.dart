@@ -107,16 +107,17 @@ class AccountInformationPage extends StatelessWidget {
       appBar: CustomAppBar(
         title: AppStaticStrings.profile,
         action: [
-          IconButton(
-            onPressed: () {
-              Get.toNamed(EditProfilePage.routeName);
-            },
-            icon: Icon(
-              Icons.edit_outlined,
-              color: AppColors.kTextColor,
-              size: 20.sp,
+          if (!CommonController.to.isDriver.value)
+            IconButton(
+              onPressed: () {
+                Get.toNamed(EditProfilePage.routeName);
+              },
+              icon: Icon(
+                Icons.edit_outlined,
+                color: AppColors.kTextColor,
+                size: 20.sp,
+              ),
             ),
-          ),
         ],
       ),
 

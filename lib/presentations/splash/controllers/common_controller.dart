@@ -398,9 +398,12 @@ class CommonController extends GetxController {
 
           // Update RxString values
           selectedAddress.value = data['results'][0]['formatted_address'];
-          lat!.value = location['lat'].toString();
-          lng!.value = location['lng'].toString();
-          latLng!.value = LatLng(location['lat'], location['lng']);
+          if (lat != null && lng != null) {
+            lat.value = location['lat'].toString();
+            lng.value = location['lng'].toString();
+          } else if (latLng != null) {
+            latLng.value = LatLng(location['lat'], location['lng']);
+          }
         } else {
           debugPrint("No results found for the provided placeId.");
         }

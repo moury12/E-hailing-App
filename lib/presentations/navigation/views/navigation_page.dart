@@ -14,13 +14,32 @@ import '../../home/widgets/google_map_widget.dart';
 import '../controllers/navigation_controller.dart';
 import '../widgets/nav_item_widget.dart';
 
-class NavigationPage extends StatelessWidget {
+class NavigationPage extends StatefulWidget {
   static const String routeName = '/nav';
 
   const NavigationPage({super.key});
 
   @override
+  State<NavigationPage> createState() => _NavigationPageState();
+}
+
+class _NavigationPageState extends State<NavigationPage>
+    with AutomaticKeepAliveClientMixin {
+  late Widget _persistentMapWidget;
+
+  @override
+  void initState() {
+    super.initState();
+    // Create the map widget once and reuse it
+    _persistentMapWidget =
+        CommonController.to.isDriver.value
+            ? GoogleMapWidgetForDriver()
+            : GoogleMapWidget();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Obx(() {
       final navController = NavigationController.to;
 
@@ -74,16 +93,24 @@ class NavigationPage extends StatelessWidget {
           body: Stack(
             clipBehavior: Clip.none,
             children: [
-              currentIndex == 0
-                  ? CommonController.to.isDriver.value
-                      ? GoogleMapWidgetForDriver()
-                      : GoogleMapWidget()
-                  : SizedBox.shrink(),
-              IndexedStack(
-                clipBehavior: Clip.none,
-                index: currentIndex,
-                children: navController.getPages(),
+              RepaintBoundary(
+                child: Offstage(
+                  offstage: currentIndex != 0,
+                  child: _persistentMapWidget,
+                ),
               ),
+
+              // Other pages
+              ...List.generate(navController.getPages().length, (index) {
+                // if (index == 0) return SizedBox.shrink(); // Skip map page
+
+                return Offstage(
+                  offstage: currentIndex != index,
+                  child: RepaintBoundary(
+                    child: navController.getPages()[index],
+                  ),
+                );
+              }),
             ],
           ),
           bottomNavigationBar: Stack(
@@ -139,4 +166,8 @@ class NavigationPage extends StatelessWidget {
       );
     });
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
