@@ -5,6 +5,7 @@ import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/socket/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
 import 'package:e_hailing_app/presentations/message/model/chat_message_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,17 @@ class ChattingController extends GetxController {
       );
 
       if (response['success'] == true) {
+        final currentItems = MessageController.to.pagingController.itemList;
+        if (currentItems != null) {
+          final index = currentItems.indexWhere(
+            (element) => element.sId == chatId,
+          );
+          if (index != -1) {
+            final updatedItem = currentItems[index];
+            updatedItem.unRead = 0;
+            MessageController.to.pagingController.itemList = [...currentItems];
+          }
+        }
         logger.d(response);
       } else {
         logger.e(response);

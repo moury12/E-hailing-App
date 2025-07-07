@@ -7,6 +7,7 @@ import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/message/controllers/chatting_controller.dart';
 import 'package:e_hailing_app/presentations/message/model/chat_message_model.dart';
+import 'package:e_hailing_app/presentations/message/widgets/chat_loading.dart';
 import 'package:e_hailing_app/presentations/message/widgets/chat_message_card_item_widget.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
@@ -57,21 +58,22 @@ class _ChattingPageState extends State<ChattingPage> {
           return CustomAppBar(
             title: other?.name ?? "User Name Loading...",
             action: [
-              ChattingController.to.isLoadingMessage.value
+              /*ChattingController.to.isLoadingMessage.value
                   ? DefaultProgressIndicator()
-                  : Padding(
-                    padding: EdgeInsets.only(right: 12.w),
-                    child: PrimaryCircleButtonWidget(
-                      actionIcon: callIcon,
-                      onTap: () {
-                        if (other != null) {
-                          callOnPhone(
-                            phoneNumber: other.phoneNumber ?? '00000000000',
-                          );
-                        }
-                      },
-                    ),
-                  ),
+                  : */
+              Padding(
+                padding: EdgeInsets.only(right: 12.w),
+                child: PrimaryCircleButtonWidget(
+                  actionIcon: callIcon,
+                  onTap: () {
+                    if (other != null) {
+                      callOnPhone(
+                        phoneNumber: other.phoneNumber ?? '00000000000',
+                      );
+                    }
+                  },
+                ),
+              ),
             ],
           );
         }),
@@ -93,8 +95,9 @@ class _ChattingPageState extends State<ChattingPage> {
                           ChattingController.to.chatMetaModel.value ??
                           ChatModel(),
                     ),
-                firstPageProgressIndicatorBuilder:
-                    (_) => DefaultProgressIndicator(),
+                newPageProgressIndicatorBuilder:
+                    (context) => DefaultProgressIndicator(),
+                firstPageProgressIndicatorBuilder: (_) => ShimmerChatList(),
                 noItemsFoundIndicatorBuilder:
                     (_) => EmptyWidget(text: "No messages."),
               ),
