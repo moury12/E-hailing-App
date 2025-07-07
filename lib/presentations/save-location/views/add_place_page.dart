@@ -119,6 +119,7 @@ class AddPlacePage extends StatelessWidget {
                         SaveLocationController.to.isLoadingSaveLocation.value,
                     onTap: () {
                       if (formKey.currentState!.validate()) {
+                        logger.d(SaveLocationController.to.lat.value);
                         SaveLocationController.to.savePlaceRequest(
                           locationName:
                               SaveLocationController.to.placeName.text,
@@ -129,10 +130,10 @@ class AddPlacePage extends StatelessWidget {
                                   .value
                                   .text,
                           lat: double.parse(
-                            SaveLocationController.to.lat.value,
+                            SaveLocationController.to.lat.value.toString(),
                           ),
                           lng: double.parse(
-                            SaveLocationController.to.lng.value,
+                            SaveLocationController.to.lng.value.toString(),
                           ),
                         );
                       }
