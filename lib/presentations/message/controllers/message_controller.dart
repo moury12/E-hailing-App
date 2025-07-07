@@ -76,9 +76,7 @@ class MessageController extends GetxController {
       socket.on(ChatEvent.sendMessage, (data) {
         logger.d("-------send message---------");
         logger.d(data);
-        messagePagingController.addPageRequestListener((pageKey) {
-          fetchMessagesPage(data['data']['chatId'], pageKey);
-        });
+        messagePagingController.refresh();
       });
     } else {
       socketConnection();
