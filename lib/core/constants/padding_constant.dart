@@ -26,6 +26,10 @@ EdgeInsets paddingH12V8 = EdgeInsets.symmetric(
   horizontal: 12.sp,
   vertical: 8.sp,
 );
+EdgeInsets paddingH12V4 = EdgeInsets.symmetric(
+  horizontal: 12.sp,
+  vertical: 4.sp,
+);
 EdgeInsets paddingH16V2 = EdgeInsets.symmetric(
   horizontal: 16.sp,
   vertical: 2.sp,

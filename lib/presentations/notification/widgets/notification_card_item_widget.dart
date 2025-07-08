@@ -1,22 +1,34 @@
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/presentations/notification/controller/notification_controller.dart';
+import 'package:e_hailing_app/presentations/notification/model/notification_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class NotificationCardItemWidget extends StatelessWidget {
   final int? index;
+  final NotificationModel notificationModel;
+
   const NotificationCardItemWidget({
-    super.key, this.index,
+    super.key,
+    this.index,
+    required this.notificationModel,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: paddingH12V4,
       decoration: BoxDecoration(
-        color:index!%2==0? AppColors.kUnreadColor: AppColors.kWhiteColor,
+        color:
+            notificationModel.isRead == false
+                ? AppColors.kUnreadColor
+                : AppColors.kWhiteColor,
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [BoxShadow(color: AppColors.kLightBlackColor)],
       ),
@@ -29,13 +41,15 @@ class NotificationCardItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    text: 'Booking Confirmed!',
+                    text:
+                        notificationModel.title ?? AppStaticStrings.noDataFound,
                     style: poppinsMedium,
                     fontSize: getFontSizeSemiSmall(),
                   ),
                   CustomText(
                     text:
-                    'Your ride with Driver John is confirmed. They are on the way!',
+                        notificationModel.message ??
+                        AppStaticStrings.noDataFound,
                     style: poppinsRegular,
                     fontSize: getFontSizeSmall(),
                     color: AppColors.kExtraLightTextColor,
@@ -44,11 +58,12 @@ class NotificationCardItemWidget extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {},
-              icon: Icon(
-                CupertinoIcons.multiply,
-                color: AppColors.kTextColor,
-              ),
+              onPressed: () {
+                NotificationController.to.deleteNotificationRequest(
+                  notificationId: notificationModel.sId.toString(),
+                );
+              },
+              icon: Icon(CupertinoIcons.multiply, color: AppColors.kTextColor),
             ),
           ],
         ),

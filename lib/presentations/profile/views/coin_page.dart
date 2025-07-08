@@ -5,9 +5,11 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import '../../../core/components/custom_appbar.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
@@ -16,6 +18,7 @@ import '../widgets/coin_container_widget.dart';
 
 class CoinPage extends StatelessWidget {
   static const String routeName = '/coin';
+
   const CoinPage({super.key});
 
   @override
@@ -28,44 +31,33 @@ class CoinPage extends StatelessWidget {
           child: Column(
             spacing: 12.h,
             children: [
-              Container(
-                padding: padding12,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.r),
-                  color: AppColors.kWhiteColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.kExtraLightGreyTextColor.withValues(
-                        alpha: .3,
-                      ),
-                      blurRadius: 6.r,
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    CustomText(text: AppStaticStrings.totalCoin),
-                    Spacer(),
-                    CoinContainerWidget(),
-                  ],
-                ),
-              ),
+              Obx(() {
+                return CoinWidget(
+                  coin: CommonController.to.userModel.value.coins.toString(),
+                );
+              }),
               CustomButton(
                 onTap: () {
-                  showDialog(context: context, builder: (context) {
-                    return AlertDialog(
-                      content: Column(
-                        spacing: 12.h,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CustomTextField(title: AppStaticStrings.addCoin,),
-                          CustomButton(onTap: () {
-                            Navigator.pop(context);
-                          },title: 'Buy Now',)
-                        ],
-                      ),
-                    );
-                  },);
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: Column(
+                          spacing: 12.h,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CustomTextField(title: AppStaticStrings.addCoin),
+                            CustomButton(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              title: 'Buy Now',
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 },
                 img: addIcon,
                 child: Row(
@@ -76,7 +68,7 @@ class CoinPage extends StatelessWidget {
                     CustomText(
                       text: AppStaticStrings.addMoreCoin,
                       style: poppinsSemiBold,
-color: AppColors.kWhiteColor,
+                      color: AppColors.kWhiteColor,
                       fontSize: getFontSizeSemiSmall(),
                     ),
                   ],
@@ -90,3 +82,33 @@ color: AppColors.kWhiteColor,
   }
 }
 
+class CoinWidget extends StatelessWidget {
+  final String? title;
+  final String? coin;
+
+  const CoinWidget({super.key, this.title, this.coin});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: padding12,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.r),
+        color: AppColors.kWhiteColor,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.kExtraLightGreyTextColor.withValues(alpha: .3),
+            blurRadius: 6.r,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          CustomText(text: title ?? AppStaticStrings.totalCoin),
+          Spacer(),
+          CoinContainerWidget(coin: coin),
+        ],
+      ),
+    );
+  }
+}

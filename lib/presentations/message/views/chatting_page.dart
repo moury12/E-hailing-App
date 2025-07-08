@@ -43,7 +43,7 @@ class _ChattingPageState extends State<ChattingPage> {
   void initState() {
     ChattingController.to.getMessages(chatId: chatId);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ChattingController.to.updateSeenRequest(chatId: chatId);
+      ChattingController.to.updateMessageSeenRequest(chatId: chatId);
     });
     super.initState();
   }

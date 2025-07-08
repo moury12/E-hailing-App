@@ -78,6 +78,7 @@ class CustomButton extends StatelessWidget {
                 ? const DefaultProgressIndicator(
                   strokeWidth: 2,
                   padding: EdgeInsets.zero,
+                  color: AppColors.kPrimaryExtraLightColor,
                 )
                 : child ??
                     Row(
@@ -133,7 +134,7 @@ class DefaultProgressIndicator extends StatelessWidget {
           height: 15.w,
           width: 15.w,
           child: CircularProgressIndicator(
-            color: color ?? AppColors.kPrimaryLightColor,
+            color: color ?? AppColors.kPrimaryColor,
             strokeWidth: strokeWidth ?? 2,
           ),
         ),

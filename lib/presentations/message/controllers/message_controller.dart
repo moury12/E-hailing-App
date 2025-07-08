@@ -10,8 +10,6 @@ import 'package:e_hailing_app/presentations/splash/controllers/common_controller
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import '../../../core/constants/app_static_strings_constant.dart';
-
 class MessageController extends GetxController {
   RxBool isLoadingCreateConversation = false.obs;
   RxBool isLoadingCreateMessage = false.obs;
@@ -31,8 +29,7 @@ class MessageController extends GetxController {
   RxBool isLoadingMoreMessages = false.obs;
 
   static MessageController get to => Get.find();
-  RxList<String> tabLabels =
-      [AppStaticStrings.allMessages, AppStaticStrings.newMessages].obs;
+
   final PagingController<int, ConversationModel> pagingController =
       PagingController(firstPageKey: 1);
 
