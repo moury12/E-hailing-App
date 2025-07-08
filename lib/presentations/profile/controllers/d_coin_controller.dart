@@ -26,7 +26,7 @@ class DCoinController extends GetxController {
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
       final response = await ApiService().request(
-        endpoint: getAllNotificationEndpoint,
+        endpoint: getAlDCoinEndpoint,
         method: 'GET',
         queryParams: {'page': pageKey.toString(), 'limit': "10"},
       );

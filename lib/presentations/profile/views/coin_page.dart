@@ -1,15 +1,20 @@
 import 'package:e_hailing_app/core/components/custom_button.dart';
+import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controller.dart';
+import 'package:e_hailing_app/presentations/profile/model/d_coin_model.dart';
+import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../core/components/custom_appbar.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
@@ -25,57 +30,122 @@ class CoinPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.duduCoinWallet),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: padding16,
-          child: Column(
-            spacing: 12.h,
-            children: [
-              Obx(() {
-                return CoinWidget(
-                  coin: CommonController.to.userModel.value.coins.toString(),
-                );
-              }),
-              CustomButton(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        content: Column(
-                          spacing: 12.h,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CustomTextField(title: AppStaticStrings.addCoin),
-                            CustomButton(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              title: 'Buy Now',
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-                img: addIcon,
-                child: Row(
-                  spacing: 12.w,
-                  mainAxisAlignment: MainAxisAlignment.center,
+      body: CustomRefreshIndicator(
+        onRefresh: () async {
+          DCoinController.to.dCoinsPagingController.refresh();
+          // CommonController.to.getUserProfileRequest();
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: padding16,
+                child: Column(
+                  spacing: 12.h,
                   children: [
-                    SvgPicture.asset(addWhiteIcon),
-                    CustomText(
-                      text: AppStaticStrings.addMoreCoin,
-                      style: poppinsSemiBold,
-                      color: AppColors.kWhiteColor,
-                      fontSize: getFontSizeSemiSmall(),
+                    Obx(() {
+                      return CoinWidget(
+                        coin:
+                            CommonController.to.userModel.value.coins
+                                .toString(),
+                      );
+                    }),
+                    CustomButton(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              scrollable: true,
+                              content: Column(
+                                spacing: 12.h,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  PagedListView<int, DcoinModel>(
+                                    shrinkWrap: true,
+                                    primary: false,
+                                    pagingController:
+                                        DCoinController
+                                            .to
+                                            .dCoinsPagingController,
+                                    builderDelegate: PagedChildBuilderDelegate(
+                                      itemBuilder:
+                                          (context, item, index) => Padding(
+                                            padding: padding6V,
+                                            child: CoinWidget(
+                                              coin: item.coin.toString(),
+                                              title:
+                                                  "RM ${item.mYR.toString()}",
+                                            ),
+                                          ),
+                                      firstPageProgressIndicatorBuilder:
+                                          (_) => DefaultProgressIndicator(),
+
+                                      // Show when loading next page
+                                      newPageProgressIndicatorBuilder:
+                                          (_) => DefaultProgressIndicator(),
+
+                                      // Show if there's no data
+                                      noItemsFoundIndicatorBuilder:
+                                          (_) => Center(
+                                            child: EmptyWidget(
+                                              text: "No chats found.",
+                                            ),
+                                          ),
+
+                                      // Show if there’s an error
+                                      firstPageErrorIndicatorBuilder:
+                                          (_) => Center(
+                                            child: EmptyWidget(
+                                              text:
+                                                  "Failed to load Notifications.",
+                                            ),
+                                          ),
+
+                                      newPageErrorIndicatorBuilder:
+                                          (_) => Center(
+                                            child: EmptyWidget(
+                                              text:
+                                                  "Failed to load more. Pull to retry.",
+                                            ),
+                                          ),
+                                    ),
+                                  ),
+                                  CustomTextField(
+                                    title: AppStaticStrings.addCoin,
+                                  ),
+                                  CustomButton(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    title: 'Buy Now',
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      img: addIcon,
+                      child: Row(
+                        spacing: 12.w,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(addWhiteIcon),
+                          CustomText(
+                            text: AppStaticStrings.addMoreCoin,
+                            style: poppinsSemiBold,
+                            color: AppColors.kWhiteColor,
+                            fontSize: getFontSizeSemiSmall(),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

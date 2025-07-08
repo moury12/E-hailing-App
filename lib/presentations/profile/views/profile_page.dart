@@ -12,6 +12,7 @@ import 'package:e_hailing_app/presentations/notification/views/notification_page
 import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/earnings_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/penalty_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/term_policy_help_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/vehicle_details_page.dart';
 import 'package:e_hailing_app/presentations/profile/widgets/user_shimmer_widget.dart';
@@ -183,6 +184,14 @@ class ProfilePage extends StatelessWidget {
                             Get.toNamed(SavedLocationPage.routeName);
                           },
                         ),
+                    if (!CommonController.to.isDriver.value)
+                      ProfileActionItemWidget(
+                        img: penaltyIcon,
+                        title: AppStaticStrings.pendingPenalty,
+                        onTap: () {
+                          Get.to(PenaltyPage());
+                        },
+                      ),
                     CustomText(
                       text: AppStaticStrings.more,
                       fontSize: getFontSizeDefault(),
@@ -191,23 +200,32 @@ class ProfilePage extends StatelessWidget {
                       img: termsIcon,
                       title: AppStaticStrings.termsAndCondition,
                       onTap: () {
-                        Get.toNamed(TermsPolicyHelpPage.routeName);
+                        Get.toNamed(
+                          TermsPolicyHelpPage.routeName,
+                          arguments: AppStaticStrings.termsAndCondition,
+                        );
                       },
                     ),
                     ProfileActionItemWidget(
                       img: privacyIcon,
                       title: AppStaticStrings.privacyPolicy,
                       onTap: () {
-                        Get.toNamed(TermsPolicyHelpPage.routeName);
+                        Get.toNamed(
+                          TermsPolicyHelpPage.routeName,
+                          arguments: AppStaticStrings.privacyPolicy,
+                        );
                       },
                     ),
-                    ProfileActionItemWidget(
-                      img: helpIcon,
-                      title: AppStaticStrings.helpSupport,
-                      onTap: () {
-                        Get.toNamed(TermsPolicyHelpPage.routeName);
-                      },
-                    ),
+                    // ProfileActionItemWidget(
+                    //   img: helpIcon,
+                    //   title: AppStaticStrings.helpSupport,
+                    //   onTap: () {
+                    //     Get.toNamed(
+                    //       TermsPolicyHelpPage.routeName,
+                    //       arguments: AppStaticStrings.helpSupport,
+                    //     );
+                    //   },
+                    // ),
                     ProfileActionItemWidget(
                       img: logoutIcon,
                       title: AppStaticStrings.logOut,

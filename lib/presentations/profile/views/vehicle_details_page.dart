@@ -5,7 +5,6 @@ import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
-import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -14,12 +13,14 @@ import '../widgets/profile_card_item_widget.dart';
 
 class VehicleDetailsPage extends StatelessWidget {
   static const String routeName = '/vehicle-details';
+
   const VehicleDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     DriverSettingsController.to.tabContent.add(
       Column(
+        spacing: 8.h,
         children: [
           space8H,
           ProfileCardItemWidget(
@@ -43,6 +44,7 @@ class VehicleDetailsPage extends StatelessWidget {
     );
     DriverSettingsController.to.tabContent.add(
       Column(
+        spacing: 8.h,
         children: [
           space8H,
           ProfileCardItemWidget(

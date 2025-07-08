@@ -1,5 +1,8 @@
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
+import 'package:e_hailing_app/core/components/custom_button.dart';
+import 'package:e_hailing_app/core/components/custom_textfield.dart';
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
@@ -11,6 +14,7 @@ import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dar
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -282,47 +286,131 @@ class AuthController extends GetxController {
   Future<void> signInWithGoogle() async {
     try {
       isGoogleAuthLoading.value = true;
+
+      // 🔹 Trigger Google Sign-In
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
+      if (googleUser == null) {
+        isGoogleAuthLoading.value = false;
+        return; // User cancelled
+      }
+
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
+
       final String name = googleUser.displayName ?? "User";
       final String email = googleUser.email;
-      final response = await ApiService().request(
-        endpoint: signupEndPoint,
+      final String photoUrl = googleUser.photoUrl ?? "";
+
+      // 🔹 Send initial data to backend
+      final initialResponse = await ApiService().request(
+        endpoint: socialEndPoint,
         method: 'POST',
         body: {
           "name": name,
           "email": email,
-          "password": "123456", // dummy password (you may use JWT or token)
-          "confirmPassword": "123456",
+          "profile_image": photoUrl,
           "provider": "google",
           "role": "USER",
         },
         useAuth: false,
       );
-      logger.d(response.toString());
-      isGoogleAuthLoading.value = false;
 
-      if (response['success'] == true) {
-        showCustomSnackbar(title: 'Success', message: response['message']);
-        Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
-        // NavigationController.to.isLoggedIn;
-        ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+      logger.d(initialResponse.toString());
+
+      // ✅ Success - store token and navigate
+      if (initialResponse['success'] == true) {
+        Boxes.getUserData().put(
+          tokenKey,
+          initialResponse["data"]['accessToken'],
+        );
+        ApiService().setAuthToken(initialResponse["data"]['accessToken']);
+
+        showCustomSnackbar(
+          title: 'Success',
+          message: initialResponse['message'],
+        );
         await CommonController.to.checkUserRole();
         Get.offAllNamed(NavigationPage.routeName);
       } else {
-        showCustomSnackbar(
-          title: 'Failed',
-          message: response['message'],
-          type: SnackBarType.failed,
+        // 🔁 Retry with phone number if needed
+        String userPhoneNumber = '';
+        String? phoneNumber = await Get.dialog<String>(
+          AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 8.h,
+              children: [
+                CustomTextField(
+                  title: AppStaticStrings.phoneNumber,
+                  keyboardType: TextInputType.phone,
+                  hintText: "e.g. +8801XXXXXXXXX",
+                  onChanged: (value) => userPhoneNumber = value,
+                ),
+                CustomButton(
+                  onTap: () => Get.back(result: userPhoneNumber),
+                  title: AppStaticStrings.submit.tr,
+                ),
+              ],
+            ),
+          ),
+          barrierDismissible: false,
         );
+
+        // 🚫 Cancelled or empty input
+        if (phoneNumber == null || phoneNumber.isEmpty) {
+          showCustomSnackbar(
+            title: 'Phone Required',
+            message: 'Phone number is required to continue.',
+            type: SnackBarType.failed,
+          );
+          return;
+        }
+
+        // 🔄 Resend with phone number
+        final retryResponse = await ApiService().request(
+          endpoint: socialEndPoint,
+          method: 'POST',
+          body: {
+            "name": name,
+            "email": email,
+            "profile_image": photoUrl,
+            "phoneNumber": phoneNumber,
+            "provider": "google",
+            "role": "USER",
+          },
+          useAuth: false,
+        );
+
+        if (retryResponse['success'] == true) {
+          Boxes.getUserData().put(
+            tokenKey,
+            retryResponse["data"]['accessToken'],
+          );
+          ApiService().setAuthToken(retryResponse["data"]['accessToken']);
+
+          showCustomSnackbar(
+            title: 'Success',
+            message: retryResponse['message'],
+          );
+          await CommonController.to.checkUserRole();
+          Get.offAllNamed(NavigationPage.routeName);
+        } else {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: retryResponse['message'],
+            type: SnackBarType.failed,
+          );
+        }
       }
     } catch (e) {
+      logger.e('Google Sign-In Error: $e');
+      showCustomSnackbar(
+        title: 'Error',
+        message: 'Something went wrong. Please try again.',
+        type: SnackBarType.failed,
+      );
+    } finally {
       isGoogleAuthLoading.value = false;
-
-      logger.e('Error: $e');
-      // Consider showing a user-friendly error message
     }
   }
 

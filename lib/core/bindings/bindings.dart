@@ -7,6 +7,7 @@ import '../../presentations/auth/controllers/auth_controller.dart';
 import '../../presentations/message/controllers/chatting_controller.dart';
 import '../../presentations/navigation/controllers/navigation_controller.dart';
 import '../../presentations/profile/controllers/account_information_controller.dart';
+import '../../presentations/profile/controllers/terms_policy_controller.dart';
 import '../../presentations/save-location/controllers/save_location_controller.dart';
 import '../../presentations/splash/controllers/common_controller.dart';
 import '../../presentations/splash/controllers/splash_controller.dart';
@@ -59,6 +60,13 @@ class NavigationBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(NavigationController());
+  }
+}
+
+class TermsPolicyBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(TermsPolicyController());
   }
 }
 

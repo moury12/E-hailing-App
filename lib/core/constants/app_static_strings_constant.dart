@@ -76,8 +76,10 @@ class AppStaticStrings {
 
   // More
   static const String more = 'More';
+  static const String pendingPenalty = 'Pending Penalty';
   static const String termsAndCondition = 'Terms & Condition';
   static const String privacyPolicy = 'Privacy Policy';
+  static const String penaltyPolicy = 'Penalty Policy';
   static const String helpSupport = 'Help/Support';
   static const String logOut = 'Log Out';
 
@@ -256,8 +258,6 @@ class AppStaticStrings {
 
   static const String payment = 'Payment';
   static const String addPaymentMethod = 'Add Payment Method';
-
-  static const String termsAndConditions = 'Terms & Conditions';
 
   // Profile Section
   static const String accountInformation = 'Account Information';
