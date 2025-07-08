@@ -477,12 +477,12 @@ void showCustomSnackbar({
   SnackBarType type = SnackBarType.success,
   SnackPosition position = SnackPosition.BOTTOM, // Default position
 }) {
-  Color backgroundColor = AppColors.kWhiteColor.withValues(alpha: .5);
+  Color backgroundColor = AppColors.kWhiteColor;
   Color textColor = Colors.black;
 
   switch (type) {
     case SnackBarType.success:
-      backgroundColor = AppColors.kWhiteColor.withValues(alpha: .5);
+      backgroundColor = AppColors.kWhiteColor;
 
       break;
     case SnackBarType.failed:
@@ -500,6 +500,7 @@ void showCustomSnackbar({
   Get.snackbar(
     title,
     message,
+
     backgroundColor: backgroundColor,
     padding: const EdgeInsets.all(12),
     margin: const EdgeInsets.all(12),

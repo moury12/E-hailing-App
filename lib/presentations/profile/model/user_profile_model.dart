@@ -19,6 +19,7 @@ class UserProfileModel {
   String? userAccountStatus;
   String? createdAt;
   String? updatedAt;
+  num? coins;
   int? iV;
   int? outstandingFee;
   bool? isAvailable;
@@ -43,6 +44,7 @@ class UserProfileModel {
     this.drivingLicenseImage,
     this.userAccountStatus,
     this.createdAt,
+    this.coins,
     this.updatedAt,
     this.iV,
     this.outstandingFee,
@@ -72,6 +74,7 @@ class UserProfileModel {
     drivingLicenseImage = json['driving_license_image'];
     userAccountStatus = json['userAccountStatus'];
     createdAt = json['createdAt'];
+    coins = json['coins'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
     outstandingFee = json['outstandingFee'];
@@ -103,6 +106,7 @@ class UserProfileModel {
     data['driving_license_image'] = drivingLicenseImage;
     data['userAccountStatus'] = userAccountStatus;
     data['createdAt'] = createdAt;
+    data['coins'] = coins;
     data['updatedAt'] = updatedAt;
     data['__v'] = iV;
     data['outstandingFee'] = outstandingFee;

@@ -31,7 +31,7 @@ class ChattingController extends GetxController {
 
   ///------------------------------  seen conversation method -------------------------///
 
-  Future<void> updateSeenRequest({required String chatId}) async {
+  Future<void> updateMessageSeenRequest({required String chatId}) async {
     try {
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 

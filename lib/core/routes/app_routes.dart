@@ -92,7 +92,7 @@ class AppRoutes {
     GetPage(
       name: NotificationPage.routeName,
       page: () => NotificationPage(),
-      // binding: NavigationBinding(),
+      binding: NotificationBinding(),
     ),
     GetPage(
       name: TransactionPage.routeName,
@@ -122,7 +122,7 @@ class AppRoutes {
     GetPage(
       name: CoinPage.routeName,
       page: () => CoinPage(),
-      // binding: NavigationBinding(),
+      binding: DCoinBinding(),
     ),
     GetPage(
       name: TermsPolicyHelpPage.routeName,

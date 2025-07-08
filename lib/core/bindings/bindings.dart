@@ -1,3 +1,5 @@
+import 'package:e_hailing_app/presentations/notification/controller/notification_controller.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
 import 'package:get/get.dart';
 
@@ -60,6 +62,13 @@ class NavigationBinding extends Bindings {
   }
 }
 
+class NotificationBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(NotificationController());
+  }
+}
+
 class ChattingBinding extends Bindings {
   @override
   void dependencies() {
@@ -71,6 +80,13 @@ class AccountInformationBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(AccountInformationController());
+  }
+}
+
+class DCoinBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(DCoinController());
   }
 }
 

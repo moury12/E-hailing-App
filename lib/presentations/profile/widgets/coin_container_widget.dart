@@ -6,10 +6,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/constants/color_constants.dart';
+
 class CoinContainerWidget extends StatelessWidget {
-  const CoinContainerWidget({
-    super.key,
-  });
+  final String? coin;
+
+  const CoinContainerWidget({super.key, this.coin});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +25,7 @@ class CoinContainerWidget extends StatelessWidget {
         padding: paddingH16V6,
         child: Row(
           spacing: 12.w,
-          children: [
-            SvgPicture.asset(coinIcon),
-            CustomText(text: '7786'),
-          ],
+          children: [SvgPicture.asset(coinIcon), CustomText(text: coin ?? "0")],
         ),
       ),
     );
