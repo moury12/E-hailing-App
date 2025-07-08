@@ -1,6 +1,8 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
+import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
@@ -9,9 +11,11 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/navigation/widgets/custom_container_with_border.dart';
+import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,168 +35,188 @@ class TripDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.yourTripDetail),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: padding16.copyWith(top: 0),
-          child: Obx(() {
-            final trip = HomeController.to.tripAcceptedModel.value;
-            return Column(
-              spacing: 12.h,
-              children: [
-                CarDetailsCardWidget(
-                  fare: int.parse(trip.estimatedFare.toString()),
-                ),
-
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.kLightBlackColor.withValues(alpha: .2),
-                        blurRadius: 8.r,
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(8.r),
+      body: CustomRefreshIndicator(
+        onRefresh: () async {
+          HomeController.to.getUserCurrentTrip();
+        },
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: padding16.copyWith(top: 0),
+            child: Obx(() {
+              final trip = HomeController.to.tripAcceptedModel.value;
+              return Column(
+                spacing: 12.h,
+                children: [
+                  CarDetailsCardWidget(
+                    fare: int.parse(trip.estimatedFare.toString()),
                   ),
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.kPrimaryExtraLightColor,
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(8.r),
+
+                  Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.kLightBlackColor.withValues(
+                            alpha: .2,
+                          ),
+                          blurRadius: 8.r,
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.kPrimaryExtraLightColor,
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(8.r),
+                            ),
+                          ),
+                          padding: padding12,
+                          child: Row(
+                            spacing: 12.w,
+                            children: [
+                              Column(
+                                children: [
+                                  CustomNetworkImage(
+                                    imageUrl:
+                                        "${ApiService().baseUrl}/${trip.driver?.profileImage}",
+                                    height: 42,
+                                    width: 42,
+                                    boxShape: BoxShape.circle,
+                                  ),
+                                  // space4H,
+                                  // RatingInfoWidget(rating: '5.0'),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                    text:
+                                        trip.driver?.name ??
+                                        AppStaticStrings.noDataFound,
+                                    style: poppinsBold,
+                                    fontSize: getFontSizeDefault(),
+                                  ),
+                                  CustomText(
+                                    text:
+                                        trip.driver?.email ??
+                                        AppStaticStrings.noDataFound,
+                                    style: poppinsRegular,
+                                    fontSize: getFontSizeSmall(),
+                                  ),
+                                  CustomText(
+                                    text:
+                                        'Phone : ${trip.driver?.phoneNumber ?? AppStaticStrings.noDataFound}',
+                                    style: poppinsRegular,
+                                    fontSize: getFontSizeSmall(),
+                                    color: AppColors.kLightBlackColor,
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        padding: padding12,
-                        child: Row(
-                          spacing: 12.w,
-                          children: [
-                            Column(
-                              children: [
-                                CustomNetworkImage(
-                                  imageUrl:
-                                      "${ApiService().baseUrl}/${trip.driver?.profileImage}",
-                                  height: 42,
-                                  width: 42,
-                                  boxShape: BoxShape.circle,
-                                ),
-                                // space4H,
-                                // RatingInfoWidget(rating: '5.0'),
-                              ],
+                        Container(
+                          padding: padding12,
+                          decoration: BoxDecoration(
+                            color: AppColors.kWhiteColor,
+                            borderRadius: BorderRadius.vertical(
+                              bottom: Radius.circular(8.r),
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomText(
-                                  text:
-                                      trip.driver?.name ??
-                                      AppStaticStrings.noDataFound,
-                                  style: poppinsBold,
-                                  fontSize: getFontSizeDefault(),
-                                ),
-                                CustomText(
-                                  text:
-                                      trip.driver?.email ??
-                                      AppStaticStrings.noDataFound,
-                                  style: poppinsRegular,
-                                  fontSize: getFontSizeSmall(),
-                                ),
-                                CustomText(
-                                  text:
-                                      'Phone : ${trip.driver?.phoneNumber ?? AppStaticStrings.noDataFound}',
-                                  style: poppinsRegular,
-                                  fontSize: getFontSizeSmall(),
-                                  color: AppColors.kLightBlackColor,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: padding12,
-                        decoration: BoxDecoration(
-                          color: AppColors.kWhiteColor,
-                          borderRadius: BorderRadius.vertical(
-                            bottom: Radius.circular(8.r),
+                          ),
+                          child: Column(
+                            spacing: 6.h,
+                            children: [
+                              CarInformationWidget(
+                                title: AppStaticStrings.carType,
+                                value:
+                                    trip.driver?.assignedCar?.type ??
+                                    AppStaticStrings.noDataFound,
+                              ),
+                              CarInformationWidget(
+                                title: AppStaticStrings.carColor,
+                                value:
+                                    trip.driver?.assignedCar?.color ??
+                                    AppStaticStrings.noDataFound,
+                              ),
+                              CarInformationWidget(
+                                title: AppStaticStrings.carNumber,
+                                value:
+                                    trip.driver?.assignedCar?.carNumber ??
+                                    AppStaticStrings.noDataFound,
+                              ),
+                              CarInformationWidget(
+                                title: AppStaticStrings.carSeat,
+                                value: '4 Seats',
+                              ),
+                              CarInformationWidget(
+                                title: AppStaticStrings.evpNumber,
+                                value:
+                                    trip.driver?.assignedCar?.evpNumber ??
+                                    AppStaticStrings.noDataFound,
+                              ),
+                              CarInformationWidget(
+                                title: AppStaticStrings.evpValidityPeriod,
+                                value:
+                                    trip.driver?.assignedCar?.evpExpiry ??
+                                    AppStaticStrings.noDataFound,
+                              ),
+                              space6H,
+                              CustomTimeline(
+                                padding: EdgeInsets.zero,
+
+                                indicators: <Widget>[
+                                  SvgPicture.asset(pickLocationIcon),
+                                  SvgPicture.asset(dropLocationIcon),
+                                ],
+                                children: <Widget>[
+                                  CustomWhiteContainerWithBorder(
+                                    textAlign: TextAlign.start,
+                                    text: trip.pickUpAddress,
+                                  ),
+
+                                  CustomWhiteContainerWithBorder(
+                                    textAlign: TextAlign.start,
+
+                                    text: trip.dropOffAddress,
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        child: Column(
-                          spacing: 6.h,
-                          children: [
-                            CarInformationWidget(
-                              title: AppStaticStrings.carType,
-                              value:
-                                  trip.driver?.assignedCar?.type ??
-                                  AppStaticStrings.noDataFound,
-                            ),
-                            CarInformationWidget(
-                              title: AppStaticStrings.carColor,
-                              value:
-                                  trip.driver?.assignedCar?.color ??
-                                  AppStaticStrings.noDataFound,
-                            ),
-                            CarInformationWidget(
-                              title: AppStaticStrings.carNumber,
-                              value:
-                                  trip.driver?.assignedCar?.carNumber ??
-                                  AppStaticStrings.noDataFound,
-                            ),
-                            CarInformationWidget(
-                              title: AppStaticStrings.carSeat,
-                              value: '4 Seats',
-                            ),
-                            CarInformationWidget(
-                              title: AppStaticStrings.evpNumber,
-                              value:
-                                  trip.driver?.assignedCar?.evpNumber ??
-                                  AppStaticStrings.noDataFound,
-                            ),
-                            CarInformationWidget(
-                              title: AppStaticStrings.evpValidityPeriod,
-                              value:
-                                  trip.driver?.assignedCar?.evpExpiry ??
-                                  AppStaticStrings.noDataFound,
-                            ),
-                            space6H,
-                            CustomTimeline(
-                              padding: EdgeInsets.zero,
-
-                              indicators: <Widget>[
-                                SvgPicture.asset(pickLocationIcon),
-                                SvgPicture.asset(dropLocationIcon),
-                              ],
-                              children: <Widget>[
-                                CustomWhiteContainerWithBorder(
-                                  textAlign: TextAlign.start,
-                                  text: trip.pickUpAddress,
-                                ),
-
-                                CustomWhiteContainerWithBorder(
-                                  textAlign: TextAlign.start,
-
-                                  text: trip.dropOffAddress,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                RowCallChatDetailsButton(phoneNumber: trip.driver?.phoneNumber),
-                CancelTripButtonWidget(
-                  onSubmit: () {
-                    HomeController.to.updateUserTrip(
-                      tripId: trip.sId.toString(),
-                      status: DriverTripStatus.cancelled.name.toString(),
-                      reason: HomeController.to.cancelReason,
-                    );
-                  },
-                ),
-              ],
-            );
-          }),
+                  RowCallChatDetailsButton(
+                    phoneNumber: trip.driver?.phoneNumber,
+                  ),
+                  trip.status == DriverTripStatus.destination_reached.name
+                      ? CustomButton(
+                        onTap: () {
+                          Get.toNamed(
+                            PaymentPage.routeName,
+                            arguments: {"user": trip, "role": user},
+                          );
+                        },
+                        title: AppStaticStrings.payment,
+                      )
+                      : CancelTripButtonWidget(
+                        onSubmit: () {
+                          HomeController.to.updateUserTrip(
+                            tripId: trip.sId.toString(),
+                            status: DriverTripStatus.cancelled.name.toString(),
+                            reason: HomeController.to.cancelReason,
+                          );
+                        },
+                      ),
+                ],
+              );
+            }),
+          ),
         ),
       ),
     );

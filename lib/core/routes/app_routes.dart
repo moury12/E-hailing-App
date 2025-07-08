@@ -127,7 +127,7 @@ class AppRoutes {
     GetPage(
       name: TermsPolicyHelpPage.routeName,
       page: () => TermsPolicyHelpPage(),
-      // binding: NavigationBinding(),
+      binding: TermsPolicyBinding(),
     ),
     GetPage(
       name: ChangePasswordPage.routeName,
