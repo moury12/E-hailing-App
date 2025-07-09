@@ -1,5 +1,4 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
-import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/components/custom_timeline.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
@@ -10,7 +9,6 @@ import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
-import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
@@ -22,43 +20,6 @@ import 'package:get/get.dart';
 import '../../../core/constants/image_constant.dart';
 import '../../trip/widgets/row_call_chat_details_button.dart';
 import 'gradient_progress_indicator.dart';
-
-class TripDetailsPickupCard extends StatelessWidget {
-  const TripDetailsPickupCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: padding12,
-      decoration: BoxDecoration(
-        color: AppColors.kWhiteColor,
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: AppColors.kPrimaryColor, width: 1.w),
-      ),
-      padding: padding12,
-      child: Column(
-        spacing: 8.h,
-        children: [
-          CustomText(
-            text: AppStaticStrings.pickup,
-            fontSize: getFontSizeDefault(),
-          ),
-          DriverDetails(),
-          CarDetailsCardWidget(),
-          ButtonTapWidget(child: FromToTimeLine(showTo: false)),
-          RowCallChatDetailsButton(
-            lastItemName: AppStaticStrings.details,
-            onTap: () {
-              Get.toNamed(TripDetailsPage.routeName);
-            },
-          ),
-
-          CancelTripButtonWidget(),
-        ],
-      ),
-    );
-  }
-}
 
 class DriverDetails extends StatelessWidget {
   final String? title;
@@ -211,16 +172,11 @@ class TripDetailsDestinationCard extends StatelessWidget {
 
           Obx(() {
             return RowCallChatDetailsButton(
+              userId: tripModel!.driver!.sId.toString(),
               lastItemName: AppStaticStrings.details,
               phoneNumber: tripModel?.driver?.phoneNumber,
               isChatLoading: MessageController.to.isLoadingCreateMessage.value,
-              onChat: () {
-                if (tripModel?.driver != null) {
-                  MessageController.to.createConversationRequest(
-                    userId: tripModel!.driver!.sId.toString(),
-                  );
-                }
-              },
+
               onTap: () {
                 Get.toNamed(TripDetailsPage.routeName);
               },

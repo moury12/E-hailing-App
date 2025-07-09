@@ -20,7 +20,7 @@ class CustomRefreshIndicator extends StatelessWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       displacement: 40.0,
-      strokeWidth: 1,
+      strokeWidth: 3,
       // Adjust the distance the indicator moves
       child: child,
     );

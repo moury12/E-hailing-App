@@ -55,6 +55,7 @@ class DriverAfterAcceptedWidget extends StatelessWidget {
         ),
         FromToTimeLine(showTo: false, pickUpAddress: fromAddress),
         RowCallChatDetailsButton(
+          userId: user!.sId.toString(),
           showLastButton: false,
           phoneNumber: user != null ? user?.phoneNumber : "000",
         ),
