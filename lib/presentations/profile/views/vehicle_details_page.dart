@@ -1,6 +1,7 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
+import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
@@ -23,42 +24,55 @@ class VehicleDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.vehicleDetails),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: padding16.copyWith(top: 0),
-          child: Column(
-            spacing: 12.h,
-            children: [
-              Obx(() {
-                final car = DriverSettingsController.to.assignCarModel.value;
+      body: CustomRefreshIndicator(
+        onRefresh: () async {
+          DriverSettingsController.to.getDriverAssignedCar();
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: padding16.copyWith(top: 0),
+                child: Column(
+                  spacing: 12.h,
+                  children: [
+                    Obx(() {
+                      final car =
+                          DriverSettingsController.to.assignCarModel.value;
 
-                return DriverSettingsController.to.isLoadingCar.value
-                    ? buildVehicelImageShimmerRow()
-                    : car.carImage == null
-                    ? EmptyWidget(text: "No Car Image Found")
-                    : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        spacing: 8.w,
-                        children: List.generate(
-                          car.carImage!.length,
-                          (index) => CustomNetworkImage(
-                            imageUrl:
-                                "${ApiService().baseUrl}/${car.carImage![index]}",
-                            radius: 8.r,
-                            height: 110.w,
-                            width: 110.w,
-                          ),
-                        ),
-                      ),
-                    );
-              }),
-              DynamicTabWidget(
-                tabs: DriverSettingsController.to.tabLabels,
-                tabContent: [DriverPersonalDetails(), DriverCarInfoWidget()],
+                      return DriverSettingsController.to.isLoadingCar.value
+                          ? buildVehicelImageShimmerRow()
+                          : car.carImage == null
+                          ? EmptyWidget(text: "No Car Image Found")
+                          : SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              spacing: 8.w,
+                              children: List.generate(
+                                car.carImage!.length,
+                                (index) => CustomNetworkImage(
+                                  imageUrl:
+                                      "${ApiService().baseUrl}/${car.carImage![index]}",
+                                  radius: 8.r,
+                                  height: 110.w,
+                                  width: 110.w,
+                                ),
+                              ),
+                            ),
+                          );
+                    }),
+                    DynamicTabWidget(
+                      tabs: DriverSettingsController.to.tabLabels,
+                      tabContent: [
+                        DriverPersonalDetails(),
+                        DriverCarInfoWidget(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

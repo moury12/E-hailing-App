@@ -193,6 +193,7 @@ class TripDetailsPage extends StatelessWidget {
                   ),
                   RowCallChatDetailsButton(
                     phoneNumber: trip.driver?.phoneNumber,
+                    userId: trip.driver!.sId.toString(),
                   ),
                   trip.status == DriverTripStatus.destination_reached.name
                       ? CustomButton(

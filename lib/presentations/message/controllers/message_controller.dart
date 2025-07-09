@@ -1,11 +1,11 @@
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
-import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/message/model/conversation_model.dart'
     as convo;
 import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
+import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -90,11 +90,11 @@ class MessageController extends GetxController {
       if (response['success'] == true) {
         logger.d(response);
 
-        showCustomSnackbar(title: 'Success', message: response['message']);
+        // showCustomSnackbar(title: 'Success', message: response['message']);
         // await getConversationListRequest();
         // NavigationController.to.selectedNavIndex.value = 3;
         // isLoadingCreateConversation.value = false;
-        // Get.toNamed(NavigationPage.routeName);
+        Get.toNamed(ChattingPage.routeName, arguments: response['data']['_id']);
       } else {
         logger.e(response);
 

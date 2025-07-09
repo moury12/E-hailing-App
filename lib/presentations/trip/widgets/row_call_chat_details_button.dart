@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
+import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ import '../../../core/helper/helper_function.dart';
 class RowCallChatDetailsButton extends StatelessWidget {
   final String? lastItemName;
   final String? phoneNumber;
-  final String? userId;
+  final String userId;
   final bool? showLastButton;
   final bool? isChatLoading;
   final Function()? onTap;
@@ -28,7 +29,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
     this.onTap,
     this.showLastButton = true,
     this.phoneNumber,
-    this.userId,
+    required this.userId,
     this.onChat,
     this.isChatLoading,
   });
@@ -51,7 +52,11 @@ class RowCallChatDetailsButton extends StatelessWidget {
           child: CustomButton(
             isLoading: isChatLoading,
             padding: padding8,
-            onTap: onChat ?? () {},
+            onTap: () {
+              MessageController.to.createConversationRequest(
+                userId: userId.toString(),
+              );
+            },
             child: SvgPicture.asset(chatIcon, height: 24.w),
           ),
         ),
