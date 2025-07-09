@@ -26,6 +26,7 @@ String updateMessageSeenEndpoint = 'chat/update-message-as-seen';
 String updateNotificationSeenEndpoint = 'notification/update-as-mark-unread';
 String postChatEndpoint = 'chat/post-chat';
 String getCarEndpoint = 'car/get-car';
+String getDriverEarningReportEndpoint = 'payment/get-driver-earning-report';
 String getPrivacyEndpoint = 'manage/get-privacy-policy';
 String getTermsEndpoint = 'manage/get-terms-conditions';
 String getChatMessagesEndpoint = 'chat/get-chat-messages';
