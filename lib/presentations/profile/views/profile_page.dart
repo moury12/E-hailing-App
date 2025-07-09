@@ -134,6 +134,7 @@ class ProfilePage extends StatelessWidget {
           ),
           Expanded(
             child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
               child: Padding(
                 padding: padding16,
                 child: Column(
