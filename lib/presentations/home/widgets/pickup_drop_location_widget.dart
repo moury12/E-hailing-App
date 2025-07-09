@@ -46,17 +46,16 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             fillColor: AppColors.kWhiteColor,
             borderColor: AppColors.kGreyColor,
             onTap: () {
-              Future.delayed(Duration(milliseconds: 50), () {
-                FocusScope.of(
-                  context,
-                ).requestFocus(HomeController.to.pickupFocusNode);
-              });
+              // Future.delayed(Duration(milliseconds: 50), () {
+              //   FocusScope.of(
+              //     context,
+              //   ).requestFocus(HomeController.to.pickupFocusNode);
+              // });
               HomeController.to.activeField.value = "pickup";
               // // FocusScope.of(context).unfocus();
               // HomeController.to.pickupFocusNode.requestFocus(); // 👈 Add this
             },
             // height: 45.h,
-            focusNode: HomeController.to.pickupFocusNode,
             onChanged: (v) {
               HomeController.to.activeField.value = "pickup";
               CommonController.to.fetchSuggestedPlacesWithRadius(v);
@@ -79,16 +78,16 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
 
         Obx(() {
           return CustomTextField(
-            focusNode: HomeController.to.dropOffFocusNode,
+            // focusNode: HomeController.to.dropOffFocusNode,
             borderRadius: 24.r,
             onTap: () {
               // FocusScope.of(context).unfocus();
               HomeController.to.activeField.value = "dropoff";
-              Future.delayed(Duration(milliseconds: 50), () {
-                FocusScope.of(
-                  context,
-                ).requestFocus(HomeController.to.dropOffFocusNode);
-              });
+              // Future.delayed(Duration(milliseconds: 50), () {
+              //   FocusScope.of(
+              //     context,
+              //   ).requestFocus(HomeController.to.dropOffFocusNode);
+              // });
             },
             hintText: AppStaticStrings.dropLocation,
             fillColor: AppColors.kWhiteColor,
