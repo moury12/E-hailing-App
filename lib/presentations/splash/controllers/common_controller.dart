@@ -342,7 +342,12 @@ class CommonController extends GetxController {
         userModel.value = UserProfileModel.fromJson(response['data']);
 
         if (userModel.value.img != null && userModel.value.img!.isNotEmpty) {
-          preloadImagesFromUrls([userModel.value.img.toString()]);
+          preloadImagesFromUrls([
+            userModel.value.img.toString(),
+            userModel.value.drivingLicenseImage.toString(),
+            userModel.value.idOrPassportImage.toString(),
+            userModel.value.psvLicenseImage.toString(),
+          ]);
         }
         if (needReinitilaize) {
           reinitializeProfileControllers();

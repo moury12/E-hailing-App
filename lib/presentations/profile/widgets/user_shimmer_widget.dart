@@ -9,8 +9,8 @@ class UserShimmerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: AppColors.kPrimaryExtraLightColor,
-      highlightColor: AppColors.kPrimaryLightColor,
+      baseColor: AppColors.kPrimaryLightColor,
+      highlightColor: AppColors.kPrimaryColor,
       child: Row(
         children: [
           Container(

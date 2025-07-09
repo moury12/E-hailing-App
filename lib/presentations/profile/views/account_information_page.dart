@@ -121,72 +121,77 @@ class AccountInformationPage extends StatelessWidget {
         ],
       ),
 
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: padding14,
-          child: Center(
-            child: Column(
-              spacing: 12.h,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Obx(() {
-                  return CustomNetworkImage(
-                    imageUrl:
-                        "${ApiService().baseUrl}/${CommonController.to.userModel.value.img}",
-                    height: 100.w,
-                    width: 100.w,
-                    boxShape: BoxShape.circle,
-                  );
-                }),
-                Obx(() {
-                  return CustomText(
-                    text:
-                        CommonController.to.userModel.value.name ??
-                        AppStaticStrings.noDataFound,
-                    style: poppinsSemiBold,
-                    fontSize: getFontSizeExtraLarge(),
-                  );
-                }),
-                CommonController.to.isDriver.value
-                    ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      // spacing: 6.w,
-                      children: [
-                        ...List.generate(
-                          5,
-                          (index) => Icon(
-                            Icons.star_rounded,
-                            color: AppColors.kYellowColor,
-                          ),
-                        ),
-                        CustomText(
-                          text: '4.8',
-                          style: poppinsSemiBold,
-                          fontSize: getFontSizeSmall(),
-                        ),
-                        CustomText(
-                          text: '(125 reviews)',
-                          style: poppinsRegular,
-                          fontSize: getFontSizeSmall(),
-                          color: AppColors.kExtraLightTextColor,
-                        ),
-                      ],
-                    )
-                    : SizedBox.shrink(),
-                CommonController.to.isDriver.value
-                    ? DynamicTabWidget(
-                      tabs: AccountInformationController.to.tabs,
-                      tabContent: AccountInformationController.to.tabContent,
-                    )
-                    : Obx(() {
-                      return ProfileInfoListWidget(
-                        userModel: CommonController.to.userModel.value,
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: padding14,
+              child: Center(
+                child: Column(
+                  spacing: 12.h,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Obx(() {
+                      return CustomNetworkImage(
+                        imageUrl:
+                            "${ApiService().baseUrl}/${CommonController.to.userModel.value.img}",
+                        height: 100.w,
+                        width: 100.w,
+                        boxShape: BoxShape.circle,
                       );
                     }),
-              ],
+                    Obx(() {
+                      return CustomText(
+                        text:
+                            CommonController.to.userModel.value.name ??
+                            AppStaticStrings.noDataFound,
+                        style: poppinsSemiBold,
+                        fontSize: getFontSizeExtraLarge(),
+                      );
+                    }),
+                    CommonController.to.isDriver.value
+                        ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          // spacing: 6.w,
+                          children: [
+                            ...List.generate(
+                              5,
+                              (index) => Icon(
+                                Icons.star_rounded,
+                                color: AppColors.kYellowColor,
+                              ),
+                            ),
+                            CustomText(
+                              text: '4.8',
+                              style: poppinsSemiBold,
+                              fontSize: getFontSizeSmall(),
+                            ),
+                            CustomText(
+                              text: '(125 reviews)',
+                              style: poppinsRegular,
+                              fontSize: getFontSizeSmall(),
+                              color: AppColors.kExtraLightTextColor,
+                            ),
+                          ],
+                        )
+                        : SizedBox.shrink(),
+                    CommonController.to.isDriver.value
+                        ? DynamicTabWidget(
+                          tabs: AccountInformationController.to.tabs,
+                          tabContent:
+                              AccountInformationController.to.tabContent,
+                        )
+                        : Obx(() {
+                          return ProfileInfoListWidget(
+                            userModel: CommonController.to.userModel.value,
+                          );
+                        }),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
