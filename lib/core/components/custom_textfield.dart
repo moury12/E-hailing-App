@@ -145,6 +145,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
               keyboardType: widget.keyboardType,
               textInputAction: widget.textInputAction,
               cursorColor: widget.cursorColor,
+              onTapOutside:
+                  (PointerDownEvent pointerDownEvent) =>
+                      FocusScope.of(context).unfocus(),
               style:
                   widget.inputTextStyle ??
                   TextStyle(

@@ -43,8 +43,7 @@ class HomeController extends GetxController {
   RxString activeField = ''.obs; // "pickup" or "dropoff"
   Rx<LatLng?> pickupLatLng = Rx<LatLng?>(null);
   Rx<LatLng?> dropoffLatLng = Rx<LatLng?>(null);
-  FocusNode pickupFocusNode = FocusNode();
-  FocusNode dropOffFocusNode = FocusNode();
+
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
   RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;
@@ -274,8 +273,8 @@ class HomeController extends GetxController {
   }
 
   void clearAllFocus() {
-    pickupFocusNode.unfocus();
-    dropOffFocusNode.unfocus();
+    // pickupFocusNode.unfocus();
+    // dropOffFocusNode.unfocus();
     activeField.value = "";
   }
 
