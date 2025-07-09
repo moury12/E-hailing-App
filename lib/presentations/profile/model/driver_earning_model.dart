@@ -14,7 +14,7 @@ class DriverEarningModel {
         json['tripPaymentAnalysis'] != null
             ? TripPaymentAnalysis.fromJson(json['tripPaymentAnalysis'])
             : null;
-    totalYears = json['total_years'].cast<num>();
+    totalYears = (json['total_years'] as List?)?.cast<num>();
     monthlyRevenue =
         json['monthlyRevenue'] != null
             ? MonthlyRevenue.fromJson(json['monthlyRevenue'])

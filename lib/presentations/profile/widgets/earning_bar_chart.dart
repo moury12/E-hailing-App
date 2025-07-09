@@ -1,12 +1,16 @@
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
 import 'package:e_hailing_app/presentations/profile/widgets/custom_container_with_elevation.dart';
+import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 
 class EarningsBarChart extends StatefulWidget {
   const EarningsBarChart({super.key});
@@ -16,25 +20,6 @@ class EarningsBarChart extends StatefulWidget {
 }
 
 class _EarningsBarChartState extends State<EarningsBarChart> {
-  final List<String> years = ['2023', '2024', '2025'];
-  String selectedYear = '2024';
-
-  // Sample data for each month
-  final List<double> monthlyEarnings = [
-    25000, // Jan
-    30000, // Feb
-    32000, // Mar
-    22000, // Apr
-    20000, // May
-    28000, // Jun
-    30000, // Jul
-    24000, // Aug
-    20000, // Sep
-    27000, // Oct
-    28000, // Nov
-    30000, // Dec
-  ];
-
   final List<String> months = [
     'Jan',
     'Feb',
@@ -49,125 +34,198 @@ class _EarningsBarChartState extends State<EarningsBarChart> {
     'Nov',
     'Dec',
   ];
+  final List<String> typeList = ["coin", "cash"];
+
   @override
   Widget build(BuildContext context) {
     return CustomContainerWithElevation(
-
       child: SizedBox(
         height: 250.h,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              spacing: 6.w,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 CustomText(
-                 text:  'Earnings Growth',
-                  style: poppinsBold,
-                  fontSize: getFontSizeDefault(),
-                ),
-                Container(
-                  padding: paddingH16V2,
-                  decoration: BoxDecoration(
-                    color: Color(0xffDBEAFE),
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(color: AppColors.kBlueLittleDarkColor)
+                Expanded(
+                  child: CustomText(
+                    text: 'Earnings Growth',
+                    style: poppinsBold,
+                    fontSize: getFontSizeDefault(),
                   ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: selectedYear,
-                      icon: const Icon(Icons.keyboard_arrow_down, size: 16),
-                      elevation: 0,
-                      style: TextStyle(
-                        color: AppColors.kPrimaryColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      isDense: true,
-                      borderRadius: BorderRadius.circular(12),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedYear = newValue!;
-                        });
-                      },
-                      items:
-                          years.map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                    ),
+                ),
+                DropdownContainerWidget(
+                  widget: DropdownButtonHideUnderline(
+                    child: Obx(() {
+                      final totalYears =
+                          DriverSettingsController
+                              .to
+                              .driverEarningModel
+                              .value
+                              .totalYears;
+                      return DropdownButton<String>(
+                        hint: CustomText(text: DateTime.now().year.toString()),
+                        value:
+                            DriverSettingsController
+                                .to
+                                .selectedYear
+                                .value
+                                .value,
+                        icon: const Icon(Icons.keyboard_arrow_down, size: 16),
+                        elevation: 0,
+                        style: TextStyle(
+                          color: AppColors.kPrimaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        isDense: true,
+                        borderRadius: BorderRadius.circular(12),
+                        onChanged: (String? newValue) {
+                          DriverSettingsController.to.selectedYear.value.value =
+                              newValue!;
+                          DriverSettingsController.to.getDriverEarningReport(
+                            year: newValue,
+                          );
+                        },
+                        items:
+                            (totalYears ?? []).map<DropdownMenuItem<String>>((
+                              num value,
+                            ) {
+                              return DropdownMenuItem<String>(
+                                value: value.toString(),
+                                child: CustomText(text: value.toString()),
+                              );
+                            }).toList(),
+                      );
+                    }),
+                  ),
+                ),
+
+                DropdownContainerWidget(
+                  widget: DropdownButtonHideUnderline(
+                    child: Obx(() {
+                      return DropdownButton<String>(
+                        hint: CustomText(text: "cash"),
+                        value:
+                            DriverSettingsController
+                                .to
+                                .selectedType
+                                .value
+                                .value,
+                        icon: const Icon(Icons.keyboard_arrow_down, size: 16),
+                        elevation: 0,
+                        style: TextStyle(
+                          color: AppColors.kPrimaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        isDense: true,
+                        borderRadius: BorderRadius.circular(12),
+                        onChanged: (String? newValue) {
+                          DriverSettingsController.to.selectedType.value.value =
+                              newValue!;
+                          DriverSettingsController.to.getDriverEarningReport(
+                            type: newValue,
+                          );
+                        },
+                        items:
+                            typeList.map<DropdownMenuItem<String>>((
+                              String value,
+                            ) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: CustomText(text: value),
+                              );
+                            }).toList(),
+                      );
+                    }),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            Expanded(
-              child: BarChart(
-                BarChartData(
-                  alignment: BarChartAlignment.spaceAround,
-                  maxY: 40000,
-                  barTouchData: BarTouchData(
-                    enabled: true,
-                    touchTooltipData: BarTouchTooltipData(
-                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        return BarTooltipItem(
-                          '\$${rod.toY.toInt()}',
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  titlesData: FlTitlesData(
-                    show: true,
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: bottomTitleWidgets,
-                        reservedSize: 28,
+            Obx(() {
+              final earnings =
+                  DriverSettingsController.to.driverEarningModel.value;
+              final monthlyRevenue = earnings.monthlyRevenue;
+              if (monthlyRevenue == null || monthlyRevenue.toJson().isEmpty) {
+                return const EmptyWidget(text: AppStaticStrings.noDataFound);
+              }
+              final monthlyEarnings = monthlyRevenue.toJson().values.toList();
+              final maxEarning = monthlyEarnings.reduce(
+                (value, element) => value > element ? value : element,
+              );
+              final maxY = maxEarning + (maxEarning * .2);
+              return Flexible(
+                fit: FlexFit.loose,
+
+                child: BarChart(
+                  BarChartData(
+                    alignment: BarChartAlignment.spaceAround,
+                    maxY: maxY,
+                    barTouchData: BarTouchData(
+                      enabled: true,
+                      touchTooltipData: BarTouchTooltipData(
+                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                          return BarTooltipItem(
+                            'RM ${rod.toY.toInt()}',
+                            const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: leftTitleWidgets,
-                        reservedSize: 30,
-                      ),
-                    ),
-                    topTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    rightTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                  ),
-                  borderData: FlBorderData(show: false),
-                  barGroups: List.generate(
-                    monthlyEarnings.length,
-                    (index) => BarChartGroupData(
-                      x: index,
-                      barRods: [
-                        BarChartRodData(
-                          toY: monthlyEarnings[index],
-                          color: AppColors.kBlueLittleDarkColor,
-                          width: 16,
-                          borderRadius: BorderRadius.circular(6.r),
-                          backDrawRodData: BackgroundBarChartRodData(
-                            show: true,
-                            toY: 40000,
-                            color: AppColors.kGreyColor,
-                          ),
+                    titlesData: FlTitlesData(
+                      show: true,
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: bottomTitleWidgets,
+                          reservedSize: 28,
                         ),
-                      ],
+                      ),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: leftTitleWidgets,
+                          reservedSize: 30,
+                        ),
+                      ),
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                     ),
+                    borderData: FlBorderData(show: false),
+                    barGroups: List.generate(
+                      monthlyEarnings.length,
+                      (index) => BarChartGroupData(
+                        x: index,
+                        barRods: [
+                          BarChartRodData(
+                            toY: double.parse(
+                              monthlyEarnings[index].toString(),
+                            ),
+                            color: AppColors.kBlueLittleDarkColor,
+                            width: 16,
+                            borderRadius: BorderRadius.circular(6.r),
+                            backDrawRodData: BackgroundBarChartRodData(
+                              show: true,
+                              toY: maxY,
+                              color: AppColors.kGreyColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    gridData: FlGridData(show: false),
                   ),
-                  gridData: FlGridData(show: false),
                 ),
-              ),
-            ),
+              );
+            }),
           ],
         ),
       ),
@@ -178,9 +236,9 @@ class _EarningsBarChartState extends State<EarningsBarChart> {
     int index = value.toInt();
     if (index >= 0 && index < months.length) {
       return Padding(
-        padding:  EdgeInsets.only(top:6.h),
+        padding: EdgeInsets.only(top: 6.h),
         child: CustomText(
-         text:  months[index],
+          text: months[index],
           style: poppinsRegular,
           fontSize: 10.sp,
           color: AppColors.kBorderColor,
@@ -194,25 +252,39 @@ class _EarningsBarChartState extends State<EarningsBarChart> {
     String text = '';
     if (value == 0) {
       text = '0';
-    } else if (value == 10000) {
-      text = '10k';
-    } else if (value == 20000) {
-      text = '20k';
-    } else if (value == 30000) {
-      text = '30k';
-    } else if (value == 40000) {
-      text = '40k';
+    } else if (value < 1000) {
+      text = value.toInt().toString(); // Show actual number like 500, 600
+    } else {
+      text = '${(value ~/ 1000)}k';
     }
 
     return Padding(
-      padding:  EdgeInsets.only(right: 6.w),
+      padding: EdgeInsets.only(right: 6.w),
       child: CustomText(
-      text:   text,
+        text: text,
         style: poppinsMedium,
         color: AppColors.kTextColor,
         fontSize: 10.sp,
-
       ),
+    );
+  }
+}
+
+class DropdownContainerWidget extends StatelessWidget {
+  final Widget widget;
+
+  const DropdownContainerWidget({super.key, required this.widget});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: paddingH16V2,
+      decoration: BoxDecoration(
+        color: Color(0xffDBEAFE),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: AppColors.kBlueLittleDarkColor),
+      ),
+      child: widget,
     );
   }
 }

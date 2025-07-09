@@ -79,18 +79,7 @@ List<StaticModel> staticList = [
     val: 'RM 600',
   ),
 ];
-List<StaticModel> earningList = [
-  StaticModel(
-    img: handCash1Icon,
-    title: AppStaticStrings.handCash,
-    val: 'RM 600',
-  ),
-  StaticModel(
-    img: onlineCashIcon,
-    title: AppStaticStrings.onlineCash,
-    val: 'RM 600',
-  ),
-];
+
 List<String> paymentMethodList = [
   AppStaticStrings.creditDebitCards,
   AppStaticStrings.handCash,
