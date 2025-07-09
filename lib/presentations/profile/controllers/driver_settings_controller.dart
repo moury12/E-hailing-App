@@ -19,6 +19,8 @@ class DriverSettingsController extends GetxController {
   Rx<AssignedCarModel> assignCarModel = AssignedCarModel().obs;
   Rx<DriverEarningModel> driverEarningModel = DriverEarningModel().obs;
   RxBool isLoadingCar = false.obs;
+  var selectedYear = Rx<String?>(null).obs;
+  var selectedType = Rx<String?>(null).obs;
 
   @override
   void onInit() {
