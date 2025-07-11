@@ -125,7 +125,7 @@ class PickUpCoordinates {
   PickUpCoordinates({this.coordinates, this.type});
 
   PickUpCoordinates.fromJson(Map<String, dynamic> json) {
-    coordinates = json['coordinates'].cast<double>();
+    coordinates = (json['coordinates'] as List?)?.cast<double>() ?? [];
     type = json['type'];
   }
 
@@ -265,7 +265,7 @@ class LocationCoordinates {
 
   LocationCoordinates.fromJson(Map<String, dynamic> json) {
     type = json['type'];
-    coordinates = json['coordinates'].cast<double>();
+    coordinates = (json['coordinates'] as List?)?.cast<double>() ?? [];
   }
 
   Map<String, dynamic> toJson() {

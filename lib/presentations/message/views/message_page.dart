@@ -4,6 +4,7 @@ import 'package:e_hailing_app/presentations/message/controllers/message_controll
 import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../core/constants/padding_constant.dart';
@@ -16,6 +17,11 @@ class MessageListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Get.isRegistered<MessageController>()) {
+        MessageController.to.conversationPagingController.refresh();
+      }
+    });
     return CustomRefreshIndicator(
       onRefresh: () async {
         MessageController.to.conversationPagingController.refresh();

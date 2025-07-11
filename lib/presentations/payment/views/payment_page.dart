@@ -52,7 +52,7 @@ class PaymentPage extends StatelessWidget {
             ? "${driverTripResponseModel.extraCharge ?? 0}"
             : "${userTripResponse.extraCharge ?? 0}";
     String finalFee =
-        "${(driverTripResponseModel.estimatedFare ?? 0) + (driverTripResponseModel.tollFee ?? 0) + (driverTripResponseModel.extraCharge ?? 0)}";
+        "${int.parse(rent) + int.parse(tollFee) + int.parse(extraCharge)}";
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.payment),
       body: SingleChildScrollView(

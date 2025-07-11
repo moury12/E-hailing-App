@@ -112,9 +112,9 @@ class MessageController extends GetxController {
     );
   }
 
-  @override
-  void onClose() {
-    conversationPagingController.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   conversationPagingController.dispose();
+  //   super.onClose();
+  // }
 }

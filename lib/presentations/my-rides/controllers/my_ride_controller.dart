@@ -72,8 +72,6 @@ class MyRideController extends GetxController {
       );
 
       if (response['success'] == true) {
-        final meta = response['data']['meta'];
-
         final newItems =
             (response['data']['trips'] as List)
                 .map((e) => TripResponseModel.fromJson(e))
