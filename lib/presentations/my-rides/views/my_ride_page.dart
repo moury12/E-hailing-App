@@ -112,11 +112,11 @@ class _MyRidePageState extends State<MyRidePage>
     );
   }
 
-  @override
-  void dispose() {
-    MyRideController.to.disposeResources();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   MyRideController.to.disposeResources();
+  //   super.dispose();
+  // }
 
   @override
   bool get wantKeepAlive => true; // Preserve tab state

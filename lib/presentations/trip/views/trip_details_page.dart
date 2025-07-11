@@ -10,6 +10,7 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
@@ -49,7 +50,7 @@ class TripDetailsPage extends StatelessWidget {
                 spacing: 12.h,
                 children: [
                   CarDetailsCardWidget(
-                    fare: int.parse(trip.estimatedFare.toString()),
+                    fare: int.parse((trip.estimatedFare ?? 0).toString()),
                   ),
 
                   Container(
@@ -207,11 +208,19 @@ class TripDetailsPage extends StatelessWidget {
                       )
                       : CancelTripButtonWidget(
                         onSubmit: () {
-                          HomeController.to.updateUserTrip(
-                            tripId: trip.sId.toString(),
-                            status: DriverTripStatus.cancelled.name.toString(),
-                            reason: HomeController.to.cancelReason,
-                          );
+                          if (HomeController.to.cancelReason.isEmpty) {
+                            showCustomSnackbar(
+                              title: "Field Required",
+                              message: "Need to select the reason",
+                            );
+                          } else {
+                            HomeController.to.updateUserTrip(
+                              tripId: trip.sId.toString(),
+                              status:
+                                  DriverTripStatus.cancelled.name.toString(),
+                              reason: HomeController.to.cancelReason,
+                            );
+                          }
                         },
                       ),
                 ],

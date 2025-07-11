@@ -393,7 +393,7 @@ class CommonController extends GetxController {
 
     try {
       final response = await http.get(Uri.parse(url));
-      logger.d(response.body);
+      // logger.d(response.body);
       if (response.statusCode == 200) {
         // Parse response
         final Map<String, dynamic> data = json.decode(response.body);

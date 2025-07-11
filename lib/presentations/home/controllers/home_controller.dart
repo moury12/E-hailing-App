@@ -71,8 +71,14 @@ class HomeController extends GetxController {
   void onInit() async {
     initializeSocket();
     await getUserCurrentTrip();
+
+    super.onInit();
+  }
+
+  void polyLineShow() async {
     if (tripAcceptedModel.value.sId != null) {
-      HomeController.to.showTripDetailsCard.value = true;
+      resetAllStates();
+      showTripDetailsCard.value = true;
       await drawPolylineBetweenPoints(
         LatLng(
           double.parse(
@@ -104,7 +110,6 @@ class HomeController extends GetxController {
         );
       }
     }
-    super.onInit();
   }
 
   void initializeSocket() {
@@ -153,21 +158,23 @@ class HomeController extends GetxController {
         title: 'No Drivers Available',
         message: 'Sorry, no drivers are available in your area right now.',
       );
-      Future.delayed(Duration(seconds: 3), () {
-        Get.offAllNamed(NavigationPage.routeName);
+      Future.delayed(Duration(seconds: 2), () {
+        Get.back();
       });
     });
 
     socket.on(TripEvents.tripAccepted, (data) {
       logger.i('✅ Trip accepted: $data');
       status.value = "Driver found! Trip accepted";
-      isRequestingTrip.value = false;
-      hasActiveTrip.value = true;
-      while (Get.isDialogOpen!) {
-        Get.back();
-      }
+      resetAllStates();
+      logger.i("Dialog open? ${Get.isDialogOpen}");
+      // if (Get.isDialogOpen == true) {
+      //   Get.back();
+      // }
       tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
-      Get.toNamed(TripDetailsPage.routeName);
+      polyLineShow();
+
+      Get.offAndToNamed(TripDetailsPage.routeName);
     });
 
     socket.on(TripEvents.tripDriverLocationUpdate, (data) {
@@ -363,6 +370,7 @@ class HomeController extends GetxController {
     } else {
       driverPosition.value = null;
     }
+    polyLineShow();
   }
 
   ///------------------------------  get current trip method -------------------------///
@@ -376,7 +384,6 @@ class HomeController extends GetxController {
         endpoint: getUserCurrentTripEndpoint,
         method: 'GET',
       );
-      logger.d(response);
       isLoadingUserCurrentTrip.value = false;
       if (response['success'] == true) {
         tripAcceptedModel.value = TripResponseModel.fromJson(response['data']);
@@ -441,22 +448,21 @@ class HomeController extends GetxController {
     }
     isRequestingTrip.value = true;
     status.value = 'Requesting trip...';
-    showDialog(
-      context: Get.context!,
-      barrierDismissible: false,
-      builder:
-          (context) => AlertDialog(
-            backgroundColor: Colors.transparent,
-            contentPadding: EdgeInsets.zero,
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.8,
-              child: TripRequestLoadingWidget(
-                pickUpAddress: body['pickUpAddress'],
-                dropOffAddress: body['dropOffAddress'],
-              ),
-            ),
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: Colors.transparent,
+        contentPadding: EdgeInsets.zero,
+        content: SizedBox(
+          width: MediaQuery.of(Get.context!).size.width * 0.8,
+          child: TripRequestLoadingWidget(
+            pickUpAddress: body['pickUpAddress'],
+            dropOffAddress: body['dropOffAddress'],
           ),
+        ),
+      ),
+      barrierDismissible: false,
     );
+
     socket.emit(TripEvents.tripRequested, body);
     Future.delayed(Duration(seconds: 30), () {
       if (isRequestingTrip.value) {
