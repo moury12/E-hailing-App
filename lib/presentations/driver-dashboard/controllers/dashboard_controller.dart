@@ -126,143 +126,15 @@ class DashBoardController extends GetxController {
   }
 
   void initializeSocket() {
-    socketService.onConnected = () {
-      status.value = 'Connected';
-    };
-    // socketService.onDisconnected = () {
-    //   status.value = 'Disconnected';
-    // };
+    if (!socketService.isConnected) {
+      String userId = CommonController.to.userModel.value.sId ?? "";
 
-    if (socketService.isConnected) {
-      logger.i(
-        "---------is driver online?---------------${socketService.isDriverActive}",
-      );
-      // isDriverActive.value = socketService.isDriverActive;
-      socketService.on(DriverEvent.tripAvailableStatus, (data) {
-        logger.d(data);
-        if (data["success"]) {
-          logger.i("onAvailableTrip assigned");
-          availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-
-          showAvailableTrip();
-        }
-      });
-      socketService.on(DriverEvent.tripUpdateStatus, (data) {
-        logger.d(data);
-        if (data['success'] == true) {
-          currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-
-          showCustomSnackbar(
-            title: 'Success',
-            position: SnackPosition.TOP,
-            message: data['message'],
-            type: SnackBarType.success,
-          );
-          if (data['data']['status'] ==
-              DriverTripStatus.accepted.name.toString()) {
-            afterAccepted.value = true;
-            resetRideFlow(rideType: RideFlowState.pickup);
-          } else if (data['data']['status'] ==
-              DriverTripStatus.picked_up.name.toString()) {
-            afterPickup.value = true;
-            resetRideFlow(rideType: RideFlowState.isTripStarted);
-          } else if (data['data']['status'] ==
-              DriverTripStatus.completed.name.toString()) {
-            socketService.off(DriverEvent.tripUpdateStatus);
-            Get.offAllNamed(NavigationPage.routeName);
-          } else if (data['data']['status'] ==
-              DriverTripStatus.cancelled.name.toString()) {
-            socketService.off(DriverEvent.tripUpdateStatus);
-            Get.offAllNamed(NavigationPage.routeName);
-          } else if (data['data']['status'] ==
-              DriverTripStatus.started.name.toString()) {
-            afterTripStarted.value = true;
-            resetRideFlow(rideType: RideFlowState.isTripEnd);
-          } else if (data['data']['status'] ==
-              DriverTripStatus.arrived.name.toString()) {
-            afterArrived.value = true;
-            resetRideFlow(rideType: RideFlowState.isArrived);
-          } else if (data['data']['status'] ==
-              DriverTripStatus.on_the_way.name.toString()) {
-            afterOnTheWay.value = true;
-          } else if (data['data']['status'] ==
-              DriverTripStatus.destination_reached.name.toString()) {
-            Get.toNamed(
-              PaymentPage.routeName,
-              arguments: {
-                "driver": DashBoardController.to.currentTrip.value,
-                "role": driver,
-              },
-            );
-            afterDestinationReached.value = true;
-            resetRideFlow(rideType: RideFlowState.destinationReached);
-          } else if (data['data']['status'] ==
-              DriverTripStatus.completed.name.toString()) {
-            Get.offAllNamed(NavigationPage.routeName);
-          }
-        } else {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: data['message'],
-            type: SnackBarType.failed,
-          );
-        }
-      });
-      socketService.on(DriverEvent.tripAcceptedStatus, (data) {
-        logger.d(data);
-        if (data['success'] == true) {
-          currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-
-          showCustomSnackbar(
-            title: 'Success',
-            message: data['message'],
-            type: SnackBarType.success,
-          );
-          CommonController.to.startTrackingUserLocation(
-            tripId: currentTrip.value.sId,
-          );
-          DashBoardController.to.afterAccepted.value = true;
-          resetRideFlow(rideType: RideFlowState.pickup);
-          // Get.toNamed(
-          //   PaymentPage.routeName,
-          //   arguments: {
-          //     "driver": DriverDriverCurrentTripModel).fromJson(data['data']),
-          //     "role": driver,
-          //   },
-          // );
-        } else {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: data['message'],
-            type: SnackBarType.failed,
-          );
-        }
-      });
-      socketService.on(DriverEvent.driverLocationUpdate, (data) {
-        logger.d(data);
-        if (data['success'] == true) {
-          driverUpdatedLocation.value = DriverLocationUpdateModel.fromJson(
-            data['data'],
-          );
-
-          showCustomSnackbar(
-            title: 'Success',
-            message: data['message'],
-            type: SnackBarType.success,
-          );
-        } else {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: data['message'],
-            type: SnackBarType.failed,
-          );
-        }
-      });
+      socketService.connect(userId, true); // async
+      socketService.onConnected = () {
+        _registerSocketListeners(); // Register events **after** connection
+      };
     } else {
-      socketService.connect(
-        CommonController.to.userModel.value.sId.toString(),
-        CommonController.to.userModel.value.role == "DRIVER",
-      );
+      _registerSocketListeners(); // Already connected
     }
   }
 
@@ -438,9 +310,158 @@ class DashBoardController extends GetxController {
     return true;
   }
 
+  void removeSocketListeners() {
+    socketService.off(DriverEvent.tripAvailableStatus);
+    socketService.off(DriverEvent.tripUpdateStatus);
+    socketService.off(DriverEvent.tripAcceptedStatus);
+    socketService.off(DriverEvent.driverLocationUpdate);
+    // ... add all relevant events
+  }
+
   @override
   void onClose() {
-    socketService.off("online_status");
+    removeSocketListeners();
     super.onClose();
+  }
+
+  void _registerSocketListeners() {
+    logger.i("🚦 Is driver online? ${socketService.isDriverActive}");
+
+    // Clear all previous listeners to avoid duplication
+    removeSocketListeners();
+
+    // ============ Trip Available Event ============
+    socketService.on(DriverEvent.tripAvailableStatus, (data) {
+      logger.d("📩 tripAvailableStatus: $data");
+      if (data["success"]) {
+        availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
+        showAvailableTrip();
+      }
+    });
+
+    // ============ Trip Update Status Event ============
+    socketService.on(DriverEvent.tripUpdateStatus, (data) async {
+      logger.d("📩 tripUpdateStatus: $data");
+
+      if (data['success'] != true) {
+        _showError(data['message']);
+        return;
+      }
+
+      currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
+      final trip = currentTrip.value;
+      final coords = trip.pickUpCoordinates?.coordinates;
+      final dropCoords = trip.dropOffCoordinates?.coordinates;
+
+      if (trip.sId != null && coords != null && dropCoords != null) {
+        await drawPolylineBetweenPoints(
+          LatLng(coords.last.toDouble(), coords.first.toDouble()),
+          LatLng(dropCoords.last.toDouble(), dropCoords.first.toDouble()),
+          NavigationController.to.routePolylines,
+          distance: int.tryParse(trip.distance.toString())?.obs ?? 0.obs,
+          duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
+        );
+        await CommonController.to.startTrackingUserLocation(tripId: trip.sId);
+        updateRideFlowState(trip.status);
+      }
+
+      showCustomSnackbar(
+        title: 'Success',
+        message: data['message'],
+        position: SnackPosition.TOP,
+        type: SnackBarType.success,
+      );
+
+      _handleTripStatus(data['data']['status']);
+    });
+
+    // ============ Trip Accepted Status ============
+    socketService.on(DriverEvent.tripAcceptedStatus, (data) {
+      logger.d("📩 tripAcceptedStatus: $data");
+
+      if (data['success'] == true) {
+        currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
+        CommonController.to.startTrackingUserLocation(
+          tripId: currentTrip.value.sId,
+        );
+        DashBoardController.to.afterAccepted.value = true;
+        resetRideFlow(rideType: RideFlowState.pickup);
+        _showSuccess(data['message']);
+      } else {
+        _showError(data['message']);
+      }
+    });
+
+    // ============ Driver Location Update ============
+    socketService.on(DriverEvent.driverLocationUpdate, (data) {
+      logger.d("📩 driverLocationUpdate: $data");
+
+      if (data['success'] == true) {
+        driverUpdatedLocation.value = DriverLocationUpdateModel.fromJson(
+          data['data'],
+        );
+        _showSuccess(data['message']);
+      } else {
+        _showError(data['message']);
+      }
+    });
+  }
+
+  void _handleTripStatus(String status) {
+    switch (status) {
+      case 'accepted':
+        afterAccepted.value = true;
+        resetRideFlow(rideType: RideFlowState.pickup);
+        break;
+      case 'picked_up':
+        afterPickup.value = true;
+        resetRideFlow(rideType: RideFlowState.isTripStarted);
+        break;
+      case 'started':
+        afterTripStarted.value = true;
+        resetRideFlow(rideType: RideFlowState.isTripEnd);
+        break;
+      case 'arrived':
+        afterArrived.value = true;
+        resetRideFlow(rideType: RideFlowState.isArrived);
+        break;
+      case 'on_the_way':
+        afterOnTheWay.value = true;
+        break;
+      case 'destination_reached':
+        afterDestinationReached.value = true;
+        resetRideFlow(rideType: RideFlowState.destinationReached);
+        Get.toNamed(
+          PaymentPage.routeName,
+          arguments: {
+            "driver": DashBoardController.to.currentTrip.value,
+            "role": driver,
+          },
+        );
+        break;
+      case 'completed':
+      case 'cancelled':
+        socketService.off(DriverEvent.tripUpdateStatus);
+        Get.offAllNamed(NavigationPage.routeName);
+        break;
+      default:
+        logger.w("Unknown trip status: $status");
+    }
+  }
+
+  void _showSuccess(String message) {
+    showCustomSnackbar(
+      title: 'Success',
+      message: message,
+      type: SnackBarType.success,
+    );
+  }
+
+  void _showError(String message) {
+    showCustomSnackbar(
+      title: 'Failed',
+      message: message,
+      type: SnackBarType.failed,
+    );
   }
 }

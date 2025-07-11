@@ -108,84 +108,96 @@ class HomeController extends GetxController {
   }
 
   void initializeSocket() {
-    logger.d("socket.isConnected.toString()");
-    logger.d(socket.isConnected.toString());
-    if (socket.isConnected) {
-      socket.on(TripEvents.tripRequested, (data) {
-        logger.d(data);
-        currentTrip.value = data;
-        status.value = 'Trip requested successfully';
-        isRequestingTrip.value = false;
-        hasActiveTrip.value = true;
-        showCustomSnackbar(
-          title: 'Success',
-          message: 'Trip requested successfully! Looking for nearby drivers...',
-        );
-      });
-      socket.on(TripEvents.tripNoDriverFound, (data) {
-        status.value = "No drivers available";
-        isRequestingTrip.value = false;
-        hasActiveTrip.value = false;
-        if (Get.isDialogOpen == true) {
-          Get.back();
-        }
-        showCustomSnackbar(
-          title: 'No Drivers Available',
-          message:
-              'Sorry, no drivers are available in your area right now. Please try again later.',
-        );
-        socket.off(TripEvents.tripRequested);
-        Future.delayed(Duration(seconds: 3), () {
-          Get.offAllNamed(NavigationPage.routeName);
-        });
-
-        logger.d('No driver found: $data');
-      });
-      socket.on(TripEvents.tripAccepted, (data) {
-        status.value = "Driver found! Trip accepted";
-        isRequestingTrip.value = false;
-        hasActiveTrip.value = true;
-        if (Get.isDialogOpen == true) {
-          Get.back();
-        }
-        tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
-        Get.toNamed(TripDetailsPage.routeName);
-        logger.d(data);
-      });
-      socket.on(TripEvents.tripDriverLocationUpdate, (data) {
-        logger.d(data);
-        driverLocationUpdate.value = DriverLocationUpdateModel.fromJson(
-          data['data'],
-        );
-        updateDriverLocation();
-      });
-      socket.on(TripEvents.tripUpdateStatus, (data) {
-        logger.d(data);
-        if (data['success']) {
-          showCustomSnackbar(title: "Trip Status", message: data['message']);
-          tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
-          driverStatus.value = data['message'];
-          HomeController.to.showTripDetailsCard.value = true;
-          if (data['data']['status'] == DriverTripStatus.cancelled.name ||
-              data['data']['status'] == DriverTripStatus.completed.name) {
-            Get.offAllNamed(NavigationPage.routeName);
-            socket.off(TripEvents.tripUpdateStatus);
-          } else if (data['data']['status'] ==
-              DriverTripStatus.destination_reached.name) {
-            Get.toNamed(
-              PaymentPage.routeName,
-              arguments: {"user": tripAcceptedModel.value, "role": user},
-            );
-            // socket.off(TripEvents.tripUpdateStatus);
-          }
-        }
-      });
-      socket.on(ChatEvent.startChat, (data) {
-        logger.d(data);
-      });
-    } else {
-      socketConnection();
+    if (!socket.isConnected) {
+      socketConnection(); // your own connect method
     }
+
+    _registerTripEventListeners();
+
+    socket.onConnected = () {
+      logger.i("Reconnected");
+      _registerTripEventListeners(); // re-register on reconnect
+    };
+  }
+
+  void _registerTripEventListeners() {
+    logger.d("Registering Trip Socket Events");
+
+    // Always clean up old listeners
+    socket.off(TripEvents.tripRequested);
+    socket.off(TripEvents.tripNoDriverFound);
+    socket.off(TripEvents.tripAccepted);
+    socket.off(TripEvents.tripDriverLocationUpdate);
+    socket.off(TripEvents.tripUpdateStatus);
+
+    // Now re-register
+    socket.on(TripEvents.tripRequested, (data) {
+      logger.d('🚕 tripRequested: $data');
+      currentTrip.value = data;
+      status.value = 'Trip requested successfully';
+      isRequestingTrip.value = false;
+      hasActiveTrip.value = true;
+      showCustomSnackbar(
+        title: 'Success',
+        message: 'Trip requested successfully! Looking for nearby drivers...',
+      );
+    });
+
+    socket.on(TripEvents.tripNoDriverFound, (data) {
+      logger.w('❌ No driver found: $data');
+      status.value = "No drivers available";
+      isRequestingTrip.value = false;
+      hasActiveTrip.value = false;
+      if (Get.isDialogOpen == true) Get.back();
+      showCustomSnackbar(
+        title: 'No Drivers Available',
+        message: 'Sorry, no drivers are available in your area right now.',
+      );
+      Future.delayed(Duration(seconds: 3), () {
+        Get.offAllNamed(NavigationPage.routeName);
+      });
+    });
+
+    socket.on(TripEvents.tripAccepted, (data) {
+      logger.i('✅ Trip accepted: $data');
+      status.value = "Driver found! Trip accepted";
+      isRequestingTrip.value = false;
+      hasActiveTrip.value = true;
+      while (Get.isDialogOpen!) {
+        Get.back();
+      }
+      tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
+      Get.toNamed(TripDetailsPage.routeName);
+    });
+
+    socket.on(TripEvents.tripDriverLocationUpdate, (data) {
+      logger.d('📍 Driver location update: $data');
+      driverLocationUpdate.value = DriverLocationUpdateModel.fromJson(
+        data['data'],
+      );
+      updateDriverLocation();
+    });
+
+    socket.on(TripEvents.tripUpdateStatus, (data) {
+      logger.d('🔄 Trip status update: $data');
+      if (data['success']) {
+        showCustomSnackbar(title: "Trip Status", message: data['message']);
+        tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
+        driverStatus.value = data['message'];
+        HomeController.to.showTripDetailsCard.value = true;
+
+        final status = data['data']['status'];
+        if (status == DriverTripStatus.cancelled.name ||
+            status == DriverTripStatus.completed.name) {
+          Get.offAllNamed(NavigationPage.routeName);
+        } else if (status == DriverTripStatus.destination_reached.name) {
+          Get.toNamed(
+            PaymentPage.routeName,
+            arguments: {"user": tripAcceptedModel.value, "role": user},
+          );
+        }
+      }
+    });
   }
 
   void socketConnection() {
