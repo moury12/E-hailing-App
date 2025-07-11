@@ -171,6 +171,7 @@ class _DashboardPageState extends State<DashboardPage>
                               : DashBoardController.to.afterAccepted.value ||
                                   DashBoardController.to.afterOnTheWay.value
                               ? DriverAfterAcceptedWidget(
+                                driverCurrentTripModel: driverTrip,
                                 user: driverTrip.user,
                                 fare: driverTrip.estimatedFare.toString(),
                                 tripId: driverTrip.sId,

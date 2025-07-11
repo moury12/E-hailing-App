@@ -18,12 +18,12 @@ class MessageListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomRefreshIndicator(
       onRefresh: () async {
-        MessageController.to.pagingController.refresh();
+        MessageController.to.conversationPagingController.refresh();
       },
       child: Padding(
         padding: padding12.copyWith(top: 0),
         child: PagedListView<int, ConversationModel>(
-          pagingController: MessageController.to.pagingController,
+          pagingController: MessageController.to.conversationPagingController,
           builderDelegate: PagedChildBuilderDelegate<ConversationModel>(
             itemBuilder: (context, item, index) {
               return Padding(

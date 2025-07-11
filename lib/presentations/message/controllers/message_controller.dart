@@ -30,13 +30,13 @@ class MessageController extends GetxController {
 
   static MessageController get to => Get.find();
 
-  final PagingController<int, ConversationModel> pagingController =
+  final PagingController<int, ConversationModel> conversationPagingController =
       PagingController(firstPageKey: 1);
 
   @override
   void onInit() {
     super.onInit();
-    pagingController.addPageRequestListener((pageKey) {
+    conversationPagingController.addPageRequestListener((pageKey) {
       getConversationListRequest(pageKey: pageKey);
     });
   }
@@ -61,16 +61,17 @@ class MessageController extends GetxController {
 
         final isLastPage = newItems.length < itemsPerPage.value;
         if (isLastPage) {
-          pagingController.appendLastPage(newItems);
+          conversationPagingController.appendLastPage(newItems);
         } else {
           final nextPageKey = pageKey + 1;
-          pagingController.appendPage(newItems, nextPageKey);
+          conversationPagingController.appendPage(newItems, nextPageKey);
         }
       } else {
-        pagingController.error = response['message'] ?? 'Something went wrong';
+        conversationPagingController.error =
+            response['message'] ?? 'Something went wrong';
       }
     } catch (e) {
-      pagingController.error = e.toString();
+      conversationPagingController.error = e.toString();
     }
   }
 
@@ -89,11 +90,7 @@ class MessageController extends GetxController {
 
       if (response['success'] == true) {
         logger.d(response);
-
-        // showCustomSnackbar(title: 'Success', message: response['message']);
-        // await getConversationListRequest();
-        // NavigationController.to.selectedNavIndex.value = 3;
-        // isLoadingCreateConversation.value = false;
+        // fetchMessagesPage()
         Get.toNamed(ChattingPage.routeName, arguments: response['data']['_id']);
       } else {
         logger.e(response);
@@ -117,7 +114,7 @@ class MessageController extends GetxController {
 
   @override
   void onClose() {
-    pagingController.dispose();
+    conversationPagingController.dispose();
     super.onClose();
   }
 }

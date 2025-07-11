@@ -42,7 +42,8 @@ class ChattingController extends GetxController {
       );
 
       if (response['success'] == true) {
-        final currentItems = MessageController.to.pagingController.itemList;
+        final currentItems =
+            MessageController.to.conversationPagingController.itemList;
         if (currentItems != null) {
           final index = currentItems.indexWhere(
             (element) => element.sId == chatId,
@@ -50,7 +51,9 @@ class ChattingController extends GetxController {
           if (index != -1) {
             final updatedItem = currentItems[index];
             updatedItem.unRead = 0;
-            MessageController.to.pagingController.itemList = [...currentItems];
+            MessageController.to.conversationPagingController.itemList = [
+              ...currentItems,
+            ];
           }
         }
         logger.d(response);

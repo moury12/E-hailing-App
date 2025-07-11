@@ -145,6 +145,41 @@ Future<bool> drawPolylineBetweenPoints(
   }
 }
 
+Future<String> getEstimatedTime({
+  required double pickupLat,
+  required double pickupLng,
+  required double dropOffLat,
+  required double dropOffLng,
+}) async {
+  final url =
+      'https://maps.googleapis.com/maps/api/distancematrix/json?origins=$pickupLat,$pickupLng&destinations=$dropOffLat,$dropOffLng&key=${GoogleClient.googleMapUrl}';
+
+  logger.d(url);
+  try {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      if (data['rows'] != null &&
+          data['rows'].isNotEmpty &&
+          data['rows'][0]['elements'] != null &&
+          data['rows'][0]['elements'].isNotEmpty &&
+          data['rows'][0]['elements'][0]['status'] == 'OK') {
+        final duration = data['rows'][0]['elements'][0]['duration']['text'];
+        return duration;
+      } else {
+        throw Exception("No duration found or invalid coordinates");
+      }
+    } else {
+      throw Exception(
+        "Failed: ${response.statusCode} ${response.reasonPhrase}",
+      );
+    }
+  } catch (e) {
+    throw Exception("Error getting estimated time: $e");
+  }
+}
+
 List<LatLng> decodePolyline(String encoded) {
   List<LatLng> polyline = [];
   int index = 0, len = encoded.length;

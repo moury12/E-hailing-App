@@ -42,6 +42,7 @@ class DashBoardController extends GetxController {
   final SocketService socketService = SocketService();
   RxBool isLoadingCurrentTrip = false.obs;
   RxBool isLoadingUpdateTollFee = false.obs;
+  RxString estimatedPickupTime = "0:00 Min".obs;
 
   @override
   void onInit() async {

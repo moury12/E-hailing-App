@@ -54,7 +54,10 @@ class _ChattingPageState extends State<ChattingPage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: Obx(() {
-          final other = getOtherUser(ChattingController.to.chatMetaModel.value);
+          final other =
+              ChattingController.to.chatMetaModel.value != null
+                  ? getOtherUser(ChattingController.to.chatMetaModel.value)
+                  : Participants();
           return CustomAppBar(
             title: other?.name ?? "User Name Loading...",
             action: [
