@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_check_box.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
@@ -15,30 +16,34 @@ class TripCancellationReasonCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: padding12,
-      child: Row(
-        spacing: 12.w,
-        children: [
-          Obx(() {
-            return CustomCheckbox(
-              isChecked: tripCancellationList[index].isChecked.value,
-              onChanged: (value) {
-                tripCancellationList[index].isChecked.value = value;
-                if (tripCancellationList[index].isChecked.value == true) {
-                  HomeController.to.cancelReason.add(
-                    tripCancellationList[index].title,
-                  );
-                }
-              },
-            );
-          }),
-          CustomText(
-            text: tripCancellationList[index].title,
-            style: poppinsMedium,
-            fontSize: kDefaultFontSize,
-          ),
-        ],
+    return ButtonTapWidget(
+      onTap: () {
+        tripCancellationList[index].isChecked.value =
+            !tripCancellationList[index].isChecked.value;
+        if (tripCancellationList[index].isChecked.value == true) {
+          HomeController.to.cancelReason.add(tripCancellationList[index].title);
+        }
+        ;
+      },
+      child: Padding(
+        padding: padding12,
+        child: Row(
+          spacing: 12.w,
+          children: [
+            Obx(() {
+              return CustomCheckbox(
+                isChecked: tripCancellationList[index].isChecked.value,
+                //   onChanged: (value) {
+                //
+              );
+            }),
+            CustomText(
+              text: tripCancellationList[index].title,
+              style: poppinsMedium,
+              fontSize: kDefaultFontSize,
+            ),
+          ],
+        ),
       ),
     );
   }

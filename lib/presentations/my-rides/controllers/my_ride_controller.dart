@@ -105,13 +105,13 @@ class MyRideController extends GetxController {
     }
   }
 
-  @override
-  void onClose() {
-    pagingController.dispose();
-    super.onClose();
-  }
-
-  void disposeResources() {
-    pagingController.dispose();
-  }
+  // @override
+  // void onClose() {
+  //   pagingController.dispose();
+  //   super.onClose();
+  // }
+  //
+  // void disposeResources() {
+  //   pagingController.dispose();
+  // }
 }

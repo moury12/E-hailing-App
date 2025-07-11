@@ -126,7 +126,7 @@ class DashBoardController extends GetxController {
   }
 
   void initializeSocket() {
-    if (!socketService.isConnected) {
+    if (!socketService.socket!.connected) {
       String userId = CommonController.to.userModel.value.sId ?? "";
 
       socketService.connect(userId, true); // async
@@ -441,7 +441,7 @@ class DashBoardController extends GetxController {
         break;
       case 'completed':
       case 'cancelled':
-        socketService.off(DriverEvent.tripUpdateStatus);
+        // socketService.off(DriverEvent.tripUpdateStatus);
         Get.offAllNamed(NavigationPage.routeName);
         break;
       default:
