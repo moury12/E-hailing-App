@@ -7,17 +7,20 @@ Widget buildVehicelImageShimmerRow() {
   return Shimmer.fromColors(
     baseColor: AppColors.kPrimaryLightColor, // kPrimaryLightColor
     highlightColor: AppColors.kPrimaryColor, // kPrimaryColor with opacity
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: List.generate(
-        5,
-        (index) => Container(
-          margin: EdgeInsets.only(right: 8.w),
-          height: 110.w,
-          width: 110.w,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.r),
+    child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: List.generate(
+          3,
+          (index) => Container(
+            margin: EdgeInsets.only(right: 8.w),
+            height: 110.w,
+            width: 110.w,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8.r),
+            ),
           ),
         ),
       ),

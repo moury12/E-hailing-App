@@ -109,10 +109,10 @@ class CommonController extends GetxController {
       ),
     ).listen((Position position) {
       markerPosition.value = LatLng(position.latitude, position.longitude);
-      showCustomSnackbar(
-        title: "update lat lng ",
-        message: ":${markerPosition.value}",
-      );
+      // showCustomSnackbar(
+      //   title: "update lat lng ",
+      //   message: ":${markerPosition.value}",
+      // );
       if (tripId != null) {
         socketService.emit(TripEvents.tripDriverLocationUpdate, {
           "tripId": tripId,
@@ -438,7 +438,6 @@ class CommonController extends GetxController {
 
   Future<void> initialSetUp() async {
     await checkUserRole();
-
     await setupGlobalSocketListeners();
     await fetchCurrentLocation();
   }

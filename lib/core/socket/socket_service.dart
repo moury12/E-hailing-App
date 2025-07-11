@@ -1,10 +1,8 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
-import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketService {
@@ -153,11 +151,11 @@ class SocketService {
     socket?.emit(eventName, data);
     logger.d('Emitted [$eventName] with data: $data');
     if (kDebugMode) {
-      showCustomSnackbar(
-        position: SnackPosition.TOP,
-        title: eventName.toString(),
-        message: data.toString(),
-      );
+      // showCustomSnackbar(
+      //   position: SnackPosition.TOP,
+      //   title: eventName.toString(),
+      //   message: data.toString(),
+      // );
     }
   }
 

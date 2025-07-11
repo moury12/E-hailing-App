@@ -108,6 +108,8 @@ class HomeController extends GetxController {
   }
 
   void initializeSocket() {
+    logger.d("socket.isConnected.toString()");
+    logger.d(socket.isConnected.toString());
     if (socket.isConnected) {
       socket.on(TripEvents.tripRequested, (data) {
         logger.d(data);

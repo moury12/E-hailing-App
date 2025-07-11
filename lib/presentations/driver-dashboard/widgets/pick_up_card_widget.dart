@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
@@ -14,10 +15,10 @@ import 'package:get/get.dart';
 
 import '../../../core/constants/color_constants.dart';
 
-class DriverAfterAcceptedWidget extends StatelessWidget {
+class DriverAfterAcceptedWidget extends StatefulWidget {
   final String? dateTime;
   final String? tripId;
-
+  final DriverCurrentTripModel driverCurrentTripModel;
   final User? user;
   final String? rideType;
   final String? fare;
@@ -33,7 +34,37 @@ class DriverAfterAcceptedWidget extends StatelessWidget {
     this.time,
     this.fromAddress,
     this.tripId,
+    required this.driverCurrentTripModel,
   });
+
+  @override
+  State<DriverAfterAcceptedWidget> createState() =>
+      _DriverAfterAcceptedWidgetState();
+}
+
+class _DriverAfterAcceptedWidgetState extends State<DriverAfterAcceptedWidget> {
+  @override
+  void initState() {
+    getInitialEstimatedTime();
+    super.initState();
+  }
+
+  void getInitialEstimatedTime() async {
+    DashBoardController.to.estimatedPickupTime.value = await getEstimatedTime(
+      pickupLat:
+          widget.driverCurrentTripModel.pickUpCoordinates!.coordinates!.last
+              .toDouble(),
+      pickupLng:
+          widget.driverCurrentTripModel.pickUpCoordinates!.coordinates!.first
+              .toDouble(),
+      dropOffLat:
+          widget.driverCurrentTripModel.dropOffCoordinates!.coordinates!.last
+              .toDouble(),
+      dropOffLng:
+          widget.driverCurrentTripModel.dropOffCoordinates!.coordinates!.first
+              .toDouble(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,27 +76,30 @@ class DriverAfterAcceptedWidget extends StatelessWidget {
           fontSize: getFontSizeDefault(),
         ),
         DriverDetails(
-          userName: user != null ? user?.name : AppStaticStrings.noDataFound,
-          userImg:
-              user != null
-                  ? "${ApiService().baseUrl}/${user?.name}"
+          userName:
+              widget.user != null
+                  ? widget.user?.name
                   : AppStaticStrings.noDataFound,
-          fare: fare,
-          value: "$time min",
+          userImg:
+              widget.user != null
+                  ? "${ApiService().baseUrl}/${widget.user?.profileImage}"
+                  : AppStaticStrings.noDataFound,
+          fare: widget.fare,
+          value: "${widget.time} min",
         ),
-        FromToTimeLine(showTo: false, pickUpAddress: fromAddress),
+        FromToTimeLine(showTo: false, pickUpAddress: widget.fromAddress),
         RowCallChatDetailsButton(
-          userId: user!.sId.toString(),
+          userId: widget.user!.sId.toString(),
           showLastButton: false,
-          phoneNumber: user != null ? user?.phoneNumber : "000",
+          phoneNumber: widget.user != null ? widget.user?.phoneNumber : "000",
         ),
         Obx(() {
           return DashBoardController.to.afterOnTheWay.value
               ? CustomButton(
                 onTap: () {
-                  if (tripId != null) {
+                  if (widget.tripId != null) {
                     DashBoardController.to.driverTripUpdateStatus(
-                      tripId: tripId.toString(),
+                      tripId: widget.tripId.toString(),
                       newStatus: DriverTripStatus.arrived.name.toString(),
                     );
                   }
@@ -76,14 +110,15 @@ class DriverAfterAcceptedWidget extends StatelessWidget {
               )
               : CustomButton(
                 onTap: () {
-                  if (tripId != null) {
+                  if (widget.tripId != null) {
                     DashBoardController.to.driverTripUpdateStatus(
-                      tripId: tripId.toString(),
+                      tripId: widget.tripId.toString(),
                       newStatus: DriverTripStatus.on_the_way.name.toString(),
                     );
                   }
                 },
-                title: AppStaticStrings.pickUpWithin,
+                title:
+                    "${AppStaticStrings.pickUpWithin}${DashBoardController.to.estimatedPickupTime.value}",
                 fillColor: AppColors.kWhiteColor,
                 textColor: AppColors.kPrimaryColor,
               );

@@ -131,7 +131,7 @@ class HomeSelectEvWidget extends StatelessWidget {
             fare: HomeController.to.estimatedFare.value,
             onTap: () async {
               // HomeController.to.resetAllStates();
-              await Future.delayed(const Duration(seconds: 3));
+              // await Future.delayed(const Duration(seconds: 3));
               Get.toNamed(
                 RequestTripPage.routeName,
                 arguments: HomeController.to.tripArgs,
@@ -413,7 +413,7 @@ class HomeInitialContentWidget extends StatelessWidget {
               ),
               ServiceWidget(
                 onTap: () {
-                  HomeController.to.setPickup.value = true;
+                  HomeController.to.wantToGo.value = true;
                 },
                 title: AppStaticStrings.preBookRide,
                 img: purpleCarImage,

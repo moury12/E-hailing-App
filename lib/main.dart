@@ -1,8 +1,6 @@
-import 'package:device_preview/device_preview.dart';
 import 'package:e_hailing_app/core/dependency-injection/dependency_injection.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -22,7 +20,8 @@ void main() async {
 
   await ScreenUtil.ensureScreenSize();
   runApp(
-    DevicePreview(enabled: !kReleaseMode, builder: (context) => const MyApp()),
+    /* DevicePreview(enabled: !kReleaseMode, builder: (context) =>*/
+    const MyApp() /*),*/,
   );
 }
 

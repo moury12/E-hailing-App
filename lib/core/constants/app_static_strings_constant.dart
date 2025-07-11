@@ -177,7 +177,7 @@ class AppStaticStrings {
   static const String noNewRideReq = 'No New Ride Request';
   static const String rideReq = 'Ride Request';
   static const String pleaseGoOnlineRide = 'Please Go Online Ride Request';
-  static const String pickUpWithin = 'Pick up WithIn 04:10 PM';
+  static const String pickUpWithin = 'Pick up WithIn ';
   static const String arrive = 'Arrive';
   static const String tripStarted = 'Trip Started';
   static const String arrived = 'Arrived ';
