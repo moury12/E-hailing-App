@@ -29,6 +29,7 @@ class CoinPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(title: AppStaticStrings.duduCoinWallet),
       body: CustomRefreshIndicator(
         onRefresh: () async {
@@ -52,78 +53,87 @@ class CoinPage extends StatelessWidget {
                     }),
                     CustomButton(
                       onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              scrollable: true,
-                              content: Column(
+                        Get.dialog(
+                          AlertDialog(
+                            scrollable: true,
+                            contentPadding: padding12,
+                            content: SizedBox(
+                              width: Get.width * .8,
+                              child: Column(
                                 spacing: 12.h,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  PagedListView<int, DcoinModel>(
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    pagingController:
-                                        DCoinController
-                                            .to
-                                            .dCoinsPagingController,
-                                    builderDelegate: PagedChildBuilderDelegate(
-                                      itemBuilder:
-                                          (context, item, index) => Padding(
-                                            padding: padding6V,
-                                            child: CoinWidget(
-                                              coin: item.coin.toString(),
-                                              title:
-                                                  "RM ${item.mYR.toString()}",
-                                            ),
+                                  DCoinController
+                                          .to
+                                          .dCoinsPagingController
+                                          .itemList!
+                                          .isEmpty
+                                      ? SizedBox.shrink()
+                                      : SizedBox(
+                                        height: 200,
+                                        child: PagedListView<int, DcoinModel>(
+                                          shrinkWrap: true,
+                                          primary: false,
+                                          pagingController:
+                                              DCoinController
+                                                  .to
+                                                  .dCoinsPagingController,
+                                          builderDelegate: PagedChildBuilderDelegate(
+                                            itemBuilder:
+                                                (
+                                                  context,
+                                                  item,
+                                                  index,
+                                                ) => Padding(
+                                                  padding: padding6V,
+                                                  child: CoinWidget(
+                                                    coin: item.coin.toString(),
+                                                    title:
+                                                        "RM ${item.mYR.toString()}",
+                                                  ),
+                                                ),
+                                            firstPageProgressIndicatorBuilder:
+                                                (_) =>
+                                                    DefaultProgressIndicator(),
+                                            newPageProgressIndicatorBuilder:
+                                                (_) =>
+                                                    DefaultProgressIndicator(),
+                                            noItemsFoundIndicatorBuilder:
+                                                (_) => Center(
+                                                  child: EmptyWidget(
+                                                    text: "No chats found.",
+                                                  ),
+                                                ),
+                                            firstPageErrorIndicatorBuilder:
+                                                (_) => Center(
+                                                  child: EmptyWidget(
+                                                    text:
+                                                        "Failed to load Notifications.",
+                                                  ),
+                                                ),
+                                            newPageErrorIndicatorBuilder:
+                                                (_) => Center(
+                                                  child: EmptyWidget(
+                                                    text:
+                                                        "Failed to load more. Pull to retry.",
+                                                  ),
+                                                ),
                                           ),
-                                      firstPageProgressIndicatorBuilder:
-                                          (_) => DefaultProgressIndicator(),
-
-                                      // Show when loading next page
-                                      newPageProgressIndicatorBuilder:
-                                          (_) => DefaultProgressIndicator(),
-
-                                      // Show if there's no data
-                                      noItemsFoundIndicatorBuilder:
-                                          (_) => Center(
-                                            child: EmptyWidget(
-                                              text: "No chats found.",
-                                            ),
-                                          ),
-
-                                      // Show if there’s an error
-                                      firstPageErrorIndicatorBuilder:
-                                          (_) => Center(
-                                            child: EmptyWidget(
-                                              text:
-                                                  "Failed to load Notifications.",
-                                            ),
-                                          ),
-
-                                      newPageErrorIndicatorBuilder:
-                                          (_) => Center(
-                                            child: EmptyWidget(
-                                              text:
-                                                  "Failed to load more. Pull to retry.",
-                                            ),
-                                          ),
-                                    ),
-                                  ),
+                                        ),
+                                      ),
                                   CustomTextField(
                                     title: AppStaticStrings.addCoin,
                                   ),
                                   CustomButton(
                                     onTap: () {
-                                      Navigator.pop(context);
+                                      Get.back();
                                     },
                                     title: 'Buy Now',
                                   ),
                                 ],
                               ),
-                            );
-                          },
+                            ),
+                          ),
                         );
                       },
                       img: addIcon,
