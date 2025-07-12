@@ -1,7 +1,8 @@
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
-import 'package:e_hailing_app/core/service/socket_events_variable.dart';
-import 'package:e_hailing_app/core/service/socket_service.dart';
+import 'package:e_hailing_app/core/service/location-service/location_service.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
@@ -43,7 +44,7 @@ class HomeController extends GetxController {
   RxString activeField = ''.obs; // "pickup" or "dropoff"
   Rx<LatLng?> pickupLatLng = Rx<LatLng?>(null);
   Rx<LatLng?> dropoffLatLng = Rx<LatLng?>(null);
-
+  final locationService = LocationTrackingService();
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
   RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;
@@ -79,7 +80,7 @@ class HomeController extends GetxController {
     if (tripAcceptedModel.value.sId != null) {
       resetAllStates();
       showTripDetailsCard.value = true;
-      await drawPolylineBetweenPoints(
+      await locationService.drawPolylineBetweenPoints(
         LatLng(
           double.parse(
             tripAcceptedModel.value.pickUpCoordinates!.coordinates!.last
@@ -101,6 +102,8 @@ class HomeController extends GetxController {
           ),
         ),
         NavigationController.to.routePolylines,
+        userPosition: CommonController.to.markerPositionRider.value,
+        mapController: CommonController.to.mapControllerRider,
       );
       if (tripAcceptedModel.value.status ==
           DriverTripStatus.destination_reached.name) {
@@ -233,15 +236,16 @@ class HomeController extends GetxController {
   }
 
   void setCurrentLocationOnPickUp() async {
-    fetchAndSetAddress(CommonController.to.markerPosition.value);
+    fetchAndSetAddress(CommonController.to.markerPositionRider.value);
     HomeController.to.pickupLatLng.value =
-        CommonController.to.markerPosition.value;
+        CommonController.to.markerPositionRider.value;
   }
 
   void fetchAndSetAddress(LatLng latLng) async {
-    pickupLocationController.value.text = await CommonController.to
+    final locationService = LocationTrackingService();
+    pickupLocationController.value.text = await locationService
         .getAddressFromLatLng(latLng);
-    pickupAddressText.value = await CommonController.to.getAddressFromLatLng(
+    pickupAddressText.value = await locationService.getAddressFromLatLng(
       latLng,
     );
   }
@@ -294,8 +298,6 @@ class HomeController extends GetxController {
   }
 
   void clearAllFocus() {
-    // pickupFocusNode.unfocus();
-    // dropOffFocusNode.unfocus();
     activeField.value = "";
   }
 
@@ -358,7 +360,7 @@ class HomeController extends GetxController {
     }
   }
 
-  updateDriverLocation() {
+  void updateDriverLocation() {
     final updateCoords = driverLocationUpdate.value.coordinates;
     final fallbackCoords =
         tripAcceptedModel.value.driver?.locationCoordinates?.coordinates;
@@ -370,7 +372,21 @@ class HomeController extends GetxController {
     } else {
       driverPosition.value = null;
     }
-    polyLineShow();
+
+    // Wait until map controller is ready
+    Future.delayed(Duration(milliseconds: 300), () {
+      if (CommonController.to.mapControllerRider != null) {
+        polyLineShow();
+      } else {
+        debugPrint("❌ Map controller not ready, retrying polyline...");
+        // Retry once more after short delay
+        Future.delayed(Duration(milliseconds: 300), () {
+          if (CommonController.to.mapControllerRider != null) {
+            polyLineShow();
+          }
+        });
+      }
+    });
   }
 
   ///------------------------------  get current trip method -------------------------///

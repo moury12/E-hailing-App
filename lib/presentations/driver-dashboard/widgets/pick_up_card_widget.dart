@@ -46,14 +46,18 @@ class DriverAfterAcceptedWidget extends StatefulWidget {
 class _DriverAfterAcceptedWidgetState extends State<DriverAfterAcceptedWidget> {
   @override
   void initState() {
-    getInitialEstimatedTime();
+    if (!DashBoardController.to.afterOnTheWay.value) {
+      getInitialEstimatedTime();
+    }
     super.initState();
   }
 
   void getInitialEstimatedTime() async {
     DashBoardController.to.estimatedPickupTime.value = await getEstimatedTime(
-      pickupLat: CommonController.to.markerPosition.value.latitude.toDouble(),
-      pickupLng: CommonController.to.markerPosition.value.longitude.toDouble(),
+      pickupLat:
+          CommonController.to.markerPositionDriver.value.latitude.toDouble(),
+      pickupLng:
+          CommonController.to.markerPositionDriver.value.longitude.toDouble(),
       dropOffLat:
           widget.driverCurrentTripModel.pickUpCoordinates!.coordinates!.last
               .toDouble(),

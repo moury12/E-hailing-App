@@ -5,6 +5,7 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/service/location-service/location_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_widget.dart';
@@ -201,14 +202,19 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                     title: "Please wait...",
                     message: "Finding the best route for you.",
                   );
+                  final locationService = LocationTrackingService();
 
-                  bool polylineSuccess = await drawPolylineBetweenPoints(
-                    pickup,
-                    dropoff,
-                    NavigationController.to.routePolylines,
-                    distance: HomeController.to.distance,
-                    duration: HomeController.to.duration,
-                  );
+                  bool polylineSuccess = await locationService
+                      .drawPolylineBetweenPoints(
+                        pickup,
+                        dropoff,
+                        NavigationController.to.routePolylines,
+                        distance: HomeController.to.distance,
+                        duration: HomeController.to.duration,
+                        userPosition:
+                            CommonController.to.markerPositionRider.value,
+                        mapController: CommonController.to.mapControllerRider,
+                      );
 
                   if (polylineSuccess) {
                     // Update cache only on success
@@ -321,8 +327,9 @@ Widget locationSuggestionList() {
         return SearchAddress(
           title: address['description'],
           onTap: () async {
+            final locationService = LocationTrackingService();
             final placeId = address['place_id'];
-            await CommonController.to.getLatLngFromPlace(
+            await locationService.getLatLngFromPlace(
               placeId,
               latLng:
                   isPickup

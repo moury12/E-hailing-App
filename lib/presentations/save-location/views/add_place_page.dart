@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/service/location-service/location_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/save-location/controllers/save_location_controller.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,10 @@ class AddPlacePage extends StatelessWidget {
                             return SearchAddress(
                               onTap: () async {
                                 final placeId = address['place_id'];
-                                await CommonController.to.getLatLngFromPlace(
+                                final locationService =
+                                    LocationTrackingService();
+
+                                await locationService.getLatLngFromPlace(
                                   placeId,
                                   lat: SaveLocationController.to.lat,
                                   lng: SaveLocationController.to.lng,

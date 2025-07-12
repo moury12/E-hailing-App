@@ -60,7 +60,7 @@ class DriverDetails extends StatelessWidget {
               ),
               CustomText(
                 text: 'RM ${fare ?? 00.00}',
-                fontSize: getFontSizeSemiSmall(),
+                fontSize: getFontSizeSmall(),
 
                 color: AppColors.kLightBlackColor,
               ),
@@ -78,11 +78,11 @@ class DriverDetails extends StatelessWidget {
                 textAlign: TextAlign.right,
                 text: title ?? 'Estimated Time',
                 color: AppColors.kLightBlackColor,
-                fontSize: getFontSizeSemiSmall(),
+                fontSize: getFontSizeSmall(),
               ),
               CustomText(
                 textAlign: TextAlign.right,
-                fontSize: getFontSizeSemiSmall(),
+                fontSize: getFontSizeSmall(),
 
                 text: value ?? '4.00 Min',
                 style: poppinsSemiBold,
@@ -119,7 +119,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
                   HomeController.to.driverStatus.value.isEmpty
                       ? "Driver Status"
                       : HomeController.to.driverStatus.value,
-              fontSize: getFontSizeDefault(),
+              fontSize: getFontSizeSemiSmall(),
             );
           }),
           Row(
@@ -253,6 +253,7 @@ class FromToTimeLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomTimeline(
       padding: EdgeInsets.zero,
+
       indicators: <Widget>[
         SvgPicture.asset(pickLocationIcon),
         if (showTo == true) SvgPicture.asset(dropLocationIcon),
@@ -290,9 +291,15 @@ class FromToWidget extends StatelessWidget {
         CustomText(
           text: headline,
           style: poppinsSemiBold,
-          fontSize: getFontSizeDefault(),
+          fontSize: getFontSizeSemiSmall(),
         ),
-        CustomText(text: details, color: AppColors.kLightBlackColor),
+        CustomText(
+          text: details,
+          color: AppColors.kLightBlackColor,
+          fontSize: getFontSizeSmall(),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
       ],
     );
   }

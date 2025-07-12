@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage>
                       HomeController.to.setPickup.value ||
                       HomeController.to.setDestination.value ||
                       HomeController.to.selectEv.value) {
-                    await CommonController.to.fetchCurrentLocation();
+                    await CommonController.to.fetchCurrentLocationMethod();
                     HomeController.to.setCurrentLocationOnPickUp();
                   } else {
                     Get.toNamed(NotificationPage.routeName);

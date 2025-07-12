@@ -63,6 +63,8 @@ class RowCallChatDetailsButton extends StatelessWidget {
         showLastButton == true
             ? Expanded(
               child: CustomButton(
+                padding: padding8,
+
                 onTap:
                     onTap ??
                     () {

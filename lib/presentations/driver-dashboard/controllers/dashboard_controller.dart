@@ -2,8 +2,9 @@ import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
-import 'package:e_hailing_app/core/service/socket_events_variable.dart';
-import 'package:e_hailing_app/core/service/socket_service.dart';
+import 'package:e_hailing_app/core/service/location-service/location_service.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
@@ -33,6 +34,8 @@ class DashBoardController extends GetxController {
   RxBool afterDestinationReached = false.obs;
   RxBool isDriverActive = true.obs;
   RxString status = "Disconnected".obs;
+  final locationService = LocationTrackingService();
+
   Rx<DriverCurrentTripModel> currentTrip = DriverCurrentTripModel().obs;
   Rx<DriverLocationUpdateModel> driverUpdatedLocation =
       DriverLocationUpdateModel().obs;
@@ -126,7 +129,7 @@ class DashBoardController extends GetxController {
   }
 
   void initializeSocket() {
-    if (!socketService.socket!.connected) {
+    if (!socketService.isConnected) {
       String userId = CommonController.to.userModel.value.sId ?? "";
 
       socketService.connect(userId, true); // async
@@ -239,22 +242,7 @@ class DashBoardController extends GetxController {
       if (response['success'] == true) {
         logger.d(response);
         currentTrip.value = DriverCurrentTripModel.fromJson(response['data']);
-        final trip = currentTrip.value;
-        final coords = trip.pickUpCoordinates?.coordinates;
-        final dropCoords = trip.dropOffCoordinates?.coordinates;
-        if (trip.sId != null && coords != null && dropCoords != null) {
-          await drawPolylineBetweenPoints(
-            LatLng(coords.last.toDouble(), coords.first.toDouble()),
-            LatLng(dropCoords.last.toDouble(), dropCoords.first.toDouble()),
-            NavigationController.to.routePolylines,
-            distance: int.tryParse(trip.distance.toString())?.obs ?? 0.obs,
-            duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
-          );
-
-          await CommonController.to.startTrackingUserLocation(tripId: trip.sId);
-
-          updateRideFlowState(trip.status);
-        }
+        drawPolylineMethod();
       } else {
         logger.e(response);
         if (kDebugMode) {
@@ -268,6 +256,25 @@ class DashBoardController extends GetxController {
     } catch (e) {
       logger.e(e.toString());
       isLoadingCurrentTrip.value = false;
+    }
+  }
+
+  Future<void> drawPolylineMethod() async {
+    final trip = currentTrip.value;
+    final coords = trip.pickUpCoordinates?.coordinates;
+    final dropCoords = trip.dropOffCoordinates?.coordinates;
+    if (trip.sId != null && coords != null && dropCoords != null) {
+      await locationService.drawPolylineBetweenPoints(
+        userPosition: CommonController.to.markerPositionDriver.value,
+        mapController: CommonController.to.mapControllerDriver,
+        LatLng(coords.last.toDouble(), coords.first.toDouble()),
+        LatLng(dropCoords.last.toDouble(), dropCoords.first.toDouble()),
+        NavigationController.to.routePolylines,
+        distance: int.tryParse(trip.distance.toString())?.obs ?? 0.obs,
+        duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
+      );
+
+      updateRideFlowState(trip.status);
     }
   }
 
@@ -349,21 +356,7 @@ class DashBoardController extends GetxController {
       }
 
       currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-      final trip = currentTrip.value;
-      final coords = trip.pickUpCoordinates?.coordinates;
-      final dropCoords = trip.dropOffCoordinates?.coordinates;
-
-      if (trip.sId != null && coords != null && dropCoords != null) {
-        await drawPolylineBetweenPoints(
-          LatLng(coords.last.toDouble(), coords.first.toDouble()),
-          LatLng(dropCoords.last.toDouble(), dropCoords.first.toDouble()),
-          NavigationController.to.routePolylines,
-          distance: int.tryParse(trip.distance.toString())?.obs ?? 0.obs,
-          duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
-        );
-        await CommonController.to.startTrackingUserLocation(tripId: trip.sId);
-        updateRideFlowState(trip.status);
-      }
+      drawPolylineMethod();
 
       showCustomSnackbar(
         title: 'Success',
@@ -381,9 +374,10 @@ class DashBoardController extends GetxController {
 
       if (data['success'] == true) {
         currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-        await CommonController.to.startTrackingUserLocation(
-          tripId: currentTrip.value.sId,
+        startTrackingUserLocationMethod(
+          tripId: currentTrip.value.sId.toString(),
         );
+
         DashBoardController.to.afterAccepted.value = true;
         resetRideFlow(rideType: RideFlowState.pickup);
         _showSuccess(data['message']);
@@ -405,6 +399,15 @@ class DashBoardController extends GetxController {
         _showError(data['message']);
       }
     });
+  }
+
+  void startTrackingUserLocationMethod({required String tripId}) async {
+    final locationTrackingService = LocationTrackingService();
+    await locationTrackingService.startTrackingLocation(
+      tripId: tripId,
+      markerPosition: CommonController.to.markerPositionDriver,
+      mapController: CommonController.to.mapControllerDriver,
+    );
   }
 
   void _handleTripStatus(String status) {
