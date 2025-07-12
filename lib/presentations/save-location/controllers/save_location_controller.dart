@@ -210,14 +210,56 @@ class SaveLocationController extends GetxController {
   }
 
   Future<void> selectLatlngFromSaveLocation({required String id}) async {
-    await getSpecificSavedLocationRequest(id: id);
-    HomeController.to.dropOffLocationController.value.text =
-        savedSpecificLocation.value.locationAddress ??
-        AppStaticStrings.noDataFound;
-    HomeController.to.dropoffLatLng.value = LatLng(
-      savedSpecificLocation.value.location!.coordinates!.last,
-      savedSpecificLocation.value.location!.coordinates!.first,
-    );
-    Get.back();
+    showLoadingDialog(text: "Set saved location...");
+
+    try {
+      await getSpecificSavedLocationRequest(id: id);
+
+      // After the data is fetched successfully, update the UI controllers
+      HomeController.to.dropOffLocationController.value.text =
+          savedSpecificLocation.value.locationAddress ??
+          AppStaticStrings.noDataFound; // Using null-aware operator for safety
+
+      // Ensure coordinates are not null before accessing
+      if (savedSpecificLocation.value.location?.coordinates != null &&
+          savedSpecificLocation.value.location!.coordinates!.length >= 2) {
+        HomeController.to.dropoffLatLng.value = LatLng(
+          // LatLng constructor is (latitude, longitude)
+          // Ensure you're mapping coordinates correctly:
+          // savedSpecificLocation.value.location!.coordinates!.last is latitude
+          // savedSpecificLocation.value.location!.coordinates!.first is longitude
+          savedSpecificLocation.value.location!.coordinates!.last, // latitude
+          savedSpecificLocation.value.location!.coordinates!.first, // longitude
+        );
+      } else {
+        showCustomSnackbar(
+          title: "Error",
+          message: "Saved location coordinates are invalid.",
+          type: SnackBarType.failed,
+        );
+        logger.e("Error: Saved location coordinates are null or malformed.");
+      }
+
+      // 3. Navigate back after operations are complete (and dialog is dismissed)
+      // The Get.back() here is to pop the screen/sheet that contained the saved locations list.
+      // The dismissLoadingDialog() is to pop the loading dialog itself.
+      // Ensure dismissLoadingDialog() is called before Get.back() for the screen,
+      // or you can call Get.back() twice if the dialog is on top of the list screen.
+      // Generally, call dismissLoadingDialog() first.
+    } catch (e) {
+      // Handle any errors that occur during the request
+      logger.e("Error in selectLatlngFromSaveLocation: $e");
+      showCustomSnackbar(
+        title: "Error",
+        message: "Failed to load saved location: ${e.toString()}",
+        type: SnackBarType.failed,
+      );
+    } finally {
+      // 2. Dismiss the loading dialog, regardless of success or failure
+      dismissLoadingDialog();
+      // This Get.back() is likely intended to close the current screen/sheet
+      // where the user selected a saved location.
+      Get.back(); // This closes the current screen (e.g., location selection screen)
+    }
   }
 }

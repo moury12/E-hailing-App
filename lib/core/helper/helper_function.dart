@@ -64,6 +64,29 @@ Future<dynamic> tripCancellationDialog({Function()? onSubmit}) {
   );
 }
 
+void showLoadingDialog({required String text}) {
+  Get.dialog(
+    barrierDismissible: false, // User must wait for data
+    AlertDialog(
+      content: Column(
+        spacing: 8.h,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomText(text: text, fontSize: getFontSizeDefault()),
+          GradientProgressIndicator(),
+        ],
+      ),
+    ),
+  );
+}
+
+// Function to dismiss the loading dialog
+void dismissLoadingDialog() {
+  if (Get.isDialogOpen ?? false) {
+    Get.back();
+  }
+}
+
 Future<bool> drawPolylineBetweenPoints(
   LatLng start,
   LatLng end,
