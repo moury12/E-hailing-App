@@ -1,5 +1,5 @@
+import 'package:e_hailing_app/core/service/socket_service.dart';
 import 'package:get_it/get_it.dart';
-import '../socket/socket_service.dart';
 
 final GetIt getIt = GetIt.instance;
 

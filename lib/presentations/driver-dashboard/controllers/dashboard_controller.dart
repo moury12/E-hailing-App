@@ -2,8 +2,8 @@ import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
-import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
-import 'package:e_hailing_app/core/socket/socket_service.dart';
+import 'package:e_hailing_app/core/service/socket_events_variable.dart';
+import 'package:e_hailing_app/core/service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
@@ -376,12 +376,12 @@ class DashBoardController extends GetxController {
     });
 
     // ============ Trip Accepted Status ============
-    socketService.on(DriverEvent.tripAcceptedStatus, (data) {
+    socketService.on(DriverEvent.tripAcceptedStatus, (data) async {
       logger.d("📩 tripAcceptedStatus: $data");
 
       if (data['success'] == true) {
         currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-        CommonController.to.startTrackingUserLocation(
+        await CommonController.to.startTrackingUserLocation(
           tripId: currentTrip.value.sId,
         );
         DashBoardController.to.afterAccepted.value = true;

@@ -52,34 +52,11 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget>
 
     // Call the original onMapCreated if it exists
     if (CommonController.to.onMapCreated != null) {
-      CommonController.to.onMapCreated!(controller);
+      CommonController.to.onMapCreated(controller);
     }
   }
 
   // Safe method to animate camera with error handling
-  Future<void> _animateCameraToPosition(LatLng position) async {
-    if (!_isMapReady || _mapController == null) return;
-
-    try {
-      await _mapController!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: position, zoom: 13),
-        ),
-      );
-    } catch (e) {
-      print('Error animating camera: $e');
-      // Fallback to moving camera without animation
-      try {
-        await _mapController!.moveCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(target: position, zoom: 13),
-          ),
-        );
-      } catch (e2) {
-        print('Error moving camera: $e2');
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -168,8 +145,54 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget>
   bool get wantKeepAlive => true;
 }
 
-class GoogleMapWidgetForDriver extends StatelessWidget {
+class GoogleMapWidgetForDriver extends StatefulWidget {
   const GoogleMapWidgetForDriver({super.key});
+
+  @override
+  State<GoogleMapWidgetForDriver> createState() =>
+      _GoogleMapWidgetForDriverState();
+}
+
+class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
+  Rxn<BitmapDescriptor> customIcon = Rxn<BitmapDescriptor>();
+  GoogleMapController? _mapController;
+  bool _isMapReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadCustomMarker();
+  }
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    super.dispose();
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _mapController = controller;
+    _isMapReady = true;
+
+    // Call the original onMapCreated if it exists
+    if (CommonController.to.onMapCreated != null) {
+      CommonController.to.onMapCreated(controller);
+    }
+  }
+
+  Future<void> loadCustomMarker() async {
+    try {
+      final bitmap = await BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(50, 50)),
+        purpleCarImage2,
+      );
+      customIcon.value = bitmap;
+    } catch (e) {
+      print('Error loading custom marker: $e');
+      // Fallback to default marker if custom marker fails
+      customIcon.value = BitmapDescriptor.defaultMarker;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,11 +211,10 @@ class GoogleMapWidgetForDriver extends StatelessWidget {
         zoomControlsEnabled: true,
         markers: {
           Marker(
-            markerId: const MarkerId("selected_location"),
-            position:
-                // HomeController.to.dropoffLatLng.value ??
-                CommonController.to.markerPosition.value,
-            // draggable: HomeController.to.mapDragable.value,
+            markerId: const MarkerId("driver_marker"),
+            position: HomeController.to.driverPosition.value!,
+            icon: customIcon.value!,
+
             onTap: () {
               NavigationController.to.markerDraging.value = true;
             },
