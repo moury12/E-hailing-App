@@ -6,7 +6,8 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
-import 'package:e_hailing_app/core/socket/socket_events_variable.dart';
+import 'package:e_hailing_app/core/service/socket_events_variable.dart';
+import 'package:e_hailing_app/core/service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
@@ -18,7 +19,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../core/socket/socket_service.dart';
 import '../../../core/utils/google_map_api_key.dart';
 
 class CommonController extends GetxController {
@@ -73,7 +73,16 @@ class CommonController extends GetxController {
 
   StreamSubscription<Position>? positionStream;
 
+  String? _lastTrackedTripId;
+
   Future<void> startTrackingUserLocation({String? tripId}) async {
+    // Don't restart the stream if already tracking and no tripId change
+    if (tripId != null &&
+        _lastTrackedTripId == tripId &&
+        positionStream != null) {
+      return;
+    }
+
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       Get.snackbar('Location Disabled', 'Please enable location services');
@@ -99,20 +108,18 @@ class CommonController extends GetxController {
       return;
     }
 
-    // Cancel any existing stream to avoid duplicates
+    // Always cancel previous stream to avoid duplicates
     positionStream?.cancel();
 
     positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 10, // minimum movement (in meters) before update
+        distanceFilter: 10,
       ),
     ).listen((Position position) {
       markerPosition.value = LatLng(position.latitude, position.longitude);
-      // showCustomSnackbar(
-      //   title: "update lat lng ",
-      //   message: ":${markerPosition.value}",
-      // );
+
+      // Emit only if tripId is provided
       if (tripId != null) {
         socketService.emit(TripEvents.tripDriverLocationUpdate, {
           "tripId": tripId,
@@ -120,10 +127,13 @@ class CommonController extends GetxController {
           "long": position.longitude,
         });
       }
+
       mapController?.animateCamera(
         CameraUpdate.newLatLng(markerPosition.value),
       );
     });
+
+    _lastTrackedTripId = tripId;
   }
 
   Future<void> fetchCurrentLocation() async {
@@ -223,44 +233,6 @@ class CommonController extends GetxController {
       socketService.connect(userId, userModel.value.role == "DRIVER");
     }
   }
-
-  // Future<void> setupGlobalSocketListeners() async {
-  //   await getUserProfileRequest();
-  //
-  //   socketService.onConnected = () {
-  //     socketStatus.value = 'Connected';
-  //     logger.i('Socket connected');
-  //   };
-  //
-  //   socketService.onDisconnected = () {
-  //     socketStatus.value = 'Disconnected';
-  //     logger.w('Socket disconnected');
-  //   };
-  //
-  //   socketService.onSocketError = (error) {
-  //     socketStatus.value = 'Error: $error';
-  //     logger.e('Socket error: $error');
-  //   };
-  //
-  //   // Connect and wait for connection
-  //   final userId = userModel.value.sId ?? "";
-  //   if (userId.isNotEmpty) {
-  //     socketService.connect(userId);
-  //     //
-  //     // // Wait for connection to be established
-  //     // int retryCount = 0;
-  //     // while (!socketService.isConnected && retryCount < 10) {
-  //     //   await Future.delayed(Duration(milliseconds: 500));
-  //     //   retryCount++;
-  //     // }
-  //
-  //     if (socketService.isConnected) {
-  //       logger.i('Socket connection established successfully');
-  //     } else {
-  //       logger.e('Failed to establish socket connection after retries');
-  //     }
-  //   }
-  // }
 
   Future<void> fetchSuggestedPlacesWithRadius(
     String input, {
@@ -425,6 +397,8 @@ class CommonController extends GetxController {
   @override
   void onClose() {
     socketService.disconnect();
+    positionStream?.cancel();
+
     super.onClose();
   }
 

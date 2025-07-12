@@ -1,6 +1,7 @@
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
-import 'package:e_hailing_app/core/socket/socket_service.dart';
+import 'package:e_hailing_app/core/service/socket_events_variable.dart';
+import 'package:e_hailing_app/core/service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
@@ -18,7 +19,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/api-client/api_service.dart';
 import '../../../core/constants/hive_boxes.dart';
-import '../../../core/socket/socket_events_variable.dart';
 import '../../navigation/controllers/navigation_controller.dart';
 
 class HomeController extends GetxController {
