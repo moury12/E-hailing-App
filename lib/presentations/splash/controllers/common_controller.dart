@@ -6,14 +6,13 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
-import 'package:e_hailing_app/core/service/socket_events_variable.dart';
-import 'package:e_hailing_app/core/service/socket_service.dart';
+import 'package:e_hailing_app/core/service/location-service/location_service.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -24,13 +23,25 @@ import '../../../core/utils/google_map_api_key.dart';
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
   RxBool isLoadingProfile = false.obs;
-  Rx<LatLng> markerPosition = LatLng(23.8168, 90.3675).obs;
   final SocketService socketService = SocketService();
 
   RxString socketStatus = "Disconnected".obs;
+  final locationService = LocationTrackingService();
+  Rx<LatLng> markerPositionDriver = Rx<LatLng>(LatLng(0.0, 0.0));
+  Rx<LatLng> markerPositionRider = Rx<LatLng>(LatLng(0.0, 0.0));
+  GoogleMapController? mapControllerDriver;
+  GoogleMapController? mapControllerRider;
 
-  // Rx<LatLng> marketPosition = LatLng(23.8168, 90.3675).obs;
-  // GoogleMapController? mapController;
+  void setMapControllerRider(GoogleMapController controller) {
+    mapControllerRider = controller;
+    startTrackingLocationMethod();
+  }
+
+  void setMapControllerDriver(GoogleMapController controller) {
+    mapControllerDriver = controller;
+    startTrackingLocationMethod();
+  }
+
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
   var selectedRoleOption =
       Boxes.getUserData().get(roleKey) != null
@@ -50,16 +61,16 @@ class CommonController extends GetxController {
       "--check role----${Boxes.getUserRole().get(role, defaultValue: user).toString()}",
     );
     requestLocationPermission();
+    await getUserProfileRequest();
+    await fetchCurrentLocationMethod();
+    // Initialize user profile before setting up socket
+    await checkUserRole();
 
+    // Only setup socket if we have a valid user ID
+    if (userModel.value.sId != null) {
+      await setupGlobalSocketListeners();
+    }
     super.onInit();
-  }
-
-  GoogleMapController? mapController;
-
-  void onMapCreated(GoogleMapController controller) {
-    mapController ??= controller;
-    CommonController.to
-        .fetchCurrentLocation(); // Store and reuse the same controller
   }
 
   Future<void> requestLocationPermission() async {
@@ -68,126 +79,6 @@ class CommonController extends GetxController {
       debugPrint("Location permission granted.");
     } else {
       debugPrint("Location permission denied.");
-    }
-  }
-
-  StreamSubscription<Position>? positionStream;
-
-  String? _lastTrackedTripId;
-
-  Future<void> startTrackingUserLocation({String? tripId}) async {
-    // Don't restart the stream if already tracking and no tripId change
-    if (tripId != null &&
-        _lastTrackedTripId == tripId &&
-        positionStream != null) {
-      return;
-    }
-
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      Get.snackbar('Location Disabled', 'Please enable location services');
-      await Geolocator.openLocationSettings();
-      return;
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        Get.snackbar('Permission Denied', 'Location permission denied');
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      Get.snackbar(
-        'Permission Denied',
-        'Please enable location permission from settings',
-      );
-      await Geolocator.openAppSettings();
-      return;
-    }
-
-    // Always cancel previous stream to avoid duplicates
-    positionStream?.cancel();
-
-    positionStream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    ).listen((Position position) {
-      markerPosition.value = LatLng(position.latitude, position.longitude);
-
-      // Emit only if tripId is provided
-      if (tripId != null) {
-        socketService.emit(TripEvents.tripDriverLocationUpdate, {
-          "tripId": tripId,
-          "lat": position.latitude,
-          "long": position.longitude,
-        });
-      }
-
-      mapController?.animateCamera(
-        CameraUpdate.newLatLng(markerPosition.value),
-      );
-    });
-
-    _lastTrackedTripId = tripId;
-  }
-
-  Future<void> fetchCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Check if location services are enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      Get.snackbar('Location Disabled', 'Please enable location services');
-      await Geolocator.openLocationSettings();
-      return;
-    }
-
-    // Check for permissions
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        Get.snackbar('Permission Denied', 'Location permission denied');
-        await Geolocator.openAppSettings();
-
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      Get.snackbar(
-        'Permission Denied',
-        'Location permission permanently denied. Please enable in settings.',
-      );
-      await Geolocator.openAppSettings();
-
-      openAppSettings();
-      return;
-    }
-
-    try {
-      // Get the current position - THIS WAS MISSING
-      Position position = await Geolocator.getCurrentPosition(
-        // Add timeout
-      );
-
-      // Set new position - THIS WAS MISSING
-      markerPosition.value = LatLng(position.latitude, position.longitude);
-      await getAddressFromLatLng(markerPosition.value);
-      mapController?.animateCamera(
-        CameraUpdate.newLatLng(markerPosition.value),
-      );
-    } catch (e) {
-      Get.snackbar('Error', 'Could not get current location: ${e.toString()}');
-
-      // Use fallback if error occurs
-      markerPosition.value = LatLng(23.8168, 90.3675); // Dhaka, Bangladesh
     }
   }
 
@@ -209,7 +100,6 @@ class CommonController extends GetxController {
   }
 
   Future<void> setupGlobalSocketListeners() async {
-    await getUserProfileRequest();
     socketService.onConnected = () {
       socketStatus.value = 'Connected';
       logger.i('Socket connected');
@@ -239,6 +129,8 @@ class CommonController extends GetxController {
     double radiusInMeters = 5000,
   }) async {
     isLoadingOnLocationSuggestion.value = true;
+    Rx<LatLng> markerPosition =
+        isDriver.value ? markerPositionDriver : markerPositionRider;
 
     String url =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=${GoogleClient.googleMapUrl}';
@@ -259,7 +151,7 @@ class CommonController extends GetxController {
       final Map<String, dynamic> data = jsonDecode(response.body);
       addressSuggestion.value = data['predictions'];
       if (data['predictions'].isEmpty) {
-        fetchCurrentLocation();
+        await fetchCurrentLocationMethod();
       }
       isLoadingOnLocationSuggestion.value = false;
     } else {
@@ -267,31 +159,33 @@ class CommonController extends GetxController {
     }
   }
 
-  Future<String> getAddressFromLatLng(LatLng latLng) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        latLng.latitude,
-        latLng.longitude,
-      );
+  Future<void> fetchCurrentLocationMethod() async {
+    Rx<LatLng> markerPosition =
+        isDriver.value ? markerPositionDriver : markerPositionRider;
 
-      if (placemarks.isNotEmpty) {
-        final Placemark place = placemarks.first;
-        final address =
-            "${place.subLocality},${place.subAdministrativeArea}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
-        return address;
-      } else {
-        return "No address found";
-      }
-    } catch (e) {
-      return "Error retrieving address";
+    await locationService.fetchCurrentLocation(markerPosition: markerPosition);
+  }
+
+  Future<void> startTrackingLocationMethod() async {
+    Rx<LatLng> markerPosition =
+        isDriver.value ? markerPositionDriver : markerPositionRider;
+    GoogleMapController? mapController =
+        isDriver.value ? mapControllerDriver : mapControllerRider;
+
+    if (mapController == null) {
+      logger.e("❌ Map controller not initialized yet.");
+      return;
     }
+    await locationService.startTrackingLocation(
+      markerPosition: markerPosition,
+      mapController: mapController,
+    );
   }
 
   Future<void> checkUserRole() async {
     logger.d("token - ${Boxes.getUserData().get(tokenKey)}");
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
-      await getUserProfileRequest();
       Boxes.getUserRole().put(role, userModel.value.role!.toLowerCase());
       isDriver.value = userModel.value.role!.toLowerCase() == driver;
     }
@@ -353,55 +247,6 @@ class CommonController extends GetxController {
         userModel.value.phoneNumber ?? AppStaticStrings.noDataFound;
   }
 
-  Future<void> getLatLngFromPlace(
-    String placeId, {
-    RxString? lat,
-    RxString? lng,
-    Rx<LatLng?>? latLng,
-    required RxString selectedAddress,
-  }) async {
-    final String url =
-        'https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeId&key=${GoogleClient.googleMapUrl}';
-
-    try {
-      final response = await http.get(Uri.parse(url));
-      // logger.d(response.body);
-      if (response.statusCode == 200) {
-        // Parse response
-        final Map<String, dynamic> data = json.decode(response.body);
-
-        if (data['results'].isNotEmpty) {
-          final location = data['results'][0]['geometry']['location'];
-
-          // Update RxString values
-          selectedAddress.value = data['results'][0]['formatted_address'];
-          if (lat != null && lng != null) {
-            lat.value = location['lat'].toString();
-            lng.value = location['lng'].toString();
-          } else if (latLng != null) {
-            latLng.value = LatLng(location['lat'], location['lng']);
-          }
-        } else {
-          debugPrint("No results found for the provided placeId.");
-        }
-      } else {
-        debugPrint(
-          "HTTP Error: ${response.statusCode} - ${response.reasonPhrase}",
-        );
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  @override
-  void onClose() {
-    socketService.disconnect();
-    positionStream?.cancel();
-
-    super.onClose();
-  }
-
   void onLogout() {
     Boxes.getUserData().delete(tokenKey);
     Boxes.getUserData().delete(roleKey);
@@ -413,6 +258,18 @@ class CommonController extends GetxController {
   Future<void> initialSetUp() async {
     await checkUserRole();
     await setupGlobalSocketListeners();
-    await fetchCurrentLocation();
+    await fetchCurrentLocationMethod();
+  }
+
+  @override
+  void onClose() {
+    locationService.stopTracking();
+    socketService.disconnect();
+    if (mapControllerDriver != null) {
+      mapControllerDriver!.dispose();
+    } else if (mapControllerRider != null) {
+      mapControllerRider!.dispose();
+    }
+    super.onClose();
   }
 }

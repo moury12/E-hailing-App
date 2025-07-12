@@ -34,7 +34,7 @@ class _NavigationPageState extends State<NavigationPage>
     _persistentMapWidget =
         CommonController.to.isDriver.value
             ? GoogleMapWidgetForDriver()
-            : GoogleMapWidget();
+            : GoogleMapWidgetForRider();
   }
 
   @override

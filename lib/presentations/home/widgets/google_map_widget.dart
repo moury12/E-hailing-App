@@ -1,4 +1,5 @@
 import 'package:e_hailing_app/core/constants/image_constant.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
@@ -7,28 +8,27 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../navigation/controllers/navigation_controller.dart';
 
-class GoogleMapWidget extends StatefulWidget {
-  const GoogleMapWidget({super.key});
+class GoogleMapWidgetForRider extends StatefulWidget {
+  const GoogleMapWidgetForRider({super.key});
 
   @override
-  State<GoogleMapWidget> createState() => _GoogleMapWidgetState();
+  State<GoogleMapWidgetForRider> createState() =>
+      _GoogleMapWidgetForRiderState();
 }
 
-class _GoogleMapWidgetState extends State<GoogleMapWidget>
+class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
     with AutomaticKeepAliveClientMixin {
-  Rxn<BitmapDescriptor> customIcon = Rxn<BitmapDescriptor>();
-  GoogleMapController? _mapController;
-  bool _isMapReady = false;
+  final Rx<BitmapDescriptor?> customIcon = Rx<BitmapDescriptor?>(null);
 
   Future<void> loadCustomMarker() async {
     try {
       final bitmap = await BitmapDescriptor.asset(
-        const ImageConfiguration(size: Size(50, 50)),
+        const ImageConfiguration(size: Size(30, 30)),
         purpleCarImage2,
       );
       customIcon.value = bitmap;
     } catch (e) {
-      print('Error loading custom marker: $e');
+      debugPrint('Error loading custom marker: $e');
       // Fallback to default marker if custom marker fails
       customIcon.value = BitmapDescriptor.defaultMarker;
     }
@@ -40,33 +40,33 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget>
     loadCustomMarker();
   }
 
-  @override
-  void dispose() {
-    _mapController?.dispose();
-    super.dispose();
-  }
-
   void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
-    _isMapReady = true;
+    CommonController.to.setMapControllerRider(controller);
 
-    // Call the original onMapCreated if it exists
-    if (CommonController.to.onMapCreated != null) {
-      CommonController.to.onMapCreated(controller);
+    // Initial camera position based on whether we have a route or not
+    if (NavigationController.to.routePolylines.isEmpty) {
+      final userPosition = CommonController.to.markerPositionRider.value;
+      if (userPosition != const LatLng(0, 0)) {
+        controller.animateCamera(CameraUpdate.newLatLngZoom(userPosition, 14));
+      }
+    } else {
+      // If we already have a polyline, ensure it's properly visible
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        HomeController.to.polyLineShow();
+      });
     }
   }
-
-  // Safe method to animate camera with error handling
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Obx(() {
-      final position = CommonController.to.markerPosition.value;
+      final position = CommonController.to.markerPositionRider.value;
 
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
+
         polylines: NavigationController.to.routePolylines.value,
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
@@ -95,7 +95,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget>
                     markerId: const MarkerId("selected_location"),
                     position:
                         HomeController.to.dropoffLatLng.value ??
-                        CommonController.to.markerPosition.value,
+                        CommonController.to.markerPositionRider.value,
                     draggable: HomeController.to.mapDragable.value,
                     onTap: () {
                       NavigationController.to.markerDraging.value = true;
@@ -105,7 +105,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget>
                     },
                     onDragEnd: (value) async {
                       try {
-                        CommonController.to.markerPosition.value = value;
+                        CommonController.to.markerPositionRider.value = value;
                         if (HomeController.to.setDestination.value) {
                           HomeController.to.dropoffLatLng.value = value;
                         } else {
@@ -126,7 +126,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget>
                         );
                         NavigationController.to.markerDraging.value = false;
                       } catch (e) {
-                        print('Error in marker drag end: $e');
+                        debugPrint('Error in marker drag end: $e');
                         NavigationController.to.markerDraging.value = false;
                       }
                     },
@@ -145,6 +145,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget>
   bool get wantKeepAlive => true;
 }
 
+///-------------------------------------------------------------------------------------////
+
 class GoogleMapWidgetForDriver extends StatefulWidget {
   const GoogleMapWidgetForDriver({super.key});
 
@@ -154,9 +156,22 @@ class GoogleMapWidgetForDriver extends StatefulWidget {
 }
 
 class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
-  Rxn<BitmapDescriptor> customIcon = Rxn<BitmapDescriptor>();
+  final Rx<BitmapDescriptor?> customIcon = Rx<BitmapDescriptor?>(null);
   GoogleMapController? _mapController;
-  bool _isMapReady = false;
+
+  Future<void> loadCustomMarker() async {
+    try {
+      final bitmap = await BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(30, 30)),
+        purpleCarImage2,
+      );
+      customIcon.value = bitmap;
+    } catch (e) {
+      debugPrint('Error loading custom marker: $e');
+      // Fallback to default marker if custom marker fails
+      customIcon.value = BitmapDescriptor.defaultMarker;
+    }
+  }
 
   @override
   void initState() {
@@ -164,33 +179,20 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
     loadCustomMarker();
   }
 
-  @override
-  void dispose() {
-    _mapController?.dispose();
-    super.dispose();
-  }
-
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
-    _isMapReady = true;
 
-    // Call the original onMapCreated if it exists
-    if (CommonController.to.onMapCreated != null) {
-      CommonController.to.onMapCreated(controller);
-    }
-  }
-
-  Future<void> loadCustomMarker() async {
-    try {
-      final bitmap = await BitmapDescriptor.asset(
-        const ImageConfiguration(size: Size(50, 50)),
-        purpleCarImage2,
-      );
-      customIcon.value = bitmap;
-    } catch (e) {
-      print('Error loading custom marker: $e');
-      // Fallback to default marker if custom marker fails
-      customIcon.value = BitmapDescriptor.defaultMarker;
+    CommonController.to.setMapControllerDriver(controller);
+    if (NavigationController.to.routePolylines.isEmpty) {
+      final userPosition = CommonController.to.markerPositionDriver.value;
+      if (userPosition != const LatLng(0, 0)) {
+        controller.animateCamera(CameraUpdate.newLatLngZoom(userPosition, 14));
+      }
+    } else {
+      // If we already have a polyline, ensure it's properly visible
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        DashBoardController.to.drawPolylineMethod();
+      });
     }
   }
 
@@ -198,13 +200,13 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
   Widget build(BuildContext context) {
     // logger.d("---------------------------------------");
     return Obx(() {
-      final position = CommonController.to.markerPosition.value;
+      final position = CommonController.to.markerPositionDriver.value;
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
         polylines: NavigationController.to.routePolylines.value,
 
-        onMapCreated: CommonController.to.onMapCreated,
+        onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
@@ -212,8 +214,8 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
         markers: {
           Marker(
             markerId: const MarkerId("driver_marker"),
-            position: HomeController.to.driverPosition.value!,
-            icon: customIcon.value!,
+            position: CommonController.to.markerPositionDriver.value,
+            icon: customIcon.value ?? BitmapDescriptor.defaultMarker,
 
             onTap: () {
               NavigationController.to.markerDraging.value = true;

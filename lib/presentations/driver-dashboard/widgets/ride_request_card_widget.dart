@@ -72,8 +72,8 @@ class RideRequestCardWidget extends StatelessWidget {
             // DashBoardController.to.rideRequest.value = false;
             DashBoardController.to.driverTripAccept(
               tripId: DashBoardController.to.availableTrip.value.sId.toString(),
-              lat: CommonController.to.markerPosition.value.latitude,
-              lng: CommonController.to.markerPosition.value.longitude,
+              lat: CommonController.to.markerPositionDriver.value.latitude,
+              lng: CommonController.to.markerPositionDriver.value.longitude,
             );
           },
           title: AppStaticStrings.accept,
