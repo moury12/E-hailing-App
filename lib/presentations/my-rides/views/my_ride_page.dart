@@ -88,16 +88,17 @@ class _MyRidePageState extends State<MyRidePage>
         MyRideController.to.pagingController.refresh();
         final isDriver = CommonController.to.isDriver.value;
         if (isDriver) {
+          DashBoardController.to.getDriverCurrentTripRequest();
         } else {
           HomeController.to.getUserCurrentTrip();
         }
       },
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: padding12H,
-          child: Column(
-            children: [
-              DynamicTabWidget(
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: padding12H,
+              child: DynamicTabWidget(
                 tabs: MyRideController.to.tabLabels,
                 tabContent: [
                   _buildOngoingTab(),
@@ -105,9 +106,9 @@ class _MyRidePageState extends State<MyRidePage>
                   _buildCompletedTab(),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

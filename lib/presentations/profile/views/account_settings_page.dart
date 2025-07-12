@@ -48,38 +48,41 @@ class AccountSettingsPage extends StatelessWidget {
                       context: context,
                       builder:
                           (context) => AlertDialog(
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CustomText(
-                                  text:
-                                      AppStaticStrings
-                                          .areYouSureYouWantToDelete,
-                                  textAlign: TextAlign.center,
-                                ),
-                                space8H,
-                                Row(
-                                  spacing: 8.w,
-                                  children: [
-                                    Expanded(
-                                      child: CustomButton(
-                                        textColor: AppColors.kPrimaryColor,
-                                        fillColor: Colors.transparent,
-                                        onTap: () => Get.back(),
-                                        title: AppStaticStrings.cancel,
+                            content: SizedBox(
+                              width: Get.width * .8,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CustomText(
+                                    text:
+                                        AppStaticStrings
+                                            .areYouSureYouWantToDelete,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  space8H,
+                                  Row(
+                                    spacing: 8.w,
+                                    children: [
+                                      Expanded(
+                                        child: CustomButton(
+                                          textColor: AppColors.kPrimaryColor,
+                                          fillColor: Colors.transparent,
+                                          onTap: () => Get.back(),
+                                          title: AppStaticStrings.cancel,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: CustomButton(
-                                        onTap: () {
-                                          Get.toNamed(LoginPage.routeName);
-                                        },
-                                        title: AppStaticStrings.delete,
+                                      Expanded(
+                                        child: CustomButton(
+                                          onTap: () {
+                                            Get.toNamed(LoginPage.routeName);
+                                          },
+                                          title: AppStaticStrings.delete,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                     ),
