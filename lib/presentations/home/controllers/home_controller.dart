@@ -199,7 +199,11 @@ class HomeController extends GetxController {
         final status = data['data']['status'];
         if (status == DriverTripStatus.cancelled.name ||
             status == DriverTripStatus.completed.name) {
-          Get.offAllNamed(NavigationPage.routeName);
+          resetAllStates();
+          Get.offAllNamed(
+            NavigationPage.routeName,
+            arguments: {'reconnectSocket': true},
+          );
         } else if (status == DriverTripStatus.destination_reached.name) {
           Get.toNamed(
             PaymentPage.routeName,

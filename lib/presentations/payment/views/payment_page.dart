@@ -135,7 +135,10 @@ class PaymentPage extends StatelessWidget {
                         ),
                         CustomButton(
                           onTap: () {
-                            Get.offAllNamed(NavigationPage.routeName);
+                            Get.offAllNamed(
+                              NavigationPage.routeName,
+                              arguments: {'reconnectSocket': true},
+                            );
                           },
                           fillColor: Colors.transparent,
                           textColor: AppColors.kPrimaryColor,

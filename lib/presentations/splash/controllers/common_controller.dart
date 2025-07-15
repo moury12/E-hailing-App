@@ -61,11 +61,9 @@ class CommonController extends GetxController {
       "--check role----${Boxes.getUserRole().get(role, defaultValue: user).toString()}",
     );
     requestLocationPermission();
-    Future.wait([
-      getUserProfileRequest(),
-      fetchCurrentLocationMethod(),
-      checkUserRole(),
-    ]);
+    await getUserProfileRequest();
+
+    Future.wait([checkUserRole(), fetchCurrentLocationMethod()]);
 
     // Only setup socket if we have a valid user ID
     if (userModel.value.sId != null) {
@@ -257,6 +255,9 @@ class CommonController extends GetxController {
   }
 
   Future<void> initialSetUp() async {
+    await getUserProfileRequest();
+
+    await checkUserRole();
     await checkUserRole();
     await setupGlobalSocketListeners();
     await fetchCurrentLocationMethod();

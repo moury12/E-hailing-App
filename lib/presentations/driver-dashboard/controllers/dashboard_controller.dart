@@ -444,7 +444,6 @@ class DashBoardController extends GetxController {
         break;
       case 'completed':
       case 'cancelled':
-        // socketService.off(DriverEvent.tripUpdateStatus);
         Get.offAllNamed(NavigationPage.routeName);
         break;
       default:
