@@ -59,7 +59,16 @@ class TripBinding extends Bindings {
 class NavigationBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(NavigationController());
+    Get.lazyPut<NavigationController>(() => NavigationController());
+
+    // Add this to handle the reconnectSocket argument
+    final arguments = Get.arguments;
+    if (arguments is Map && arguments['reconnectSocket'] == true) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        final commonController = Get.find<CommonController>();
+        commonController.setupGlobalSocketListeners();
+      });
+    }
   }
 }
 

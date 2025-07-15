@@ -393,7 +393,10 @@ class AuthController extends GetxController {
             message: retryResponse['message'],
           );
           await CommonController.to.checkUserRole();
-          Get.offAllNamed(NavigationPage.routeName);
+          Get.offAllNamed(
+            NavigationPage.routeName,
+            arguments: {'reconnectSocket': true},
+          );
         } else {
           showCustomSnackbar(
             title: 'Failed',
