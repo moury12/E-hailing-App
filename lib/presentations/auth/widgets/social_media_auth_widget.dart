@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
@@ -37,13 +39,15 @@ class SocialMediaAuthWidget extends StatelessWidget {
               },
               icon: SvgPicture.asset(googleIcon),
             ),
-            IconButton(
-              onPressed: () {
-                Boxes.getUserRole().put(role, user);
-                CommonController.to.isDriver.value = false;
-              },
-              icon: SvgPicture.asset(appleIcon),
-            ),
+            Platform.isIOS
+                ? IconButton(
+                  onPressed: () {
+                    Boxes.getUserRole().put(role, user);
+                    CommonController.to.isDriver.value = false;
+                  },
+                  icon: SvgPicture.asset(appleIcon),
+                )
+                : SizedBox.shrink(),
           ],
         ),
       ],
