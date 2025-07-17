@@ -1,3 +1,5 @@
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/notification/controller/notification_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
@@ -61,12 +63,29 @@ class NavigationBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<NavigationController>(() => NavigationController());
 
-    // Add this to handle the reconnectSocket argument
+    // Handle reconnectSocket argument
     final arguments = Get.arguments;
     if (arguments is Map && arguments['reconnectSocket'] == true) {
       Future.delayed(Duration(milliseconds: 500), () {
         final commonController = Get.find<CommonController>();
         commonController.setupGlobalSocketListeners();
+
+        // Also re-register driver-specific listeners if user is a driver
+        if (commonController.isDriver.value) {
+          Future.delayed(Duration(milliseconds: 200), () {
+            if (Get.isRegistered<DashBoardController>()) {
+              final dashboardController = Get.find<DashBoardController>();
+              dashboardController.registerSocketListeners();
+            }
+          });
+        } else {
+          Future.delayed(Duration(milliseconds: 200), () {
+            if (Get.isRegistered<HomeController>()) {
+              final homeController = Get.find<HomeController>();
+              homeController.registerTripEventListeners();
+            }
+          });
+        }
       });
     }
   }

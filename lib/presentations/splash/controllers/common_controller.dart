@@ -60,15 +60,13 @@ class CommonController extends GetxController {
     logger.d(
       "--check role----${Boxes.getUserRole().get(role, defaultValue: user).toString()}",
     );
-    requestLocationPermission();
-    await getUserProfileRequest();
-
-    Future.wait([checkUserRole(), fetchCurrentLocationMethod()]);
+    if (Boxes.getUserData().get(tokenKey) != null &&
+        Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
+      initialSetUp();
+    }
 
     // Only setup socket if we have a valid user ID
-    if (userModel.value.sId != null) {
-      await setupGlobalSocketListeners();
-    }
+
     super.onInit();
   }
 
@@ -257,16 +255,16 @@ class CommonController extends GetxController {
   Future<void> initialSetUp() async {
     await getUserProfileRequest();
 
-    await checkUserRole();
-    await checkUserRole();
-    await setupGlobalSocketListeners();
-    await fetchCurrentLocationMethod();
+    Future.wait([checkUserRole(), fetchCurrentLocationMethod()]);
+    if (userModel.value.sId != null) {
+      await setupGlobalSocketListeners();
+    }
   }
 
   @override
   void onClose() {
     locationService.stopTracking();
-    socketService.disconnect();
+    // socketService.disconnect();
     if (mapControllerDriver != null) {
       mapControllerDriver!.dispose();
     } else if (mapControllerRider != null) {

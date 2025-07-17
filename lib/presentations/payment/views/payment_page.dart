@@ -21,7 +21,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../core/helper/helper_function.dart';
-import '../widgets/coin_dialog_payment_widget.dart';
 import '../widgets/payment_card_item.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -94,12 +93,12 @@ class PaymentPage extends StatelessWidget {
                   value: 'RM $finalFee',
                 ),
                 space12H,
-                PaymentCardItem(
-                  img: cardsIcon,
-                  title: AppStaticStrings.creditDebitCards,
-                  onTap: () {},
-                ),
 
+                // PaymentCardItem(
+                //   img: cardsIcon,
+                //   title: AppStaticStrings.creditDebitCards,
+                //   onTap: () {},
+                // ),
                 PaymentCardItem(
                   img: handCashIcon,
                   title: AppStaticStrings.handCash,
@@ -108,16 +107,17 @@ class PaymentPage extends StatelessWidget {
                   },
                 ),
 
-                PaymentCardItem(
-                  img: coinIcon,
-                  title: AppStaticStrings.dCoin,
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => DCoinDialogPaymentWidget(),
-                    );
-                  },
-                ),
+                // PaymentCardItem(
+                //   img: coinIcon,
+                //   title: AppStaticStrings.dCoin,
+                //   onTap: () {
+                //     showDialog(
+                //       context: context,
+                //       builder: (context) => DCoinDialogPaymentWidget(),
+                //     );
+                //   },
+                // ),
+                space6H,
                 role == driver
                     ? Column(
                       spacing: 8.h,

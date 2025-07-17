@@ -120,15 +120,15 @@ class HomeController extends GetxController {
       socketConnection(); // your own connect method
     }
 
-    _registerTripEventListeners();
+    registerTripEventListeners();
 
     socket.onConnected = () {
       logger.i("Reconnected");
-      _registerTripEventListeners(); // re-register on reconnect
+      registerTripEventListeners(); // re-register on reconnect
     };
   }
 
-  void _registerTripEventListeners() {
+  void registerTripEventListeners() {
     logger.d("Registering Trip Socket Events");
 
     // Always clean up old listeners
