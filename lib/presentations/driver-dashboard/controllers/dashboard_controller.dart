@@ -134,10 +134,10 @@ class DashBoardController extends GetxController {
 
       socketService.connect(userId, true); // async
       socketService.onConnected = () {
-        _registerSocketListeners(); // Register events **after** connection
+        registerSocketListeners(); // Register events **after** connection
       };
     } else {
-      _registerSocketListeners(); // Already connected
+      registerSocketListeners(); // Already connected
     }
   }
 
@@ -331,7 +331,7 @@ class DashBoardController extends GetxController {
     super.onClose();
   }
 
-  void _registerSocketListeners() {
+  void registerSocketListeners() {
     logger.i("🚦 Is driver online? ${socketService.isDriverActive}");
 
     // Clear all previous listeners to avoid duplication
@@ -444,7 +444,12 @@ class DashBoardController extends GetxController {
         break;
       case 'completed':
       case 'cancelled':
-        Get.offAllNamed(NavigationPage.routeName);
+        removeSocketListeners();
+
+        Get.offAllNamed(
+          NavigationPage.routeName,
+          arguments: {'reconnectSocket': true},
+        );
         break;
       default:
         logger.w("Unknown trip status: $status");
