@@ -187,7 +187,10 @@ class AuthController extends GetxController {
         ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
         await CommonController.to.initialSetUp();
 
-        Get.offAllNamed(NavigationPage.routeName);
+        Get.offAllNamed(
+          NavigationPage.routeName,
+          arguments: {'reconnectSocket': true},
+        );
       } else {
         logger.e(response);
 
@@ -294,9 +297,6 @@ class AuthController extends GetxController {
         return; // User cancelled
       }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
       final String name = googleUser.displayName ?? "User";
       final String email = googleUser.email;
       final String photoUrl = googleUser.photoUrl ?? "";
@@ -329,8 +329,11 @@ class AuthController extends GetxController {
           title: 'Success',
           message: initialResponse['message'],
         );
-        await CommonController.to.checkUserRole();
-        Get.offAllNamed(NavigationPage.routeName);
+        await CommonController.to.initialSetUp();
+        Get.offAllNamed(
+          NavigationPage.routeName,
+          arguments: {'reconnectSocket': true},
+        );
       } else {
         // 🔁 Retry with phone number if needed
         String userPhoneNumber = '';
@@ -392,7 +395,8 @@ class AuthController extends GetxController {
             title: 'Success',
             message: retryResponse['message'],
           );
-          await CommonController.to.checkUserRole();
+          // NavigationController.to.isLoggedIn;
+          await CommonController.to.initialSetUp();
           Get.offAllNamed(
             NavigationPage.routeName,
             arguments: {'reconnectSocket': true},
@@ -431,45 +435,6 @@ class AuthController extends GetxController {
       final idToken = credential.identityToken;
       logger.d(idToken);
       if (idToken == null) throw Exception('No ID token received');
-
-      // final response = await http.post(
-      //   Uri.parse('https://appleauth-stbfcg576q-uc.a.run.app'),
-      //   headers: {'Content-Type': 'application/json'}, // Add this header
-      //   body: jsonEncode({
-      //     // Properly encode the JSON
-      //     'data': {'idToken': idToken},
-      //   }),
-      // );
-
-      // logger.d('Backend response: ${response.body}');
-      // Map<String, dynamic> responseBody = jsonDecode(response.body);
-      // if (responseBody['result']['success'] == true) {
-      //   isAppleAuthLoading.value = false;
-      //   // Boxes.getUserData().put(
-      //   //   tokenKey,
-      //   //   responseBody['result']['data']['access_token'],
-      //   // );
-      //   // Boxes.getUserData().put(
-      //   //   refreshTokenKey,
-      //   //   responseBody['result']['data']['refresh_token'],
-      //   // );
-      //   showCustomSnackbar(
-      //     title: 'Success',
-      //     message: responseBody['result']['data']['message'],
-      //   );
-      //
-      //   logger.d(Boxes.getUserData().get(tokenKey).toString());
-      //   Get.offAllNamed(NavigationPage.routeName);
-      // }
-      // else {
-      //   isAppleAuthLoading.value = false;
-      //
-      //   showCustomSnackbar(
-      //     title: 'Failed',
-      //     message: response['message'],
-      //     type: SnackBarType.failed,
-      //   );
-      // }
     } catch (e) {
       isAppleAuthLoading.value = false;
       print("error apple $e");

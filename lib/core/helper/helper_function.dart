@@ -330,7 +330,7 @@ void showCustomSnackbar({
   bool noInternet = false,
   Function()? retryTap,
   SnackBarType type = SnackBarType.success,
-  SnackPosition position = SnackPosition.BOTTOM, // Default position
+  SnackPosition position = SnackPosition.TOP, // Default position
 }) {
   Color backgroundColor = AppColors.kWhiteColor;
   Color textColor = Colors.black;
