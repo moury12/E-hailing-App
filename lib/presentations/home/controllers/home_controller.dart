@@ -115,6 +115,42 @@ class HomeController extends GetxController {
     }
   }
 
+  void resetHomePage() {
+    // Clear polyline
+    isPolylineDrawn.value = false;
+    lastPickupLatLng = null;
+    lastDropoffLatLng = null;
+
+    // Clear any existing polylines from the map
+    if (NavigationController.to.routePolylines.isNotEmpty) {
+      NavigationController.to.routePolylines.clear();
+    }
+
+    // Clear drop off location
+    dropoffLatLng.value = null;
+    dropoffAddressText.value = 'Drag pin to set your DropOff location';
+    dropOffLocationController.value.clear();
+
+    // Set pickup location to user's current location
+    if (CommonController.to.markerPositionRider.value != null) {
+      setCurrentLocationOnPickUp();
+    } else {
+      // If current location is not available, reset pickup to default
+      pickupLatLng.value = null;
+      pickupAddressText.value = 'Drag pin to set your Pickup location';
+      pickupLocationController.value.clear();
+    }
+
+    // Clear active field focus
+    clearAllFocus();
+
+    // Reset other related states
+    distance.value = 0;
+    duration.value = 0;
+    estimatedFare.value = 0;
+    resetAllStates();
+  }
+
   void initializeSocket() {
     if (!socket.isConnected) {
       socketConnection(); // your own connect method
@@ -164,6 +200,7 @@ class HomeController extends GetxController {
       Future.delayed(Duration(seconds: 2), () {
         Get.back();
       });
+      resetHomePage();
     });
 
     socket.on(TripEvents.tripAccepted, (data) {

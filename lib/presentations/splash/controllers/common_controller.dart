@@ -62,6 +62,8 @@ class CommonController extends GetxController {
     );
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
+      fetchCurrentLocationMethod();
+
       initialSetUp();
     }
 
@@ -110,7 +112,7 @@ class CommonController extends GetxController {
     socketService.onSocketError = (error) {
       socketStatus.value = 'Error: $error';
       logger.e('Socket error: $error');
-      showCustomSnackbar(title: "Error", message: 'Socket error: $error');
+      showCustomSnackbar(title: "Error", message: error);
     };
 
     // You can even auto-connect here if you want:
