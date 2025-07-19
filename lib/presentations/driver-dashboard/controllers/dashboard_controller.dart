@@ -65,6 +65,7 @@ class DashBoardController extends GetxController {
     afterTripStarted.value = false;
     afterDestinationReached.value = false;
     afterOnTheWay.value = false;
+    sendPaymentReq.value = false;
 
     // Enable only the provided one
     switch (rideType) {

@@ -27,7 +27,10 @@ import '../../presentations/payment/widgets/ratting_dialog_widget.dart';
 import '../../presentations/trip/widgets/trip_cancellation_reason_card_item.dart';
 import '../utils/google_map_api_key.dart';
 
-Future<dynamic> tripCancellationDialog({Function()? onSubmit}) {
+Future<dynamic> tripCancellationDialog({
+  Function()? onSubmit,
+  bool? isLoading,
+}) {
   return Get.defaultDialog(
     backgroundColor: AppColors.kWhiteColor,
     radius: 8.r,
@@ -48,6 +51,7 @@ Future<dynamic> tripCancellationDialog({Function()? onSubmit}) {
         Padding(
           padding: padding12,
           child: CustomButton(
+            isLoading: isLoading,
             onTap:
                 onSubmit ??
                 () {

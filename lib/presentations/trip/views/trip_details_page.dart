@@ -17,7 +17,6 @@ import 'package:e_hailing_app/presentations/home/controllers/home_controller.dar
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/navigation/widgets/custom_container_with_border.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
-import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -209,31 +208,27 @@ class TripDetailsPage extends StatelessWidget {
                         },
                         title: AppStaticStrings.payment,
                       )
-                      : CancelTripButtonWidget(
-                        onSubmit: () {
-                          if (HomeController.to.cancelReason.isEmpty) {
-                            showCustomSnackbar(
-                              title: "Field Required",
-                              message: "Need to select the reason",
-                            );
-                          } else {
-                            HomeController.to
-                                .updateUserTrip(
-                                  tripId: trip.sId.toString(),
-                                  status:
-                                      DriverTripStatus.cancelled.name
-                                          .toString(),
-                                  reason: HomeController.to.cancelReason,
-                                )
-                                .then((value) {
-                                  for (TripCancellationModel cancel
-                                      in tripCancellationList) {
-                                    cancel.isChecked.value = false;
-                                  }
-                                });
-                          }
-                        },
-                      ),
+                      : Obx(() {
+                        return CancelTripButtonWidget(
+                          isLoading: HomeController.to.isCancellingTrip.value,
+                          onSubmit: () {
+                            if (HomeController.to.cancelReason.isEmpty) {
+                              showCustomSnackbar(
+                                title: "Field Required",
+                                message: "Need to select the reason",
+                              );
+                            } else {
+                              HomeController.to.updateUserTrip(
+                                tripId: trip.sId.toString(),
+                                status:
+                                    DriverTripStatus.cancelled.name.toString(),
+                                reason: HomeController.to.cancelReason,
+                              );
+                              Get.back();
+                            }
+                          },
+                        );
+                      }),
                 ],
               );
             }),

@@ -11,10 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 class RattingDialogWidget extends StatelessWidget {
-  const RattingDialogWidget({
-    super.key,
-  });
+  const RattingDialogWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +41,7 @@ class RattingDialogWidget extends StatelessWidget {
                 itemCount: 5,
                 ratingWidget: RatingWidget(
                   full: Icon(CupertinoIcons.star_fill),
-                  half:Icon(CupertinoIcons.star_lefthalf_fill),
+                  half: Icon(CupertinoIcons.star_lefthalf_fill),
                   empty: Icon(CupertinoIcons.star),
                 ),
                 itemPadding: EdgeInsets.symmetric(horizontal: 4.sp),
@@ -53,15 +52,15 @@ class RattingDialogWidget extends StatelessWidget {
 
               CustomTextField(
                 title: AppStaticStrings.review,
-                hintText:
-                AppStaticStrings.enterYourReview,
-                borderColor:
-                AppColors.kExtraLightTextColor,
+                hintText: AppStaticStrings.enterYourReview,
+                borderColor: AppColors.kExtraLightTextColor,
                 maxLines: 4,
               ),
               space12H,
               CustomButton(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                },
                 title: AppStaticStrings.submit,
               ),
             ],
