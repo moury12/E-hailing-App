@@ -35,13 +35,13 @@ class AccountInformationController extends GetxController {
   Rx<TextEditingController> contactNumberController =
       TextEditingController().obs;
 
-  @override
-  void onInit() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      CommonController.to.getUserProfileRequest(needReinitilaize: true);
-    });
-    super.onInit();
-  }
+  // @override
+  // void onInit() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     CommonController.to.getUserProfileRequest(needReinitilaize: true);
+  //   });
+  //   super.onInit();
+  // }
 
   ///------------------------------ update profile method -------------------------///
 

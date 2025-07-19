@@ -6,7 +6,6 @@ import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
 import 'package:e_hailing_app/presentations/profile/widgets/custom_container_with_elevation.dart';
-import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -148,7 +147,7 @@ class _EarningsBarChartState extends State<EarningsBarChart> {
                   DriverSettingsController.to.driverEarningModel.value;
               final monthlyRevenue = earnings.monthlyRevenue;
               if (monthlyRevenue == null || monthlyRevenue.toJson().isEmpty) {
-                return const EmptyWidget(text: AppStaticStrings.noDataFound);
+                return const CustomText(text: AppStaticStrings.noDataFound);
               }
               final monthlyEarnings = monthlyRevenue.toJson().values.toList();
               final maxEarning = monthlyEarnings.reduce(

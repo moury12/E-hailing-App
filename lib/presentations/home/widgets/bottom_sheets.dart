@@ -74,8 +74,12 @@ class _HomeSetLocationWidgetState extends State<HomeSetLocationWidget> {
               onTap: () {
                 if (HomeController.to.setDestination.value) {
                   HomeController.to.dropOffLocationController.value.clear();
+                  HomeController.to.dropoffAddressText.value = "";
+                  HomeController.to.dropoffLatLng.value = null;
                 } else {
                   HomeController.to.pickupLocationController.value.clear();
+                  HomeController.to.pickupAddressText.value = "";
+                  HomeController.to.pickupLatLng.value = null;
                 }
               },
               child: Padding(

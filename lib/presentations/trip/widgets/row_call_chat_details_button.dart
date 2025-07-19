@@ -85,8 +85,9 @@ class RowCallChatDetailsButton extends StatelessWidget {
 
 class CancelTripButtonWidget extends StatelessWidget {
   final Function()? onSubmit;
+  final bool? isLoading;
 
-  const CancelTripButtonWidget({super.key, this.onSubmit});
+  const CancelTripButtonWidget({super.key, this.onSubmit, this.isLoading});
 
   @override
   Widget build(BuildContext context) {

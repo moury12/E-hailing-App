@@ -2,6 +2,7 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/presentations/home/widgets/gradient_progress_indicator.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
@@ -185,6 +186,14 @@ class _HomePageState extends State<HomePage>
                                 return HomeSetLocationWidget();
                               } else if (HomeController.to.selectEv.value) {
                                 return HomeSelectEvWidget();
+                              } else if (HomeController
+                                  .to
+                                  .isLoadingUserCurrentTrip
+                                  .value) {
+                                return Padding(
+                                  padding: padding12,
+                                  child: GradientProgressIndicator(),
+                                );
                               } else {
                                 return HomeInitialContentWidget();
                               }

@@ -10,6 +10,7 @@ import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widge
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
+import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/foundation.dart';
@@ -47,6 +48,8 @@ class HomeController extends GetxController {
   final locationService = LocationTrackingService();
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
+  RxBool isCancellingTrip = false.obs;
+
   RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;
   RxString dropoffAddressText = 'Drag pin to set your DropOff location'.obs;
   Rx<TextEditingController> pickupLocationController =
@@ -241,6 +244,10 @@ class HomeController extends GetxController {
             NavigationPage.routeName,
             arguments: {'reconnectSocket': true},
           );
+          for (TripCancellationModel cancel in tripCancellationList) {
+            cancel.isChecked.value = false;
+          }
+          isCancellingTrip.value = false;
         } else if (status == DriverTripStatus.destination_reached.name) {
           Get.toNamed(
             PaymentPage.routeName,
@@ -441,12 +448,13 @@ class HomeController extends GetxController {
         endpoint: getUserCurrentTripEndpoint,
         method: 'GET',
       );
-      isLoadingUserCurrentTrip.value = false;
       if (response['success'] == true) {
         tripAcceptedModel.value = TripResponseModel.fromJson(response['data']);
         driverStatus.value = tripAcceptedModel.value.status.toString();
         updateDriverLocation();
       } else {
+        isLoadingUserCurrentTrip.value = false;
+
         logger.e(response);
         if (kDebugMode) {
           showCustomSnackbar(title: 'Failed', message: response['message']);
@@ -455,6 +463,8 @@ class HomeController extends GetxController {
     } catch (e) {
       isLoadingUserCurrentTrip.value = false;
       logger.e(e.toString());
+    } finally {
+      isLoadingUserCurrentTrip.value = false;
     }
   }
 
@@ -546,14 +556,34 @@ class HomeController extends GetxController {
         type: SnackBarType.failed,
       );
       socketConnection();
-
       return;
-    } else {
+    }
+
+    // Set loading state if it's a cancellation
+    if (status == DriverTripStatus.cancelled.name) {
+      isCancellingTrip.value = true;
+    }
+
+    try {
       socket.emit(DriverEvent.tripUpdateStatus, {
         "tripId": tripId,
         "newStatus": status,
         if (reason != null) "reason": reason,
       });
+
+      // Note: The loading state will be reset when the socket response comes back
+      // in your registerTripEventListeners() -> tripUpdateStatus event
+    } catch (e) {
+      // Reset loading state on error
+      if (status == DriverTripStatus.cancelled.name) {
+        isCancellingTrip.value = false;
+      }
+      logger.e('Error updating trip: $e');
+      showCustomSnackbar(
+        title: 'Error',
+        message: 'Failed to update trip. Please try again.',
+        type: SnackBarType.failed,
+      );
     }
   }
 
