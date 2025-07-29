@@ -31,6 +31,7 @@ class CustomAppBarForHome extends StatelessWidget implements PreferredSizeWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
+
       // backgroundColor: isBack == true ? Colors.transparent : AppColors.kWhiteColor,
       // elevation: 0,
       automaticallyImplyLeading: false,
