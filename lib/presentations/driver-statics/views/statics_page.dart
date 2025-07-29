@@ -1,5 +1,9 @@
+import 'package:e_hailing_app/core/components/comming_soon_widget.dart';
 import 'package:e_hailing_app/core/components/tab-bar/dynamic_tab_widget.dart';
+import 'package:e_hailing_app/core/constants/color_constants.dart';
+import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/driver-statics/controllers/statics_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -12,13 +16,18 @@ class StaticsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final tabs = StaticsController.to.tabLabels;
 
-    return DefaultTabController(
+    return ComingSoonWidget()  /*DefaultTabController(
+
+
       length: tabs.length,
       child: SingleChildScrollView(
         child: Padding(
           padding: padding12.copyWith(top: 0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+
             children: [
+
               DynamicTabWidget(
                 tabs: tabs,
                 tabContent: [
@@ -31,6 +40,7 @@ class StaticsPage extends StatelessWidget {
           ),
         ),
       ),
-    );
+    )*/;
   }
 }
+

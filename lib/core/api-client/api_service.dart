@@ -9,7 +9,7 @@ import 'package:http_parser/http_parser.dart';
 
 class ApiService {
   // Original base URL - keeping exact
-  final String baseUrl = 'http://10.0.60.26:8001';
+  final String baseUrl = 'https://pdsxrwmb-8001.inc1.devtunnels.ms';
 
   // Original singleton pattern - keeping exact
   static final ApiService _instance = ApiService._internal();

@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/components/comming_soon_widget.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
@@ -19,7 +20,7 @@ class TransactionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.transactionHistory),
-      body: SingleChildScrollView(
+      body:ComingSoonWidget() /*SingleChildScrollView(
         child: Padding(
           padding: padding16.copyWith(top: 0),
           child: Column(
@@ -61,7 +62,7 @@ class TransactionPage extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      ),*/
     );
   }
 }
