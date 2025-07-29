@@ -67,6 +67,8 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
               onTap: () {
                 HomeController.to.pickupLocationController.value.clear();
                 HomeController.to.pickupLatLng.value = null;
+                CommonController.to.isLoadingOnLocationSuggestion.value=false;
+                CommonController.to.addressSuggestion.clear();
               },
               child: Padding(
                 padding: padding12,
@@ -103,6 +105,8 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
               onTap: () {
                 HomeController.to.dropOffLocationController.value.clear();
                 HomeController.to.dropoffLatLng.value = null;
+                CommonController.to.isLoadingOnLocationSuggestion.value=false;
+                CommonController.to.addressSuggestion.clear();
               },
               child: Padding(
                 padding: padding12,

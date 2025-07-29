@@ -95,40 +95,7 @@ class _HomePageState extends State<HomePage>
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Column(
-          children: [
-            Obx(() {
-              return CustomAppBarForHomeWidget(
-                onBack: () {
-                  HomeController.to.handleBackNavigation();
-                },
-                onTap: () async {
-                  if (HomeController.to.wantToGo.value ||
-                      HomeController.to.setPickup.value ||
-                      HomeController.to.setDestination.value ||
-                      HomeController.to.selectEv.value) {
-                    await CommonController.to.fetchCurrentLocationMethod();
-                    HomeController.to.setCurrentLocationOnPickUp();
-                  } else {
-                    Get.toNamed(NotificationPage.routeName);
-                  }
-                },
-                isBack:
-                    HomeController.to.wantToGo.value ||
-                    HomeController.to.setPickup.value ||
-                    HomeController.to.setDestination.value ||
-                    HomeController.to.selectEv.value,
-                actionIcon:
-                    HomeController.to.wantToGo.value ||
-                            HomeController.to.setPickup.value ||
-                            HomeController.to.setDestination.value ||
-                            HomeController.to.selectEv.value
-                        ? gpsWhiteIcon
-                        : notificationIcon,
-              );
-            }),
-          ],
-        ),
+
         Positioned(
           bottom: 0,
           left: 0,

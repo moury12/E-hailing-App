@@ -1,6 +1,8 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
+import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,6 +38,53 @@ class _NavigationPageState extends State<NavigationPage>
             ? GoogleMapWidgetForDriver()
             : GoogleMapWidgetForRider();
   }
+  PreferredSizeWidget? getAppBar(int currentIndex) {
+    if (currentIndex == 1) return CustomAppBar(title: AppStaticStrings.myRides);
+
+    if (CommonController.to.isDriver.value) {
+      switch (currentIndex) {
+        case 0: return CustomAppBarForHome(
+            isDriver : true,onTap: () => Get.toNamed(NotificationPage.routeName));
+        case 2: return CustomAppBar(title: AppStaticStrings.statics);
+        case 3: return CustomAppBar(title: AppStaticStrings.messages);
+      }
+    }
+    else if (currentIndex == 0) {
+      return   CustomAppBarForHome(
+          onBack: () {
+            HomeController.to.handleBackNavigation();
+          },
+          onTap: () async {
+            if (HomeController.to.wantToGo.value ||
+                HomeController.to.setPickup.value ||
+                HomeController.to.setDestination.value ||
+                HomeController.to.selectEv.value) {
+              await CommonController.to.fetchCurrentLocationMethod();
+              HomeController.to.setCurrentLocationOnPickUp();
+            } else {
+              Get.toNamed(NotificationPage.routeName);
+            }
+          },
+          isBack:
+          HomeController.to.wantToGo.value ||
+              HomeController.to.setPickup.value ||
+              HomeController.to.setDestination.value ||
+              HomeController.to.selectEv.value,
+          actionIcon:
+          HomeController.to.wantToGo.value ||
+              HomeController.to.setPickup.value ||
+              HomeController.to.setDestination.value ||
+              HomeController.to.selectEv.value
+              ? gpsWhiteIcon
+              : notificationIcon,
+        );
+    }else if (currentIndex == 2) {
+      return CustomAppBar(title: AppStaticStrings.messages);
+    }
+    return null;
+  }
+
+// Usage:
 
   @override
   Widget build(BuildContext context) {
@@ -70,26 +119,7 @@ class _NavigationPageState extends State<NavigationPage>
           }
         },
         child: Scaffold(
-          appBar: () {
-            if (currentIndex == 1) {
-              return CustomAppBar(title: AppStaticStrings.myRides);
-            }
-
-            if (CommonController.to.isDriver.value) {
-              if (currentIndex == 2) {
-                return CustomAppBar(title: AppStaticStrings.statics);
-              } else if (currentIndex == 3) {
-                return CustomAppBar(title: AppStaticStrings.messages);
-              }
-            } else {
-              if (currentIndex == 2) {
-                return CustomAppBar(title: AppStaticStrings.messages);
-              }
-            }
-
-            return null;
-          }(),
-
+          appBar: getAppBar(currentIndex),
           body: Stack(
             clipBehavior: Clip.none,
             children: [

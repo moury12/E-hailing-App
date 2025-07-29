@@ -5,7 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'color_constants.dart';
 
 class PaginationLoadingWidget extends StatelessWidget {
-  const PaginationLoadingWidget({super.key});
+  final Color? color;
+  const PaginationLoadingWidget({super.key, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class PaginationLoadingWidget extends StatelessWidget {
           height: 10.w,
           width: 10.w,
           child: CircularProgressIndicator(
-            color: AppColors.kPrimaryColor,
+            color:color?? AppColors.kPrimaryColor,
             strokeWidth: 2.sp,
           ),
         ),

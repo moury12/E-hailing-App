@@ -102,16 +102,7 @@ class _DashboardPageState extends State<DashboardPage>
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Column(
-            children: [
-              CustomAppBarForHomeWidget(
-                isDriver: true,
-                onTap: () {
-                  Get.toNamed(NotificationPage.routeName);
-                },
-              ),
-            ],
-          ),
+
           Positioned(
             bottom: 0,
             left: 0,
