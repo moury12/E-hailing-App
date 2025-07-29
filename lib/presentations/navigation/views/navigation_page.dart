@@ -26,7 +26,7 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage>
-    with AutomaticKeepAliveClientMixin {
+    /*with AutomaticKeepAliveClientMixin*/ {
   late Widget _persistentMapWidget;
 
   @override
@@ -88,7 +88,7 @@ class _NavigationPageState extends State<NavigationPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    // super.build(context);
     return Obx(() {
       final navController = NavigationController.to;
 
@@ -119,6 +119,7 @@ class _NavigationPageState extends State<NavigationPage>
           }
         },
         child: Scaffold(
+          // resizeToAvoidBottomInset: false,
           appBar: getAppBar(currentIndex),
           body: Stack(
             clipBehavior: Clip.none,
