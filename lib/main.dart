@@ -35,8 +35,7 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 888),
       minTextAdapt: true,
       // useInheritedMediaQuery: true,
-      builder:
-          (context, child) => GetMaterialApp(
+      builder: (context, child) => GetMaterialApp(
             title: 'E-hailing',
             theme: AppTheme.lightTheme,
             themeMode: ThemeMode.dark,

@@ -173,7 +173,9 @@ class AppStaticStrings {
   static const String preBookRide = 'Pre-Book Ride';
   static const String womanOnlyRide = 'Women-Only Ride';
   static const String findAnother = 'Find Another';
+  static const String featureComingSoon = 'Feature Coming Soon!';
   static const String accept = 'Accept';
+  static const String featureNotImplemented = 'This feature is not yet implemented.Please check back in a future update!';
   static const String noNewRideReq = 'No New Ride Request';
   static const String rideReq = 'Ride Request';
   static const String pleaseGoOnlineRide = 'Please Go Online Ride Request';

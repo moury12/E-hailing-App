@@ -6,6 +6,7 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/d_coin_model.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
@@ -64,10 +65,15 @@ class CoinPage extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   DCoinController
-                                          .to
-                                          .dCoinsPagingController
-                                          .itemList!
-                                          .isEmpty
+                                                  .to
+                                                  .dCoinsPagingController
+                                                  .itemList ==
+                                              null ||
+                                          DCoinController
+                                              .to
+                                              .dCoinsPagingController
+                                              .itemList!
+                                              .isEmpty
                                       ? SizedBox.shrink()
                                       : SizedBox(
                                         height: 200,
@@ -126,7 +132,15 @@ class CoinPage extends StatelessWidget {
                                   ),
                                   CustomButton(
                                     onTap: () {
+
                                       Get.back();
+                                      showCustomSnackbar(
+                                        title:
+                                        AppStaticStrings.featureComingSoon,
+                                        message:
+                                        AppStaticStrings
+                                            .featureNotImplemented,
+                                      );
                                     },
                                     title: 'Buy Now',
                                   ),
