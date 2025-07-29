@@ -1,5 +1,6 @@
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
+import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
@@ -11,15 +12,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../constants/custom_text.dart';
-
-class CustomAppBarForHomeWidget extends StatelessWidget {
+class CustomAppBarForHome extends StatelessWidget implements PreferredSizeWidget {
   final String? actionIcon;
   final Function()? onTap;
   final Function()? onBack;
   final bool? isBack;
   final bool? isDriver;
 
-  const CustomAppBarForHomeWidget({
+  const CustomAppBarForHome({
     super.key,
     this.actionIcon,
     this.onTap,
@@ -30,42 +30,38 @@ class CustomAppBarForHomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isBack == true ? Colors.transparent : AppColors.kWhiteColor,
+    return AppBar(
+      // backgroundColor: isBack == true ? Colors.transparent : AppColors.kWhiteColor,
+      // elevation: 0,
+      automaticallyImplyLeading: false,
+      title: Padding(
+        padding: EdgeInsetsGeometry.only(left: 8.w),
+        child:   isBack == true
+            ? PrimaryCircleButtonWidget(
+          actionIcon: backIcon,
+          onTap: onBack ?? () => Get.back(),
+        )
+            : SvgPicture.asset(primaryLogoIcon),
       ),
-      child: Padding(
-        padding: padding16.copyWith(
-          top: MediaQuery.of(context).viewPadding.top,
-          bottom: 6.h,
+      actions: [ if (isDriver == true) CustomToggleSwitch(),
+        IconButton(
+          onPressed: () {
+            callOnPhone(phoneNumber: '999');
+          },
+          icon: SvgPicture.asset(sosIcon),
         ),
-        child: Row(
-          children: [
-            isBack == true
-                ? PrimaryCircleButtonWidget(
-                  actionIcon: backIcon,
-                  onTap:
-                      onBack ??
-                      () {
-                        Get.back();
-                      },
-                )
-                : SvgPicture.asset(primaryLogoIcon),
-            Spacer(),
-            isDriver == true ? CustomToggleSwitch() : SizedBox.shrink(),
-            IconButton(
-              onPressed: () {
-                callOnPhone(phoneNumber: '999');
-              },
-              icon: SvgPicture.asset(sosIcon),
-            ),
-            PrimaryCircleButtonWidget(actionIcon: actionIcon, onTap: onTap),
-          ],
-        ),
-      ),
+        if (actionIcon != null)
+          PrimaryCircleButtonWidget(
+            actionIcon: actionIcon,
+            onTap: onTap,
+          ),
+
+      space8W],
     );
   }
-}
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);}
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;

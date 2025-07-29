@@ -393,7 +393,7 @@ class HomeController extends GetxController {
         method: 'POST',
         body: {"duration": duration, "distance": distance},
       );
-      isLoadingPostFair.value = false;
+
       if (response['success'] == true) {
         estimatedFare.value = response['data']['estimatedFare'];
         goToSelectEv();
@@ -405,6 +405,8 @@ class HomeController extends GetxController {
     } catch (e) {
       isLoadingPostFair.value = false;
       logger.e(e.toString());
+    }finally{
+      isLoadingPostFair.value = false;
     }
   }
 

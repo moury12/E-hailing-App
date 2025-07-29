@@ -81,22 +81,6 @@ class CommonController extends GetxController {
     }
   }
 
-  Future<void> fetchSuggestedPlaces(String input) async {
-    isLoadingOnLocationSuggestion.value = true;
-    final url =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=${GoogleClient.googleMapUrl}';
-    final response = await http.get(Uri.parse(url));
-    debugPrint(url);
-    // debugPrint(response.body);
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      addressSuggestion.value = data['predictions'];
-      isLoadingOnLocationSuggestion.value = false;
-    } else {
-      isLoadingOnLocationSuggestion.value = false;
-    }
-  }
 
   Future<void> setupGlobalSocketListeners() async {
     socketService.onConnected = () {
@@ -124,39 +108,50 @@ class CommonController extends GetxController {
   }
 
   Future<void> fetchSuggestedPlacesWithRadius(
-    String input, {
-    double radiusInMeters = 5000,
-  }) async {
+      String input, {
+        double radiusInMeters = 5000,
+      }) async {
     isLoadingOnLocationSuggestion.value = true;
-    Rx<LatLng> markerPosition =
-        isDriver.value ? markerPositionDriver : markerPositionRider;
 
-    String url =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=${GoogleClient.googleMapUrl}';
+    try {
+      Rx<LatLng> markerPosition =
+      isDriver.value ? markerPositionDriver : markerPositionRider;
 
-    // Add location bias if current location is available
-    if (markerPosition.value.latitude != 0.0 &&
-        markerPosition.value.longitude != 0.0) {
-      url +=
-          '&location=${markerPosition.value.latitude},${markerPosition.value.longitude}';
-      url += '&radius=${radiusInMeters.toInt()}';
-    }
+      String url =
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=${GoogleClient.googleMapUrl}';
 
-    final response = await http.get(Uri.parse(url));
-    debugPrint(url);
-    // debugPrint(response.body);
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      addressSuggestion.value = data['predictions'];
-      if (data['predictions'].isEmpty) {
-        await fetchCurrentLocationMethod();
+      if (markerPosition.value.latitude != 0.0 &&
+          markerPosition.value.longitude != 0.0) {
+        url +=
+        '&location=${markerPosition.value.latitude},${markerPosition.value.longitude}';
+        url += '&radius=${radiusInMeters.toInt()}';
       }
-      isLoadingOnLocationSuggestion.value = false;
-    } else {
+
+      final response = await http.get(Uri.parse(url));
+      debugPrint(url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        addressSuggestion.value = data['predictions'];
+
+        if (data['predictions'].isEmpty) {
+          // Optional: Ensure this doesn't get stuck or fail silently
+          try {
+            await fetchCurrentLocationMethod();
+          } catch (e) {
+            debugPrint("Error in fetchCurrentLocationMethod: $e");
+          }
+        }
+      } else {
+        debugPrint("API error: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint("Error fetching suggestions: $e");
+    } finally {
       isLoadingOnLocationSuggestion.value = false;
     }
   }
+
 
   Future<void> fetchCurrentLocationMethod() async {
     Rx<LatLng> markerPosition =
