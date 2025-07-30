@@ -7,11 +7,18 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
+import 'package:e_hailing_app/presentations/trip/widgets/row_call_chat_details_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../core/api-client/api_service.dart';
 import '../../trip/model/trip_response_model.dart';
@@ -20,11 +27,13 @@ import '../../trip/widgets/rating_info_widget.dart';
 class MyRidesHistoryCardItemWidget extends StatelessWidget {
   final dynamic rideModel;
   final bool isDriver;
+  final bool isOngoin;
 
   const MyRidesHistoryCardItemWidget({
     super.key,
     required this.rideModel,
     required this.isDriver,
+    this.isOngoin = false,
   });
 
   @override
@@ -44,9 +53,9 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
 
       driverName = model.user?.name ?? driverName;
       driverImage =
-          model.user?.profileImage != null
-              ? "${ApiService().baseUrl}/${model.user!.profileImage}"
-              : driverImage;
+      model.user?.profileImage != null
+          ? "${ApiService().baseUrl}/${model.user!.profileImage}"
+          : driverImage;
       cost = 'RM ${model.estimatedFare?.toStringAsFixed(2) ?? "0"}';
       distance = '${model.distance ?? 0} km';
       dateTime = formatDateTime(model.createdAt.toString());
@@ -59,11 +68,12 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           (isDriver
               ? model.user?.name.toString()
               : model.driver?.name.toString()) ??
-          AppStaticStrings.noDataFound;
+              AppStaticStrings.noDataFound;
       driverImage =
-          model.driver?.profileImage != null
-              ? "${ApiService().baseUrl}/${(isDriver ? model.user?.profileImage.toString() : model.driver?.profileImage.toString())}"
-              : driverImage;
+      model.driver?.profileImage != null
+          ? "${ApiService().baseUrl}/${(isDriver ? model.user?.profileImage
+          .toString() : model.driver?.profileImage.toString())}"
+          : driverImage;
       cost = 'RM ${model.estimatedFare?.toStringAsFixed(2) ?? "0"}';
       distance = '${model.distance ?? 0} km';
       dateTime = formatDateTime(model.createdAt.toString());
@@ -82,6 +92,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
         spacing: 6.h,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
           ///============================dynamic date==============================///
           CustomText(
             text: dateTime,
@@ -92,6 +103,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           Row(
             spacing: 6.w,
             children: [
+
               ///============================dynamic driver image==============================///
               CustomNetworkImage(
                 imageUrl: driverImage,
@@ -103,6 +115,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
                     ///============================dynamic driver name rating ==============================///
                     CustomText(
                       text: driverName,
@@ -131,6 +144,28 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
 
           ///============================Timeline==============================///
           FromToTimeLine(pickUpAddress: pickup, dropOffAddress: dropOff),
+          if (isDriver && isOngoin)
+            Obx(() {
+              return CancelTripButtonWidget(
+                isLoading: DashBoardController.to.isCancellingTrip.value,
+                onSubmit: () {
+                  if (DashBoardController.to.cancelReason.isEmpty) {
+                    showCustomSnackbar(
+                      title: "Field Required",
+                      message: "Need to select the reason",
+                    );
+                  } else {
+                    DashBoardController.to.driverTripUpdateStatus(
+                      tripId: rideModel.sId.toString(),
+
+                      reason: DashBoardController.to.cancelReason,
+                      newStatus: DriverTripStatus.cancelled.name.toString(),
+                    );
+                    Get.back();
+                  }
+                },
+              );
+            }),
         ],
       ),
     );

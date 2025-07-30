@@ -10,13 +10,14 @@ class HistoryListStructureWidget extends StatelessWidget {
   final bool isSingleItem;
   final dynamic rideModel;
   final bool isDriver;
+  final bool isOngoin;
 
   const HistoryListStructureWidget({
     super.key,
     this.myRides,
     this.isSingleItem = false,
     this.rideModel,
-    required this.isDriver,
+    required this.isDriver,  this.isOngoin=false,
   });
 
   @override
@@ -40,6 +41,7 @@ class HistoryListStructureWidget extends StatelessWidget {
       children: List.generate(
         isSingleItem ? 1 : myRides!.length,
         (index) => MyRidesHistoryCardItemWidget(
+          isOngoin: isOngoin,
           isDriver: isDriver,
           rideModel: isSingleItem ? rideModel : myRides![index],
         ),

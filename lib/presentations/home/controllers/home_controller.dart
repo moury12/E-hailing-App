@@ -511,7 +511,7 @@ class HomeController extends GetxController {
       showCustomSnackbar(
         title: 'Connection Error',
         message: 'Not connected to server. Please wait and try again.',
-        type: SnackBarType.failed,
+        type: SnackBarType.alert,
       );
       socketConnection();
       return;
@@ -578,15 +578,17 @@ class HomeController extends GetxController {
       // in your registerTripEventListeners() -> tripUpdateStatus event
     } catch (e) {
       // Reset loading state on error
-      if (status == DriverTripStatus.cancelled.name) {
-        isCancellingTrip.value = false;
-      }
+
       logger.e('Error updating trip: $e');
       showCustomSnackbar(
         title: 'Error',
         message: 'Failed to update trip. Please try again.',
         type: SnackBarType.failed,
       );
+    }finally{
+      if (status == DriverTripStatus.cancelled.name) {
+        isCancellingTrip.value = false;
+      }
     }
   }
 

@@ -5,7 +5,9 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/widgets/custom_toggle_switch_button.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -44,7 +46,16 @@ class CustomAppBarForHome extends StatelessWidget implements PreferredSizeWidget
         )
             : SvgPicture.asset(primaryLogoIcon),
       ),
-      actions: [ if (isDriver == true) CustomToggleSwitch(),
+      actions: [
+        
+        IconButton(onPressed: () {
+          if(isDriver==true){
+            DashBoardController.to.getDriverCurrentTripRequest();
+          }else{
+            HomeController.to.getUserCurrentTrip();
+          }
+        }, icon: Icon(Icons.refresh,color: AppColors.kPrimaryColor,)),
+        if (isDriver == true) CustomToggleSwitch(),
         IconButton(
           onPressed: () {
             callOnPhone(phoneNumber: '999');

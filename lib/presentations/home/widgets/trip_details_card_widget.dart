@@ -130,9 +130,9 @@ class TripDetailsDestinationCard extends StatelessWidget {
 
                   children: [
                     CustomText(
-                      text:
+                      text:tripModel?.driver?.assignedCar!=null?
                           "${tripModel?.driver?.assignedCar?.brand ?? AppStaticStrings.noDataFound} "
-                          "${tripModel?.driver?.assignedCar?.model} ",
+                          "${tripModel?.driver?.assignedCar?.model} ":AppStaticStrings.noDataFound,
                       fontSize: getFontSizeSmall(),
                     ),
                     Container(
@@ -144,15 +144,15 @@ class TripDetailsDestinationCard extends StatelessWidget {
                       child: CustomText(
                         fontSize: getFontSizeSmall(),
 
-                        text:
-                            "${tripModel?.driver?.assignedCar?.carNumber}(${tripModel?.driver?.assignedCar?.color})",
+                        text:tripModel?.driver?.assignedCar!=null?
+                            "${tripModel?.driver?.assignedCar?.carNumber}(${tripModel?.driver?.assignedCar?.color})":AppStaticStrings.noDataFound,
                         color: AppColors.kWhiteColor,
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(CupertinoIcons.info_circle_fill),
+              // Icon(CupertinoIcons.info_circle_fill),
             ],
           ),
           DriverDetails(
