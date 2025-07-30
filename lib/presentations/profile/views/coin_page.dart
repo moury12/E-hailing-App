@@ -48,8 +48,7 @@ class CoinPage extends StatelessWidget {
                     Obx(() {
                       return CoinWidget(
                         coin:
-                            CommonController.to.userModel.value.coins
-                                .toString(),
+                           ( CommonController.to.userModel.value.coins??0).toString(),
                       );
                     }),
                     CustomButton(

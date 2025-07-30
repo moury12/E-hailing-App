@@ -10,12 +10,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class SaveLocationController extends GetxController {
   @override
   void onInit() {
-    getSaveLocationListRequest();
-    super.onInit();
+    saveLocationPagingController.addPageRequestListener((pageKey) {
+      getSaveLocationListRequest(pageKey: pageKey);
+    });    super.onInit();
   }
 
   static SaveLocationController get to => Get.find();
@@ -38,7 +40,8 @@ class SaveLocationController extends GetxController {
   final RxBool isLoadingMore = false.obs;
 
   final RxList<SaveLocationModel> saveLocationList = <SaveLocationModel>[].obs;
-
+  final PagingController<int, SaveLocationModel> saveLocationPagingController =
+  PagingController(firstPageKey: 1);
   ///------------------------------  save place method -------------------------///
 
   Future<void> savePlaceRequest({
@@ -46,7 +49,8 @@ class SaveLocationController extends GetxController {
     required String locationAddress,
     required double lat,
     required double lng,
-  }) async {
+  })
+  async {
     try {
       isLoadingSaveLocation.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
@@ -61,13 +65,16 @@ class SaveLocationController extends GetxController {
           "latitude": lat,
         },
       );
-      isLoadingSaveLocation.value = false;
       if (response['success'] == true) {
         logger.d(response);
         placeName.clear();
         searchFieldController.value.clear();
         showCustomSnackbar(title: 'Success', message: response['message']);
-        await getSaveLocationListRequest();
+        final newLocation = SaveLocationModel.fromJson(response["data"]);
+        final oldItems = saveLocationPagingController.itemList ?? [];
+        if (!oldItems.any((element) => element.sId == newLocation.sId)) {
+          saveLocationPagingController.itemList = [newLocation, ...oldItems];
+        }
         Get.back();
       } else {
         logger.e(response);
@@ -76,73 +83,53 @@ class SaveLocationController extends GetxController {
     } catch (e) {
       isLoadingSaveLocation.value = false;
       logger.e(e.toString());
+    }finally{
+      isLoadingSaveLocation.value = false;
+
     }
   }
 
-  ///------------------------------  get save location list method -------------------------///
 
-  Future<void> getSaveLocationListRequest({bool loadMore = false}) async {
+  Future<void> getSaveLocationListRequest({required int pageKey}) async {
     try {
-      if (loadMore && currentPage.value >= totalSaveLocationPages.value) {
-        return;
-      }
-
-      if (loadMore) {
-        currentPage.value++;
-        isLoadingMore.value = true;
-      } else {
-        isLoadingSavedLocation.value = true;
-        currentPage.value = 1;
-      }
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
       final response = await ApiService().request(
         endpoint: getSavedLocationEndPoint,
         method: 'GET',
         queryParams: {
-          'page': currentPage.value.toString(),
+          'page': pageKey.toString(),
           'limit': itemsPerPage.value.toString(),
           'sort': 'updatedAt',
-          // 'order': 'desc',
         },
       );
-
-      isLoadingSavedLocation.value = false;
-      isLoadingMore.value = false;
+logger.d(response);
       if (response['success'] == true) {
-        if (response['data']['meta'] != null) {
-          currentPage.value = response['data']['meta']['page'] ?? 1;
-          totalSaveLocationPages.value =
-              response['data']['meta']['totalPage'] ?? 1; // Add this line
+        final meta = response['data']['meta'];
+        final totalPages = meta?['totalPage'] ?? 1;
+        final currentPage = meta?['page'] ?? 1;
+        itemsPerPage.value = meta?['limit'] ?? 10;
 
-          itemsPerPage.value = response['data']['meta']['limit'] ?? 10;
-        }
-        final newLocation =
-            (response['data']["result"] as List)
-                .map((e) => SaveLocationModel.fromJson(e))
-                .toList();
+        final newItems = (response['data']["result"] as List)
+            .map((e) => SaveLocationModel.fromJson(e))
+            .toList();
 
-        if (loadMore) {
-          saveLocationList.addAll(newLocation); // Append for load more
+        final isLastPage = currentPage >= totalPages;
+
+        if (isLastPage) {
+          saveLocationPagingController.appendLastPage(newItems);
         } else {
-          saveLocationList.value = newLocation; // Replace for refresh
+          saveLocationPagingController.appendPage(newItems, currentPage + 1);
         }
-        logger.d(response);
       } else {
-        logger.e(response);
-        if (kDebugMode) {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed,
-          );
-        }
+        saveLocationPagingController.error =
+            response['message'] ?? 'Something went wrong';
       }
     } catch (e) {
-      logger.e(e.toString());
-      isLoadingSavedLocation.value = false;
+      saveLocationPagingController.error = e.toString();
     }
   }
+
 
   ///------------------------------  delete place method -------------------------///
 
@@ -161,10 +148,11 @@ class SaveLocationController extends GetxController {
         logger.d(response);
 
         showCustomSnackbar(title: 'Success', message: response['message']);
-        // await getConversationListRequest();
-
-        isLoadingDeleteLocation.value = false;
-        await getSaveLocationListRequest();
+        final currentItems = saveLocationPagingController.itemList;
+        if (currentItems != null) {
+          currentItems.removeWhere((element) => element.sId == locationID);
+          saveLocationPagingController.itemList = [...currentItems];
+        }
       } else {
         logger.e(response);
         showCustomSnackbar(title: 'Failed', message: response['message']);
@@ -172,6 +160,8 @@ class SaveLocationController extends GetxController {
     } catch (e) {
       isLoadingDeleteLocation.value = false;
       logger.e(e.toString());
+    }finally{
+      isLoadingDeleteLocation.value = false;
     }
   }
 
@@ -261,5 +251,10 @@ class SaveLocationController extends GetxController {
       // where the user selected a saved location.
       Get.back(); // This closes the current screen (e.g., location selection screen)
     }
+  }
+  @override
+  void onClose() {
+    saveLocationPagingController.dispose();
+    super.onClose();
   }
 }

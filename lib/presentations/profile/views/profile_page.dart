@@ -61,26 +61,7 @@ class ProfilePage extends StatelessWidget {
             ),
             child: Column(
               children: [
-                SizedBox(height: MediaQuery.viewPaddingOf(context).top),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        NavigationController.to.changeIndex(0);
-                      },
-                      icon: Icon(Icons.arrow_back),
-                    ),
-                    CustomText(text: AppStaticStrings.profile),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        CupertinoIcons.hammer,
-                        color: Colors.transparent,
-                      ),
-                    ),
-                  ],
-                ),
+
                 Padding(
                   padding: padding12.copyWith(top: 0),
                   child: Obx(() {

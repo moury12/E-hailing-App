@@ -11,6 +11,7 @@ import 'package:e_hailing_app/presentations/save-location/model/save_location_mo
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class SavedLocationItemWidget extends StatelessWidget {
   final SaveLocationModel saveLocationModel;
@@ -43,66 +44,82 @@ class SavedLocationItemWidget extends StatelessWidget {
         border: Border.all(color: AppColors.kPrimaryColor, width: 1.w),
       ),
       child:
-          isLoading == true
-              ? Padding(padding: padding12, child: PaginationLoadingWidget())
-              : ButtonTapWidget(
-                radius: 16.r,
-                onTap: onTap ?? () {},
-                child: Padding(
-                  padding: padding8,
-                  child: Row(
-                    spacing: 6.w,
-                    children: [
-                      SvgPicture.asset(img ?? homeLocationIcon, height: 25),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text:
-                                title ??
-                                saveLocationModel.locationName ??
-                                AppStaticStrings.noDataFound,
-                            style: poppinsSemiBold,
-                          ),
-                          subText != null
-                              ? CustomText(
-                                text:
-                                    subText ??
-                                    saveLocationModel.locationAddress ??
-                                    AppStaticStrings.noDataFound,
-                                style: poppinsThin,
-                                color: AppColors.kLightBlackColor,
-                              )
-                              : SizedBox.shrink(),
-                        ],
-                      ),
-                      Spacer(),
-                      trailingImg != null
-                          ? SvgPicture.asset(trailingImg ?? deleteAccountIcon)
-                          : SaveLocationController
-                              .to
-                              .isLoadingDeleteLocation
-                              .value
-                          ? PaginationLoadingWidget()
-                          : ButtonTapWidget(
-                            onTap: () {
-                              SaveLocationController.to.deletePlaceRequest(
-                                locationID: saveLocationModel.sId ?? "",
-                              );
-                            },
-                            child: Padding(
-                              padding: padding6,
-                              child: Icon(
-                                CupertinoIcons.delete,
-                                size: 20.sp,
-                                color: AppColors.kPrimaryColor,
-                              ),
-                            ),
-                          ),
-                    ],
+      isLoading == true
+          ? Padding(padding: padding12, child: PaginationLoadingWidget())
+          : ButtonTapWidget(
+        radius: 16.r,
+        onTap: onTap ?? () {},
+        child: Padding(
+          padding: padding8,
+          child: Row(
+            spacing: 6.w,
+            children: [
+              SvgPicture.asset(img ?? homeLocationIcon, height: 25),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    text:
+                    title ??
+                        saveLocationModel.locationName ??
+                        AppStaticStrings.noDataFound,
+                    style: poppinsSemiBold,
                   ),
-                ),
+                  subText != null
+                      ? CustomText(
+                    text:
+                    subText ??
+                        saveLocationModel.locationAddress ??
+                        AppStaticStrings.noDataFound,
+                    style: poppinsThin,
+                    color: AppColors.kLightBlackColor,
+                  )
+                      : SizedBox.shrink(),
+                ],
               ),
+              Spacer(),
+              trailingImg != null
+                  ? SvgPicture.asset(trailingImg ?? deleteAccountIcon)
+                  : SaveLocationController
+                  .to
+                  .isLoadingDeleteLocation
+                  .value
+                  ? PaginationLoadingWidget()
+                  : Obx(() {
+                return ButtonTapWidget(
+                  onTap:
+                  SaveLocationController
+                      .to
+                      .isLoadingDeleteLocation
+                      .value
+                      ? null
+                      : () {
+                    SaveLocationController.to
+                        .deletePlaceRequest(
+                      locationID:
+                      saveLocationModel.sId ?? "",
+                    );
+                  },
+                  child: Padding(
+                    padding: padding6,
+                    child:
+                    SaveLocationController
+                        .to
+                        .isLoadingDeleteLocation
+                        .value
+                        ? PaginationLoadingWidget()
+                        : Icon(
+                      CupertinoIcons.delete,
+                      size: 20.sp,
+                      color: AppColors.kPrimaryColor,
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

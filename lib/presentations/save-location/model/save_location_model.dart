@@ -3,7 +3,7 @@ class SaveLocationModel {
   String? user;
   String? locationName;
   String? locationAddress;
-  Location? location;
+  Location? location; 
   String? createdAt;
   String? updatedAt;
 
