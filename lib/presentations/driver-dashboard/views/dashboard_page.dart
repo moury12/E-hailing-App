@@ -14,6 +14,7 @@ import 'package:get/get.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/custom_space.dart';
 import '../../../core/constants/padding_constant.dart';
+import '../../home/widgets/gradient_progress_indicator.dart';
 import '../widgets/no_new_ride_request_widget.dart';
 import '../widgets/pick_up_card_widget.dart';
 import '../widgets/pickup_started_widget.dart';
@@ -141,7 +142,10 @@ class _DashboardPageState extends State<DashboardPage>
                               DashBoardController.to.currentTrip.value;
                           DriverCurrentTripModel availableTrip =
                               DashBoardController.to.availableTrip.value;
-                          return DashBoardController.to.findingRide.value
+                          return DashBoardController.to.isLoadingCurrentTrip.value?Padding(
+                            padding: padding12,
+                            child: GradientProgressIndicator(),
+                          ): DashBoardController.to.findingRide.value
                               ? NoNewRideReqWidget()
                               : DashBoardController.to.rideRequest.value
                               ? RideRequestCardWidget(

@@ -239,7 +239,6 @@ class DashBoardController extends GetxController {
         endpoint: getCurrentDriverTripEndpoint,
         method: 'GET',
       );
-      isLoadingCurrentTrip.value = false;
       if (response['success'] == true) {
         logger.d(response);
         currentTrip.value = DriverCurrentTripModel.fromJson(response['data']);
@@ -257,6 +256,9 @@ class DashBoardController extends GetxController {
     } catch (e) {
       logger.e(e.toString());
       isLoadingCurrentTrip.value = false;
+    }finally{
+      isLoadingCurrentTrip.value = false;
+
     }
   }
 
@@ -337,7 +339,7 @@ class DashBoardController extends GetxController {
 
     // Clear all previous listeners to avoid duplication
     removeSocketListeners();
-
+logger.i("Listening socket event for driver");
     // ============ Trip Available Event ============
     socketService.on(DriverEvent.tripAvailableStatus, (data) {
       logger.d("📩 tripAvailableStatus: $data");
@@ -378,6 +380,7 @@ class DashBoardController extends GetxController {
         startTrackingUserLocationMethod(
           tripId: currentTrip.value.sId.toString(),
         );
+        drawPolylineMethod();
 
         DashBoardController.to.afterAccepted.value = true;
         resetRideFlow(rideType: RideFlowState.pickup);

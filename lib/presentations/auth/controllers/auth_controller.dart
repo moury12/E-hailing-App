@@ -189,7 +189,7 @@ class AuthController extends GetxController {
 
         Get.offAllNamed(
           NavigationPage.routeName,
-          arguments: {'reconnectSocket': true},
+          // arguments: {'reconnectSocket': true},
         );
       } else {
         logger.e(response);
@@ -332,7 +332,7 @@ class AuthController extends GetxController {
         await CommonController.to.initialSetUp();
         Get.offAllNamed(
           NavigationPage.routeName,
-          arguments: {'reconnectSocket': true},
+          // arguments: {'reconnectSocket': true},
         );
       } else {
         // 🔁 Retry with phone number if needed
@@ -399,7 +399,7 @@ class AuthController extends GetxController {
           await CommonController.to.initialSetUp();
           Get.offAllNamed(
             NavigationPage.routeName,
-            arguments: {'reconnectSocket': true},
+            // arguments: {'reconnectSocket': true},
           );
         } else {
           showCustomSnackbar(
