@@ -35,7 +35,8 @@ class DashBoardController extends GetxController {
   RxBool isDriverActive = true.obs;
   RxString status = "Disconnected".obs;
   final locationService = LocationTrackingService();
-
+  RxBool isCancellingTrip = false.obs;
+  List<String> cancelReason = [];
   Rx<DriverCurrentTripModel> currentTrip = DriverCurrentTripModel().obs;
   Rx<DriverLocationUpdateModel> driverUpdatedLocation =
       DriverLocationUpdateModel().obs;
@@ -190,26 +191,41 @@ class DashBoardController extends GetxController {
     double? dropOffLong,
     int? duration,
     int? distance,
+    List<String>? reason,
   }) async {
-    if (!socketService.isConnected) {
-      showCustomSnackbar(
-        title: 'Connection Error',
-        message: 'Not connected to server. Please wait and try again.',
-        type: SnackBarType.failed,
-      );
-      return;
-    }
+    try {
+      if (!socketService.isConnected) {
+        showCustomSnackbar(
+          title: 'Connection Error',
+          message: 'Not connected to server. Please wait and try again.',
+          type: SnackBarType.failed,
+        );
+        return;
+      }
 
-    socketService.emit(DriverEvent.tripUpdateStatus, {
-      "tripId": tripId,
-      "newStatus": newStatus,
-      if (dropOffAddress != null) "dropOffAddress": dropOffAddress,
-      if (dropOffLat != null) "dropOffLat": dropOffLat,
-      if (dropOffLong != null) "dropOffLong": dropOffLong,
-      if (duration != null) "duration": duration,
-      if (distance != null) "distance": distance,
-    });
+      if (newStatus == DriverTripStatus.cancelled.name) {
+        isCancellingTrip.value = true;
+      }
+
+      socketService.emit(DriverEvent.tripUpdateStatus, {
+        "tripId": tripId,
+        "newStatus": newStatus,
+        if (dropOffAddress != null) "dropOffAddress": dropOffAddress,
+        if (dropOffLat != null) "dropOffLat": dropOffLat,
+        if (dropOffLong != null) "dropOffLong": dropOffLong,
+        if (duration != null) "duration": duration,
+        if (distance != null) "distance": distance,
+        if (reason != null) "reason": reason,
+      });
+    } catch (e) {
+      logger.e(e.toString());
+    } finally {
+      if (newStatus == DriverTripStatus.cancelled.name) {
+        isCancellingTrip.value = false;
+      }
+    }
   }
+
 
   Future<void> driverTripAccept({
     required String tripId,

@@ -50,6 +50,9 @@ class TripDetailsPage extends StatelessWidget {
                 spacing: 12.h,
                 children: [
                   CarDetailsCardWidget(
+                    onTap:() {
+
+                    },
                     fare: int.parse((trip.estimatedFare ?? 0).toString()),
                   ),
 

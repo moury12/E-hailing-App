@@ -4,7 +4,9 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -21,7 +23,13 @@ class TripCancellationReasonCardItem extends StatelessWidget {
         tripCancellationList[index].isChecked.value =
             !tripCancellationList[index].isChecked.value;
         if (tripCancellationList[index].isChecked.value == true) {
-          HomeController.to.cancelReason.add(tripCancellationList[index].title);
+         if(CommonController.to.isDriver.value) {
+            DashBoardController.to.cancelReason.add(
+                tripCancellationList[index].title);
+          }   else{
+           HomeController.to.cancelReason.add(
+               tripCancellationList[index].title);
+         }
         }
         ;
       },

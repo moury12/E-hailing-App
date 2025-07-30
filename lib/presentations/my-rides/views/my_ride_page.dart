@@ -42,6 +42,7 @@ class _MyRidePageState extends State<MyRidePage>
         rideModel: rideModel,
         isSingleItem: true,
         isDriver: isDriver,
+        isOngoin: true,
       );
     });
   }
