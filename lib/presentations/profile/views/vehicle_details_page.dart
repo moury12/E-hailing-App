@@ -93,19 +93,19 @@ class DriverCarInfoWidget extends StatelessWidget {
           space8H,
           ProfileCardItemWidget(
             title: AppStaticStrings.licensePlate,
-            value: isLoading ? "Loading..." : car.carLicensePlate.toString(),
+            value: isLoading ? "Loading..." : car.carLicensePlate??AppStaticStrings.noDataFound,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.vin,
-            value: isLoading ? "Loading..." : car.vin.toString(),
+            value: isLoading ? "Loading..." : car.vin??AppStaticStrings.noDataFound,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.registrationDate,
-            value: isLoading ? "Loading..." : car.registrationDate.toString(),
+            value: isLoading ? "Loading..." : car.registrationDate??AppStaticStrings.noDataFound,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.insuranceStatus,
-            value: isLoading ? "Loading..." : car.insuranceStatus.toString(),
+            value: isLoading ? "Loading..." : car.insuranceStatus??AppStaticStrings.noDataFound,
           ),
         ],
       );
@@ -127,19 +127,19 @@ class DriverPersonalDetails extends StatelessWidget {
           space8H,
           ProfileCardItemWidget(
             title: AppStaticStrings.carBrand,
-            value: isLoading ? "Loading..." : car.brand.toString(),
+            value: isLoading ? "Loading..." : car.brand??AppStaticStrings.noDataFound,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.carModel,
-            value: isLoading ? "Loading..." : car.model.toString(),
+            value: isLoading ? "Loading..." : car.model??AppStaticStrings.noDataFound,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.carType,
-            value: isLoading ? "Loading..." : car.type.toString(),
+            value: isLoading ? "Loading..." : car.type??AppStaticStrings.noDataFound,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.carColor,
-            value: isLoading ? "Loading..." : car.color.toString(),
+            value: isLoading ? "Loading..." : car.color??AppStaticStrings.noDataFound,
           ),
         ],
       );

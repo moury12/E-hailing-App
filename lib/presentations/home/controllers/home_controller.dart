@@ -168,7 +168,8 @@ class HomeController extends GetxController {
   }
 
   void registerTripEventListeners() {
-    logger.d("Registering Trip Socket Events");
+    logger.i("Listening socket event for rider");
+
 
     // Always clean up old listeners
     socket.off(TripEvents.tripRequested);
@@ -533,17 +534,17 @@ class HomeController extends GetxController {
     );
 
     socket.emit(TripEvents.tripRequested, body);
-    Future.delayed(Duration(seconds: 30), () {
-      if (isRequestingTrip.value) {
-        isRequestingTrip.value = false;
-        Get.back(); // Close loading dialog
-        showCustomSnackbar(
-          title: 'Request Timeout',
-          message: 'Trip request timed out. Please try again.',
-          type: SnackBarType.failed,
-        );
-      }
-    });
+    // Future.delayed(Duration(seconds: 30), () {
+    //   if (isRequestingTrip.value) {
+    //     isRequestingTrip.value = false;
+    //     Get.back(); // Close loading dialog
+    //     showCustomSnackbar(
+    //       title: 'Request Timeout',
+    //       message: 'Trip request timed out. Please try again.',
+    //       type: SnackBarType.failed,
+    //     );
+    //   }
+    // });
   }
 
   Future<void> updateUserTrip({

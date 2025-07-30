@@ -10,6 +10,8 @@ import 'package:e_hailing_app/core/service/location-service/location_service.dar
 import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:flutter/foundation.dart';
@@ -86,6 +88,17 @@ class CommonController extends GetxController {
     socketService.onConnected = () {
       socketStatus.value = 'Connected';
       logger.i('Socket connected');
+      if(isDriver.value){
+        if (Get.isRegistered<DashBoardController>()) {
+          final dashboardController = Get.find<DashBoardController>();
+          dashboardController.registerSocketListeners();
+        }
+      }else{
+        if (Get.isRegistered<HomeController>()) {
+          final homeController = Get.find<HomeController>();
+          homeController.registerTripEventListeners();
+        }
+      }
     };
 
     socketService.onDisconnected = () {
@@ -96,7 +109,7 @@ class CommonController extends GetxController {
     socketService.onSocketError = (error) {
       socketStatus.value = 'Error: $error';
       logger.e('Socket error: $error');
-      showCustomSnackbar(title: "Error", message: error);
+      // showCustomSnackbar(title: "Error", message: error);
     };
 
     // You can even auto-connect here if you want:
