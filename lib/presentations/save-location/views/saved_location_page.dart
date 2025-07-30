@@ -1,5 +1,7 @@
+import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
+import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/pagination_loading_widget.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
@@ -8,6 +10,7 @@ import 'package:e_hailing_app/presentations/save-location/model/save_location_mo
 import 'package:e_hailing_app/presentations/save-location/views/add_place_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../core/components/custom_appbar.dart';
 import '../widgets/empty_widget.dart';
@@ -24,98 +27,57 @@ class SavedLocationPage extends StatefulWidget {
 }
 
 class _SavedLocationPageState extends State<SavedLocationPage> {
-  final ScrollController scrollController = ScrollController();
   final arg = Get.arguments;
-
-  @override
-  void initState() {
-    scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        SaveLocationController.to.getSaveLocationListRequest(loadMore: true);
-      }
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.savedLocation),
       body: CustomRefreshIndicator(
-        onRefresh: () {
-          return SaveLocationController.to.getSaveLocationListRequest();
+        onRefresh: () async{
+          SaveLocationController.to.saveLocationPagingController.refresh();
         },
-        child: CustomScrollView(
-          controller: scrollController,
-          physics: AlwaysScrollableScrollPhysics(),
-
-          slivers: [
-            SliverToBoxAdapter(
-              child: SavedLocationItemWidget(
-                saveLocationModel: SaveLocationModel(),
-                trailingImg: addIcon,
-                title: AppStaticStrings.addLocation,
-                img: saveLocationIcon,
-                onTap: () {
-                  Get.toNamed(AddPlacePage.routeName);
-                },
-              ),
+        child: Column(
+          children: [
+            SavedLocationItemWidget(
+              saveLocationModel: SaveLocationModel(),
+              trailingImg: addIcon,
+              title: AppStaticStrings.addLocation,
+              img: saveLocationIcon,
+              onTap: () => Get.toNamed(AddPlacePage.routeName),
             ),
-            Obx(() {
-              return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  childCount:
-                      SaveLocationController.to.isLoadingSavedLocation.value
-                          ? 6
-                          : SaveLocationController.to.saveLocationList.length,
-                  (context, index) {
-                    if (SaveLocationController
-                        .to
-                        .isLoadingSavedLocation
-                        .value) {
-                      return shimmerSavedLocationItem();
-                    } else if (SaveLocationController
-                        .to
-                        .saveLocationList
-                        .isEmpty) {
-                      return EmptyWidget(
-                        text: "Saved Location not available!!",
-                      );
-                    }
+            Expanded(
+              child: PagedListView<int, SaveLocationModel>(
+                pagingController:
+                SaveLocationController.to.saveLocationPagingController,
+                builderDelegate: PagedChildBuilderDelegate<SaveLocationModel>(
+                  itemBuilder: (context, item, index) {
                     return SavedLocationItemWidget(
-                      isLoading:
-                          SaveLocationController
-                              .to
-                              .isLoadingSpecificSaveLocation
-                              .value,
-                      onTap:
-                          arg != null && arg == fromHome
-                              ? () {
-                                SaveLocationController.to
-                                    .selectLatlngFromSaveLocation(
-                                      id:
-                                          SaveLocationController
-                                              .to
-                                              .saveLocationList[index]
-                                              .sId
-                                              .toString(),
-                                    );
-                              }
-                              : null,
-                      saveLocationModel:
-                          SaveLocationController.to.saveLocationList[index],
+                      saveLocationModel: item,
+                      isLoading: SaveLocationController
+                          .to.isLoadingSpecificSaveLocation.value,
+                      onTap: arg != null && arg == fromHome
+                          ? () {
+                        SaveLocationController.to
+                            .selectLatlngFromSaveLocation(
+                          id: item.sId.toString(),
+                        );
+                      }
+                          : null,
                     );
-                  },
+                  }, firstPageProgressIndicatorBuilder:
+                    (_) => Column(
+                      children: List.generate(6, (index) =>  shimmerSavedLocationItem(),),
+                    ),
+
+                  // Show when loading next page
+                  newPageProgressIndicatorBuilder: (_) => DefaultProgressIndicator(),
+                  firstPageErrorIndicatorBuilder: (_) => CustomText(text: 'Failed to load'),
+                  noItemsFoundIndicatorBuilder: (_) => EmptyWidget(
+                      text: "Saved Location not available!!"),
+
                 ),
-              );
-            }),
-            SliverToBoxAdapter(
-              child: Obx(() {
-                return SaveLocationController.to.isLoadingMore.value
-                    ? PaginationLoadingWidget()
-                    : SizedBox.shrink();
-              }),
+              ),
             ),
           ],
         ),

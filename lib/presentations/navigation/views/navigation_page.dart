@@ -47,6 +47,7 @@ class _NavigationPageState extends State<NavigationPage>
             isDriver : true,onTap: () => Get.toNamed(NotificationPage.routeName));
         case 2: return CustomAppBar(title: AppStaticStrings.statics);
         case 3: return CustomAppBar(title: AppStaticStrings.messages);
+        case 4: return CustomAppBar(title: AppStaticStrings.profile, backgroundColor: AppColors.kWhiteColor,);
       }
     }
     else if (currentIndex == 0) {
@@ -80,6 +81,8 @@ class _NavigationPageState extends State<NavigationPage>
         );
     }else if (currentIndex == 2) {
       return CustomAppBar(title: AppStaticStrings.messages);
+    }else if (currentIndex == 3) {
+      return CustomAppBar(title: AppStaticStrings.profile,backgroundColor: AppColors.kWhiteColor,);
     }
     return null;
   }
