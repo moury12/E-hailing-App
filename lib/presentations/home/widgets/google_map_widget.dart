@@ -67,7 +67,7 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
 
-        polylines: NavigationController.to.routePolylines.value,
+        // polylines: NavigationController.to.routePolylines.value,
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
         myLocationEnabled: true,

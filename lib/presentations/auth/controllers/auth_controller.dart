@@ -426,25 +426,166 @@ class AuthController extends GetxController {
     }
   }
 
+
+
   Future<void> signInWithApple() async {
     try {
+      // Assuming a similar loading variable exists for Apple Sign-In
       isAppleAuthLoading.value = true;
-      final credential = await SignInWithApple.getAppleIDCredential(
+
+      // 🔹 Trigger Apple Sign-In
+      final AuthorizationCredentialAppleID credential =
+      await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
       );
 
-      // Extract the ID token
-      final idToken = credential.identityToken;
-      logger.d(idToken);
-      if (idToken == null) throw Exception('No ID token received');
+      // 🔹 Extract user data from Apple's credential
+      // Note: Name and email are only provided on the FIRST login.
+      // Your backend needs to handle cases where they are null on subsequent logins.
+      final String name = (credential.givenName != null || credential.familyName != null)
+          ? "${credential.givenName ?? ''} ${credential.familyName ?? ''}".trim()
+          : "User";
+
+      final String? email = credential.email;
+
+      // IMPORTANT: On subsequent logins, Apple does not provide the email.
+      // Your logic requires an email, so we must stop if it's not available.
+      if (email == null) {
+        showCustomSnackbar(
+          title: 'Login Error',
+          message: 'Could not retrieve email. This can happen on subsequent logins. Please contact support if this issue persists.',
+          type: SnackBarType.failed,
+        );
+        isAppleAuthLoading.value = false;
+        return;
+      }
+
+      // Apple does not provide a photo URL.
+      final String photoUrl = "";
+
+      // 🔹 Send initial data to backend
+      final initialResponse = await ApiService().request(
+        endpoint: socialEndPoint,
+        method: 'POST',
+        body: {
+          "name": name,
+          "email": email,
+          "profile_image": photoUrl, // Will be an empty string
+          "provider": "apple", // Changed from "google"
+          "role": "USER",
+        },
+        useAuth: false,
+      );
+
+      logger.d(initialResponse.toString());
+
+      // ✅ Success - store token and navigate
+      if (initialResponse['success'] == true) {
+        Boxes.getUserData().put(
+          tokenKey,
+          initialResponse["data"]['accessToken'],
+        );
+        ApiService().setAuthToken(initialResponse["data"]['accessToken']);
+
+        showCustomSnackbar(
+          title: 'Success',
+          message: initialResponse['message'],
+        );
+        await CommonController.to.initialSetUp();
+        Get.offAllNamed(
+          NavigationPage.routeName,
+        );
+      } else {
+        // 🔁 Retry with phone number if needed (logic remains identical)
+        String userPhoneNumber = '';
+        String? phoneNumber = await Get.dialog<String>(
+          AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              // spacing: 8.h, // Your UI-specific code
+              children: [
+                CustomTextField(
+                  title: AppStaticStrings.phoneNumber,
+                  keyboardType: TextInputType.phone,
+                  hintText: "e.g. +8801XXXXXXXXX",
+                  onChanged: (value) => userPhoneNumber = value,
+                ),
+                CustomButton(
+                  onTap: (){
+                    if(userPhoneNumber.isNotEmpty){
+                      Get.back(result: userPhoneNumber);
+                    }
+                  },
+                  title: AppStaticStrings.submit.tr,
+                ),
+              ],
+            ),
+          ),
+          barrierDismissible: false,
+        );
+
+        // 🚫 Cancelled or empty input
+        if (phoneNumber == null || phoneNumber.isEmpty) {
+          showCustomSnackbar(
+            title: 'Phone Required',
+            message: 'Phone number is required to continue.',
+            type: SnackBarType.failed,
+          );
+          isAppleAuthLoading.value = false; // Stop loading here
+          return;
+        }
+
+        // 🔄 Resend with phone number
+        final retryResponse = await ApiService().request(
+          endpoint: socialEndPoint,
+          method: 'POST',
+          body: {
+            "name": name,
+            "email": email,
+            "profile_image": photoUrl,
+            "phoneNumber": phoneNumber,
+            "provider": "apple", // Changed from "google"
+            "role": "USER",
+          },
+          useAuth: false,
+        );
+
+        if (retryResponse['success'] == true) {
+          Boxes.getUserData().put(
+            tokenKey,
+            retryResponse["data"]['accessToken'],
+          );
+          ApiService().setAuthToken(retryResponse["data"]['accessToken']);
+
+          showCustomSnackbar(
+            title: 'Success',
+            message: retryResponse['message'],
+          );
+          await CommonController.to.initialSetUp();
+          Get.offAllNamed(
+            NavigationPage.routeName,
+          );
+        } else {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: retryResponse['message'],
+            type: SnackBarType.failed,
+          );
+        }
+      }
     } catch (e) {
+      // This will catch errors, including when the user cancels the Apple Sign-In dialog
+      logger.e('Apple Sign-In Error: $e');
+      showCustomSnackbar(
+        title: 'Error',
+        message: 'Something went wrong or sign-in was cancelled. Please try again.',
+        type: SnackBarType.failed,
+      );
+    } finally {
       isAppleAuthLoading.value = false;
-      print("error apple $e");
-      // logger.e('Error: $e');
-      // Consider showing a user-friendly error message
     }
   }
 
