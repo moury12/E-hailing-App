@@ -16,7 +16,7 @@ class ResetPasswordPage extends StatelessWidget {
   ResetPasswordPage({super.key});
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
+final arg = Get.arguments;
   @override
   Widget build(BuildContext context) {
     return AuthScaffoldStructureWidget(
@@ -69,7 +69,7 @@ class ResetPasswordPage extends StatelessWidget {
                 AuthProcess.resetPassword,
             onTap: () {
               if (formKey.currentState!.validate()) {
-                AuthController.to.resetPasswordRequest();
+                AuthController.to.resetPasswordRequest(email: arg);
               }
             },
             title: AppStaticStrings.confirm,
