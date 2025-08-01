@@ -42,8 +42,8 @@ class SocialMediaAuthWidget extends StatelessWidget {
             Platform.isIOS
                 ? IconButton(
                   onPressed: () {
-                    Boxes.getUserRole().put(role, user);
-                    CommonController.to.isDriver.value = false;
+                    AuthController.to.signInWithApple();
+
                   },
                   icon: SvgPicture.asset(appleIcon),
                 )
