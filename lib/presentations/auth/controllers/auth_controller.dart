@@ -138,7 +138,7 @@ class AuthController extends GetxController {
           phoneSignUpController.clear();
         } else {
           otpControllers.clear();
-          Get.offAllNamed(ResetPasswordPage.routeName);
+          Get.offAllNamed(ResetPasswordPage.routeName, arguments: email);
         }
       } else {
         logger.e(response);
@@ -239,7 +239,7 @@ class AuthController extends GetxController {
   }
 
   ///------------------------------ reset password method -------------------------///
-  Future<void> resetPasswordRequest() async {
+  Future<void> resetPasswordRequest({required String email}) async {
     try {
       loadingProcess.value = AuthProcess.resetPassword;
 
@@ -251,7 +251,7 @@ class AuthController extends GetxController {
         endpoint: resetPasswordEndPoint,
         method: 'POST',
         body: {
-          "email": emailForgetController.value.text,
+          "email": email,
           "confirmPassword": confirmPassNewController.text,
           "newPassword": passNewController.text,
         },
@@ -347,10 +347,15 @@ class AuthController extends GetxController {
                   title: AppStaticStrings.phoneNumber,
                   keyboardType: TextInputType.phone,
                   hintText: "e.g. +8801XXXXXXXXX",
+
                   onChanged: (value) => userPhoneNumber = value,
                 ),
                 CustomButton(
-                  onTap: () => Get.back(result: userPhoneNumber),
+                  onTap: (){
+                    if(userPhoneNumber.isNotEmpty){
+                      Get.back(result: userPhoneNumber);
+                    }
+                  },
                   title: AppStaticStrings.submit.tr,
                 ),
               ],
@@ -444,7 +449,7 @@ class AuthController extends GetxController {
   }
 
   reinitializeSignUpControllers() {
-    if (kDebugMode) {
+    if (!kDebugMode) {
       emailSignUpController.value.text = 'cameg29044@lewou.com';
       nameSignUpController.text = 'cameg29044';
       phoneSignUpController.text = '01566026603';

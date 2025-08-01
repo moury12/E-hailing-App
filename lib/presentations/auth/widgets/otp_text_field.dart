@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -24,7 +25,9 @@ class OtpTextField extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 5),
             child: Obx(() {
               return TextField(
-
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
                 controller: AuthController.to.otpControllers[index].value,
                 focusNode: AuthController.to.focusNodes[index],
                 keyboardType: TextInputType.number,

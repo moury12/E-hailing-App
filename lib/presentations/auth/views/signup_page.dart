@@ -6,6 +6,7 @@ import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/auth_text_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -75,6 +76,9 @@ class _SignupPageState extends State<SignupPage> {
                 keyboardType: TextInputType.number,
                 textEditingController: AuthController.to.phoneSignUpController,
                 isRequired: true,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppStaticStrings.phoneRequired.tr;
@@ -143,7 +147,9 @@ class _SignupPageState extends State<SignupPage> {
             isLoading:
                 AuthController.to.loadingProcess.value == AuthProcess.signUp,
             onTap: () {
-              AuthController.to.signUpRequest();
+      if(formKey.currentState!.validate()){
+        AuthController.to.signUpRequest();
+      }
               // Get.toNamed(VerifyEmailPage.routeName);
             },
             title: AppStaticStrings.createAccount,

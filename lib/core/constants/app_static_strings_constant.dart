@@ -245,7 +245,7 @@ class AppStaticStrings {
   static const String addPlace = 'Add place';
   static const String finalCost = 'Final cost';
   static const String tripDuration = 'Trip Duration';
-  static const String tripDistance = 'Trip Distance';
+  static const String tripDistance = 'Trip Distance (M)';
   static const String from = 'From:';
   static const String to = 'To:';
 
