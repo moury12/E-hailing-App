@@ -14,7 +14,7 @@ plugins {
 }
 
 android {
-    namespace = "com.dudu.android.app"
+    namespace = "com.e-hailling.app"
     compileSdk = 35
     ndkVersion = "27.0.12077973"
 
@@ -28,7 +28,9 @@ android {
     }
 
     defaultConfig {
+
         applicationId = "com.dudu.android.app"
+
         minSdk = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

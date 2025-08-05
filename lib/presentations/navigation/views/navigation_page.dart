@@ -34,9 +34,9 @@ class _NavigationPageState extends State<NavigationPage>
     super.initState();
     // Create the map widget once and reuse it
     _persistentMapWidget =
-        CommonController.to.isDriver.value
+        /*CommonController.to.isDriver.value
             ? GoogleMapWidgetForDriver()
-            : GoogleMapWidgetForRider();
+            :*/ GoogleMapWidgetForRider();
   }
   PreferredSizeWidget? getAppBar(int currentIndex) {
     if (currentIndex == 1) return CustomAppBar(title: AppStaticStrings.myRides);
