@@ -31,9 +31,9 @@ class SplashController extends GetxController {
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
       await CommonController.to.initialSetUp();
-      Get.toNamed(NavigationPage.routeName);
+      Get.offAllNamed(NavigationPage.routeName);
     } else {
-      Get.toNamed(LoginPage.routeName);
+      Get.offAllNamed(LoginPage.routeName);
     }
   }
 

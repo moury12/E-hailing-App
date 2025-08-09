@@ -590,7 +590,7 @@ class AuthController extends GetxController {
   }
 
   reinitializeSignUpControllers() {
-    if (!kDebugMode) {
+    if (kDebugMode) {
       emailSignUpController.value.text = 'cameg29044@lewou.com';
       nameSignUpController.text = 'cameg29044';
       phoneSignUpController.text = '01566026603';
