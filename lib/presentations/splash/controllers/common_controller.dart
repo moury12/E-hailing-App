@@ -14,6 +14,7 @@ import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboa
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -64,7 +65,7 @@ class CommonController extends GetxController {
     );
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
-      fetchCurrentLocationMethod();
+
 
       initialSetUp();
     }
@@ -171,6 +172,8 @@ class CommonController extends GetxController {
         isDriver.value ? markerPositionDriver : markerPositionRider;
 
     await locationService.fetchCurrentLocation(markerPosition: markerPosition);
+    await BoundaryController.to.initialize(markerPosition.value);
+
   }
 
   Future<void> startTrackingLocationMethod() async {
@@ -266,6 +269,7 @@ class CommonController extends GetxController {
     await getUserProfileRequest();
 
     Future.wait([checkUserRole(), fetchCurrentLocationMethod()]);
+
     if (userModel.value.sId != null) {
       await setupGlobalSocketListeners();
     }

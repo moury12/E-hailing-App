@@ -1,4 +1,4 @@
-package com.e-hailling.app
+package com.dudu.android.app
 
 import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity
