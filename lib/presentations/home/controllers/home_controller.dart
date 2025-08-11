@@ -458,7 +458,7 @@ class HomeController extends GetxController {
       } else {
         isLoadingUserCurrentTrip.value = false;
 
-        logger.e(response);
+        // logger.e(response);
         if (kDebugMode) {
           showCustomSnackbar(title: 'Failed', message: response['message']);
         }

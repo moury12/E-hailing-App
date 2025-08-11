@@ -52,7 +52,7 @@ class MessageController extends GetxController {
         method: 'GET',
         queryParams: {'page': pageKey.toString()},
       );
-      logger.d(response);
+      // logger.d(response);
       if (response['success'] == true) {
         final newItems =
             (response['data']['chats'] as List)

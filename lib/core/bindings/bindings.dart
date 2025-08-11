@@ -3,6 +3,7 @@ import 'package:e_hailing_app/presentations/home/controllers/home_controller.dar
 import 'package:e_hailing_app/presentations/notification/controller/notification_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:get/get.dart';
 
 import '../../presentations/auth/controllers/auth_controller.dart';
@@ -26,6 +27,7 @@ class CommonBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(CommonController(), permanent: true);
+    Get.put(BoundaryController(), permanent: true);
   }
 }
 

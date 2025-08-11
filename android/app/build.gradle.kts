@@ -14,7 +14,7 @@ plugins {
 }
 
 android {
-    namespace = "com.e-hailling.app"
+    namespace = "com.dudu.android.app"
     compileSdk = 35
     ndkVersion = "27.0.12077973"
 
