@@ -75,6 +75,7 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
             BoundaryController.to.bounds.value != null
                 ? CameraTargetBounds(BoundaryController.to.bounds.value)
                 : CameraTargetBounds.unbounded,
+        polylines: NavigationController.to.routePolylines.value,
 
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),

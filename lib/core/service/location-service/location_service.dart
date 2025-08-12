@@ -158,46 +158,47 @@ class LocationTrackingService {
     }
   }
 
-  Future<void> getLatLngFromPlace(
-    String placeId, {
-    RxString? lat,
-    RxString? lng,
-    Rx<LatLng?>? latLng,
-    required RxString selectedAddress,
-  }) async {
-    final String url =
-        'https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeId&key=${GoogleClient.googleMapUrl}';
-
-    try {
-      final response = await http.get(Uri.parse(url));
-      // logger.d(response.body);
-      if (response.statusCode == 200) {
-        // Parse response
-        final Map<String, dynamic> data = json.decode(response.body);
-
-        if (data['results'].isNotEmpty) {
-          final location = data['results'][0]['geometry']['location'];
-
-          // Update RxString values
-          selectedAddress.value = data['results'][0]['formatted_address'];
-          if (lat != null && lng != null) {
-            lat.value = location['lat'].toString();
-            lng.value = location['lng'].toString();
-          } else if (latLng != null) {
-            latLng.value = LatLng(location['lat'], location['lng']);
-          }
-        } else {
-          debugPrint("No results found for the provided placeId.");
-        }
-      } else {
-        debugPrint(
-          "HTTP Error: ${response.statusCode} - ${response.reasonPhrase}",
-        );
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
+  // Future<void> getLatLngFromPlace(
+  //   String placeId, {
+  //   RxString? lat,
+  //   RxString? lng,
+  //   Rx<LatLng?>? latLng,
+  //   required RxString selectedAddress,
+  // })
+  // async {
+  //   final String url =
+  //       'https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeId&key=${GoogleClient.googleMapUrl}';
+  //
+  //   try {
+  //     final response = await http.get(Uri.parse(url));
+  //     // logger.d(response.body);
+  //     if (response.statusCode == 200) {
+  //       // Parse response
+  //       final Map<String, dynamic> data = json.decode(response.body);
+  //
+  //       if (data['results'].isNotEmpty) {
+  //         final location = data['results'][0]['geometry']['location'];
+  //
+  //         // Update RxString values
+  //         selectedAddress.value = data['results'][0]['formatted_address'];
+  //         if (lat != null && lng != null) {
+  //           lat.value = location['lat'].toString();
+  //           lng.value = location['lng'].toString();
+  //         } else if (latLng != null) {
+  //           latLng.value = LatLng(location['lat'], location['lng']);
+  //         }
+  //       } else {
+  //         debugPrint("No results found for the provided placeId.");
+  //       }
+  //     } else {
+  //       debugPrint(
+  //         "HTTP Error: ${response.statusCode} - ${response.reasonPhrase}",
+  //       );
+  //     }
+  //   } catch (e) {
+  //     debugPrint(e.toString());
+  //   }
+  // }
 
   Future<bool> drawPolylineBetweenPoints(
     LatLng start,

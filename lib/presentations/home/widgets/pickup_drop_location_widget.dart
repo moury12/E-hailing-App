@@ -14,7 +14,8 @@ import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
 
 class PickupDropLocationWidget extends StatefulWidget {
-  const PickupDropLocationWidget({super.key});
+  final bool? isDisable;
+  const PickupDropLocationWidget({super.key, this.isDisable= false});
 
   @override
   State<PickupDropLocationWidget> createState() =>
@@ -41,6 +42,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
       children: <Widget>[
         Obx(() {
           return CustomTextField(
+            isEnable: widget.isDisable==true? false: true,
             borderRadius: 24.r,
             hintText: AppStaticStrings.pickupLocation,
             fillColor: AppColors.kWhiteColor,
@@ -63,7 +65,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
 
             textEditingController:
                 HomeController.to.pickupLocationController.value,
-            suffixIcon: ButtonTapWidget(
+            suffixIcon:widget.isDisable==false? ButtonTapWidget(
               onTap: () {
                 HomeController.to.pickupLocationController.value.clear();
                 HomeController.to.pickupLatLng.value = null;
@@ -74,13 +76,13 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
                 padding: padding12,
                 child: SvgPicture.asset(crossCircleIcon),
               ),
-            ),
+            ):SizedBox.shrink(),
           );
         }),
 
         Obx(() {
           return CustomTextField(
-            // focusNode: HomeController.to.dropOffFocusNode,
+            isEnable: widget.isDisable==true? false: true,
             borderRadius: 24.r,
             onTap: () {
               // FocusScope.of(context).unfocus();
@@ -101,7 +103,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
               HomeController.to.activeField.value = "dropoff";
               CommonController.to.fetchSuggestedPlacesWithRadius(v);
             },
-            suffixIcon: ButtonTapWidget(
+            suffixIcon:widget.isDisable==false? ButtonTapWidget(
               onTap: () {
                 HomeController.to.dropOffLocationController.value.clear();
                 HomeController.to.dropoffLatLng.value = null;
@@ -112,7 +114,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
                 padding: padding12,
                 child: SvgPicture.asset(crossCircleIcon),
               ),
-            ),
+            ):SizedBox.shrink(),
           );
         }),
       ],

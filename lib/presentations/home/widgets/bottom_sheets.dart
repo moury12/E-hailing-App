@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
@@ -58,9 +59,9 @@ class _HomeSetLocationWidgetState extends State<HomeSetLocationWidget> {
       children: [
         CustomText(
           text:
-          HomeController.to.setDestination.value
-              ? AppStaticStrings.setYourDropOffLocation
-              : AppStaticStrings.setYourPickupLocation,
+              HomeController.to.setDestination.value
+                  ? AppStaticStrings.setYourDropOffLocation
+                  : AppStaticStrings.setYourPickupLocation,
           style: poppinsSemiBold,
         ),
 
@@ -68,9 +69,9 @@ class _HomeSetLocationWidgetState extends State<HomeSetLocationWidget> {
           return CustomWhiteContainerWithBorder(
             img: pickLocationIcon,
             text:
-            HomeController.to.setDestination.value
-                ? HomeController.to.dropoffAddressText.value
-                : HomeController.to.pickupAddressText.value,
+                HomeController.to.setDestination.value
+                    ? HomeController.to.dropoffAddressText.value
+                    : HomeController.to.pickupAddressText.value,
             cross: ButtonTapWidget(
               onTap: () {
                 if (HomeController.to.setDestination.value) {
@@ -171,124 +172,137 @@ class HomeWantToGoContentWidget extends StatelessWidget {
               return FloatingActionButton.small(
                 backgroundColor: AppColors.kPrimaryColor,
                 foregroundColor: AppColors.kWhiteColor,
-                onPressed: HomeController.to.isLoadingPostFair.value
-                    ? null
-                    : () async {
-                  // Clear focus first to prevent refocusing issues
-                  HomeController.to.clearAllFocus();
-                  FocusScope.of(context).unfocus();
+                onPressed:
+                    HomeController.to.isLoadingPostFair.value
+                        ? null
+                        : () async {
+                          // Clear focus first to prevent refocusing issues
+                          HomeController.to.clearAllFocus();
+                          FocusScope.of(context).unfocus();
 
-                  // Validate both locations are selected
-                  if (HomeController.to.pickupLatLng.value == null ||
-                      HomeController.to.dropoffLatLng.value ==
-                          null /*||
+                          // Validate both locations are selected
+                          if (HomeController.to.pickupLatLng.value == null ||
+                              HomeController.to.dropoffLatLng.value ==
+                                  null /*||
                     HomeController.to.distance.value == 0 ||
-                    HomeController.to.duration.value == 0*/) {
-                    logger.d("Pickup: ${HomeController.to.pickupLatLng.value}");
-                    logger.d(
-                        "Dropoff: ${HomeController.to.dropoffLatLng.value}");
+                    HomeController.to.duration.value == 0*/ ) {
+                            logger.d(
+                              "Pickup: ${HomeController.to.pickupLatLng.value}",
+                            );
+                            logger.d(
+                              "Dropoff: ${HomeController.to.dropoffLatLng.value}",
+                            );
 
-                    showCustomSnackbar(
-                      title: "Warning!!",
-                      message:
-                      "Please select both pickup and drop-off locations.",
-                    );
-                    return;
-                  }
+                            showCustomSnackbar(
+                              title: "Warning!!",
+                              message:
+                                  "Please select both pickup and drop-off locations.",
+                            );
+                            return;
+                          }
 
-                  final pickup = HomeController.to.pickupLatLng.value!;
-                  final dropoff = HomeController.to.dropoffLatLng.value!;
+                          final pickup = HomeController.to.pickupLatLng.value!;
+                          final dropoff =
+                              HomeController.to.dropoffLatLng.value!;
 
-                  // Check if we need to draw/redraw polyline
-                  bool needsPolylineUpdate =
-                      !HomeController.to.isPolylineDrawn.value ||
-                          HomeController.to.lastPickupLatLng != pickup ||
-                          HomeController.to.lastDropoffLatLng != dropoff;
+                          // Check if we need to draw/redraw polyline
+                          bool needsPolylineUpdate =
+                              !HomeController.to.isPolylineDrawn.value ||
+                              HomeController.to.lastPickupLatLng != pickup ||
+                              HomeController.to.lastDropoffLatLng != dropoff;
 
-                  if (needsPolylineUpdate) {
-                    // Show loading indicator
-                    showCustomSnackbar(
-                      title: "Please wait...",
-                      message: "Finding the best route for you.",
-                    );
-                    final locationService = LocationTrackingService();
+                          if (needsPolylineUpdate) {
+                            // Show loading indicator
+                            showCustomSnackbar(
+                              title: "Please wait...",
+                              message: "Finding the best route for you.",
+                            );
+                            final locationService = LocationTrackingService();
 
-                    bool polylineSuccess = await locationService
-                        .drawPolylineBetweenPoints(
-                      pickup,
-                      dropoff,
-                      NavigationController.to.routePolylines,
-                      distance: HomeController.to.distance,
-                      duration: HomeController.to.duration,
-                      userPosition:
-                      CommonController.to.markerPositionRider.value,
-                      mapController: CommonController.to.mapControllerRider,
-                    );
+                            bool polylineSuccess = await locationService
+                                .drawPolylineBetweenPoints(
+                                  pickup,
+                                  dropoff,
+                                  NavigationController.to.routePolylines,
+                                  distance: HomeController.to.distance,
+                                  duration: HomeController.to.duration,
+                                  userPosition:
+                                      CommonController
+                                          .to
+                                          .markerPositionRider
+                                          .value,
+                                  mapController:
+                                      CommonController.to.mapControllerRider,
+                                );
 
-                    if (polylineSuccess) {
-                      // Update cache only on success
-                      HomeController.to.lastPickupLatLng = pickup;
-                      HomeController.to.lastDropoffLatLng = dropoff;
-                      HomeController.to.isPolylineDrawn.value = true;
-                      HomeController.to.tripArgs = {
-                        "pickUpAddress":
-                        HomeController.to.pickupLocationController.value.text,
-                        "pickUpLat": pickup.latitude,
-                        "pickUpLong": pickup.longitude,
-                        "dropOffAddress":
-                        HomeController
-                            .to
-                            .dropOffLocationController
-                            .value
-                            .text,
-                        "dropOffLat": dropoff.latitude,
-                        "dropOffLong": dropoff.longitude,
-                        "duration": HomeController.to.duration.value,
-                        // in minutes
-                        "distance": HomeController.to.distance.value,
-                        // in meters
-                        // "coupon" will be added later from RequestTripPage
-                      };
-                      await HomeController.to.getTripFare(
-                        duration: HomeController.to.duration.value,
-                        distance: HomeController.to.distance.value,
-                      );
+                            if (polylineSuccess) {
+                              // Update cache only on success
+                              HomeController.to.lastPickupLatLng = pickup;
+                              HomeController.to.lastDropoffLatLng = dropoff;
+                              HomeController.to.isPolylineDrawn.value = true;
+                              HomeController.to.tripArgs = {
+                                "pickUpAddress":
+                                    HomeController
+                                        .to
+                                        .pickupLocationController
+                                        .value
+                                        .text,
+                                "pickUpLat": pickup.latitude,
+                                "pickUpLong": pickup.longitude,
+                                "dropOffAddress":
+                                    HomeController
+                                        .to
+                                        .dropOffLocationController
+                                        .value
+                                        .text,
+                                "dropOffLat": dropoff.latitude,
+                                "dropOffLong": dropoff.longitude,
+                                "duration": HomeController.to.duration.value,
+                                // in minutes
+                                "distance": HomeController.to.distance.value,
+                                // in meters
+                                // "coupon" will be added later from RequestTripPage
+                              };
+                              await HomeController.to.getTripFare(
+                                duration: HomeController.to.duration.value,
+                                distance: HomeController.to.distance.value,
+                              );
 
-                      HomeController.to.goToSelectEv();
-                      // Navigate to request trip page after successful polyline draw
-                      // await Future.delayed(const Duration(seconds: 3));
-                      // Get.toNamed(
-                      //   RequestTripPage.routeName,
-                      //   arguments: HomeController.to.tripArgs,
-                      // );
-                    } else {
-                      // Don't navigate if polyline failed
-                      showCustomSnackbar(
-                        title: "Unable to proceed",
-                        message:
-                        "Please try selecting different locations or check your internet connection.",
-                      );
-                    }
-                  } else {
-                    await HomeController.to.getTripFare(
-                      duration: HomeController.to.duration.value,
-                      distance: HomeController.to.distance.value,
-                    );
+                              HomeController.to.goToSelectEv();
+                              // Navigate to request trip page after successful polyline draw
+                              // await Future.delayed(const Duration(seconds: 3));
+                              // Get.toNamed(
+                              //   RequestTripPage.routeName,
+                              //   arguments: HomeController.to.tripArgs,
+                              // );
+                            } else {
+                              // Don't navigate if polyline failed
+                              showCustomSnackbar(
+                                title: "Unable to proceed",
+                                message:
+                                    "Please try selecting different locations or check your internet connection.",
+                              );
+                            }
+                          } else {
+                            await HomeController.to.getTripFare(
+                              duration: HomeController.to.duration.value,
+                              distance: HomeController.to.distance.value,
+                            );
 
-                    HomeController.to.goToSelectEv();
+                            HomeController.to.goToSelectEv();
 
-                    // // Polyline already exists and locations haven't changed
-                    // Get.toNamed(
-                    //   RequestTripPage.routeName,
-                    //   arguments: HomeController.to.tripArgs,
-                    // );
-                  }
-                },
+                            // // Polyline already exists and locations haven't changed
+                            // Get.toNamed(
+                            //   RequestTripPage.routeName,
+                            //   arguments: HomeController.to.tripArgs,
+                            // );
+                          }
+                        },
                 shape: const CircleBorder(),
-                child: HomeController.to.isLoadingPostFair.value
-                    ?
-                PaginationLoadingWidget(color: AppColors.kWhiteColor,)
-                    : const Icon(Icons.arrow_forward),
+                child:
+                    HomeController.to.isLoadingPostFair.value
+                        ? PaginationLoadingWidget(color: AppColors.kWhiteColor)
+                        : const Icon(Icons.arrow_forward),
               );
             }),
           ],
@@ -328,28 +342,38 @@ Widget locationSuggestionList() {
     // Determine which controller to update
     final isPickup = HomeController.to.activeField.value == "pickup";
     final controllerToUpdate =
-    isPickup
-        ? HomeController.to.pickupLocationController
-        : HomeController.to.dropOffLocationController;
+        isPickup
+            ? HomeController.to.pickupLocationController
+            : HomeController.to.dropOffLocationController;
 
     return Column(
-      children: List.generate(
-          CommonController.to.addressSuggestion.length, (index,) {
+      children: List.generate(CommonController.to.addressSuggestion.length, (
+        index,
+      ) {
         final address = CommonController.to.addressSuggestion[index];
         return SearchAddress(
-          title: address['description'],
+          title: address['formatted_address'],
           onTap: () async {
-            final locationService = LocationTrackingService();
-            final placeId = address['place_id'];
-            await locationService.getLatLngFromPlace(
-              placeId,
-              latLng:
-              isPickup
-                  ? HomeController.to.pickupLatLng
-                  : HomeController.to.dropoffLatLng,
-
-              selectedAddress: HomeController.to.selectedAddress,
-            );
+            // final locationService = LocationTrackingService();
+            var location = address['geometry']['location'];
+            double lat = location['lat'];
+            double lng = location['lng'];
+            if (isPickup) {
+              HomeController.to.pickupLatLng.value = LatLng(lat, lng);
+            } else {
+              HomeController.to.dropoffLatLng.value = LatLng(lat, lng);
+            }
+            HomeController.to.selectedAddress.value =
+                address['formatted_address'];
+            // await locationService.getLatLngFromPlace(
+            //   placeId,
+            //   latLng:
+            //   isPickup
+            //       ? HomeController.to.pickupLatLng
+            //       : HomeController.to.dropoffLatLng,
+            //
+            //   selectedAddress: HomeController.to.selectedAddress,
+            // );
 
             controllerToUpdate.value.text =
                 HomeController.to.selectedAddress.value;

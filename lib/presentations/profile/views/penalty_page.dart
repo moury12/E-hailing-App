@@ -40,7 +40,7 @@ class PenaltyPage extends StatelessWidget {
             ),
             Obx(() {
               return CustomText(
-                text: CommonController.to.userModel.value.coins.toString(),
+                text: (CommonController.to.userModel.value.coins??0).toString(),
                 style: poppinsBold,
                 color: AppColors.kPrimaryColor,
                 fontSize: getButtonFontSizeLarge(),
