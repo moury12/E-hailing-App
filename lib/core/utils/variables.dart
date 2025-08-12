@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/presentations/driver-statics/model/StaticModel.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:logger/logger.dart';
 
 var logger = Logger(printer: PrettyPrinter());
@@ -37,10 +38,16 @@ List<TripCancellationModel> tripCancellationList = [
     isChecked: false.obs,
   ),
 ];
-// List<TripCancellationModel> paymentStatus =[TripCancellationModel(
-//   title: "Card Payment",
-//   isChecked: false.obs,
-// ),];
+class AddressModel{
+  final String title;
+  final LatLng latLng;
+  final double latitude;
+  final double longitutde;
+
+  AddressModel({required this.title, required this.latLng, required this.latitude, required this.longitutde});
+
+
+}
 String pickupDestination = 'Pickup destination';
 String userRole = 'User Role';
 String role = 'role';

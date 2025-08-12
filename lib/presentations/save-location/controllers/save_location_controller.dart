@@ -67,6 +67,7 @@ class SaveLocationController extends GetxController {
       );
       if (response['success'] == true) {
         logger.d(response);
+        Get.back();
         placeName.clear();
         searchFieldController.value.clear();
         showCustomSnackbar(title: 'Success', message: response['message']);
@@ -75,7 +76,7 @@ class SaveLocationController extends GetxController {
         if (!oldItems.any((element) => element.sId == newLocation.sId)) {
           saveLocationPagingController.itemList = [newLocation, ...oldItems];
         }
-        Get.back();
+
       } else {
         logger.e(response);
         showCustomSnackbar(title: 'Failed', message: response['message']);

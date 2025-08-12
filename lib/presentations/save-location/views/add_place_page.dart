@@ -64,17 +64,18 @@ class AddPlacePage extends StatelessWidget {
                                 CommonController.to.addressSuggestion[index];
                             return SearchAddress(
                               onTap: () async {
-                                final placeId = address['place_id'];
-                                final locationService =
-                                    LocationTrackingService();
+                                var location =
+                                    address['geometry']['location'];
+                                SaveLocationController.to.lat.value =
+                                    location['lat'];
+                                SaveLocationController.to.lng.value =
+                                    location['lng'];
 
-                                await locationService.getLatLngFromPlace(
-                                  placeId,
-                                  lat: SaveLocationController.to.lat,
-                                  lng: SaveLocationController.to.lng,
-                                  selectedAddress:
-                                      SaveLocationController.to.selectedAddress,
-                                );
+                                SaveLocationController
+                                    .to
+                                    .selectedAddress
+                                    .value = address['formatted_address'];
+
                                 logger.d("----------------------");
                                 logger.d(
                                   SaveLocationController
@@ -99,7 +100,7 @@ class AddPlacePage extends StatelessWidget {
                                         .value;
                                 CommonController.to.addressSuggestion.clear();
                               },
-                              title: address['description'],
+                              title: address['formatted_address'],
                             );
                           },
                         ),

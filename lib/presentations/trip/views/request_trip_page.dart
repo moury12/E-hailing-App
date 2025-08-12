@@ -42,7 +42,7 @@ class RequestTripPage extends StatelessWidget {
                   fare: HomeController.to.estimatedFare.value,
                 );
               }),
-              PickupDropLocationWidget(),
+              PickupDropLocationWidget(isDisable: true,),
               Text(
                 "Payment Method",
                 style: poppinsMedium.copyWith(
@@ -91,6 +91,7 @@ class RequestTripPage extends StatelessWidget {
                 textEditingController: TextEditingController(
                   text: args.isNotEmpty ? args["distance"].toString() : "",
                 ),
+                isEnable: false,
                 borderColor: AppColors.kGreyColor,
                 fillColor: AppColors.kWhiteColor,
                 borderRadius: 24.r,
@@ -101,6 +102,8 @@ class RequestTripPage extends StatelessWidget {
                 // ),
               ),
               CustomTextField(
+                isEnable: false,
+
                 textEditingController: TextEditingController(
                   text:
                       args.isNotEmpty
