@@ -36,6 +36,7 @@ class HomeController extends GetxController {
   RxBool isLoadingUserCurrentTrip = false.obs;
   RxBool isLoadingCar = false.obs;
   RxBool mapDragable = false.obs;
+  RxBool mapDraging= false.obs;
   RxBool isLoadingPostFair = false.obs;
   RxInt estimatedFare = 0.obs;
   LatLng? lastPickupLatLng;

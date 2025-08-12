@@ -59,39 +59,24 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
         HomeController.to.polyLineShow();
       });
     }
-  } LatLng? lastValidPosition;
+  }
+
+  LatLng? lastValidPosition;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Obx(() {
       final position = CommonController.to.markerPositionRider.value;
-logger.i(BoundaryController.to.bounds.toString());
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
-        cameraTargetBounds: BoundaryController.to.bounds.value!= null
-            ? CameraTargetBounds(BoundaryController.to.bounds.value)
-            : CameraTargetBounds.unbounded,
+        cameraTargetBounds:
+            BoundaryController.to.bounds.value != null
+                ? CameraTargetBounds(BoundaryController.to.bounds.value)
+                : CameraTargetBounds.unbounded,
 
-        onCameraMove: (position) {
-          if (BoundaryController.to.bounds.value!= null && !BoundaryController.to.bounds.value!.contains(position.target)) {
-            // If the camera moves outside bounds, move it back
-            final clampedLat = position.target.latitude.clamp(
-              BoundaryController.to.bounds.value!.southwest.latitude,
-              BoundaryController.to.bounds.value!.northeast.latitude,
-            );
-            final clampedLng = position.target.longitude.clamp(
-              BoundaryController.to.bounds.value!.southwest.longitude,
-              BoundaryController.to.bounds.value!.northeast.longitude,
-            );
-
-            // Move the camera back to a valid position
-            CommonController.to.mapControllerRider?.animateCamera(
-              CameraUpdate.newLatLng(LatLng(clampedLat, clampedLng)),
-            );
-          }
-        },      onMapCreated: _onMapCreated,
+        onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
         myLocationEnabled: true,
         myLocationButtonEnabled: false,
@@ -101,12 +86,16 @@ logger.i(BoundaryController.to.bounds.toString());
         compassEnabled: true,
         rotateGesturesEnabled: true,
         tiltGesturesEnabled: true,
-onTap: (argument) {
-  if (!BoundaryController.to.contains(argument)) {
- showCustomSnackbar(title: "Failed", message: "Please select a location within the country.",type: SnackBarType.alert);
-    return;
-  }
-},
+        onTap: (argument) {
+          if (!BoundaryController.to.contains(argument)) {
+            showCustomSnackbar(
+              title: "Failed",
+              message: "Please select a location within the country.",
+              type: SnackBarType.alert,
+            );
+            return;
+          }
+        },
         markers:
             NavigationController.to.routePolylines.isNotEmpty
                 ? {
@@ -124,70 +113,68 @@ onTap: (argument) {
                     position:
                         HomeController.to.dropoffLatLng.value ??
                         CommonController.to.markerPositionRider.value,
-                    draggable: HomeController.to.mapDragable.value,
-                       // Variable to store last valid position
+                    draggable:
+                        HomeController.to.mapDragable.value &&
+                        HomeController.to.mapDraging.value,
 
-                      onTap: () {
-                NavigationController.to.markerDraging.value = true;
-      },
+                    // Variable to store last valid position
+                    onTap: () {
+                      if (HomeController.to.mapDraging.value) {
+                        HomeController.to.mapDragable.value = true;
+                      }
+                      logger.d(
+                        "---------------------onTap"
+                        "",
+                      );
+                    },
 
-        onDragStart: (value) {
-          NavigationController.to.markerDraging.value = true;
-        },
+                    onDragStart: (value) {
+                      if (HomeController.to.mapDraging.value) {
+                        HomeController.to.mapDragable.value = true;
+                      }
+                      logger.d("---------------------onDragStart $value");
+                    },
+                    onDragEnd: (value) async {
+                      logger.d("---------------------onDragEnd $value");
+                      if (!BoundaryController.to.contains(value)) {
+                        // Show custom snackbar if the point is outside the country's boundary
+                        showCustomSnackbar(
+                          title: "Failed",
+                          message: 'Outside country boundary.',
+                          type: SnackBarType.alert,
+                        );
+                        HomeController.to.mapDragable.value = false;
+                        // Snap back to last valid location
+                        if (lastValidPosition != null) {
+                          CommonController.to.markerPositionRider.value =
+                              lastValidPosition!;
+                        }
+                        return;
+                      }
 
-        onDragEnd: (value) async {
-          // 1. Boundary check (inside or outside country boundary)
-          if (!BoundaryController.to.contains(value)) {
-            // 2. Show custom snackbar if the point is outside the country's boundary
-            showCustomSnackbar(
-              title: "Failed",
-              message: 'Outside country boundary.',
-              type: SnackBarType.alert,
-            );
+                      // Update the last valid position
+                      lastValidPosition = value;
 
-            // 3. Snap back to last valid location
-            if (lastValidPosition != null) {
-              CommonController.to.markerPositionRider.value = lastValidPosition!;
-            }
-            return;
-          }
+                      // Update the marker position
+                      CommonController.to.markerPositionRider.value = value;
 
-          // 4. If the marker is within the boundary, proceed with normal operations
-          try {
-            // Update the last valid position to the current one
-            lastValidPosition = value;
+                      // Set either the dropoff or pickup location based on the state
+                      if (HomeController.to.setDestination.value) {
+                        HomeController.to.dropoffLatLng.value = value;
+                      } else {
+                        HomeController.to.pickupLatLng.value = value;
+                      }
 
-            // Update the marker position
-            CommonController.to.markerPositionRider.value = value;
+                      // Reverse geocode the new position (optional, based on your app)
+                      await HomeController.to.getPlaceName(
+                        value,
+                        HomeController.to.setDestination.value
+                            ? HomeController.to.dropOffLocationController.value
+                            : HomeController.to.pickupLocationController.value,
+                      );
 
-            // Set either the dropoff or pickup location based on the state
-            if (HomeController.to.setDestination.value) {
-              HomeController.to.dropoffLatLng.value = value;
-            } else {
-              HomeController.to.pickupLatLng.value = value;
-            }
-
-            // 5. Reverse geocode the new position (optional, based on your app)
-            await HomeController.to.getPlaceName(
-              value,
-              HomeController.to.setDestination.value
-                  ? HomeController.to.dropOffLocationController.value
-                  : HomeController.to.pickupLocationController.value,
-            );
-
-            // 6. Marker dragging is finished
-            NavigationController.to.markerDraging.value = false;
-          } catch (e) {
-            debugPrint('Error in marker drag end: $e');
-            // Handle any error that occurs during the process
-            NavigationController.to.markerDraging.value = false;
-          }
-        },
-
-        infoWindow: const InfoWindow(
-                      title: "Selected Location",
-                      snippet: "This is the chosen spot.",
-                    ),
+                      HomeController.to.mapDragable.value = false;
+                    },
                   ),
                 },
       );
@@ -233,7 +220,6 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
   }
 
   void _onMapCreated(GoogleMapController controller) {
-
     CommonController.to.setMapControllerDriver(controller);
     if (NavigationController.to.routePolylines.isEmpty) {
       final userPosition = CommonController.to.markerPositionDriver.value;

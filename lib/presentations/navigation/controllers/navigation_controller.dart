@@ -37,7 +37,6 @@ class NavigationController extends GetxController {
     }
 
     logger.d("---user id------${CommonController.to.userModel.value.sId}");
-    logger.d("---user id------${CommonController.to.mapControllerRider}");
 
     super.onInit();
   }

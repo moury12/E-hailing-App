@@ -39,14 +39,14 @@ class _HomeSetLocationWidgetState extends State<HomeSetLocationWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      HomeController.to.mapDragable.value = true;
+      HomeController.to.mapDraging.value = true;
     });
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      HomeController.to.mapDragable.value = false;
+      HomeController.to.mapDraging.value = false;
     });
     super.dispose();
   }
