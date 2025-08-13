@@ -5,6 +5,7 @@ import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -18,6 +19,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 }
 String? fcmToken;
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -25,8 +29,34 @@ void main() async {
   );
   await FirebaseMessaging.instance.requestPermission();
   fcmToken = await FirebaseMessaging.instance.getToken();
-logger.i(fcmToken);
+  logger.i(fcmToken);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  await initLocalNotification();
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+
+    if (notification != null && android != null) {
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            'high_importance_channel', // Channel ID
+            'High Importance Notifications', // Channel name
+            channelDescription: 'This channel is used for important notifications.',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker',
+          ),
+        ),
+        payload: message.data['payload'], // Optional: pass custom data
+      );
+    }
+  });
+
+
 
   setupDependencyInjection();
   await Hive.initFlutter();
@@ -38,6 +68,30 @@ logger.i(fcmToken);
   runApp(
     /* DevicePreview(enabled: !kReleaseMode, builder: (context) =>*/
     const MyApp() /*),*/,
+  );
+}
+Future<void> initLocalNotification() async {
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher'); // Your app icon
+
+  const DarwinInitializationSettings initializationSettingsIOS =
+  DarwinInitializationSettings(
+    requestSoundPermission: true,
+    requestBadgePermission: true,
+    requestAlertPermission: true,
+  );
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse: (NotificationResponse response) {
+      // Handle notification tapped logic here
+      logger.i('Notification Tapped: ${response.payload}');
+    },
   );
 }
 
