@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/constants/pagination_loading_widget.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
 import 'package:e_hailing_app/presentations/profile/widgets/custom_container_with_elevation.dart';
@@ -146,6 +147,9 @@ class _EarningsBarChartState extends State<EarningsBarChart> {
               final earnings =
                   DriverSettingsController.to.driverEarningModel.value;
               final monthlyRevenue = earnings.monthlyRevenue;
+              if(DriverSettingsController.to.isLoadingCar.value){
+                return PaginationLoadingWidget();
+              }
               if (monthlyRevenue == null || monthlyRevenue.toJson().isEmpty) {
                 return const CustomText(text: AppStaticStrings.noDataFound);
               }
@@ -154,7 +158,7 @@ class _EarningsBarChartState extends State<EarningsBarChart> {
                 (value, element) => value > element ? value : element,
               );
               final maxY = maxEarning + (maxEarning * .2);
-              return Flexible(
+              return  Flexible(
                 fit: FlexFit.loose,
 
                 child: BarChart(

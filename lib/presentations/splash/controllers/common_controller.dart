@@ -243,7 +243,7 @@ class CommonController extends GetxController {
         endpoint: getProfileEndPoint,
         method: 'GET',
       );
-      isLoadingProfile.value = false;
+logger.d(response);
       if (response['success'] == true) {
         logger.d(response);
         userModel.value = UserProfileModel.fromJson(response['data']);
@@ -261,17 +261,13 @@ class CommonController extends GetxController {
         }
       } else {
         logger.e(response);
-        if (kDebugMode) {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed,
-          );
-        }
+
       }
     } catch (e) {
       logger.e(e.toString());
+    }finally{
       isLoadingProfile.value = false;
+
     }
   }
 

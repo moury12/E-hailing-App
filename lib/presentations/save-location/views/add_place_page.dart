@@ -67,9 +67,9 @@ class AddPlacePage extends StatelessWidget {
                                 var location =
                                     address['geometry']['location'];
                                 SaveLocationController.to.lat.value =
-                                    location['lat'];
+                                    location['lat'].toString();
                                 SaveLocationController.to.lng.value =
-                                    location['lng'];
+                                    location['lng'].toString();
 
                                 SaveLocationController
                                     .to

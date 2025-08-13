@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "860193261199",
+    "project_id": "duducar-db900",
+    "storage_bucket": "duducar-db900.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:860193261199:android:148024b60a95751f2dd2fa",
+        "android_client_info": {
+          "package_name": "com.dudu.android.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm8Sz1Hr8Z0-i96nt2mlfSo-FRtk8UrBk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

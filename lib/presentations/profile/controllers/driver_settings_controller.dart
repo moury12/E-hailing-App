@@ -83,7 +83,6 @@ class DriverSettingsController extends GetxController {
           if (type != null) "type": type,
         },
       );
-      isLoadingCar.value = false;
       if (response['success'] == true) {
         logger.d(response);
         driverEarningModel.value = DriverEarningModel.fromJson(
@@ -101,7 +100,6 @@ class DriverSettingsController extends GetxController {
       }
     } catch (e) {
       logger.e(e.toString());
-      isLoadingCar.value = false;
     } finally {
       isLoadingCar.value = false;
     }
