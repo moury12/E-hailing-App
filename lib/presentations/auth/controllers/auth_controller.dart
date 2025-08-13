@@ -7,6 +7,7 @@ import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/main.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/otp_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/reset_password_page.dart';
@@ -167,6 +168,7 @@ class AuthController extends GetxController {
         body: {
           "email": AuthController.to.emailLoginController.text,
           "password": AuthController.to.passLoginController.text,
+         if(fcmToken!=null) "token":fcmToken
         },
       );
 
