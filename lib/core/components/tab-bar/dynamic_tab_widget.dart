@@ -100,7 +100,8 @@ class DynamicTabWidget extends StatelessWidget {
             ),
           ),
           space12H,
-          TabContentView(children: tabContent),
+          TabContentView(children: tabContent
+          ),
         ],
       ),
     );

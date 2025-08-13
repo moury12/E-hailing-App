@@ -1,6 +1,8 @@
 import 'package:e_hailing_app/core/dependency-injection/dependency_injection.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/firebase_options.dart';
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -9,9 +11,17 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'core/bindings/bindings.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
-
+@pragma('vm:entry-point')
+// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();  messaging.subscribeToTopic("general");
+//   NotificationService.initNotification();
+//
+// }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   setupDependencyInjection();
   await Hive.initFlutter();
   await Hive.openBox(userRole);
