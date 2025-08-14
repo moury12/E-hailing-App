@@ -1,4 +1,5 @@
 import 'package:e_hailing_app/core/constants/color_constants.dart';
+import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
@@ -25,10 +26,14 @@ class CarInformationWidget extends StatelessWidget {
           color: AppColors.kExtraLightBlackColor,
           fontSize: getFontSizeSemiSmall(),
         ),
-        CustomText(
-          text: value,
-          style: poppinsBold,
-          fontSize: getFontSizeSemiSmall(),
+        space8W,
+        Expanded(
+          child: CustomText(
+            text: value,
+            textAlign: TextAlign.right,
+            style: poppinsBold,
+            fontSize: getFontSizeSemiSmall(),
+          ),
         ),
       ],
     );
