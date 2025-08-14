@@ -308,6 +308,7 @@ class AuthController extends GetxController {
         endpoint: socialEndPoint,
         method: 'POST',
         body: {
+"token":fcmToken,
           "name": name,
           "email": email,
           "profile_image": photoUrl,
@@ -381,6 +382,7 @@ class AuthController extends GetxController {
           endpoint: socialEndPoint,
           method: 'POST',
           body: {
+"token":fcmToken,
             "name": name,
             "email": email,
             "profile_image": photoUrl,
@@ -473,6 +475,7 @@ class AuthController extends GetxController {
         endpoint: socialEndPoint,
         method: 'POST',
         body: {
+"token":fcmToken,
           "name": name,
           "email": email,
           "profile_image": photoUrl, // Will be an empty string
@@ -545,6 +548,7 @@ class AuthController extends GetxController {
           endpoint: socialEndPoint,
           method: 'POST',
           body: {
+"token":fcmToken,
             "name": name,
             "email": email,
             "profile_image": photoUrl,

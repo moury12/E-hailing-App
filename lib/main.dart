@@ -29,7 +29,7 @@ void main() async {
   );
   await FirebaseMessaging.instance.requestPermission();
   fcmToken = await FirebaseMessaging.instance.getToken();
-  logger.i(fcmToken);
+  logger.i("-------------fcm token----------------$fcmToken");
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await initLocalNotification();
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
