@@ -202,10 +202,9 @@ class HomeController extends GetxController {
         title: 'No Drivers Available',
         message: 'Sorry, no drivers are available in your area right now.',
       );
-      Future.delayed(Duration(seconds: 2), () {
-        Get.back();
-      });
+
       resetHomePage();
+      Get.back();
     });
 
     socket.on(TripEvents.tripAccepted, (data) {
