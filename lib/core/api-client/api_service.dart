@@ -97,7 +97,7 @@ class ApiService {
     if (queryParams != null && queryParams.isNotEmpty) {
       uri = uri.replace(queryParameters: queryParams);
     }
-
+logger.i(uri);
     // Enhanced retry logic for better reliability
     for (int attempt = 0; attempt < _maxRetries; attempt++) {
       try {
