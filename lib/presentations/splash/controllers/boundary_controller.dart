@@ -112,8 +112,8 @@ class BoundaryController extends GetxController {
       if (metaRes.statusCode != 200) return;
 
       final meta = jsonDecode(metaRes.body);
-      logger.d("_____________________________________________________");
-      logger.d(meta);
+      // logger.d("_____________________________________________________");
+      // logger.d(meta);
       final geoUrl = (meta['simplifiedGeometryGeoJSON'] as String?) ?? (meta['gjDownloadURL'] as String);
       final gjRes = await http.get(Uri.parse(geoUrl)).timeout(const Duration(seconds: 12));
       if (gjRes.statusCode != 200) return;

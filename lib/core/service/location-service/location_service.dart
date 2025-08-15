@@ -26,62 +26,72 @@ class LocationTrackingService {
   StreamSubscription<Position>? _positionStream;
   String? _lastTripId;
   final SocketService socketService = SocketService();
-
+bool isRunning=false;
   Future<void> startTrackingLocation({
     String? tripId,
     required Rx<LatLng> markerPosition,
     required GoogleMapController? mapController,
     bool emitToSocket = true,
   }) async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      Get.snackbar('Location Disabled', 'Please enable location services');
-      await Geolocator.openLocationSettings();
-      return;
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        Get.snackbar('Permission Denied', 'Location permission denied');
+    try{
+      if(isRunning){
         return;
       }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      Get.snackbar('Permission Denied', 'Enable from settings');
-      await Geolocator.openAppSettings();
-      return;
-    }
-
-    // Prevent duplicate tracking
-    if (tripId != null && _lastTripId == tripId && _positionStream != null)
-      return;
-
-    _positionStream?.cancel(); // Cancel previous
-
-    _positionStream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    ).listen((Position position) {
-      final newPosition = LatLng(position.latitude, position.longitude);
-      markerPosition.value = newPosition;
-
-      if (emitToSocket && tripId != null) {
-        socketService.emit(TripEvents.tripDriverLocationUpdate, {
-          "tripId": tripId,
-          "lat": position.latitude,
-          "long": position.longitude,
-        });
+      isRunning=true;
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        Get.snackbar('Location Disabled', 'Please enable location services');
+        await Geolocator.openLocationSettings();
+        return;
       }
 
-      mapController?.animateCamera(CameraUpdate.newLatLng(newPosition));
-    });
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          Get.snackbar('Permission Denied', 'Location permission denied');
+          return;
+        }
+      }
 
-    _lastTripId = tripId;
+      if (permission == LocationPermission.deniedForever) {
+        Get.snackbar('Permission Denied', 'Enable from settings');
+        await Geolocator.openAppSettings();
+        return;
+      }
+
+      // Prevent duplicate tracking
+      if (tripId != null && _lastTripId == tripId && _positionStream != null)
+        return;
+
+      _positionStream?.cancel(); // Cancel previous
+
+      _positionStream = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10,
+        ),
+      ).listen((Position position) {
+        final newPosition = LatLng(position.latitude, position.longitude);
+        markerPosition.value = newPosition;
+
+        if (emitToSocket && tripId != null) {
+          socketService.emit(TripEvents.tripDriverLocationUpdate, {
+            "tripId": tripId,
+            "lat": position.latitude,
+            "long": position.longitude,
+          });
+        }
+
+        mapController?.animateCamera(CameraUpdate.newLatLng(newPosition));
+      });
+
+      _lastTripId = tripId;
+    }catch(_){
+
+    }finally{
+      isRunning= false;
+    }
   }
 
   Future<void> fetchCurrentLocation({
