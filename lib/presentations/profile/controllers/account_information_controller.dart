@@ -6,7 +6,7 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
+import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -14,6 +14,8 @@ import 'package:get/get.dart';
 class AccountInformationController extends GetxController {
   static AccountInformationController get to => Get.find();
   RxBool isLoadingUpdateProfile = false.obs;
+  RxBool isLoadingProfile = false.obs;
+  Rx<UserProfileModel> userModel = UserProfileModel().obs;
 
   RxList<String> tabs =
       [
@@ -35,14 +37,61 @@ class AccountInformationController extends GetxController {
   Rx<TextEditingController> contactNumberController =
       TextEditingController().obs;
 
-  // @override
-  // void onInit() {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     CommonController.to.getUserProfileRequest(needReinitilaize: true);
-  //   });
-  //   super.onInit();
-  // }
+  @override
+  void onInit() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getUserProfileRequest(needReinitilaize: true);
+    });
+    super.onInit();
+  }
+  Future<void> getUserProfileRequest({bool needReinitilaize = false}) async {
+    try {
+      isLoadingProfile.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
+      final response = await ApiService().request(
+        endpoint: getProfileEndPoint,
+        method: 'GET',
+      );
+      logger.d(response);
+      if (response['success'] == true) {
+        logger.d(response);
+        userModel.value = UserProfileModel.fromJson(response['data']);
+
+        if (userModel.value.img != null && userModel.value.img!.isNotEmpty) {
+          preloadImagesFromUrls([
+            userModel.value.img.toString(),
+            userModel.value.drivingLicenseImage.toString(),
+            userModel.value.idOrPassportImage.toString(),
+            userModel.value.psvLicenseImage.toString(),
+          ]);
+        }
+        if (needReinitilaize) {
+          reinitializeProfileControllers();
+        }
+      } else {
+        logger.e(response);
+
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    }finally{
+      isLoadingProfile.value = false;
+
+    }
+  }
+  reinitializeProfileControllers() {
+   nameController.value.text =
+        userModel.value.name ?? AppStaticStrings.noDataFound;
+
+    ///=====================add dynmic email ====================///
+   placeController.value.text =
+        userModel.value.address ?? AppStaticStrings.noDataFound;
+
+    ///=====================add dynmic contactNumber ====================///
+   contactNumberController.value.text =
+        userModel.value.phoneNumber ?? AppStaticStrings.noDataFound;
+  }
   ///------------------------------ update profile method -------------------------///
 
   Future<void> updateProfileRequest() async {
@@ -69,7 +118,7 @@ class AccountInformationController extends GetxController {
       if (response['success'] == true) {
         logger.d(response);
         profileImgPath.value = "";
-        await CommonController.to.getUserProfileRequest();
+        await getUserProfileRequest();
         isLoadingUpdateProfile.value = false;
       } else {
         logger.e(response);

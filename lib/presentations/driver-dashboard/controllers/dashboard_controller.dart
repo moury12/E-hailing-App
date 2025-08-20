@@ -15,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../navigation/controllers/navigation_controller.dart';
 import '../../splash/controllers/common_controller.dart';
@@ -43,7 +44,7 @@ class DashBoardController extends GetxController {
   Rx<DriverCurrentTripModel> availableTrip = DriverCurrentTripModel().obs;
 
   TextEditingController extraCost = TextEditingController();
-  final SocketService socketService = SocketService();
+  final  socketService = SocketService();
   RxBool isLoadingCurrentTrip = false.obs;
   RxBool isLoadingUpdateTollFee = false.obs;
   RxString estimatedPickupTime = "0:00 Min".obs;
@@ -131,10 +132,11 @@ class DashBoardController extends GetxController {
   }
 
   void initializeSocket() {
-    if (!socketService.isConnected) {
-      String userId = CommonController.to.userModel.value.sId ?? "";
+    if (!socketService.socket!.connected) {
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
 
-      socketService.connect(userId, true); // async
+      socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+      // async
       socketService.onConnected = () {
         registerSocketListeners(); // Register events **after** connection
       };
@@ -194,7 +196,7 @@ class DashBoardController extends GetxController {
     List<String>? reason,
   }) async {
     try {
-      if (!socketService.isConnected) {
+      if (!socketService.socket!.connected) {
         showCustomSnackbar(
           title: 'Connection Error',
           message: 'Not connected to server. Please wait and try again.',
@@ -232,7 +234,7 @@ class DashBoardController extends GetxController {
     required double lat,
     required double lng,
   }) async {
-    if (!socketService.isConnected) {
+    if (!socketService.socket!.connected) {
       showCustomSnackbar(
         title: 'Connection Error',
         message: 'Not connected to server. Please wait and try again.',
@@ -351,7 +353,7 @@ class DashBoardController extends GetxController {
   }
 
   void registerSocketListeners() {
-    logger.i("🚦 Is driver online? ${socketService.isDriverActive}");
+    // logger.i("🚦 Is driver online? ${socketService.isDriverActive}");
 
     // Clear all previous listeners to avoid duplication
     removeSocketListeners();

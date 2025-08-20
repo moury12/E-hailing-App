@@ -12,6 +12,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../controllers/account_information_controller.dart';
+
 class PenaltyPage extends StatelessWidget {
   static const String routeName = "/penalty";
 
@@ -40,7 +42,7 @@ class PenaltyPage extends StatelessWidget {
             ),
             Obx(() {
               return CustomText(
-                text: (CommonController.to.userModel.value.coins??0).toString(),
+                text: (AccountInformationController.to.userModel.value.coins??0).toString(),
                 style: poppinsBold,
                 color: AppColors.kPrimaryColor,
                 fontSize: getButtonFontSizeLarge(),

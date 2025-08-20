@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../../core/api-client/api_service.dart';
 import '../../../core/constants/hive_boxes.dart';
@@ -61,7 +62,7 @@ class HomeController extends GetxController {
   RxString previousRoute = ''.obs;
   RxString driverStatus = ''.obs;
   Map<String, dynamic> tripArgs = {};
-  final SocketService socket = SocketService();
+  final  socket = SocketService();
   RxString status = "Disconnected".obs;
   RxBool isRequestingTrip = false.obs;
   RxBool hasActiveTrip = false.obs;
@@ -136,14 +137,7 @@ class HomeController extends GetxController {
     dropOffLocationController.value.clear();
 
     // Set pickup location to user's current location
-    if (CommonController.to.markerPositionRider.value != null) {
-      setCurrentLocationOnPickUp();
-    } else {
-      // If current location is not available, reset pickup to default
-      pickupLatLng.value = null;
-      pickupAddressText.value = 'Drag pin to set your Pickup location';
-      pickupLocationController.value.clear();
-    }
+    setCurrentLocationOnPickUp();
 
     // Clear active field focus
     clearAllFocus();
@@ -156,7 +150,7 @@ class HomeController extends GetxController {
   }
 
   void initializeSocket() {
-    if (!socket.isConnected) {
+    if (!socket.socket!.connected) {
       socketConnection(); // your own connect method
     }
 
@@ -260,13 +254,9 @@ class HomeController extends GetxController {
   }
 
   void socketConnection() {
-    String userId = CommonController.to.userModel.value.sId ?? "";
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
 
-    if (userId.isNotEmpty) {
-      socket.connect(userId, false);
-    } else {
-      logger.e('User ID is empty, cannot connect to socket');
-    }
+    socket.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
   }
 
   bool shouldRedrawPolyline() {
@@ -507,7 +497,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> requestTrip({required Map<String, dynamic> body}) async {
-    if (!socket.isConnected) {
+    if (!socket.socket!.connected) {
       showCustomSnackbar(
         title: 'Connection Error',
         message: 'Not connected to server. Please wait and try again.',
@@ -552,7 +542,7 @@ class HomeController extends GetxController {
     required String status,
     List<String>? reason,
   }) async {
-    if (!socket.isConnected) {
+    if (!socket.socket!.connected) {
       showCustomSnackbar(
         title: 'Connection Error',
         message: 'Not connected to server. Please wait and try again.',

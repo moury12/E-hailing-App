@@ -76,7 +76,7 @@ bool isRunning=false;
         markerPosition.value = newPosition;
 
         if (emitToSocket && tripId != null) {
-          socketService.emit(TripEvents.tripDriverLocationUpdate, {
+          socketService.socket?.emit(TripEvents.tripDriverLocationUpdate, {
             "tripId": tripId,
             "lat": position.latitude,
             "long": position.longitude,

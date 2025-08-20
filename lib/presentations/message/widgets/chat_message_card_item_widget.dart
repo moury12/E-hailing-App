@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,7 +24,7 @@ class ChatMessageCardItemWidget extends StatelessWidget {
   final ChatModel chatModel;
 
   Participants? getOtherUser() {
-    final myId = CommonController.to.userModel.value.sId;
+    final myId = AccountInformationController.to.userModel.value.sId;
 
     if (chatModel.participants == null) return null;
 

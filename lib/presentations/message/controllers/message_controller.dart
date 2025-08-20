@@ -6,6 +6,7 @@ import 'package:e_hailing_app/presentations/message/model/conversation_model.dar
     as convo;
 import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
 import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -105,7 +106,7 @@ class MessageController extends GetxController {
   }
 
   convo.Participants? getOtherUser(ConversationModel chatModel) {
-    final myId = CommonController.to.userModel.value.sId;
+    final myId = AccountInformationController.to.userModel.value.sId;
     return chatModel.participants?.firstWhere(
       (p) => p.sId != myId,
       orElse: () => convo.Participants(name: 'Unknown', profileImage: null),

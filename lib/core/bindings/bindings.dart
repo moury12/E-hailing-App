@@ -66,30 +66,30 @@ class NavigationBinding extends Bindings {
     Get.lazyPut<NavigationController>(() => NavigationController());
 
     // Handle reconnectSocket argument
-    final arguments = Get.arguments;
-    if (arguments is Map && arguments['reconnectSocket'] == true) {
-      Future.delayed(Duration(milliseconds: 500), () {
-        final commonController = Get.find<CommonController>();
-        commonController.setupGlobalSocketListeners();
-
-        // Also re-register driver-specific listeners if user is a driver
-        if (commonController.isDriver.value) {
-          Future.delayed(Duration(milliseconds: 200), () {
-            if (Get.isRegistered<DashBoardController>()) {
-              final dashboardController = Get.find<DashBoardController>();
-              dashboardController.registerSocketListeners();
-            }
-          });
-        } else {
-          Future.delayed(Duration(milliseconds: 200), () {
-            if (Get.isRegistered<HomeController>()) {
-              final homeController = Get.find<HomeController>();
-              homeController.registerTripEventListeners();
-            }
-          });
-        }
-      });
-    }
+    // final arguments = Get.arguments;
+    // if (arguments is Map && arguments['reconnectSocket'] == true) {
+    //   Future.delayed(Duration(milliseconds: 500), () {
+    //     final commonController = Get.find<CommonController>();
+    //     commonController.setupGlobalSocketListeners();
+    //
+    //     // Also re-register driver-specific listeners if user is a driver
+    //     if (commonController.isDriver.value) {
+    //       Future.delayed(Duration(milliseconds: 200), () {
+    //         if (Get.isRegistered<DashBoardController>()) {
+    //           final dashboardController = Get.find<DashBoardController>();
+    //           dashboardController.registerSocketListeners();
+    //         }
+    //       });
+    //     } else {
+    //       Future.delayed(Duration(milliseconds: 200), () {
+    //         if (Get.isRegistered<HomeController>()) {
+    //           final homeController = Get.find<HomeController>();
+    //           homeController.registerTripEventListeners();
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
   }
 }
 

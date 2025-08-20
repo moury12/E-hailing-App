@@ -15,23 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class EditProfilePage extends StatefulWidget {
+class EditProfilePage extends StatelessWidget {
   static const String routeName = "/edit";
 
   const EditProfilePage({super.key});
-
-  @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
-}
-
-class _EditProfilePageState extends State<EditProfilePage> {
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      CommonController.to.getUserProfileRequest(needReinitilaize: true);
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +37,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     AccountInformationController.to.profileImgPath.value.isEmpty
                         ? CustomNetworkImage(
                           imageUrl:
-                              "${ApiService().baseUrl}/${CommonController.to.userModel.value.img}",
+                              "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.img}",
                           height: 150.w,
                           width: 150.w,
                           boxShape: BoxShape.circle,

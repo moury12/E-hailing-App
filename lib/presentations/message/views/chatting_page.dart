@@ -9,6 +9,7 @@ import 'package:e_hailing_app/presentations/message/controllers/chatting_control
 import 'package:e_hailing_app/presentations/message/model/chat_message_model.dart';
 import 'package:e_hailing_app/presentations/message/widgets/chat_loading.dart';
 import 'package:e_hailing_app/presentations/message/widgets/chat_message_card_item_widget.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class _ChattingPageState extends State<ChattingPage> {
   final chatId = Get.arguments;
 
   Participants? getOtherUser(ChatModel? meta) {
-    final myId = CommonController.to.userModel.value.sId;
+    final myId = AccountInformationController.to.userModel.value.sId;
 
     if (meta == null || meta.participants == null) return null;
 
@@ -91,7 +92,7 @@ class _ChattingPageState extends State<ChattingPage> {
                 itemBuilder:
                     (context, item, index) => ChatMessageCardItemWidget(
                       sendByMe:
-                          CommonController.to.userModel.value.sId ==
+                          AccountInformationController.to.userModel.value.sId ==
                           item.sender,
                       message: item,
                       chatModel:

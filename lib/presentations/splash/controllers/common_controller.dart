@@ -1,34 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
-import 'package:e_hailing_app/core/api-client/api_service.dart';
-import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
-import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
-import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
-import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
-import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
-import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
-import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/utils/google_map_api_key.dart';
 
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
-  RxBool isLoadingProfile = false.obs;
-  final SocketService socketService = SocketService();
 
-  RxString socketStatus = "Disconnected".obs;
   final locationService = LocationTrackingService();
   Rx<LatLng> markerPositionDriver = Rx<LatLng>(LatLng(0.0, 0.0));
   Rx<LatLng> markerPositionRider = Rx<LatLng>(LatLng(0.0, 0.0));
@@ -45,7 +33,6 @@ class CommonController extends GetxController {
     startTrackingLocationMethod();
   }
 
-  Rx<UserProfileModel> userModel = UserProfileModel().obs;
   var selectedRoleOption =
       Boxes.getUserData().get(roleKey) != null
           ? Boxes.getUserData().get(roleKey) == 'USER'
@@ -67,7 +54,7 @@ class CommonController extends GetxController {
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
 
 
-      initialSetUp();
+      fetchCurrentLocationMethod();
     }
 
     // Only setup socket if we have a valid user ID
@@ -85,41 +72,6 @@ class CommonController extends GetxController {
   }
 
 
-  Future<void> setupGlobalSocketListeners() async {
-    socketService.onConnected = () {
-      socketStatus.value = 'Connected';
-      logger.i('Socket connected');
-      if(isDriver.value){
-        if (Get.isRegistered<DashBoardController>()) {
-          final dashboardController = Get.find<DashBoardController>();
-          dashboardController.registerSocketListeners();
-        }
-      }else{
-        if (Get.isRegistered<HomeController>()) {
-          final homeController = Get.find<HomeController>();
-          homeController.registerTripEventListeners();
-        }
-      }
-    };
-
-    socketService.onDisconnected = () {
-      socketStatus.value = 'Disconnected';
-      logger.w('Socket disconnected');
-    };
-
-    socketService.onSocketError = (error) {
-      socketStatus.value = 'Error: $error';
-      logger.e('Socket error: $error');
-      // showCustomSnackbar(title: "Error", message: error);
-    };
-
-    // You can even auto-connect here if you want:
-    final userId = userModel.value.sId ?? "";
-    logger.d(userId);
-    if (userId.isNotEmpty) {
-      socketService.connect(userId, userModel.value.role == "DRIVER");
-    }
-  }
   Future<void> fetchSuggestedPlacesWithRadius(
       String input, {
         double radiusInMeters = 5000,
@@ -227,80 +179,15 @@ class CommonController extends GetxController {
     logger.d("token - ${Boxes.getUserData().get(tokenKey)}");
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
-      Boxes.getUserRole().put(role, userModel.value.role!.toLowerCase());
-      isDriver.value = userModel.value.role!.toLowerCase() == driver;
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
+
+      isDriver.value = decodedToken['role']=="DRIVER";
     }
   }
 
-  ///------------------------------ get User profile method -------------------------///
 
-  Future<void> getUserProfileRequest({bool needReinitilaize = false}) async {
-    try {
-      isLoadingProfile.value = true;
-      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
-      final response = await ApiService().request(
-        endpoint: getProfileEndPoint,
-        method: 'GET',
-      );
-logger.d(response);
-      if (response['success'] == true) {
-        logger.d(response);
-        userModel.value = UserProfileModel.fromJson(response['data']);
 
-        if (userModel.value.img != null && userModel.value.img!.isNotEmpty) {
-          preloadImagesFromUrls([
-            userModel.value.img.toString(),
-            userModel.value.drivingLicenseImage.toString(),
-            userModel.value.idOrPassportImage.toString(),
-            userModel.value.psvLicenseImage.toString(),
-          ]);
-        }
-        if (needReinitilaize) {
-          reinitializeProfileControllers();
-        }
-      } else {
-        logger.e(response);
-
-      }
-    } catch (e) {
-      logger.e(e.toString());
-    }finally{
-      isLoadingProfile.value = false;
-
-    }
-  }
-
-  reinitializeProfileControllers() {
-    AccountInformationController.to.nameController.value.text =
-        userModel.value.name ?? AppStaticStrings.noDataFound;
-
-    ///=====================add dynmic email ====================///
-    AccountInformationController.to.placeController.value.text =
-        userModel.value.address ?? AppStaticStrings.noDataFound;
-
-    ///=====================add dynmic contactNumber ====================///
-    AccountInformationController.to.contactNumberController.value.text =
-        userModel.value.phoneNumber ?? AppStaticStrings.noDataFound;
-  }
-
-  void onLogout() {
-    Boxes.getUserData().delete(tokenKey);
-    Boxes.getUserData().delete(roleKey);
-    Boxes.getUserRole().delete(role);
-    socketService.off(DriverEvent.driverOnlineStatus);
-    socketService.disconnect();
-  }
-
-  Future<void> initialSetUp() async {
-    await getUserProfileRequest();
-
-    Future.wait([checkUserRole(), fetchCurrentLocationMethod()]);
-
-    if (userModel.value.sId != null) {
-      await setupGlobalSocketListeners();
-    }
-  }
 
   @override
   void onClose() {
