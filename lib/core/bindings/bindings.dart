@@ -1,3 +1,6 @@
+import 'package:e_hailing_app/core/constants/hive_boxes.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/notification/controller/notification_controller.dart';
@@ -5,6 +8,7 @@ import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controlle
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../presentations/auth/controllers/auth_controller.dart';
 import '../../presentations/message/controllers/chatting_controller.dart';
@@ -65,31 +69,28 @@ class NavigationBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<NavigationController>(() => NavigationController());
 
-    // Handle reconnectSocket argument
-    // final arguments = Get.arguments;
-    // if (arguments is Map && arguments['reconnectSocket'] == true) {
-    //   Future.delayed(Duration(milliseconds: 500), () {
-    //     final commonController = Get.find<CommonController>();
-    //     commonController.setupGlobalSocketListeners();
-    //
-    //     // Also re-register driver-specific listeners if user is a driver
-    //     if (commonController.isDriver.value) {
-    //       Future.delayed(Duration(milliseconds: 200), () {
-    //         if (Get.isRegistered<DashBoardController>()) {
-    //           final dashboardController = Get.find<DashBoardController>();
-    //           dashboardController.registerSocketListeners();
-    //         }
-    //       });
-    //     } else {
-    //       Future.delayed(Duration(milliseconds: 200), () {
-    //         if (Get.isRegistered<HomeController>()) {
-    //           final homeController = Get.find<HomeController>();
-    //           homeController.registerTripEventListeners();
-    //         }
-    //       });
-    //     }
-    //   });
-    // }
+      Future.delayed(Duration(milliseconds: 500), () {
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
+
+        SocketService().connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+        // Also re-register driver-specific listeners if user is a driver
+        if (CommonController.to.isDriver.value) {
+          Future.delayed(Duration(milliseconds: 200), () {
+            if (Get.isRegistered<DashBoardController>()) {
+              final dashboardController = Get.find<DashBoardController>();
+              dashboardController.registerSocketListeners();
+            }
+          });
+        } else {
+          Future.delayed(Duration(milliseconds: 200), () {
+            if (Get.isRegistered<HomeController>()) {
+              final homeController = Get.find<HomeController>();
+              homeController.registerTripEventListeners();
+            }
+          });
+        }
+      });
+
   }
 }
 

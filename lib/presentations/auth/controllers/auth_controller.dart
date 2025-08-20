@@ -14,6 +14,11 @@ import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/otp_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/reset_password_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -188,10 +193,8 @@ class AuthController extends GetxController {
         showCustomSnackbar(title: 'Success', message: response['message']);
         Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
         ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
-  Map<String, dynamic> decodedToken = JwtDecoder.decode(response["data"]['accessToken']);
 
-  final socketService = SocketService();
-  socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+CommonController.to.initialSetup();
 
         Get.offAllNamed(
           NavigationPage.routeName,
@@ -336,10 +339,8 @@ class AuthController extends GetxController {
           title: 'Success',
           message: initialResponse['message'],
         );
-  Map<String, dynamic> decodedToken = JwtDecoder.decode(initialResponse["data"]['accessToken']);
+CommonController.to.initialSetup();
 
-  final socketService = SocketService();
-  socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
   Get.offAllNamed(
           NavigationPage.routeName,
           // arguments: {'reconnectSocket': true},
@@ -411,11 +412,8 @@ class AuthController extends GetxController {
             title: 'Success',
             message: retryResponse['message'],
           );
-          // NavigationController.to.isLoggedIn;
-    Map<String, dynamic> decodedToken = JwtDecoder.decode(initialResponse["data"]['accessToken']);
+          // NavigationController.to.isLoggedIn;CommonController.to.initialSetup();
 
-    final socketService = SocketService();
-    socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
     Get.offAllNamed(
             NavigationPage.routeName,
             // arguments: {'reconnectSocket': true},
@@ -439,6 +437,7 @@ class AuthController extends GetxController {
       isGoogleAuthLoading.value = false;
     }
   }
+
 
 
 
@@ -509,10 +508,8 @@ class AuthController extends GetxController {
           title: 'Success',
           message: initialResponse['message'],
         );
-  Map<String, dynamic> decodedToken = JwtDecoder.decode(initialResponse["data"]['accessToken']);
+CommonController.to.initialSetup();
 
-  final socketService = SocketService();
-  socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
   Get.offAllNamed(
           NavigationPage.routeName,
         );
@@ -583,10 +580,8 @@ class AuthController extends GetxController {
             title: 'Success',
             message: retryResponse['message'],
           );
-    Map<String, dynamic> decodedToken = JwtDecoder.decode(initialResponse["data"]['accessToken']);
+CommonController.to.initialSetup();
 
-    final socketService = SocketService();
-    socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
     Get.offAllNamed(
             NavigationPage.routeName,
           );

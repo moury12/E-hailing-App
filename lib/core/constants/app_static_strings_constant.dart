@@ -206,7 +206,6 @@ class AppStaticStrings {
   static const String profile = 'Profile';
   static const String notifications = 'Notifications';
   static const String settings = 'Settings';
-  static const String logout = 'Logout';
   static const String setYourPickupLocation = 'Set Your Pickup Location';
   static const String setLocationFromMap = 'Set Location from map';
   static const String setYourDropOffLocation = 'Set Your Drop-off Location';

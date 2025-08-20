@@ -6,6 +6,7 @@ import 'package:e_hailing_app/presentations/message/controllers/message_controll
 import 'package:e_hailing_app/presentations/message/views/message_page.dart';
 import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
 import 'package:e_hailing_app/presentations/my-rides/views/my_ride_page.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/views/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,6 +32,7 @@ class NavigationController extends GetxController {
         ? Get.put(DashBoardController())
         : Get.put(HomeController());
     Get.put(MessageController());
+    Get.put(AccountInformationController());
     Get.put(MyRideController());
     if (CommonController.to.isDriver.value) {
       Get.put(StaticsController());
