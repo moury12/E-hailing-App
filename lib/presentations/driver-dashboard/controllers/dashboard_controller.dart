@@ -416,9 +416,9 @@ logger.i("Listening socket event for driver");
         driverUpdatedLocation.value = DriverLocationUpdateModel.fromJson(
           data['data'],
         );
-        _showSuccess(data['message']);
+        // _showSuccess(data['message']);
       } else {
-        _showError(data['message']);
+        // _showError(data['message']);
       }
     });
   }
