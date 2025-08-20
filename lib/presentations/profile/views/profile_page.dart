@@ -5,7 +5,10 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
+import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
@@ -209,11 +212,10 @@ class ProfilePage extends StatelessWidget {
                       img: logoutIcon,
                       title: AppStaticStrings.logOut,
                       onTap: () {
-                        // Boxes.getUserData().delete(tokenKey);
-                        // Boxes.getUserData().delete(roleKey);
-                        // Boxes.getUserRole().delete(role);
-                        // socketService.off(DriverEvent.driverOnlineStatus);
-                        // socketService.disconnect();
+                        Boxes.getUserData().delete(tokenKey);
+                        Boxes.getUserData().delete(roleKey);
+                        Boxes.getUserRole().delete(role);
+                         SocketService().disconnect();
                         Get.offAllNamed(LoginPage.routeName);
                       },
                     ),

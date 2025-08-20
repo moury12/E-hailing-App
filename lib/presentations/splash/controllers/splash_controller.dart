@@ -7,6 +7,9 @@ import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dar
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/splash/views/no_internet_page.dart';
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+
+import '../../../core/service/socket-service/socket_service.dart';
 
 class SplashController extends GetxController {
   static SplashController get to => Get.find();
@@ -30,8 +33,9 @@ class SplashController extends GetxController {
 
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
-      // await CommonController.to.initialSetUp();
-      Get.offAllNamed(NavigationPage.routeName);
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
+
+      SocketService().connect(decodedToken['userId'],decodedToken['role']=="DRIVER");      Get.offAllNamed(NavigationPage.routeName);
     } else {
       Get.offAllNamed(LoginPage.routeName);
     }

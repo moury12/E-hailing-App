@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:flutter/foundation.dart';
@@ -33,15 +34,8 @@ class CommonController extends GetxController {
     startTrackingLocationMethod();
   }
 
-  var selectedRoleOption =
-      Boxes.getUserData().get(roleKey) != null
-          ? Boxes.getUserData().get(roleKey) == 'USER'
-              ? 0.obs
-              : 1.obs
-          : 0.obs;
-  RxBool isDriver =
-      (Boxes.getUserRole().get(role, defaultValue: user).toString() == driver)
-          .obs;
+
+  RxBool isDriver = false.obs;
   RxBool isLoadingOnLocationSuggestion = false.obs;
   RxList<dynamic> addressSuggestion = [].obs;
 
@@ -52,9 +46,8 @@ class CommonController extends GetxController {
     );
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
+initialSetup();
 
-
-      fetchCurrentLocationMethod();
     }
 
     // Only setup socket if we have a valid user ID
@@ -118,7 +111,13 @@ class CommonController extends GetxController {
       isLoadingOnLocationSuggestion.value = false;
     }
   }
+void initialSetup(){
 
+    Future.wait([
+      fetchCurrentLocationMethod(),
+      checkUserRole()
+    ]);
+}
   /// Fetch Place Details for a given place ID
   Future<void> _fetchPlaceDetails(String placeId) async {
     final detailsUrl =
@@ -192,7 +191,7 @@ class CommonController extends GetxController {
   @override
   void onClose() {
     locationService.stopTracking();
-    // socketService.disconnect();
+    SocketService().disconnect();
     if (mapControllerDriver != null) {
       mapControllerDriver!.dispose();
     } else if (mapControllerRider != null) {
