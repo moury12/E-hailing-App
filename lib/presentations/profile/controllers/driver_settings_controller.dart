@@ -2,9 +2,9 @@ import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/assigned_car_model.dart';
 import 'package:e_hailing_app/presentations/profile/model/driver_earning_model.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
@@ -24,7 +24,7 @@ class DriverSettingsController extends GetxController {
 
   @override
   void onInit() {
-    if (CommonController.to.userModel.value.assignedCar != null) {
+    if (AccountInformationController.to.userModel.value.assignedCar != null) {
       getDriverAssignedCar();
     }
     getDriverEarningReport();
@@ -40,7 +40,7 @@ class DriverSettingsController extends GetxController {
         endpoint: getCarEndpoint,
         method: 'GET',
         queryParams: {
-          "carId": CommonController.to.userModel.value.assignedCar.toString(),
+          "carId": AccountInformationController.to.userModel.value.assignedCar.toString(),
         },
       );
       isLoadingCar.value = false;

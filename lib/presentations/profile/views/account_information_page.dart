@@ -28,7 +28,7 @@ class AccountInformationPage extends StatelessWidget {
     AccountInformationController.to.tabContent.add(
       Obx(() {
         return ProfileInfoListWidget(
-          userModel: CommonController.to.userModel.value,
+          userModel: AccountInformationController.to.userModel.value,
         );
       }),
     );
@@ -40,30 +40,30 @@ class AccountInformationPage extends StatelessWidget {
             ProfileCardItemWidget(
               title: AppStaticStrings.nationalIdPassport,
               value:
-                  CommonController.to.userModel.value.idOrPassportNo ??
+                  AccountInformationController.to.userModel.value.idOrPassportNo ??
                   AppStaticStrings.noDataFound,
             ),
             ProfileCardItemWidget(
               title: AppStaticStrings.drivingLicense,
               value:
-                  CommonController.to.userModel.value.drivingLicenseNo ??
+                  AccountInformationController.to.userModel.value.drivingLicenseNo ??
                   AppStaticStrings.noDataFound,
             ),
             ProfileCardItemWidget(
               title: AppStaticStrings.licenseType,
               value:
-                  CommonController.to.userModel.value.licenseType ??
+                  AccountInformationController.to.userModel.value.licenseType ??
                   AppStaticStrings.noDataFound,
             ),
             ProfileCardItemWidget(
               title: AppStaticStrings.licenseExpire,
               value:
-                  CommonController.to.userModel.value.licenseExpiry ??
+                  AccountInformationController.to.userModel.value.licenseExpiry ??
                   AppStaticStrings.noDataFound,
             ),
             // ProfileCardItemWidget(
             //   title: AppStaticStrings.evpNumber,
-            //   value: CommonController.to.userModel.value. ??
+            //   value: AccountInformationController.to.userModel.value. ??
             //       AppStaticStrings.noDataFound,
             // ),
             // ProfileCardItemWidget(
@@ -86,7 +86,7 @@ class AccountInformationPage extends StatelessWidget {
               CustomNetworkImage(
                 isImagePreview: true,
                 imageUrl:
-                    "${ApiService().baseUrl}/${CommonController.to.userModel.value.drivingLicenseImage}",
+                    "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.drivingLicenseImage}",
                 width: 150.w,
                 height: 150.w,
               ),
@@ -94,7 +94,7 @@ class AccountInformationPage extends StatelessWidget {
               CustomNetworkImage(
                 isImagePreview: true,
                 imageUrl:
-                    "${ApiService().baseUrl}/${CommonController.to.userModel.value.idOrPassportImage}",
+                    "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.idOrPassportImage}",
                 width: 150.w,
                 height: 150.w,
               ),
@@ -134,7 +134,7 @@ class AccountInformationPage extends StatelessWidget {
                     Obx(() {
                       return CustomNetworkImage(
                         imageUrl:
-                            "${ApiService().baseUrl}/${CommonController.to.userModel.value.img}",
+                            "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.img}",
                         height: 100.w,
                         width: 100.w,
                         boxShape: BoxShape.circle,
@@ -143,7 +143,7 @@ class AccountInformationPage extends StatelessWidget {
                     Obx(() {
                       return CustomText(
                         text:
-                            CommonController.to.userModel.value.name ??
+                            AccountInformationController.to.userModel.value.name ??
                             AppStaticStrings.noDataFound,
                         style: poppinsSemiBold,
                         fontSize: getFontSizeExtraLarge(),
@@ -183,7 +183,7 @@ class AccountInformationPage extends StatelessWidget {
                         )
                         : Obx(() {
                           return ProfileInfoListWidget(
-                            userModel: CommonController.to.userModel.value,
+                            userModel: AccountInformationController.to.userModel.value,
                           );
                         }),
                   ],

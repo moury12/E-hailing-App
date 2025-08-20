@@ -9,6 +9,7 @@ import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/earnings_page.dart';
@@ -35,7 +36,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomRefreshIndicator(
       onRefresh: () async {
-        CommonController.to.getUserProfileRequest();
+        AccountInformationController.to.getUserProfileRequest();
       },
       child: Column(
         children: [
@@ -65,14 +66,14 @@ class ProfilePage extends StatelessWidget {
                 Padding(
                   padding: padding12.copyWith(top: 0),
                   child: Obx(() {
-                    return CommonController.to.isLoadingProfile.value
+                    return AccountInformationController.to.isLoadingProfile.value
                         ? UserShimmerWidget()
                         : Row(
                           spacing: 12.w,
                           children: [
                             CustomNetworkImage(
                               imageUrl:
-                                  "${ApiService().baseUrl}/${CommonController.to.userModel.value.img}",
+                                  "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.img}",
                               height: 70.w,
                               width: 70.w,
                               boxShape: BoxShape.circle,
@@ -83,9 +84,7 @@ class ProfilePage extends StatelessWidget {
                                 children: [
                                   CustomText(
                                     text:
-                                        CommonController
-                                            .to
-                                            .userModel
+                                        AccountInformationController.to.userModel
                                             .value
                                             .name ??
                                         AppStaticStrings.noDataFound,
@@ -94,9 +93,7 @@ class ProfilePage extends StatelessWidget {
                                   ),
                                   CustomText(
                                     text:
-                                        CommonController
-                                            .to
-                                            .userModel
+                                        AccountInformationController.to.userModel
                                             .value
                                             .email ??
                                         AppStaticStrings.noDataFound,
@@ -212,7 +209,11 @@ class ProfilePage extends StatelessWidget {
                       img: logoutIcon,
                       title: AppStaticStrings.logOut,
                       onTap: () {
-                        CommonController.to.onLogout();
+                        // Boxes.getUserData().delete(tokenKey);
+                        // Boxes.getUserData().delete(roleKey);
+                        // Boxes.getUserRole().delete(role);
+                        // socketService.off(DriverEvent.driverOnlineStatus);
+                        // socketService.disconnect();
                         Get.offAllNamed(LoginPage.routeName);
                       },
                     ),

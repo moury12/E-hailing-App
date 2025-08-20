@@ -36,7 +36,6 @@ class NavigationController extends GetxController {
       Get.put(StaticsController());
     }
 
-    logger.d("---user id------${CommonController.to.userModel.value.sId}");
 
     super.onInit();
   }

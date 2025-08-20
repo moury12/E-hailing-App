@@ -11,6 +11,7 @@ import 'package:e_hailing_app/presentations/splash/controllers/common_controller
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ChattingController extends GetxController {
   static ChattingController get to => Get.find();
@@ -66,7 +67,7 @@ class ChattingController extends GetxController {
   }
 
   Future<void> sendMessageSocket({required Map<String, dynamic> body}) async {
-    if (!socket.isConnected) {
+    if (!socket.socket!.connected) {
       showCustomSnackbar(
         title: 'Connection Error',
         message: 'Not connected to server. Please wait and try again.',
@@ -81,7 +82,7 @@ class ChattingController extends GetxController {
   }
 
   void initializeSocket() {
-    if (socket.isConnected) {
+    if (socket.socket!.connected) {
       socket.on(ChatEvent.sendMessage, (data) {
         logger.d("-------send message---------");
         logger.d(data);
@@ -102,16 +103,9 @@ class ChattingController extends GetxController {
   }
 
   void socketConnection() {
-    String userId = CommonController.to.userModel.value.sId ?? "";
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
 
-    if (userId.isNotEmpty) {
-      socket.connect(
-        userId,
-        CommonController.to.userModel.value.role == "DRIVER",
-      );
-    } else {
-      logger.e('User ID is empty, cannot connect to socket');
-    }
+    socket.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
   }
 
   void getMessages({required String chatId}) {

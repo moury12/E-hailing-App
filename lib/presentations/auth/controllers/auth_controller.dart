@@ -5,6 +5,8 @@ import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
+
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/main.dart';
@@ -12,12 +14,12 @@ import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/otp_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/reset_password_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthController extends GetxController {
@@ -186,7 +188,10 @@ class AuthController extends GetxController {
         showCustomSnackbar(title: 'Success', message: response['message']);
         Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
         ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
-        await CommonController.to.initialSetUp();
+  Map<String, dynamic> decodedToken = JwtDecoder.decode(response["data"]['accessToken']);
+
+  final socketService = SocketService();
+  socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
 
         Get.offAllNamed(
           NavigationPage.routeName,
@@ -331,8 +336,11 @@ class AuthController extends GetxController {
           title: 'Success',
           message: initialResponse['message'],
         );
-        await CommonController.to.initialSetUp();
-        Get.offAllNamed(
+  Map<String, dynamic> decodedToken = JwtDecoder.decode(initialResponse["data"]['accessToken']);
+
+  final socketService = SocketService();
+  socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+  Get.offAllNamed(
           NavigationPage.routeName,
           // arguments: {'reconnectSocket': true},
         );
@@ -404,8 +412,11 @@ class AuthController extends GetxController {
             message: retryResponse['message'],
           );
           // NavigationController.to.isLoggedIn;
-          await CommonController.to.initialSetUp();
-          Get.offAllNamed(
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(initialResponse["data"]['accessToken']);
+
+    final socketService = SocketService();
+    socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+    Get.offAllNamed(
             NavigationPage.routeName,
             // arguments: {'reconnectSocket': true},
           );
@@ -498,8 +509,11 @@ class AuthController extends GetxController {
           title: 'Success',
           message: initialResponse['message'],
         );
-        await CommonController.to.initialSetUp();
-        Get.offAllNamed(
+  Map<String, dynamic> decodedToken = JwtDecoder.decode(initialResponse["data"]['accessToken']);
+
+  final socketService = SocketService();
+  socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+  Get.offAllNamed(
           NavigationPage.routeName,
         );
       } else {
@@ -569,8 +583,11 @@ class AuthController extends GetxController {
             title: 'Success',
             message: retryResponse['message'],
           );
-          await CommonController.to.initialSetUp();
-          Get.offAllNamed(
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(initialResponse["data"]['accessToken']);
+
+    final socketService = SocketService();
+    socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+    Get.offAllNamed(
             NavigationPage.routeName,
           );
         } else {
