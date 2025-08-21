@@ -33,9 +33,10 @@ class SplashController extends GetxController {
 
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
-
-      SocketService().connect(decodedToken['userId'],decodedToken['role']=="DRIVER");      Get.offAllNamed(NavigationPage.routeName);
+      Get.offAllNamed(
+        NavigationPage.routeName,
+        arguments: {'reconnectSocket': true},
+      );
     } else {
       Get.offAllNamed(LoginPage.routeName);
     }

@@ -112,7 +112,7 @@ class _NavigationPageState extends State<NavigationPage>
                 homeController.handleBackNavigation();
               }
             } else {
-              DashBoardController.to.handleBackNavigation();
+              // DashBoardController.to.handleBackNavigation();
             }
           } else {
             debugPrint('------------------');

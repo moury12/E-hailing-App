@@ -1,6 +1,7 @@
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/presentations/driver-statics/model/StaticModel.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -16,7 +17,7 @@ String tokenKey = 'token';
 String verifyTokenKey = 'verify token';
 String dummyProfileImage = 'https://picsum.photos/200/300.jpg';
 String fromHome = "Home";
-List<TripCancellationModel> tripCancellationList = [
+List<TripCancellationModel> tripCancellationList =CommonController.to.isDriver.value? [
   TripCancellationModel(
     title: AppStaticStrings.riderNoShow,
     isChecked: false.obs,
@@ -37,6 +38,20 @@ List<TripCancellationModel> tripCancellationList = [
     title: AppStaticStrings.tripRequestError,
     isChecked: false.obs,
   ),
+]: [
+  TripCancellationModel(
+    title: AppStaticStrings.waitingTimeIsLong,
+    isChecked: false.obs,
+  ),
+  TripCancellationModel(
+    title: AppStaticStrings.changeOfTravelPlan,
+    isChecked: false.obs,
+  ),
+  TripCancellationModel(
+    title: AppStaticStrings.tripReqError,
+    isChecked: false.obs,
+  ),
+
 ];
 class AddressModel{
   final String title;

@@ -9,7 +9,7 @@ import 'package:http_parser/http_parser.dart';
 
 class ApiService {
   // Original base URL - keeping exact
-  // final String baseUrl = 'http://10.10.20.44:8001';
+  // final String baseUrl = 'https://dudu-ride.onrender.com';
   final String baseUrl = 'http://18.211.171.8:8001';
 
   // Original singleton pattern - keeping exact
@@ -97,7 +97,7 @@ class ApiService {
     if (queryParams != null && queryParams.isNotEmpty) {
       uri = uri.replace(queryParameters: queryParams);
     }
-logger.i(uri);
+// logger.i(uri);
     // Enhanced retry logic for better reliability
     for (int attempt = 0; attempt < _maxRetries; attempt++) {
       try {

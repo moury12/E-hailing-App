@@ -202,7 +202,8 @@ class HomeController extends GetxController {
     });
 
     socket.on(TripEvents.tripAccepted, (data) {
-      logger.i('✅ Trip accepted: $data');
+      logger.d('✅ Trip accepted: ');
+      logger.d(data);
       status.value = "Driver found! Trip accepted";
       resetAllStates();
       logger.i("Dialog open? ${Get.isDialogOpen}");
@@ -224,7 +225,8 @@ class HomeController extends GetxController {
     });
 
     socket.on(TripEvents.tripUpdateStatus, (data) {
-      logger.d('🔄 Trip status update: $data');
+      logger.d('🔄 Trip status update:');
+      logger.d(data);
       if (data['success']) {
         showCustomSnackbar(title: "Trip Status", message: data['message']);
         tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
@@ -386,7 +388,7 @@ class HomeController extends GetxController {
       );
 
       if (response['success'] == true) {
-        estimatedFare.value = response['data']['estimatedFare'];
+        estimatedFare.value = response['data']['estimatedFare'].toInt();
         goToSelectEv();
         logger.d(response);
       } else {
@@ -441,6 +443,7 @@ class HomeController extends GetxController {
         endpoint: getUserCurrentTripEndpoint,
         method: 'GET',
       );
+      logger.d(response);
       if (response['success'] == true) {
         tripAcceptedModel.value = TripResponseModel.fromJson(response['data']);
         driverStatus.value = tripAcceptedModel.value.status.toString();

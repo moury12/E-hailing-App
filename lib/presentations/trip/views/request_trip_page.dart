@@ -89,7 +89,7 @@ class RequestTripPage extends StatelessWidget {
               ),
               CustomTextField(
                 textEditingController: TextEditingController(
-                  text: args.isNotEmpty ? args["distance"].toString() : "",
+                  text: args.isNotEmpty ? (args["distance"]/1000).toString() : "",
                 ),
                 isEnable: false,
                 borderColor: AppColors.kGreyColor,
