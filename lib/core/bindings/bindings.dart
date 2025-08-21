@@ -68,11 +68,16 @@ class NavigationBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<NavigationController>(() => NavigationController());
-
+    final arguments = Get.arguments;
+    if (arguments is Map && arguments['reconnectSocket'] == true)  {
       Future.delayed(Duration(milliseconds: 500), () {
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
 
-        SocketService().connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(
+            Boxes.getUserData().get(tokenKey).toString());
+
+        SocketService().connect(
+            decodedToken['userId'], decodedToken['role'] == "DRIVER");
+
         // Also re-register driver-specific listeners if user is a driver
         if (CommonController.to.isDriver.value) {
           Future.delayed(Duration(milliseconds: 200), () {
@@ -90,6 +95,7 @@ class NavigationBinding extends Bindings {
           });
         }
       });
+    }
 
   }
 }

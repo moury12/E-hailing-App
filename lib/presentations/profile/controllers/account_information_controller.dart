@@ -55,7 +55,6 @@ class AccountInformationController extends GetxController {
       );
       logger.d(response);
       if (response['success'] == true) {
-        logger.d(response);
         userModel.value = UserProfileModel.fromJson(response['data']);
 
         if (userModel.value.img != null && userModel.value.img!.isNotEmpty) {

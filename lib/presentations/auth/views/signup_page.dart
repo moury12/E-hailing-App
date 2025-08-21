@@ -1,5 +1,8 @@
+import 'package:e_hailing_app/core/components/custom_check_box.dart';
+import 'package:e_hailing_app/core/components/custom_checkbox_widget.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
@@ -61,7 +64,7 @@ class _SignupPageState extends State<SignupPage> {
                 isRequired: true,
 
                 textEditingController:
-                    AuthController.to.emailSignUpController.value,
+                AuthController.to.emailSignUpController.value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppStaticStrings.emailRequired.tr;
@@ -108,7 +111,7 @@ class _SignupPageState extends State<SignupPage> {
                 title: AppStaticStrings.confirmPassword,
                 isPassword: true,
                 textEditingController:
-                    AuthController.to.confirmPassSignUpController,
+                AuthController.to.confirmPassSignUpController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppStaticStrings.passRequired.tr;
@@ -122,6 +125,22 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ],
           ),
+        ),
+
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomCheckBoxWidget(
+              isChecked: AuthController.to.isPrivacyPolicyChecked,
+            ),
+            space6W,
+            Expanded(
+              child: CustomText(
+                text: AppStaticStrings.duduPrivacyPolicy,
+                // fontSize: getFontSizeSmall(),
+              ),
+            ),
+          ],
         ),
         SvgPicture.asset(orImage, width: ScreenUtil().screenWidth),
         Row(
@@ -145,11 +164,15 @@ class _SignupPageState extends State<SignupPage> {
         Obx(() {
           return CustomButton(
             isLoading:
-                AuthController.to.loadingProcess.value == AuthProcess.signUp,
+            AuthController.to.loadingProcess.value == AuthProcess.signUp,
             onTap: () {
-      if(formKey.currentState!.validate()){
-        AuthController.to.signUpRequest();
-      }
+              if (formKey.currentState!.validate()) {
+              if(AuthController.to.isPrivacyPolicyChecked.value){
+                AuthController.to.signUpRequest();
+              }else{
+                showCustomSnackbar(title: "Failed", message: "Please agree to DUDU Terms and Conditions and Policy.",type: SnackBarType.alert);
+              }
+              }
               // Get.toNamed(VerifyEmailPage.routeName);
             },
             title: AppStaticStrings.createAccount,

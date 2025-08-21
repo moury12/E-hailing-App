@@ -28,6 +28,7 @@ class AppStaticStrings {
       'Log in to continue. Enter your credentials to access your account.';
   static const String confirmPassword = 'Confirm Password';
   static const String rememberMe = 'Remember me';
+  static const String duduPrivacyPolicy = 'I have read and agree to DUDU Terms and Conditions and Policy.';
   static const String createAnewPassword =
       'Create a new password to secure your account.';
   static const String forgotPassword = 'Forgot Password?';
@@ -144,6 +145,9 @@ class AppStaticStrings {
   static const String confirmRide = 'Confirm Ride';
   static const String rideInProgress = 'Your Ride is in Progress';
   static const String driverArrived = 'Driver Arrived';
+  static const String waitingTimeIsLong = 'Waiting Time is Too Long';
+  static const String changeOfTravelPlan = 'Change of Travel Plans';
+  static const String tripReqError = 'Trip Request Error';
   static const String youHaveArrived = 'You Arrived On Location';
 
   // Driver Details
@@ -244,7 +248,7 @@ class AppStaticStrings {
   static const String addPlace = 'Add place';
   static const String finalCost = 'Final cost';
   static const String tripDuration = 'Trip Duration';
-  static const String tripDistance = 'Trip Distance (M)';
+  static const String tripDistance = 'Trip Distance (KM)';
   static const String from = 'From:';
   static const String to = 'To:';
 
