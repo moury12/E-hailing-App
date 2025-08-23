@@ -50,6 +50,8 @@ class HomeController extends GetxController {
   final locationService = LocationTrackingService();
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
+  RxString tripType = ''.obs;
+
   RxBool isCancellingTrip = false.obs;
 
   RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;
@@ -150,7 +152,7 @@ class HomeController extends GetxController {
   }
 
   void initializeSocket() {
-    if (!socket.socket!.connected) {
+    if (socket.socket==null ||!socket.socket!.connected) {
       socketConnection(); // your own connect method
     }
 
@@ -177,9 +179,7 @@ class HomeController extends GetxController {
     socket.on(TripEvents.tripRequested, (data) {
       logger.d('🚕 tripRequested: $data');
       currentTrip.value = data;
-      status.value = 'Trip requested successfully';
-      isRequestingTrip.value = false;
-      hasActiveTrip.value = true;
+
       showCustomSnackbar(
         title: 'Success',
         message: 'Trip requested successfully! Looking for nearby drivers...',

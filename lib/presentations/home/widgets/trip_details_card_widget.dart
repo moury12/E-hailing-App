@@ -7,6 +7,8 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
@@ -231,6 +233,24 @@ class TripRequestLoadingWidget extends StatelessWidget {
             fontSize: getFontSizeSmall(),
             style: poppinsRegular,
           ),
+          CancelTripButtonWidget(onSubmit: () {
+            if (HomeController.to.cancelReason.isEmpty) {
+              showCustomSnackbar(
+                title: "Field Required",
+                message: "Need to select the reason",
+              );
+            } else {
+              HomeController.to.updateUserTrip(
+                tripId: HomeController.to.currentTrip.value?["data"]['_id'],
+                status:
+                DriverTripStatus.cancelled.name.toString(),
+                reason: HomeController.to.cancelReason,
+              );
+              Get.back();
+            }
+          },
+// isLoading: ,
+          )
         ],
       ),
     );
