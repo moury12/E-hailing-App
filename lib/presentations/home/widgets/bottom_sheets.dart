@@ -250,17 +250,13 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                                 "pickUpLat": pickup.latitude,
                                 "pickUpLong": pickup.longitude,
                                 "dropOffAddress":
-                                    HomeController
-                                        .to
-                                        .dropOffLocationController
-                                        .value
-                                        .text,
+                                    HomeController.to.dropOffLocationController.value.text,
                                 "dropOffLat": dropoff.latitude,
                                 "dropOffLong": dropoff.longitude,
                                 "duration": HomeController.to.duration.value,
                                 // in minutes
                                 "distance": HomeController.to.distance.value,
-                                // in meters
+                                "tripType":HomeController.to.tripType.value
                                 // "coupon" will be added later from RequestTripPage
                               };
                               await HomeController.to.getTripFare(
