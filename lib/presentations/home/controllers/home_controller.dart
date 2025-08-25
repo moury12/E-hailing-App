@@ -50,7 +50,7 @@ class HomeController extends GetxController {
   final locationService = LocationTrackingService();
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
-  RxString tripType = ''.obs;
+  RxString tripType = 'ride'.obs;
 
   RxBool isCancellingTrip = false.obs;
 
@@ -179,7 +179,7 @@ class HomeController extends GetxController {
     socket.on(TripEvents.tripRequested, (data) {
       logger.d('🚕 tripRequested: $data');
       currentTrip.value = data;
-
+      isCancellingTrip.value=false;
       showCustomSnackbar(
         title: 'Success',
         message: 'Trip requested successfully! Looking for nearby drivers...',
@@ -198,7 +198,7 @@ class HomeController extends GetxController {
       );
 
       resetHomePage();
-      Get.back();
+      Get.back(); Get.back();
     });
 
     socket.on(TripEvents.tripAccepted, (data) {
@@ -510,6 +510,8 @@ class HomeController extends GetxController {
       return;
     }
     isRequestingTrip.value = true;
+    isCancellingTrip.value=false;
+
     status.value = 'Requesting trip...';
     Get.dialog(
       AlertDialog(

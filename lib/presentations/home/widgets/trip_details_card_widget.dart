@@ -249,7 +249,7 @@ class TripRequestLoadingWidget extends StatelessWidget {
               Get.back();
             }
           },
-// isLoading: ,
+isLoading: HomeController.to.isCancellingTrip.value,
           )
         ],
       ),
