@@ -10,6 +10,7 @@ class CustomText extends StatelessWidget {
   final FontWeight? fontWeight;
   final TextAlign? textAlign;
   final TextOverflow? overflow;
+  final TextDecoration? decoration;
   final int? maxLines;
 
   const CustomText({
@@ -21,7 +22,7 @@ class CustomText extends StatelessWidget {
     this.fontWeight,
     this.textAlign,
     this.overflow,
-    this.maxLines,
+    this.maxLines, this.decoration,
   });
 
   @override
@@ -30,13 +31,16 @@ class CustomText extends StatelessWidget {
       text,
       textAlign: textAlign ?? TextAlign.start,
       maxLines: maxLines,
+
       overflow: maxLines != null ? (overflow ?? TextOverflow.ellipsis) : null,
       style: style?.copyWith(
             color: color ?? style?.color,
             fontSize: fontSize ?? style?.fontSize,
             fontWeight: fontWeight ?? style?.fontWeight,
           ) ??
+
           TextStyle(
+            decoration: decoration,
             color: color ?? AppColors.kTextColor,
             fontSize: fontSize ?? getFontSizeSemiSmall(),
             fontFamily: 'Poppins',

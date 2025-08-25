@@ -88,7 +88,18 @@ Future<void> launchWhatsApp(String phoneNumber, {String message = ""}) async {
     throw 'Could not launch $whatsappUri';
   }
 }
+Future<void> launchWebsite(String url) async {
+  final Uri uri = Uri.parse(url);
 
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication, // ✅ opens in browser
+    );
+  } else {
+    throw Exception("Could not launch $url");
+  }
+}
 
 void showLoadingDialog({required String text}) {
   Get.dialog(
