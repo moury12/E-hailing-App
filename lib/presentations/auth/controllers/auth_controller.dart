@@ -108,7 +108,8 @@ class AuthController extends GetxController {
   Future<void> verifyEmailRequest({
     required String email,
     required bool isAccVerify,
-  }) async {
+  })
+  async {
     try {
       loadingProcess.value = AuthProcess.activateAccount;
       String codeKeyName = isAccVerify ? "activationCode" : "code";
@@ -158,57 +159,6 @@ class AuthController extends GetxController {
     }
   }
 
-  ///------------------------------ sign in method -------------------------///
-  Future<void> signInRequest() async {
-    try {
-      loadingProcess.value = AuthProcess.login;
-
-      final response = await ApiService().request(
-        endpoint: loginEndPoint,
-        method: 'POST',
-        useAuth: false,
-        body: {
-          "email": AuthController.to.emailLoginController.text,
-          "password": AuthController.to.passLoginController.text,
-         if(fcmToken!=null) "token":fcmToken
-        },
-      );
-
-      loadingProcess.value = AuthProcess.none;
-
-      if (response['success'] == true) {
-        logger.d(response);
-        if (isRememberMe.value) {
-          saveCredentials(
-            AuthController.to.emailLoginController.text,
-            AuthController.to.passLoginController.text,
-            isRememberMe.value,
-          );
-        }
-        showCustomSnackbar(title: 'Success', message: response['message']);
-        Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
-        ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
-
-CommonController.to.initialSetup();
-
-        Get.offAllNamed(
-          NavigationPage.routeName,
-          arguments: {'reconnectSocket': true},
-        );
-      } else {
-        logger.e(response);
-
-        showCustomSnackbar(
-          title: 'Failed',
-          message: response['message'],
-          type: SnackBarType.failed,
-        );
-      }
-    } catch (e) {
-      loadingProcess.value = AuthProcess.none;
-      logger.e(e.toString());
-    }
-  }
 
   ///------------------------------ forget password method -------------------------///
   Future<void> forgetPasswordRequest({required String email}) async {
@@ -288,6 +238,58 @@ CommonController.to.initialSetup();
     nameSignUpController.clear();
     passSignUpController.clear();
     confirmPassSignUpController.clear();
+  }
+
+  ///------------------------------ sign in method -------------------------///
+  Future<void> signInRequest() async {
+    try {
+      loadingProcess.value = AuthProcess.login;
+
+      final response = await ApiService().request(
+        endpoint: loginEndPoint,
+        method: 'POST',
+        useAuth: false,
+        body: {
+          "email": AuthController.to.emailLoginController.text,
+          "password": AuthController.to.passLoginController.text,
+          if(fcmToken!=null) "token":fcmToken
+        },
+      );
+
+      loadingProcess.value = AuthProcess.none;
+
+      if (response['success'] == true) {
+        logger.d(response);
+        if (isRememberMe.value) {
+          saveCredentials(
+            AuthController.to.emailLoginController.text,
+            AuthController.to.passLoginController.text,
+            isRememberMe.value,
+          );
+        }
+        showCustomSnackbar(title: 'Success', message: response['message']);
+        Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
+        ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+        CommonController.to.initialSetup();
+
+        Get.offAllNamed(
+          NavigationPage.routeName,
+          arguments: {'reconnectSocket': true},
+        );
+      } else {
+        logger.e(response);
+
+        showCustomSnackbar(
+          title: 'Failed',
+          message: response['message'],
+          type: SnackBarType.failed,
+        );
+      }
+    } catch (e) {
+      loadingProcess.value = AuthProcess.none;
+      logger.e(e.toString());
+    }
   }
 
   Future<void> signInWithGoogle() async {
@@ -432,9 +434,6 @@ CommonController.to.initialSetup();
       isGoogleAuthLoading.value = false;
     }
   }
-
-
-
 
   Future<void> signInWithApple() async {
     try {
