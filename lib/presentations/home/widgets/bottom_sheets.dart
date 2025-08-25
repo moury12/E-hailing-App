@@ -256,6 +256,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                                 "duration": HomeController.to.duration.value,
                                 "tripType":HomeController.to.tripType.value,
                                 "distance": HomeController.to.distance.value,
+
                                 // "coupon" will be added later from RequestTripPage
                               };
                               await HomeController.to.getTripFare(
@@ -430,6 +431,8 @@ class HomeInitialContentWidget extends StatelessWidget {
         SearchFieldButtonWidget(
           onTap: () {
             debugPrint(HomeController.to.wantToGo.value.toString());
+            HomeController.to.tripType.value="ride";
+
             HomeController.to.wantToGo.value = true;
           },
         ),
@@ -446,7 +449,10 @@ class HomeInitialContentWidget extends StatelessWidget {
                 title: AppStaticStrings.generalRide,
                 img: purpleCarImage,
                 onTap: () {
+
                   HomeController.to.wantToGo.value = true;
+                  HomeController.to.tripType.value="ride";
+
                 },
               ),
               ServiceWidget(

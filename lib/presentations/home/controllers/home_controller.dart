@@ -50,7 +50,7 @@ class HomeController extends GetxController {
   final locationService = LocationTrackingService();
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
-  RxString tripType = 'ride'.obs;
+  RxString tripType = "ride".obs;
 
   RxBool isCancellingTrip = false.obs;
 
@@ -63,6 +63,8 @@ class HomeController extends GetxController {
   AnimationController? controller;
   RxString previousRoute = ''.obs;
   RxString driverStatus = ''.obs;
+  var selectedPaymentMethod = Rx<String?>(null);
+TextEditingController promoCode=TextEditingController();
   Map<String, dynamic> tripArgs = {};
   final  socket = SocketService();
   RxString status = "Disconnected".obs;
@@ -197,8 +199,11 @@ class HomeController extends GetxController {
         message: 'Sorry, no drivers are available in your area right now.',
       );
 
-      resetHomePage();
-      Get.back(); Get.back();
+      resetAllStates();
+      Get.offAllNamed(
+        NavigationPage.routeName,
+        arguments: {'reconnectSocket': true},
+      );      // Get.back(); Get.back();
     });
 
     socket.on(TripEvents.tripAccepted, (data) {

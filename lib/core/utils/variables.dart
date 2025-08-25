@@ -101,9 +101,10 @@ List<StaticModel> staticList = [
     val: 'RM 600',
   ),
 ];
-
-List<String> paymentMethodList = [
-  AppStaticStrings.creditDebitCards,
-  AppStaticStrings.handCash,
-  AppStaticStrings.dCoin,
+final List<Map<String, String>> paymentMethodList = [
+  {"value": "online", "label":AppStaticStrings.creditDebitCards},
+  {"value": "cash", "label":AppStaticStrings.handCash},
+  {"value": "coin", "label":AppStaticStrings.dCoin},
 ];
+
+
