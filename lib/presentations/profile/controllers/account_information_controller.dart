@@ -15,8 +15,10 @@ class AccountInformationController extends GetxController {
   static AccountInformationController get to => Get.find();
   RxBool isLoadingUpdateProfile = false.obs;
   RxBool isLoadingProfile = false.obs;
+  RxBool isLoadingHelpSupport = false.obs;
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
-
+RxString contactEmail="".obs;
+RxString contactNumber="".obs;
   RxList<String> tabs =
       [
         AppStaticStrings.general,
@@ -38,10 +40,14 @@ class AccountInformationController extends GetxController {
       TextEditingController().obs;
 
   @override
-  void onInit() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      getUserProfileRequest(needReinitilaize: true);
-    });
+  void onInit() async{
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   getUserProfileRequest(needReinitilaize: true);
+    // });
+    await Future.wait([
+    getUserProfileRequest(needReinitilaize: true),
+      getContactSupportRequest()
+    ]);
     super.onInit();
   }
   Future<void> getUserProfileRequest({bool needReinitilaize = false}) async {
@@ -91,6 +97,35 @@ class AccountInformationController extends GetxController {
    contactNumberController.value.text =
         userModel.value.phoneNumber ?? AppStaticStrings.noDataFound;
   }
+  ///------------------------------ get contact method -------------------------///
+
+
+  Future<void> getContactSupportRequest() async {
+    try {
+      isLoadingHelpSupport.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+      final response = await ApiService().request(
+        endpoint: getContactEndpoint,
+        method: 'GET',
+      );
+      logger.d(response);
+      if (response['success'] == true) {
+        contactEmail.value=response['data']['email'];
+        contactNumber.value=response['data']['number'];
+
+      } else {
+        logger.e(response);
+
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    }finally{
+      isLoadingHelpSupport.value = false;
+
+    }
+  }
+
   ///------------------------------ update profile method -------------------------///
 
   Future<void> updateProfileRequest() async {

@@ -4,12 +4,13 @@ import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
+import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
-import 'package:e_hailing_app/presentations/trip/controller/trip_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -25,8 +26,8 @@ class RequestTripPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> args =
-        (Get.arguments ?? {}) as Map<String, dynamic>;
-    logger.d(args);
+    (Get.arguments ?? {}) as Map<String, dynamic>;
+
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.requestYourTrip),
       body: SingleChildScrollView(
@@ -42,7 +43,7 @@ class RequestTripPage extends StatelessWidget {
                   fare: HomeController.to.estimatedFare.value,
                 );
               }),
-              PickupDropLocationWidget(isDisable: true,),
+              PickupDropLocationWidget(isDisable: true),
               Text(
                 "Payment Method",
                 style: poppinsMedium.copyWith(
@@ -57,39 +58,41 @@ class RequestTripPage extends StatelessWidget {
                   border: Border.all(color: AppColors.kGreyColor, width: 1.sp),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
-                child: DropdownButton<String>(
-                  padding: EdgeInsets.zero,
 
-                  value: TripController.to.selectedPaymentMethod.value,
-                  icon: Icon(
-                    Icons.arrow_drop_down,
-                    color: AppColors.kPrimaryColor,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                  underline: SizedBox(),
-                  // remove underline if needed
-                  dropdownColor: Colors.white,
-                  style: poppinsMedium.copyWith(
-                    color: AppColors.kTextColor,
-                    fontSize: 11.sp,
-                  ),
-                  onChanged: (String? newValue) {
-                    TripController.to.selectedPaymentMethod.value = newValue!;
-                  },
-                  items:
-                      paymentMethodList.map<DropdownMenuItem<String>>((
-                        String value,
-                      ) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                ),
+                child: Obx(() {
+                  return DropdownButton<String>(
+                    value: HomeController.to.selectedPaymentMethod.value,
+                    icon: Icon(
+                      Icons.arrow_drop_down,
+                      color: AppColors.kPrimaryColor,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                    underline: SizedBox(),
+                    hint: CustomText(text: "Select payment system"),
+                    dropdownColor: Colors.white,
+                    style: poppinsMedium.copyWith(
+                      color: AppColors.kTextColor,
+                      fontSize: 11.sp,
+                    ),
+                    onChanged: (String? newValue) {
+                      HomeController.to.selectedPaymentMethod.value = newValue!;
+                    },
+                    items:
+                    paymentMethodList.map<DropdownMenuItem<String>>((method) {
+                      return DropdownMenuItem<String>(
+                        value: method["value"], // 👈 internal value
+                        child: Text(method["label"]!), // 👈 visible label
+                      );
+                    }).toList(),
+                  );
+                }),
               ),
               CustomTextField(
                 textEditingController: TextEditingController(
-                  text: args.isNotEmpty ? (args["distance"]/1000).toString() : "",
+                  text:
+                  args.isNotEmpty
+                      ? (args["distance"] / 1000).toString()
+                      : "",
                 ),
                 isEnable: false,
                 borderColor: AppColors.kGreyColor,
@@ -106,9 +109,9 @@ class RequestTripPage extends StatelessWidget {
 
                 textEditingController: TextEditingController(
                   text:
-                      args.isNotEmpty
-                          ? "${args["duration"].toString()} min"
-                          : "",
+                  args.isNotEmpty
+                      ? "${args["duration"].toString()} min"
+                      : "",
                 ),
                 borderColor: AppColors.kGreyColor,
                 fillColor: AppColors.kWhiteColor,
@@ -143,7 +146,7 @@ class RequestTripPage extends StatelessWidget {
               // ),
               CustomTextField(
                 // hintText: '12:35 PM',
-                textEditingController: TripController.to.promoCodeController,
+                textEditingController: HomeController.to.promoCode,
                 borderColor: AppColors.kGreyColor,
                 fillColor: AppColors.kWhiteColor,
                 borderRadius: 24.r,
@@ -160,8 +163,16 @@ class RequestTripPage extends StatelessWidget {
               space6H,
               CustomButton(
                 onTap: () {
-                  if (args.isNotEmpty) {
+                  HomeController.to.tripArgs.addAll({
+                    "paymentType": HomeController.to.selectedPaymentMethod.value,
+                    "coupon": HomeController.to.promoCode.text,
+                  });
+
+                  // logger.d(args);
+                  if (args.isNotEmpty&&HomeController.to.selectedPaymentMethod.value!=null) {
                     HomeController.to.requestTrip(body: args);
+                  }else{
+                    showCustomSnackbar(title: "Alert", message: "This field are required",type: SnackBarType.alert);
                   }
                 },
                 title: AppStaticStrings.confirm,

@@ -17,6 +17,7 @@ String getSavedLocationEndPoint = 'saved-location/get-my-saved-location';
 String deleteSavedLocationEndPoint = 'saved-location/delete-saved-location';
 String deleteNotificationEndPoint = 'notification/delete-notification';
 String getTripFareEndpoint = 'trip/get-fare';
+String getContactEndpoint = 'contact';
 String updateTollFeeEndpoint = 'trip/update-toll-fee';
 String getAllTripEndpoint = 'trip/get-all-trips';
 String getAlChatEndpoint = 'chat/get-all-chats';
