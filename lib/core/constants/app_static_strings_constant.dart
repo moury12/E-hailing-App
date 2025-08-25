@@ -77,12 +77,16 @@ class AppStaticStrings {
 
   // More
   static const String more = 'More';
+  static const String helpServiceAvailable = 'Our help line service is active: 24/7';
   static const String pendingPenalty = 'Pending Penalty';
+  static const String feedback = 'Feedback / Contact';
   static const String termsAndCondition = 'Terms & Condition';
   static const String privacyPolicy = 'Privacy Policy';
   static const String penaltyPolicy = 'Penalty Policy';
   static const String helpSupport = 'Help/Support';
   static const String logOut = 'Log Out';
+  static const String mailUs = 'Mail Us';
+  static const String contactUs = 'Contact Us';
 
   // Payment Details
   static const String rent = "Rent";
@@ -191,6 +195,7 @@ class AppStaticStrings {
   static const String sendPaymentRequest = 'Send Payment request ';
   static const String notYet = 'Not Yet';
   static const String cancelTrip = 'Cancel trip';
+  static const String tripLoading = 'Trip Loading...';
   static const String recentTip = 'Recent Tip';
   static const String service = 'Service';
   static const String placeAddress = 'Place Address';

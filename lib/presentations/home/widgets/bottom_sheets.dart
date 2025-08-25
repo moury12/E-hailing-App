@@ -254,9 +254,8 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                                 "dropOffLat": dropoff.latitude,
                                 "dropOffLong": dropoff.longitude,
                                 "duration": HomeController.to.duration.value,
-                                // in minutes
+                                "tripType":HomeController.to.tripType.value,
                                 "distance": HomeController.to.distance.value,
-                                "tripType":HomeController.to.tripType.value
                                 // "coupon" will be added later from RequestTripPage
                               };
                               await HomeController.to.getTripFare(
@@ -453,6 +452,7 @@ class HomeInitialContentWidget extends StatelessWidget {
               ServiceWidget(
                 onTap: () {
                   HomeController.to.wantToGo.value = true;
+                  HomeController.to.tripType.value="pre_book";
                 },
                 title: AppStaticStrings.preBookRide,
                 img: purpleCarImage,
@@ -492,7 +492,8 @@ class ServiceWidget extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          Image.asset(img, height: 40.sp),
+          Image.asset(img, height:50.sp),
+          space6H,
           CustomText(text: title, style: poppinsSemiBold, fontSize: 10.sp),
         ],
       ),

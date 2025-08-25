@@ -66,6 +66,29 @@ Future<dynamic> tripCancellationDialog({
     ),
   );
 }
+Future<void> launchEmail(String toEmail, {String subject = ""}) async {
+  final Uri emailUri = Uri(
+    scheme: 'mailto',
+    path: toEmail,
+    query: 'subject=$subject',
+  );
+
+  if (await canLaunchUrl(emailUri)) {
+    await launchUrl(emailUri,mode: LaunchMode.externalApplication,);
+  } else {
+    throw 'Could not launch $emailUri';
+  }
+}
+Future<void> launchWhatsApp(String phoneNumber, {String message = ""}) async {
+  final Uri whatsappUri = Uri.parse("https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+
+  if (await canLaunchUrl(whatsappUri)) {
+    await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
+  } else {
+    throw 'Could not launch $whatsappUri';
+  }
+}
+
 
 void showLoadingDialog({required String text}) {
   Get.dialog(

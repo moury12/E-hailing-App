@@ -15,6 +15,8 @@ import 'package:e_hailing_app/presentations/profile/views/change_password_page.d
 import 'package:e_hailing_app/presentations/profile/views/coin_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/earnings_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/edit_profile_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/feedback_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/feedback_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/term_policy_help_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/transaction_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/vehicle_details_page.dart';
@@ -107,6 +109,10 @@ class AppRoutes {
     GetPage(
       name: AccountInformationPage.routeName,
       page: () => AccountInformationPage(),
+      binding: AccountInformationBinding(),
+    ),GetPage(
+      name: FeedbackPage.routeName,
+      page: () => FeedbackPage(),
       binding: AccountInformationBinding(),
     ),
     GetPage(

@@ -95,7 +95,7 @@ class CancelTripButtonWidget extends StatelessWidget {
       onTap: () {
         tripCancellationDialog(onSubmit: onSubmit);
       },
-      title: AppStaticStrings.cancelTrip,
+      title:isLoading==true?AppStaticStrings.tripLoading: AppStaticStrings.cancelTrip,
     );
   }
 }
