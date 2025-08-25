@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_check_box.dart';
 import 'package:e_hailing_app/core/components/custom_checkbox_widget.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
@@ -135,9 +136,16 @@ class _SignupPageState extends State<SignupPage> {
             ),
             space6W,
             Expanded(
-              child: CustomText(
-                text: AppStaticStrings.duduPrivacyPolicy,
-                // fontSize: getFontSizeSmall(),
+              child: ButtonTapWidget(
+                onTap: () {
+                  launchWebsite("https://duducar.co/privacy-policy");
+                },
+                child: CustomText(
+                  text: AppStaticStrings.duduPrivacyPolicy,
+                  color: AppColors.kPrimaryColor,
+decoration: TextDecoration.underline,
+                  // fontSize: getFontSizeSmall(),
+                ),
               ),
             ),
           ],
