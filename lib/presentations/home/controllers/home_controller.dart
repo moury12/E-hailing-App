@@ -35,6 +35,7 @@ class HomeController extends GetxController {
   RxBool showTripDetailsCard = false.obs;
   RxBool isLoadingNewTrip = false.obs;
   RxBool isLoadingUserCurrentTrip = false.obs;
+  RxBool isLoadingPostReview = false.obs;
   RxBool isLoadingCar = false.obs;
   RxBool mapDragable = false.obs;
   RxBool mapDraging= false.obs;
@@ -124,6 +125,41 @@ TextEditingController promoCode=TextEditingController();
     }
   }
 
+
+  ///------------------------------ Post Review method -------------------------///
+
+
+  Future<void> postReviewRatingRequest({required String rating,required String review,}) async {
+    try {
+     isLoadingPostReview.value=true;
+
+      final response = await ApiService().request(
+        endpoint: postReviewEndpoint,
+        method: 'POST',
+        body: {"rating": rating,
+        "review":review},
+      );
+
+
+      if (response['success'] == true) {
+        logger.d(response);
+        showCustomSnackbar(title: 'Success', message: response['message']);
+      } else {
+        logger.e(response);
+
+        showCustomSnackbar(
+          title: 'Failed',
+          message: response['message'],
+          type: SnackBarType.failed,
+        );
+      }
+    } catch (e) {
+      // loadingProcess.value = AuthProcess.none;
+      logger.e(e.toString());
+    }finally{
+      isLoadingPostReview.value=false;
+    }
+  }
   void resetHomePage() {
     // Clear polyline
     isPolylineDrawn.value = false;

@@ -5,12 +5,8 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
-import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
-import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
-import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
-import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
+import 'package:e_hailing_app/core/constants/pagination_loading_widget.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
@@ -70,45 +66,48 @@ class ProfilePage extends StatelessWidget {
                 Padding(
                   padding: padding12.copyWith(top: 0),
                   child: Obx(() {
-                    return AccountInformationController.to.isLoadingProfile.value
+                    return AccountInformationController.to.isLoadingProfile
+                        .value
                         ? UserShimmerWidget()
                         : Row(
-                          spacing: 12.w,
-                          children: [
-                            CustomNetworkImage(
-                              imageUrl:
-                                  "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.img}",
-                              height: 70.w,
-                              width: 70.w,
-                              boxShape: BoxShape.circle,
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CustomText(
-                                    text:
-                                        AccountInformationController.to.userModel
-                                            .value
-                                            .name ??
-                                        AppStaticStrings.noDataFound,
-                                    fontSize: getFontSizeDefault(),
-                                    color: AppColors.kTextDarkBlueColor,
-                                  ),
-                                  CustomText(
-                                    text:
-                                        AccountInformationController.to.userModel
-                                            .value
-                                            .email ??
-                                        AppStaticStrings.noDataFound,
-                                    fontSize: getFontSizeSmall(),
-                                    color: AppColors.kExtraLightTextColor,
-                                  ),
-                                ],
+                      spacing: 12.w,
+                      children: [
+                        CustomNetworkImage(
+                          imageUrl:
+                          "${ApiService()
+                              .baseUrl}/${AccountInformationController.to
+                              .userModel.value.img}",
+                          height: 70.w,
+                          width: 70.w,
+                          boxShape: BoxShape.circle,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomText(
+                                text:
+                                AccountInformationController.to.userModel
+                                    .value
+                                    .name ??
+                                    AppStaticStrings.noDataFound,
+                                fontSize: getFontSizeDefault(),
+                                color: AppColors.kTextDarkBlueColor,
                               ),
-                            ),
-                          ],
-                        );
+                              CustomText(
+                                text:
+                                AccountInformationController.to.userModel
+                                    .value
+                                    .email ??
+                                    AppStaticStrings.noDataFound,
+                                fontSize: getFontSizeSmall(),
+                                color: AppColors.kExtraLightTextColor,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
                   }),
                 ),
               ],
@@ -132,19 +131,19 @@ class ProfilePage extends StatelessWidget {
                     ),
                     CommonController.to.isDriver.value
                         ? ProfileActionItemWidget(
-                          img: vehicleDetailsIcon,
-                          title: AppStaticStrings.vehicleDetails,
-                          onTap: () {
-                            Get.toNamed(VehicleDetailsPage.routeName);
-                          },
-                        )
+                      img: vehicleDetailsIcon,
+                      title: AppStaticStrings.vehicleDetails,
+                      onTap: () {
+                        Get.toNamed(VehicleDetailsPage.routeName);
+                      },
+                    )
                         : ProfileActionItemWidget(
-                          img: coinIcon,
-                          title: AppStaticStrings.duduCoinWallet,
-                          onTap: () {
-                            Get.toNamed(CoinPage.routeName);
-                          },
-                        ),
+                      img: coinIcon,
+                      title: AppStaticStrings.duduCoinWallet,
+                      onTap: () {
+                        Get.toNamed(CoinPage.routeName);
+                      },
+                    ),
                     ProfileActionItemWidget(
                       img: notificationProfileIcon,
                       title: AppStaticStrings.notification,
@@ -154,19 +153,19 @@ class ProfilePage extends StatelessWidget {
                     ),
                     CommonController.to.isDriver.value
                         ? ProfileActionItemWidget(
-                          img: earningIcon,
-                          title: AppStaticStrings.earnings,
-                          onTap: () {
-                            Get.toNamed(EarningsPage.routeName);
-                          },
-                        )
+                      img: earningIcon,
+                      title: AppStaticStrings.earnings,
+                      onTap: () {
+                        Get.toNamed(EarningsPage.routeName);
+                      },
+                    )
                         : ProfileActionItemWidget(
-                          img: savedLocationIcon,
-                          title: AppStaticStrings.savedLocation,
-                          onTap: () {
-                            Get.toNamed(SavedLocationPage.routeName);
-                          },
-                        ),
+                      img: savedLocationIcon,
+                      title: AppStaticStrings.savedLocation,
+                      onTap: () {
+                        Get.toNamed(SavedLocationPage.routeName);
+                      },
+                    ),
                     if (!CommonController.to.isDriver.value)
                       ProfileActionItemWidget(
                         img: penaltyIcon,
@@ -217,17 +216,17 @@ class ProfilePage extends StatelessWidget {
                     //     );
                     //   },
                     // ),
-                    ProfileActionItemWidget(
-                      img: logoutIcon,
-                      title: AppStaticStrings.logOut,
-                      onTap: () {
-                        Boxes.getUserData().delete(tokenKey);
-                        Boxes.getUserData().delete(roleKey);
-                        Boxes.getUserRole().delete(role);
-                         SocketService().disconnect();
-                        Get.offAllNamed(LoginPage.routeName);
-                      },
-                    ),
+                    Obx(() {
+                      return AccountInformationController.to.isLoadingLogout.value
+                          ? PaginationLoadingWidget()
+                          :  ProfileActionItemWidget(
+                        img: logoutIcon,
+                        title: AppStaticStrings.logOut,
+                        onTap: () {
+                          AccountInformationController.to.logoutRequest();
+                        },
+                      );
+                    }),
                   ],
                 ),
               ),

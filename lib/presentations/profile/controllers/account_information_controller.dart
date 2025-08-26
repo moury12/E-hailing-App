@@ -6,15 +6,19 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
+import '../../../core/service/socket-service/socket_service.dart';
+
 class AccountInformationController extends GetxController {
   static AccountInformationController get to => Get.find();
   RxBool isLoadingUpdateProfile = false.obs;
   RxBool isLoadingProfile = false.obs;
+  RxBool isLoadingLogout = false.obs;
   RxBool isLoadingHelpSupport = false.obs;
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
 RxString contactEmail="".obs;
@@ -211,6 +215,39 @@ RxString contactNumber="".obs;
     }
   }
 
+  ///------------------------------ log out method -------------------------///
+
+  Future<void> logoutRequest() async {
+    try {
+      isLoadingLogout.value = true;
+      final response = await ApiService().request(
+        endpoint: logoutEndpoint,
+        method: 'POST',
+      );
+      isLoadingLogout.value = false;
+      if (response['success'] == true) {
+        logger.d(response);
+        showCustomSnackbar(title: 'Success', message: response['message']);
+        Boxes.getUserData().delete(tokenKey);
+        Boxes.getUserData().delete(roleKey);
+        Boxes.getUserRole().delete(role);
+        SocketService().disconnect();
+
+        Get.offAllNamed(LoginPage.routeName);
+      } else {
+        logger.e(response);
+        if(kDebugMode){
+          showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed,
+          );
+        }
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
   //
   // ///------------------------------ delete profile method -------------------------///
   //
