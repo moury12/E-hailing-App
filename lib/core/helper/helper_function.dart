@@ -492,9 +492,9 @@ void callOnPhone({required String phoneNumber}) async {
   }
 }
 
-void showHandCashDialogs() {
+void showHandCashDialogs({required String carId}) {
   Get.dialog(
-    RattingDialogWidget(),
+    RattingDialogWidget(carID: carId,),
     barrierDismissible: false,
   );
 }

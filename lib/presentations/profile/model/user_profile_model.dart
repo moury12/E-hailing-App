@@ -199,7 +199,7 @@ class AssignedCar {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['_id'] = sId;
     data['brand'] = brand;
     data['model'] = model;
