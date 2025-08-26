@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class UserProfileModel {
   String? sId;
   AuthId? authId;
@@ -19,11 +21,12 @@ class UserProfileModel {
   String? userAccountStatus;
   String? createdAt;
   String? updatedAt;
-  String? assignedCar;
+
   num? coins;
   int? iV;
   int? outstandingFee;
   bool? isAvailable;
+  AssignedCar? assignedCar;
 
   UserProfileModel({
     this.sId,
@@ -63,6 +66,9 @@ class UserProfileModel {
     phoneNumber = json['phoneNumber'];
     address = json['address'];
     isOnline = json['isOnline'];
+    assignedCar = json['assignedCar'] != null
+        ? AssignedCar.fromJson(json['assignedCar'])
+        : null;
     locationCoordinates =
         json['locationCoordinates'] != null
             ? LocationCoordinates.fromJson(json['locationCoordinates'])
@@ -76,7 +82,6 @@ class UserProfileModel {
     drivingLicenseImage = json['driving_license_image'];
     userAccountStatus = json['userAccountStatus'];
     createdAt = json['createdAt'];
-    assignedCar = json['assignedCar'];
     coins = json['coins'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
@@ -101,6 +106,9 @@ class UserProfileModel {
       data['locationCoordinates'] = locationCoordinates!.toJson();
     }
     data['idOrPassportNo'] = idOrPassportNo;
+    if (assignedCar != null) {
+      data['assignedCar'] = assignedCar!.toJson();
+    }
     data['drivingLicenseNo'] = drivingLicenseNo;
     data['licenseType'] = licenseType;
     data['licenseExpiry'] = licenseExpiry;
@@ -111,14 +119,112 @@ class UserProfileModel {
     data['createdAt'] = createdAt;
     data['coins'] = coins;
     data['updatedAt'] = updatedAt;
-    data['assignedCar'] = assignedCar;
     data['__v'] = iV;
     data['outstandingFee'] = outstandingFee;
     data['isAvailable'] = isAvailable;
     return data;
   }
 }
+class AssignedCar {
+  String? sId;
+  String? brand;
+  String? model;
+  String? type;
+  int? seats;
+  String? evpNumber;
+  String? evpExpiry;
+  String? carNumber;
+  String? color;
+  String? carLicensePlate;
+  String? vin;
+  String? insuranceStatus;
+  String? registrationDate;
+  List<String>? carImage;
+  String? carGrantImage;
+  String? carInsuranceImage;
+  bool? isAssigned;
+  String? createdAt;
+  String? updatedAt;
+  int? iV;
+  String? assignedDriver;
+  String? eHailingVehiclePermitPdf;
 
+  AssignedCar(
+      {this.sId,
+        this.brand,
+        this.model,
+        this.type,
+        this.seats,
+        this.evpNumber,
+        this.evpExpiry,
+        this.carNumber,
+        this.color,
+        this.carLicensePlate,
+        this.vin,
+        this.insuranceStatus,
+        this.registrationDate,
+        this.carImage,
+        this.carGrantImage,
+        this.carInsuranceImage,
+        this.isAssigned,
+        this.createdAt,
+        this.updatedAt,
+        this.iV,
+        this.assignedDriver,
+        this.eHailingVehiclePermitPdf});
+
+  AssignedCar.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    brand = json['brand'];
+    model = json['model'];
+    type = json['type'];
+    seats = json['seats'];
+    evpNumber = json['evpNumber'];
+    evpExpiry = json['evpExpiry'];
+    carNumber = json['carNumber'];
+    color = json['color'];
+    carLicensePlate = json['carLicensePlate'];
+    vin = json['vin'];
+    insuranceStatus = json['insuranceStatus'];
+    registrationDate = json['registrationDate'];
+    carImage = json['car_image'].cast<String>();
+    carGrantImage = json['car_grant_image'];
+    carInsuranceImage = json['car_insurance_image'];
+    isAssigned = json['isAssigned'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    iV = json['__v'];
+    assignedDriver = json['assignedDriver'];
+    eHailingVehiclePermitPdf = json['e_hailing_vehicle_permit_pdf'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['brand'] = this.brand;
+    data['model'] = this.model;
+    data['type'] = this.type;
+    data['seats'] = this.seats;
+    data['evpNumber'] = this.evpNumber;
+    data['evpExpiry'] = this.evpExpiry;
+    data['carNumber'] = this.carNumber;
+    data['color'] = this.color;
+    data['carLicensePlate'] = this.carLicensePlate;
+    data['vin'] = this.vin;
+    data['insuranceStatus'] = this.insuranceStatus;
+    data['registrationDate'] = this.registrationDate;
+    data['car_image'] = this.carImage;
+    data['car_grant_image'] = this.carGrantImage;
+    data['car_insurance_image'] = this.carInsuranceImage;
+    data['isAssigned'] = this.isAssigned;
+    data['createdAt'] = this.createdAt;
+    data['updatedAt'] = this.updatedAt;
+    data['__v'] = this.iV;
+    data['assignedDriver'] = this.assignedDriver;
+    data['e_hailing_vehicle_permit_pdf'] = this.eHailingVehiclePermitPdf;
+    return data;
+  }
+}
 class AuthId {
   String? sId;
   String? name;

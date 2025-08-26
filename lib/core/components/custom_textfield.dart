@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -114,15 +115,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     ),
                   ),
                   widget.isRequired == true
-                      ? Padding(
-                        padding: const EdgeInsets.only(left: 4),
-                        child: Text(
-                          '*',
-                          style: poppinsRegular.copyWith(
-                            color: Colors.red,
-                            fontSize: getFontSizeSemiSmall(),
-                          ),
-                        ),
+                      ? CustomText(
+                       text:  ' *',
+
+                          color: Colors.red,
+
+
                       )
                       : const SizedBox.shrink(),
                 ],

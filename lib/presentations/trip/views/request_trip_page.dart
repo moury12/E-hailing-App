@@ -44,12 +44,17 @@ class RequestTripPage extends StatelessWidget {
                 );
               }),
               PickupDropLocationWidget(isDisable: true),
-              Text(
-                "Payment Method",
-                style: poppinsMedium.copyWith(
-                  color: AppColors.kTextDarkBlueColor,
-                  fontSize: getFontSizeSemiSmall(),
-                ),
+              Row(
+                children: [
+                  Text(
+                    "Payment Method",
+                    style: poppinsMedium.copyWith(
+                      color: AppColors.kTextDarkBlueColor,
+                      fontSize: getFontSizeSemiSmall(),
+                    ),
+                  ),
+                  CustomText(text: " *", color: Colors.red,)
+                ],
               ),
               Container(
                 height: 30,
@@ -88,6 +93,7 @@ class RequestTripPage extends StatelessWidget {
                 }),
               ),
               CustomTextField(
+                isRequired: true,
                 textEditingController: TextEditingController(
                   text:
                   args.isNotEmpty
@@ -106,7 +112,7 @@ class RequestTripPage extends StatelessWidget {
               ),
               CustomTextField(
                 isEnable: false,
-
+                isRequired: true,
                 textEditingController: TextEditingController(
                   text:
                   args.isNotEmpty

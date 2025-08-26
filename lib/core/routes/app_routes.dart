@@ -82,7 +82,7 @@ class AppRoutes {
     GetPage(
       name: PaymentPage.routeName,
       page: () => PaymentPage(),
-      // binding: AuthBinding(),
+      binding: AuthBinding(),
     ),
     GetPage(
       name: NavigationPage.routeName,

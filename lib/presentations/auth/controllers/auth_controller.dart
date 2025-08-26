@@ -108,8 +108,7 @@ class AuthController extends GetxController {
   Future<void> verifyEmailRequest({
     required String email,
     required bool isAccVerify,
-  })
-  async {
+  }) async {
     try {
       loadingProcess.value = AuthProcess.activateAccount;
       String codeKeyName = isAccVerify ? "activationCode" : "code";
@@ -158,7 +157,6 @@ class AuthController extends GetxController {
       logger.e(e.toString());
     }
   }
-
 
   ///------------------------------ forget password method -------------------------///
   Future<void> forgetPasswordRequest({required String email}) async {
@@ -244,15 +242,17 @@ class AuthController extends GetxController {
   Future<void> signInRequest() async {
     try {
       loadingProcess.value = AuthProcess.login;
+      String? deviceId = await getDeviceId();
 
       final response = await ApiService().request(
         endpoint: loginEndPoint,
         method: 'POST',
         useAuth: false,
         body: {
+          "deviceId": deviceId,
           "email": AuthController.to.emailLoginController.text,
           "password": AuthController.to.passLoginController.text,
-          if(fcmToken!=null) "token":fcmToken
+          if (fcmToken != null) "token": fcmToken,
         },
       );
 
@@ -294,6 +294,8 @@ class AuthController extends GetxController {
 
   Future<void> signInWithGoogle() async {
     try {
+      String? deviceId = await getDeviceId();
+
       isGoogleAuthLoading.value = true;
 
       // 🔹 Trigger Google Sign-In
@@ -312,7 +314,8 @@ class AuthController extends GetxController {
         endpoint: socialEndPoint,
         method: 'POST',
         body: {
-"token":fcmToken,
+          "deviceId": deviceId,
+          "token": fcmToken,
           "name": name,
           "email": email,
           "profile_image": photoUrl,
@@ -336,9 +339,9 @@ class AuthController extends GetxController {
           title: 'Success',
           message: initialResponse['message'],
         );
-CommonController.to.initialSetup();
+        CommonController.to.initialSetup();
 
-  Get.offAllNamed(
+        Get.offAllNamed(
           NavigationPage.routeName,
           arguments: {'reconnectSocket': true},
         );
@@ -359,8 +362,8 @@ CommonController.to.initialSetup();
                   onChanged: (value) => userPhoneNumber = value,
                 ),
                 CustomButton(
-                  onTap: (){
-                    if(userPhoneNumber.isNotEmpty){
+                  onTap: () {
+                    if (userPhoneNumber.isNotEmpty) {
                       Get.back(result: userPhoneNumber);
                     }
                   },
@@ -387,7 +390,8 @@ CommonController.to.initialSetup();
           endpoint: socialEndPoint,
           method: 'POST',
           body: {
-"token":fcmToken,
+            "deviceId": deviceId,
+            "token": fcmToken,
             "name": name,
             "email": email,
             "profile_image": photoUrl,
@@ -411,7 +415,7 @@ CommonController.to.initialSetup();
           );
           // NavigationController.to.isLoggedIn;CommonController.to.initialSetup();
 
-    Get.offAllNamed(
+          Get.offAllNamed(
             NavigationPage.routeName,
             arguments: {'reconnectSocket': true},
           );
@@ -437,24 +441,26 @@ CommonController.to.initialSetup();
 
   Future<void> signInWithApple() async {
     try {
-      // Assuming a similar loading variable exists for Apple Sign-In
+      String? deviceId = await getDeviceId();
       isAppleAuthLoading.value = true;
 
       // 🔹 Trigger Apple Sign-In
       final AuthorizationCredentialAppleID credential =
-      await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-      );
+          await SignInWithApple.getAppleIDCredential(
+            scopes: [
+              AppleIDAuthorizationScopes.email,
+              AppleIDAuthorizationScopes.fullName,
+            ],
+          );
 
       // 🔹 Extract user data from Apple's credential
       // Note: Name and email are only provided on the FIRST login.
       // Your backend needs to handle cases where they are null on subsequent logins.
-      final String name = (credential.givenName != null || credential.familyName != null)
-          ? "${credential.givenName ?? ''} ${credential.familyName ?? ''}".trim()
-          : "User";
+      final String name =
+          (credential.givenName != null || credential.familyName != null)
+              ? "${credential.givenName ?? ''} ${credential.familyName ?? ''}"
+                  .trim()
+              : "User";
 
       final String? email = credential.email;
 
@@ -463,7 +469,8 @@ CommonController.to.initialSetup();
       if (email == null) {
         showCustomSnackbar(
           title: 'Login Error',
-          message: 'Could not retrieve email. This can happen on subsequent logins. Please contact support if this issue persists.',
+          message:
+              'Could not retrieve email. This can happen on subsequent logins. Please contact support if this issue persists.',
           type: SnackBarType.failed,
         );
         isAppleAuthLoading.value = false;
@@ -478,7 +485,8 @@ CommonController.to.initialSetup();
         endpoint: socialEndPoint,
         method: 'POST',
         body: {
-"token":fcmToken,
+          "deviceId": deviceId,
+          "token": fcmToken,
           "name": name,
           "email": email,
           "profile_image": photoUrl, // Will be an empty string
@@ -502,13 +510,12 @@ CommonController.to.initialSetup();
           title: 'Success',
           message: initialResponse['message'],
         );
-CommonController.to.initialSetup();
+        CommonController.to.initialSetup();
 
-  Get.offAllNamed(
+        Get.offAllNamed(
           NavigationPage.routeName,
-    arguments: {'reconnectSocket': true},
-
-  );
+          arguments: {'reconnectSocket': true},
+        );
       } else {
         // 🔁 Retry with phone number if needed (logic remains identical)
         String userPhoneNumber = '';
@@ -525,8 +532,8 @@ CommonController.to.initialSetup();
                   onChanged: (value) => userPhoneNumber = value,
                 ),
                 CustomButton(
-                  onTap: (){
-                    if(userPhoneNumber.isNotEmpty){
+                  onTap: () {
+                    if (userPhoneNumber.isNotEmpty) {
                       Get.back(result: userPhoneNumber);
                     }
                   },
@@ -554,7 +561,8 @@ CommonController.to.initialSetup();
           endpoint: socialEndPoint,
           method: 'POST',
           body: {
-"token":fcmToken,
+            "deviceId": deviceId,
+            "token": fcmToken,
             "name": name,
             "email": email,
             "profile_image": photoUrl,
@@ -576,13 +584,12 @@ CommonController.to.initialSetup();
             title: 'Success',
             message: retryResponse['message'],
           );
-CommonController.to.initialSetup();
+          CommonController.to.initialSetup();
 
-    Get.offAllNamed(
+          Get.offAllNamed(
             NavigationPage.routeName,
-      arguments: {'reconnectSocket': true},
-
-    );
+            arguments: {'reconnectSocket': true},
+          );
         } else {
           showCustomSnackbar(
             title: 'Failed',
@@ -596,7 +603,8 @@ CommonController.to.initialSetup();
       logger.e('Apple Sign-In Error: $e');
       showCustomSnackbar(
         title: 'Error',
-        message: 'Something went wrong or sign-in was cancelled. Please try again.',
+        message:
+            'Something went wrong or sign-in was cancelled. Please try again.',
         type: SnackBarType.failed,
       );
     } finally {
