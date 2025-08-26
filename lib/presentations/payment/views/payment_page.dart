@@ -99,13 +99,13 @@ class PaymentPage extends StatelessWidget {
                 //   title: AppStaticStrings.creditDebitCards,
                 //   onTap: () {},
                 // ),
-                PaymentCardItem(
-                  img: handCashIcon,
-                  title: AppStaticStrings.handCash,
-                  onTap: () {
-
-                  },
-                ),
+                // PaymentCardItem(
+                //   img: handCashIcon,
+                //   title: AppStaticStrings.handCash,
+                //   onTap: () {
+                //
+                //   },
+                // ),
 
                 // PaymentCardItem(
                 //   img: coinIcon,

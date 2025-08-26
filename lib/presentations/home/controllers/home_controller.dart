@@ -129,7 +129,7 @@ TextEditingController promoCode=TextEditingController();
   ///------------------------------ Post Review method -------------------------///
 
 
-  Future<void> postReviewRatingRequest({required String rating,required String review,}) async {
+  Future<void> postReviewRatingRequest({required String rating,required String review,required String carId,}) async {
     try {
      isLoadingPostReview.value=true;
 
@@ -137,7 +137,8 @@ TextEditingController promoCode=TextEditingController();
         endpoint: postReviewEndpoint,
         method: 'POST',
         body: {"rating": rating,
-        "review":review},
+        "review":review,
+        "carId":carId},
       );
 
 
@@ -283,7 +284,7 @@ TextEditingController promoCode=TextEditingController();
             arguments: {'reconnectSocket': true},
           );
           if(status == DriverTripStatus.completed.name){
-            showHandCashDialogs();
+            showHandCashDialogs(carId: tripAcceptedModel.value.driver!.assignedCar!.sId.toString());
           }
           for (TripCancellationModel cancel in tripCancellationList) {
             cancel.isChecked.value = false;

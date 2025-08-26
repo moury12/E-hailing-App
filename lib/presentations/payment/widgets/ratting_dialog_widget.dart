@@ -6,6 +6,7 @@ import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class RattingDialogWidget extends StatefulWidget {
-  const RattingDialogWidget({super.key});
+  final String carID;
+  const RattingDialogWidget({super.key, required this.carID});
 
   @override
   State<RattingDialogWidget> createState() => _RattingDialogWidgetState();
@@ -28,81 +30,87 @@ class _RattingDialogWidgetState extends State<RattingDialogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      content: Stack(
-        children: [
-          Column(
-            spacing: 6.h,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CustomText(
-                textAlign: TextAlign.center,
-                text: AppStaticStrings.writeAReview,
-                fontSize: getFontSizeDefault(),
-              ),
-              const Divider(),
-              CustomText(
-                text: AppStaticStrings.howWouldYouRate,
-                fontSize: getFontSizeDefault(),
-              ),
-
-              // ⭐ Rating bar
-              RatingBar(
-                initialRating: 0,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                ratingWidget: RatingWidget(
-                  full: const Icon(CupertinoIcons.star_fill),
-                  half: const Icon(CupertinoIcons.star_lefthalf_fill),
-                  empty: const Icon(CupertinoIcons.star),
+    return PopScope(
+      canPop: false,
+      child: AlertDialog(
+        content: Stack(
+          children: [
+            Column(
+              spacing: 6.h,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomText(
+                  textAlign: TextAlign.center,
+                  text: AppStaticStrings.writeAReview,
+                  fontSize: getFontSizeDefault(),
                 ),
-                itemSize: 30.sp,
-                itemPadding: EdgeInsets.symmetric(horizontal: 4.sp),
-                onRatingUpdate: (rating) {
-                  setState(() => _rating = rating);
-                },
-              ),
+                const Divider(),
+                CustomText(
+                  text: AppStaticStrings.howWouldYouRate,
+                  fontSize: getFontSizeDefault(),
+                ),
 
-              // 📝 Review field
-              CustomTextField(
-                textEditingController: _reviewController,
-                title: AppStaticStrings.review,
-                hintText: AppStaticStrings.enterYourReview,
-                borderColor: AppColors.kExtraLightTextColor,
-                maxLines: 4,
-              ),
-              space12H,
-
-              // ✅ Submit button
-              Obx(() {
-                return CustomButton(
-                  isLoading: HomeController.to.isLoadingPostReview.value,
-                  onTap: () {
-                    final review = _reviewController.text.trim();
-                    if (_rating != null && review.isNotEmpty) {
-                      HomeController.to.postReviewRatingRequest(
-                        rating: _rating.toString(),
-                        review: review,
-                      );
-                    }
+                // ⭐ Rating bar
+                RatingBar(
+                  initialRating: 0,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  ratingWidget: RatingWidget(
+                    full: const Icon(CupertinoIcons.star_fill),
+                    half: const Icon(CupertinoIcons.star_lefthalf_fill),
+                    empty: const Icon(CupertinoIcons.star),
+                  ),
+                  itemSize: 30.sp,
+                  itemPadding: EdgeInsets.symmetric(horizontal: 4.sp),
+                  onRatingUpdate: (rating) {
+                    setState(() => _rating = rating);
                   },
-                  title: AppStaticStrings.submit,
-                );
-              }),
-            ],
-          ),
+                ),
 
-          // ❌ Close button
-          Positioned(
-            top: 0,
-            right: 0,
-            child: GestureDetector(
-              onTap: () => Get.back(),
-              child: SvgPicture.asset(crossIcon),
+                // 📝 Review field
+                CustomTextField(
+                  textEditingController: _reviewController,
+                  title: AppStaticStrings.review,
+                  hintText: AppStaticStrings.enterYourReview,
+                  borderColor: AppColors.kExtraLightTextColor,
+                  maxLines: 4,
+                ),
+                space12H,
+
+                // ✅ Submit button
+                Obx(() {
+                  return CustomButton(
+                    isLoading: HomeController.to.isLoadingPostReview.value,
+                    onTap: () {
+                      final review = _reviewController.text.trim();
+                      if (_rating != null && review.isNotEmpty) {
+                        HomeController.to.postReviewRatingRequest(
+                          rating: _rating.toString(),
+                          review: review,
+                          carId: widget.carID
+                        );
+                      }else{
+                        showCustomSnackbar(title: "Failed", message: "Rating Review Field is required");
+                      }
+                    },
+                    title: AppStaticStrings.submit,
+                  );
+                }),
+              ],
             ),
-          ),
-        ],
+
+            // ❌ Close button
+            Positioned(
+              top: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: () => Get.back(),
+                child: SvgPicture.asset(crossIcon),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
