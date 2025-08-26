@@ -282,6 +282,9 @@ TextEditingController promoCode=TextEditingController();
             NavigationPage.routeName,
             arguments: {'reconnectSocket': true},
           );
+          if(status == DriverTripStatus.completed.name){
+            showHandCashDialogs();
+          }
           for (TripCancellationModel cancel in tripCancellationList) {
             cancel.isChecked.value = false;
           }

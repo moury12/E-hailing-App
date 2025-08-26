@@ -43,6 +43,7 @@ class TripResponseModel {
     this.createdAt,
     this.updatedAt,
     this.iV,
+
     this.driver,
     this.driverTripAcceptedAt,
   });
@@ -74,6 +75,7 @@ class TripResponseModel {
     cancellationReason =
         (json['cancellationReason'] as List?)?.cast<String>() ?? [];
     status = json['status'];
+
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
@@ -102,6 +104,7 @@ class TripResponseModel {
     data['distance'] = distance;
     data['estimatedFare'] = estimatedFare;
     data['tollFee'] = tollFee;
+
     data['extraCharge'] = extraCharge;
     data['isPeakHourApplied'] = isPeakHourApplied;
     data['isCouponApplied'] = isCouponApplied;
@@ -161,6 +164,8 @@ class Driver {
   String? createdAt;
   String? updatedAt;
   num? iV;
+  int? rating;
+
   AssignedCar? assignedCar;
 
   Driver({
@@ -188,6 +193,7 @@ class Driver {
     this.updatedAt,
     this.iV,
     this.assignedCar,
+    this.rating,
   });
 
   Driver.fromJson(Map<String, dynamic> json) {
@@ -217,6 +223,7 @@ class Driver {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
+    rating = json['rating'];
     assignedCar =
         json['assignedCar'] != null
             ? AssignedCar.fromJson(json['assignedCar'])
@@ -238,6 +245,7 @@ class Driver {
     if (locationCoordinates != null) {
       data['locationCoordinates'] = locationCoordinates!.toJson();
     }
+    data['rating'] = rating;
     data['isAvailable'] = isAvailable;
     data['idOrPassportNo'] = idOrPassportNo;
     data['drivingLicenseNo'] = drivingLicenseNo;

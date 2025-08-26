@@ -15,6 +15,7 @@ import 'package:e_hailing_app/presentations/message/controllers/message_controll
 import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,7 @@ class DriverDetails extends StatelessWidget {
   final String? userImg;
   final String? userName;
   final String? fare;
+  final String? rating;
 
   const DriverDetails({
     super.key,
@@ -36,7 +38,7 @@ class DriverDetails extends StatelessWidget {
     this.value,
     this.userImg,
     this.userName,
-    this.fare,
+    this.fare, this.rating,
   });
 
   @override
@@ -60,11 +62,23 @@ class DriverDetails extends StatelessWidget {
                 style: poppinsSemiBold,
                 fontSize: getFontSizeSemiSmall(),
               ),
-              CustomText(
-                text: 'RM ${fare ?? 00.00}',
-                fontSize: getFontSizeSmall(),
+              Row(
+                children: [
+                 if(rating!=null) Row(
+                    children: [
+                      Icon(CupertinoIcons.star_fill, color: Colors.amber,size: 10.sp,),
+                      CustomText(text: " (${rating??"0"}) | ",  fontSize: 9.sp,
 
-                color: AppColors.kLightBlackColor,
+                        color: AppColors.kLightBlackColor,)
+                    ],
+                  ),
+                  CustomText(
+                    text: 'RM ${fare ?? 00.00}',
+                    fontSize: getFontSizeSmall(),
+
+                    color: AppColors.kLightBlackColor,
+                  ),
+                ],
               ),
             ],
           ),
@@ -154,7 +168,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
                   ],
                 ),
               ),
-              // Icon(CupertinoIcons.info_circle_fill),
+            CustomText(text: '${int.parse(tripModel?.distance.toString() ?? "0") / 1000} km',fontSize: getFontSizeSmall(),)
             ],
           ),
           DriverDetails(
@@ -164,7 +178,8 @@ class TripDetailsDestinationCard extends StatelessWidget {
                 "${ApiService().baseUrl}/${tripModel?.driver?.profileImage}",
             title: AppStaticStrings.tripDuration,
             value:
-                '${int.parse(tripModel?.distance.toString() ?? "0") / 1000} km',
+            '${int.parse(tripModel?.duration.toString() ?? "0")} min',
+            rating: tripModel?.driver?.rating.toString(),
           ),
           FromToTimeLine(
             showTo: true,
