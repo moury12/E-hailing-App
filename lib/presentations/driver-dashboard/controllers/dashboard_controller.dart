@@ -209,6 +209,7 @@ class DashBoardController extends GetxController {
       if (newStatus == DriverTripStatus.cancelled.name) {
         isCancellingTrip.value = true;
       }
+      logger.i(newStatus);
 
       socketService.emit(DriverEvent.tripUpdateStatus, {
         "tripId": tripId,

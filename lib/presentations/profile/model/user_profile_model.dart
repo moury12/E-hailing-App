@@ -199,29 +199,29 @@ class AssignedCar {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
-    data['brand'] = this.brand;
-    data['model'] = this.model;
-    data['type'] = this.type;
-    data['seats'] = this.seats;
-    data['evpNumber'] = this.evpNumber;
-    data['evpExpiry'] = this.evpExpiry;
-    data['carNumber'] = this.carNumber;
-    data['color'] = this.color;
-    data['carLicensePlate'] = this.carLicensePlate;
-    data['vin'] = this.vin;
-    data['insuranceStatus'] = this.insuranceStatus;
-    data['registrationDate'] = this.registrationDate;
-    data['car_image'] = this.carImage;
-    data['car_grant_image'] = this.carGrantImage;
-    data['car_insurance_image'] = this.carInsuranceImage;
-    data['isAssigned'] = this.isAssigned;
-    data['createdAt'] = this.createdAt;
-    data['updatedAt'] = this.updatedAt;
-    data['__v'] = this.iV;
-    data['assignedDriver'] = this.assignedDriver;
-    data['e_hailing_vehicle_permit_pdf'] = this.eHailingVehiclePermitPdf;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['_id'] = sId;
+    data['brand'] = brand;
+    data['model'] = model;
+    data['type'] = type;
+    data['seats'] = seats;
+    data['evpNumber'] = evpNumber;
+    data['evpExpiry'] = evpExpiry;
+    data['carNumber'] = carNumber;
+    data['color'] = color;
+    data['carLicensePlate'] = carLicensePlate;
+    data['vin'] = vin;
+    data['insuranceStatus'] = insuranceStatus;
+    data['registrationDate'] = registrationDate;
+    data['car_image'] = carImage;
+    data['car_grant_image'] = carGrantImage;
+    data['car_insurance_image'] = carInsuranceImage;
+    data['isAssigned'] = isAssigned;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['__v'] = iV;
+    data['assignedDriver'] = assignedDriver;
+    data['e_hailing_vehicle_permit_pdf'] = eHailingVehiclePermitPdf;
     return data;
   }
 }

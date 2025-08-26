@@ -53,7 +53,7 @@ class TripDetailsPage extends StatelessWidget {
                     onTap:() {
 
                     },
-                    fare: int.parse((trip.estimatedFare ?? 0).toString()),
+                    fare: double.parse((trip.estimatedFare ?? 0).toString()).toInt(),
                   ),
 
                   Container(

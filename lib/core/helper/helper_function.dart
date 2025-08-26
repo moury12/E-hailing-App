@@ -492,39 +492,9 @@ void callOnPhone({required String phoneNumber}) async {
   }
 }
 
-void showHandCashDialogs(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        content: Column(
-          spacing: 12.h,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CustomText(
-              text: AppStaticStrings.handCashPaymentRequest,
-              textAlign: TextAlign.center,
-              fontSize: getFontSizeDefault(),
-            ),
-            Padding(padding: padding16V, child: GradientProgressIndicator()),
-            CustomText(
-              text: AppStaticStrings.waitingForDriverConformation,
-              style: poppinsLight,
-              color: AppColors.kExtraLightTextColor,
-            ),
-          ],
-        ),
-      );
-    },
+void showHandCashDialogs() {
+  Get.dialog(
+    RattingDialogWidget(),
+    barrierDismissible: false,
   );
-  Future.delayed(Duration(seconds: 1), () {
-    Navigator.of(context).pop();
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return RattingDialogWidget();
-      },
-    );
-  });
 }
