@@ -10,6 +10,7 @@ import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/views/edit_profile_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/pdf_viewer_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -98,7 +99,17 @@ class AccountInformationPage extends StatelessWidget {
                 width: 150.w,
                 height: 150.w,
               ),
+              CustomText(text: AppStaticStrings.eHailingVehiclePermit),
+            // ${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.assignedCar?.eHailingVehiclePermitPdf}
+            GestureDetector(
+              onTap: () {
+                Get.to(()=>PdfViewerPage());
+              },
+              child: Image.asset("assets/icons/pdf_placeholder.png",  width: 150.w,
+                height: 150.w,),
+            )
             ],
+
           );
         }),
       ),

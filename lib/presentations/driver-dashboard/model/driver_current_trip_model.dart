@@ -15,6 +15,7 @@ class DriverCurrentTripModel {
   bool? isCouponApplied;
   List<String>? cancellationReason;
   String? status;
+  String? paymentType;
   String? createdAt;
   String? updatedAt;
   num? iV;
@@ -38,6 +39,7 @@ class DriverCurrentTripModel {
     this.isCouponApplied,
     this.cancellationReason,
     this.status,
+    this.paymentType,
     this.createdAt,
     this.updatedAt,
     this.iV,
@@ -71,6 +73,7 @@ class DriverCurrentTripModel {
     isCouponApplied = json['isCouponApplied'];
     cancellationReason =
         (json['cancellationReason'] as List?)?.cast<String>() ?? [];
+    paymentType = json['paymentType'];
     status = json['status'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -104,6 +107,7 @@ class DriverCurrentTripModel {
     data['isPeakHourApplied'] = isPeakHourApplied;
     data['isCouponApplied'] = isCouponApplied;
     data['cancellationReason'] = cancellationReason;
+    data['paymentType'] = paymentType;
     data['status'] = status;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;

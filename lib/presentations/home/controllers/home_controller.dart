@@ -249,9 +249,9 @@ TextEditingController promoCode=TextEditingController();
       status.value = "Driver found! Trip accepted";
       resetAllStates();
       logger.i("Dialog open? ${Get.isDialogOpen}");
-      // if (Get.isDialogOpen == true) {
-      //   Get.back();
-      // }
+      if (Get.isDialogOpen == true) {
+        Get.back();
+      }
       tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
       polyLineShow();
 
