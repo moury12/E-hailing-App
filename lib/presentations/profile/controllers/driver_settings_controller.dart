@@ -40,7 +40,7 @@ class DriverSettingsController extends GetxController {
         endpoint: getCarEndpoint,
         method: 'GET',
         queryParams: {
-          "carId": AccountInformationController.to.userModel.value.assignedCar.toString(),
+          "carId": AccountInformationController.to.userModel.value.assignedCar!.sId.toString(),
         },
       );
       isLoadingCar.value = false;

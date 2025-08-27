@@ -42,6 +42,8 @@ class PaymentPage extends StatelessWidget {
         role == driver
             ? "${driverTripResponseModel.estimatedFare ?? 0}"
             : "${userTripResponse.estimatedFare ?? 0}";
+    String? paymentType =
+        role == driver ? "${driverTripResponseModel.paymentType ?? 0}" : null;
     String tollFee =
         role == driver
             ? "${driverTripResponseModel.tollFee ?? 0}"
@@ -93,30 +95,7 @@ class PaymentPage extends StatelessWidget {
                   value: 'RM $finalFee',
                 ),
                 space12H,
-
-                // PaymentCardItem(
-                //   img: cardsIcon,
-                //   title: AppStaticStrings.creditDebitCards,
-                //   onTap: () {},
-                // ),
-                // PaymentCardItem(
-                //   img: handCashIcon,
-                //   title: AppStaticStrings.handCash,
-                //   onTap: () {
-                //
-                //   },
-                // ),
-
-                // PaymentCardItem(
-                //   img: coinIcon,
-                //   title: AppStaticStrings.dCoin,
-                //   onTap: () {
-                //     showDialog(
-                //       context: context,
-                //       builder: (context) => DCoinDialogPaymentWidget(),
-                //     );
-                //   },
-                // ),
+                if (paymentType != null) buildPaymentItem(paymentType),
                 space6H,
                 role == driver
                     ? Column(
@@ -153,5 +132,39 @@ class PaymentPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget buildPaymentItem(String? paymentType) {
+    switch (paymentType) {
+      case 'cash':
+        return PaymentCardItem(
+          img: handCashIcon,
+          title: AppStaticStrings.handCash,
+          onTap: () {
+            // handle cash tap
+          },
+        );
+
+      case 'coin':
+        return PaymentCardItem(
+          img: coinIcon,
+          title: AppStaticStrings.dCoin,
+          onTap: () {
+            // handle coin tap
+          },
+        );
+
+      case 'online':
+        return PaymentCardItem(
+          img: cardsIcon,
+          title: AppStaticStrings.creditDebitCards,
+          onTap: () {
+            // handle online tap
+          },
+        );
+
+      default:
+        return SizedBox.shrink(); // nothing if null or unknown
+    }
   }
 }

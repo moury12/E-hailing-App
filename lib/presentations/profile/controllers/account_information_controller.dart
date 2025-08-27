@@ -11,6 +11,8 @@ import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dar
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:pdfx/pdfx.dart';
 
 import '../../../core/service/socket-service/socket_service.dart';
 
@@ -50,9 +52,34 @@ RxString contactNumber="".obs;
     // });
     await Future.wait([
     getUserProfileRequest(needReinitilaize: true),
+
       getContactSupportRequest()
     ]);
+    loadPdf();
     super.onInit();
+  }
+   PdfControllerPinch? pdfController;
+
+  Future<void> loadPdf() async {
+    try {
+      final response = await http.get(Uri.parse("${ApiService().baseUrl}/${userModel.value.assignedCar?.eHailingVehiclePermitPdf}"));
+
+      if (response.statusCode == 200) {
+        final bytes = response.bodyBytes;
+
+        pdfController = PdfControllerPinch(
+          document: PdfDocument.openData(bytes),
+        );
+
+
+      } else {
+        print("Failed to load PDF: ${response.statusCode}");
+        Get.snackbar("Error", "Failed to load PDF");
+      }
+    } catch (e) {
+      print("PDF Load Error: $e");
+      Get.snackbar("Error", "Failed to load PDF");
+    }
   }
   Future<void> getUserProfileRequest({bool needReinitilaize = false}) async {
     try {

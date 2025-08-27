@@ -169,6 +169,7 @@ class AppStaticStrings {
   static const String cash = 'Cash';
   static const String noDataFound = "No data found";
   static const String nationalIdPassport = 'National ID/Passport';
+  static const String eHailingVehiclePermit = 'E-hailing Vehicle Permit (EVP)';
   static const String drivingLicense = 'Driving License No ';
   static const String licenseType = 'License Type';
   static const String licenseExpire = 'License Expire';
