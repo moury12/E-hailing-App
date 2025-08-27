@@ -164,7 +164,7 @@ class Driver {
   String? createdAt;
   String? updatedAt;
   num? iV;
-  int? rating;
+  num? rating;
 
   AssignedCar? assignedCar;
 

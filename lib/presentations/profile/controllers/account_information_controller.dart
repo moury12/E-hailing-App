@@ -8,6 +8,7 @@ import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -55,7 +56,9 @@ RxString contactNumber="".obs;
 
       getContactSupportRequest()
     ]);
-    loadPdf();
+    if(CommonController.to.isDriver.value){
+      loadPdf();
+    }
     super.onInit();
   }
    PdfControllerPinch? pdfController;
