@@ -70,14 +70,14 @@ class MyRideController extends GetxController {
           'status': rideStatus.value,
         },
       );
-
+logger.d(response);
       if (response['success'] == true) {
         final newItems =
             (response['data']['trips'] as List)
                 .map((e) => TripResponseModel.fromJson(e))
                 .toList();
 
-        logger.d(newItems.length);
+        // logger.d(newItems.length);
 
         if (newItems.isEmpty) {
           pagingController.appendLastPage(newItems);
