@@ -5,5 +5,6 @@ class Boxes{
   static Box getUserRole()=>Hive.box(userRole);
   static Box getUserData()=>Hive.box(userBoxName);
   static Box getAuthData()=>Hive.box(authBox);
+  static Box getRattingData()=>Hive.box("ratingData");
 
 }

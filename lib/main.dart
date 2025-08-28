@@ -63,6 +63,7 @@ void main() async {
   await Hive.openBox(userRole);
   await Hive.openBox(userBoxName);
   await Hive.openBox(authBox);
+  await Hive.openBox("ratingData");
 
   await ScreenUtil.ensureScreenSize();
   runApp(

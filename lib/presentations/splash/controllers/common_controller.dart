@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/profile/model/review_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -13,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../core/api-client/api_endpoints.dart';
 import '../../../core/utils/google_map_api_key.dart';
 
 class CommonController extends GetxController {
@@ -23,7 +27,12 @@ class CommonController extends GetxController {
   Rx<LatLng> markerPositionRider = Rx<LatLng>(LatLng(0.0, 0.0));
   GoogleMapController? mapControllerDriver;
   GoogleMapController? mapControllerRider;
-
+  RxList<ReviewModel> reviewList = <ReviewModel>[].obs;
+  RxBool isDriver = false.obs;
+  RxBool isLoadingReview = false.obs;
+  RxDouble driverRating = 0.0.obs;
+  RxBool isLoadingOnLocationSuggestion = false.obs;
+  RxList<dynamic> addressSuggestion = [].obs;
   void setMapControllerRider(GoogleMapController controller) {
     mapControllerRider = controller;
     startTrackingLocationMethod();
@@ -34,10 +43,42 @@ class CommonController extends GetxController {
     startTrackingLocationMethod();
   }
 
+  Future<void> getReviewListRequest({required String driverId}) async {
+    isLoadingReview.value = true;
 
-  RxBool isDriver = false.obs;
-  RxBool isLoadingOnLocationSuggestion = false.obs;
-  RxList<dynamic> addressSuggestion = [].obs;
+    try {
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+      final response = await ApiService().request(
+        endpoint: getAllReviewEndpoint,
+        method: 'GET',
+        useAuth: true,
+        queryParams: {'driverId': driverId},
+      );
+logger.d(response);
+      if (response['success'] == true) {
+        driverRating.value=response['data']['averageRating'];
+        reviewList.value =
+            (response['data']['reviews'] as List)
+                .map((e) => ReviewModel.fromJson(e))
+                .toList();
+
+
+      } else {
+        logger.e(response);
+        if (kDebugMode) {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed,
+          );
+        }
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    } finally {
+      isLoadingReview.value = false;
+    }
+  }
 
   @override
   void onInit() async {
@@ -46,8 +87,7 @@ class CommonController extends GetxController {
     );
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
-initialSetup();
-
+      initialSetup();
     }
 
     // Only setup socket if we have a valid user ID
@@ -64,23 +104,23 @@ initialSetup();
     }
   }
 
-
   Future<void> fetchSuggestedPlacesWithRadius(
-      String input, {
-        double radiusInMeters = 5000,
-      }) async {
+    String input, {
+    double radiusInMeters = 5000,
+  }) async {
     isLoadingOnLocationSuggestion.value = true;
 
     try {
       Rx<LatLng> markerPosition =
-      isDriver.value ? markerPositionDriver : markerPositionRider;
+          isDriver.value ? markerPositionDriver : markerPositionRider;
 
       String url =
           'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=${GoogleClient.googleMapUrl}';
 
-      if (markerPosition.value.latitude != 0.0 && markerPosition.value.longitude != 0.0) {
+      if (markerPosition.value.latitude != 0.0 &&
+          markerPosition.value.longitude != 0.0) {
         url +=
-        '&location=${markerPosition.value.latitude},${markerPosition.value.longitude}';
+            '&location=${markerPosition.value.latitude},${markerPosition.value.longitude}';
         url += '&radius=${radiusInMeters.toInt()}';
       }
 
@@ -95,7 +135,9 @@ initialSetup();
 
         // Loop through the predictions and fetch detailed info for each
         for (var prediction in data['predictions']) {
-          if (addressSuggestion.length >= 5) break; // Stop once we have 5 results
+          if (addressSuggestion.length >= 5) {
+            break; // Stop once we have 5 results
+          }
 
           String placeId = prediction['place_id'];
 
@@ -111,13 +153,11 @@ initialSetup();
       isLoadingOnLocationSuggestion.value = false;
     }
   }
-void initialSetup(){
 
-    Future.wait([
-      fetchCurrentLocationMethod(),
-      checkUserRole()
-    ]);
-}
+  void initialSetup() {
+    Future.wait([fetchCurrentLocationMethod(), checkUserRole()]);
+  }
+
   /// Fetch Place Details for a given place ID
   Future<void> _fetchPlaceDetails(String placeId) async {
     final detailsUrl =
@@ -145,17 +185,12 @@ void initialSetup(){
     }
   }
 
-
-
-
-
   Future<void> fetchCurrentLocationMethod() async {
     Rx<LatLng> markerPosition =
         isDriver.value ? markerPositionDriver : markerPositionRider;
 
     await locationService.fetchCurrentLocation(markerPosition: markerPosition);
     await BoundaryController.to.initialize(markerPosition.value);
-
   }
 
   Future<void> startTrackingLocationMethod() async {
@@ -178,15 +213,13 @@ void initialSetup(){
     logger.d("token - ${Boxes.getUserData().get(tokenKey)}");
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(
+        Boxes.getUserData().get(tokenKey).toString(),
+      );
 
-      isDriver.value = decodedToken['role']=="DRIVER";
+      isDriver.value = decodedToken['role'] == "DRIVER";
     }
   }
-
-
-
-
 
   @override
   void onClose() {

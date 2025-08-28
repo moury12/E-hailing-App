@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
+import 'package:e_hailing_app/core/components/tab-bar/dynamic_tab_widget.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
@@ -17,7 +18,11 @@ import 'package:e_hailing_app/presentations/home/controllers/home_controller.dar
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/navigation/widgets/custom_container_with_border.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
+import 'package:e_hailing_app/presentations/profile/model/review_model.dart';
+import 'package:e_hailing_app/presentations/profile/widgets/review_card_widget.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -50,10 +55,10 @@ class TripDetailsPage extends StatelessWidget {
                 spacing: 12.h,
                 children: [
                   CarDetailsCardWidget(
-                    onTap:() {
 
-                    },
-                    fare: double.parse((trip.estimatedFare ?? 0).toString()).toInt(),
+                    fare: double
+                        .parse((trip.estimatedFare ?? 0).toString())
+                        .toInt(),
                   ),
 
                   Container(
@@ -85,7 +90,8 @@ class TripDetailsPage extends StatelessWidget {
                                 children: [
                                   CustomNetworkImage(
                                     imageUrl:
-                                        "${ApiService().baseUrl}/${trip.driver?.profileImage}",
+                                    "${ApiService().baseUrl}/${trip.driver
+                                        ?.profileImage}",
                                     height: 42,
                                     width: 42,
                                     boxShape: BoxShape.circle,
@@ -99,21 +105,22 @@ class TripDetailsPage extends StatelessWidget {
                                 children: [
                                   CustomText(
                                     text:
-                                        trip.driver?.name ??
+                                    trip.driver?.name ??
                                         AppStaticStrings.noDataFound,
                                     style: poppinsBold,
                                     fontSize: getFontSizeDefault(),
                                   ),
                                   CustomText(
                                     text:
-                                        trip.driver?.email ??
+                                    trip.driver?.email ??
                                         AppStaticStrings.noDataFound,
                                     style: poppinsRegular,
                                     fontSize: getFontSizeSmall(),
                                   ),
                                   CustomText(
                                     text:
-                                        'Phone : ${trip.driver?.phoneNumber ?? AppStaticStrings.noDataFound}',
+                                    'Phone : ${trip.driver?.phoneNumber ??
+                                        AppStaticStrings.noDataFound}',
                                     style: poppinsRegular,
                                     fontSize: getFontSizeSmall(),
                                     color: AppColors.kLightBlackColor,
@@ -134,40 +141,108 @@ class TripDetailsPage extends StatelessWidget {
                           child: Column(
                             spacing: 6.h,
                             children: [
-                              CarInformationWidget(
-                                title: AppStaticStrings.carType,
-                                value:
-                                    trip.driver?.assignedCar?.type ??
-                                    AppStaticStrings.noDataFound,
-                              ),
-                              CarInformationWidget(
-                                title: AppStaticStrings.carColor,
-                                value:
-                                    trip.driver?.assignedCar?.color ??
-                                    AppStaticStrings.noDataFound,
-                              ),
-                              CarInformationWidget(
-                                title: AppStaticStrings.carNumber,
-                                value:
-                                    trip.driver?.assignedCar?.carNumber ??
-                                    AppStaticStrings.noDataFound,
-                              ),
-                              CarInformationWidget(
-                                title: AppStaticStrings.carSeat,
-                                value: '4 Seats',
-                              ),
-                              CarInformationWidget(
-                                title: AppStaticStrings.evpNumber,
-                                value:
-                                    trip.driver?.assignedCar?.evpNumber ??
-                                    AppStaticStrings.noDataFound,
-                              ),
-                              CarInformationWidget(
-                                title: AppStaticStrings.evpValidityPeriod,
-                                value:
-                                    trip.driver?.assignedCar?.evpExpiry ??
-                                    AppStaticStrings.noDataFound,
-                              ),
+                              DynamicTabWidget(
+                                  tabs: HomeController.to.tripDetailsTabs,
+                                  tabContent: [
+                                    Column(
+                                      children: [
+                                        CarInformationWidget(
+                                          title: AppStaticStrings.carType,
+                                          value:
+                                          trip.driver?.assignedCar?.type ??
+                                              AppStaticStrings.noDataFound,
+                                        ),
+                                        CarInformationWidget(
+                                          title: AppStaticStrings.carColor,
+                                          value:
+                                          trip.driver?.assignedCar?.color ??
+                                              AppStaticStrings.noDataFound,
+                                        ),
+                                        CarInformationWidget(
+                                          title: AppStaticStrings.carNumber,
+                                          value:
+                                          trip.driver?.assignedCar?.carNumber ??
+                                              AppStaticStrings.noDataFound,
+                                        ),
+                                        CarInformationWidget(
+                                          title: AppStaticStrings.carSeat,
+                                          value: '4 Seats',
+                                        ),
+                                        CarInformationWidget(
+                                          title: AppStaticStrings.evpNumber,
+                                          value:
+                                          trip.driver?.assignedCar?.evpNumber ??
+                                              AppStaticStrings.noDataFound,
+                                        ),
+                                        CarInformationWidget(
+                                          title: AppStaticStrings
+                                              .evpValidityPeriod,
+                                          value:
+                                          trip.driver?.assignedCar?.evpExpiry ??
+                                              AppStaticStrings.noDataFound,
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Container(
+
+                                          decoration: BoxDecoration(boxShadow: [
+                                            BoxShadow(
+                                              color: AppColors.kPrimaryColor
+                                                  .withValues(
+                                                alpha: .2,
+                                              ),
+                                              blurRadius: 8.r,
+                                            ),
+                                          ], color: AppColors.kWhiteColor,
+                                            borderRadius: BorderRadius.circular(
+                                                8.r),),
+                                          width: double.infinity,
+                                          padding: padding12,
+                                          child: Column(children: [
+
+                                            CustomText(
+                                              text: "${AppStaticStrings
+                                                  .avgRating} (${trip.driver!
+                                                  .rating ?? 0})",
+                                              style: poppinsBold,),
+                                            RatingBarIndicator(
+                                              rating: (trip.driver!.rating ?? 0)
+                                                  .toDouble(),
+                                              // pass your rating value here (e.g. 3.5)
+                                              itemBuilder: (context, index) =>
+                                              const Icon(
+                                                Icons.star_rate_rounded,
+                                                color: Colors.amber,
+                                              ),
+                                              itemCount: 5,
+                                              // total stars
+                                              itemSize: 30.0,
+                                              // star size
+                                              direction: Axis.horizontal,
+                                            ),
+                                            Obx(() {
+                                              return SingleChildScrollView(
+                                               scrollDirection: Axis.horizontal,
+                                                child: Row(
+                                                  children: List.generate(
+                                                    CommonController.to.reviewList
+                                                        .length, (index) =>
+                                                      SizedBox( width: ScreenUtil().screenWidth / 1.5,
+                                                        child: ReviewCardWidget(
+                                                          reviewModel: CommonController
+                                                              .to
+                                                              .reviewList[index],),
+                                                      ),),),
+                                              );
+                                            })
+                                          ],),
+                                        )
+                                      ],
+                                    )
+                                  ]),
+
                               space6H,
                               CustomTimeline(
                                 padding: EdgeInsets.zero,
@@ -197,41 +272,41 @@ class TripDetailsPage extends StatelessWidget {
                   ),
                   trip.driver != null
                       ? RowCallChatDetailsButton(
-                        phoneNumber: trip.driver?.phoneNumber,
-                        userId: trip.driver!.sId.toString(),
-                      )
+                    phoneNumber: trip.driver?.phoneNumber,
+                    userId: trip.driver!.sId.toString(),
+                  )
                       : SizedBox.shrink(),
                   trip.status == DriverTripStatus.destination_reached.name
                       ? CustomButton(
-                        onTap: () {
-                          Get.toNamed(
-                            PaymentPage.routeName,
-                            arguments: {"user": trip, "role": user},
-                          );
-                        },
-                        title: AppStaticStrings.payment,
-                      )
+                    onTap: () {
+                      Get.toNamed(
+                        PaymentPage.routeName,
+                        arguments: {"user": trip, "role": user},
+                      );
+                    },
+                    title: AppStaticStrings.payment,
+                  )
                       : Obx(() {
-                        return CancelTripButtonWidget(
-                          isLoading: HomeController.to.isCancellingTrip.value,
-                          onSubmit: () {
-                            if (HomeController.to.cancelReason.isEmpty) {
-                              showCustomSnackbar(
-                                title: "Field Required",
-                                message: "Need to select the reason",
-                              );
-                            } else {
-                              HomeController.to.updateUserTrip(
-                                tripId: trip.sId.toString(),
-                                status:
-                                    DriverTripStatus.cancelled.name.toString(),
-                                reason: HomeController.to.cancelReason,
-                              );
-                              Get.back();
-                            }
-                          },
-                        );
-                      }),
+                    return CancelTripButtonWidget(
+                      isLoading: HomeController.to.isCancellingTrip.value,
+                      onSubmit: () {
+                        if (HomeController.to.cancelReason.isEmpty) {
+                          showCustomSnackbar(
+                            title: "Field Required",
+                            message: "Need to select the reason",
+                          );
+                        } else {
+                          HomeController.to.updateUserTrip(
+                            tripId: trip.sId.toString(),
+                            status:
+                            DriverTripStatus.cancelled.name.toString(),
+                            reason: HomeController.to.cancelReason,
+                          );
+                          Get.back();
+                        }
+                      },
+                    );
+                  }),
                 ],
               );
             }),
@@ -241,3 +316,4 @@ class TripDetailsPage extends StatelessWidget {
     );
   }
 }
+

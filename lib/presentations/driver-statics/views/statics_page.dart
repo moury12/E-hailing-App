@@ -4,6 +4,7 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-statics/controllers/statics_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class StaticsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final tabs = StaticsController.to.tabLabels;
 
-    return ComingSoonWidget()  /*DefaultTabController(
+    return /*ComingSoonWidget()*/  DefaultTabController(
 
 
       length: tabs.length,
@@ -29,6 +30,16 @@ class StaticsPage extends StatelessWidget {
             children: [
 
               DynamicTabWidget(
+                onTabChanged: (value) {
+                  switch(value){
+                    case 0:
+                      StaticsController.to.getDriverStaticsRequest(filter: today);
+                    case 1:
+                    StaticsController.to.getDriverStaticsRequest(filter: thisWeek);
+                    case 2:
+                      StaticsController.to.getDriverStaticsRequest(filter: thisMonth);
+                  }
+                },
                 tabs: tabs,
                 tabContent: [
                   StaticsGridViewWidget(),
@@ -40,7 +51,7 @@ class StaticsPage extends StatelessWidget {
           ),
         ),
       ),
-    )*/;
+    );
   }
 }
 

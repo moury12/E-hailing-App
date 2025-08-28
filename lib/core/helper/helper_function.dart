@@ -492,9 +492,13 @@ void callOnPhone({required String phoneNumber}) async {
   }
 }
 
-void showHandCashDialogs({required String carId}) {
+void showRatingDialogs({required String carId}) {
   Get.dialog(
     RattingDialogWidget(carID: carId,),
     barrierDismissible: false,
-  );
+  ).then((_) {
+    // Called when the dialog is popped
+    Boxes.getRattingData().delete("rating");
+  });
+
 }
