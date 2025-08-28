@@ -52,7 +52,7 @@ class HomeController extends GetxController {
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
   RxString tripType = "ride".obs;
-
+RxList<String> tripDetailsTabs= ["Car info", "Driver Reviews"].obs;
   RxBool isCancellingTrip = false.obs;
 
   RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;
@@ -80,6 +80,7 @@ TextEditingController promoCode=TextEditingController();
 
   @override
   void onInit() async {
+
     initializeSocket();
     await getUserCurrentTrip();
 
@@ -145,6 +146,8 @@ TextEditingController promoCode=TextEditingController();
       if (response['success'] == true) {
         logger.d(response);
         showCustomSnackbar(title: 'Success', message: response['message']);
+        // Boxes.getRattingData().delete("rating");
+        Get.back();
       } else {
         logger.e(response);
 
@@ -213,7 +216,6 @@ TextEditingController promoCode=TextEditingController();
     socket.off(TripEvents.tripAccepted);
     socket.off(TripEvents.tripDriverLocationUpdate);
     socket.off(TripEvents.tripUpdateStatus);
-
     // Now re-register
     socket.on(TripEvents.tripRequested, (data) {
       logger.d('🚕 tripRequested: $data');
@@ -253,6 +255,8 @@ TextEditingController promoCode=TextEditingController();
         Get.back();
       }
       tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
+      CommonController.to.getReviewListRequest(driverId: tripAcceptedModel.value.driver!.sId.toString());
+
       polyLineShow();
 
       Get.offAndToNamed(TripDetailsPage.routeName);
@@ -270,7 +274,7 @@ TextEditingController promoCode=TextEditingController();
       logger.d('🔄 Trip status update:');
       logger.d(data);
       if (data['success']) {
-        showCustomSnackbar(title: "Trip Status", message: data['message']);
+        // showCustomSnackbar(title: "Trip Status", message: data['message']);
         tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
         driverStatus.value = data['message'];
         HomeController.to.showTripDetailsCard.value = true;
@@ -284,7 +288,8 @@ TextEditingController promoCode=TextEditingController();
             arguments: {'reconnectSocket': true},
           );
           if(status == DriverTripStatus.completed.name){
-            showHandCashDialogs(carId: tripAcceptedModel.value.driver!.assignedCar!.sId.toString());
+            Boxes.getRattingData().put("rating", tripAcceptedModel.value.driver!.assignedCar!.sId.toString());
+            showRatingDialogs(carId: tripAcceptedModel.value.driver!.assignedCar!.sId.toString());
           }
           for (TripCancellationModel cancel in tripCancellationList) {
             cancel.isChecked.value = false;
@@ -493,6 +498,8 @@ TextEditingController promoCode=TextEditingController();
         tripAcceptedModel.value = TripResponseModel.fromJson(response['data']);
         driverStatus.value = tripAcceptedModel.value.status.toString();
         updateDriverLocation();
+        CommonController.to.getReviewListRequest(driverId: tripAcceptedModel.value.driver!.sId.toString());
+
       } else {
         isLoadingUserCurrentTrip.value = false;
 

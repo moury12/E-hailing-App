@@ -53,7 +53,10 @@ class DashBoardController extends GetxController {
   @override
   void onInit() async {
     initializeSocket();
-    await getDriverCurrentTripRequest();
+   await Future.wait(
+        [getDriverCurrentTripRequest() ,
+        ]
+    );
 
     super.onInit();
   }
@@ -281,6 +284,7 @@ class DashBoardController extends GetxController {
 
     }
   }
+
 
   Future<void> drawPolylineMethod() async {
     final trip = currentTrip.value;

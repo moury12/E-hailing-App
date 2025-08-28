@@ -77,6 +77,7 @@ class AppStaticStrings {
 
   // More
   static const String more = 'More';
+  static const String avgRating = 'Average Rating';
   static const String helpServiceAvailable = 'Our help line service is active: 24/7';
   static const String pendingPenalty = 'Pending Penalty';
   static const String feedback = 'Feedback / Contact';

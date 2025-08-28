@@ -2,11 +2,12 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
-import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/driver-statics/controllers/statics_controller.dart';
 import 'package:e_hailing_app/presentations/driver-statics/model/StaticModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import '../../../core/constants/padding_constant.dart';
 
@@ -15,18 +16,23 @@ class StaticsGridViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      primary: false,
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 180.w,
-        crossAxisSpacing: 8.w,
-        mainAxisSpacing: 8.w,
-      ),
-      itemBuilder:
-          (context, index) => StaticsCardItemWidget(static: staticList[index]),
-      itemCount: staticList.length,
-    );
+    return Obx(() {
+      return
+        GridView.builder(
+        shrinkWrap: true,
+        primary: false,
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 180.w,
+          crossAxisSpacing: 8.w,
+          mainAxisSpacing: 8.w,
+        ),
+        itemBuilder:
+            (context, index) =>
+            StaticsCardItemWidget(
+                static: StaticsController.to.staticList[index]),
+        itemCount: StaticsController.to.staticList.length,
+      );
+    });
   }
 }
 
