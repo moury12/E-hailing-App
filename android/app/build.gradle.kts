@@ -33,7 +33,7 @@ android {
 
     defaultConfig {
         applicationId = "com.dudu.android.app"
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = 36 // or flutter.targetSdkVersion
         versionCode = 1 // or flutter.versionCode
         versionName = "1.0" // or flutter.versionName

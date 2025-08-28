@@ -1,5 +1,6 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/components/tab-bar/dynamic_tab_widget.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
@@ -9,10 +10,12 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
+import 'package:e_hailing_app/presentations/profile/views/driver_review_list_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/edit_profile_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/pdf_viewer_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -26,94 +29,6 @@ class AccountInformationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AccountInformationController.to.tabContent.add(
-      Obx(() {
-        return ProfileInfoListWidget(
-          userModel: AccountInformationController.to.userModel.value,
-        );
-      }),
-    );
-    AccountInformationController.to.tabContent.add(
-      Obx(() {
-        return Column(
-          spacing: 12.h,
-          children: [
-            ProfileCardItemWidget(
-              title: AppStaticStrings.nationalIdPassport,
-              value:
-                  AccountInformationController.to.userModel.value.idOrPassportNo ??
-                  AppStaticStrings.noDataFound,
-            ),
-            ProfileCardItemWidget(
-              title: AppStaticStrings.drivingLicense,
-              value:
-                  AccountInformationController.to.userModel.value.drivingLicenseNo ??
-                  AppStaticStrings.noDataFound,
-            ),
-            ProfileCardItemWidget(
-              title: AppStaticStrings.licenseType,
-              value:
-                  AccountInformationController.to.userModel.value.licenseType ??
-                  AppStaticStrings.noDataFound,
-            ),
-            ProfileCardItemWidget(
-              title: AppStaticStrings.licenseExpire,
-              value:
-                  AccountInformationController.to.userModel.value.licenseExpiry ??
-                  AppStaticStrings.noDataFound,
-            ),
-            // ProfileCardItemWidget(
-            //   title: AppStaticStrings.evpNumber,
-            //   value: AccountInformationController.to.userModel.value. ??
-            //       AppStaticStrings.noDataFound,
-            // ),
-            // ProfileCardItemWidget(
-            //   title: AppStaticStrings.evpValidityPeriod,
-            //   value: 'Juvenal Ridge, Port Vestach',
-            // ),
-          ],
-        );
-      }),
-    );
-    AccountInformationController.to.tabContent.add(
-      SizedBox(
-        width: ScreenUtil().screenWidth,
-        child: Obx(() {
-          return Column(
-            spacing: 8.h,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomText(text: AppStaticStrings.drivingLicense),
-              CustomNetworkImage(
-                isImagePreview: true,
-                imageUrl:
-                    "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.drivingLicenseImage}",
-                width: 150.w,
-                height: 150.w,
-              ),
-              CustomText(text: AppStaticStrings.nationalIdPassport),
-              CustomNetworkImage(
-                isImagePreview: true,
-                imageUrl:
-                    "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.idOrPassportImage}",
-                width: 150.w,
-                height: 150.w,
-              ),
-              CustomText(text: AppStaticStrings.eHailingVehiclePermit),
-            // ${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.assignedCar?.eHailingVehiclePermitPdf}
-            GestureDetector(
-              onTap: () {
-                Get.to(()=>PdfViewerPage());
-              },
-              child: Image.asset("assets/icons/pdf_placeholder.png",  width: 150.w,
-                height: 150.w,),
-            )
-            ],
-
-          );
-        }),
-      ),
-    );
     return Scaffold(
       appBar: CustomAppBar(
         title: AppStaticStrings.profile,
@@ -145,7 +60,8 @@ class AccountInformationPage extends StatelessWidget {
                     Obx(() {
                       return CustomNetworkImage(
                         imageUrl:
-                            "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.img}",
+                        "${ApiService().baseUrl}/${AccountInformationController
+                            .to.userModel.value.img}",
                         height: 100.w,
                         width: 100.w,
                         boxShape: BoxShape.circle,
@@ -154,7 +70,7 @@ class AccountInformationPage extends StatelessWidget {
                     Obx(() {
                       return CustomText(
                         text:
-                            AccountInformationController.to.userModel.value.name ??
+                        AccountInformationController.to.userModel.value.name ??
                             AppStaticStrings.noDataFound,
                         style: poppinsSemiBold,
                         fontSize: getFontSizeExtraLarge(),
@@ -162,41 +78,157 @@ class AccountInformationPage extends StatelessWidget {
                     }),
                     CommonController.to.isDriver.value
                         ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          // spacing: 6.w,
-                          children: [
-                            ...List.generate(
-                              5,
-                              (index) => Icon(
-                                Icons.star_rounded,
-                                color: AppColors.kYellowColor,
-                              ),
-                            ),
-                            CustomText(
-                              text: '4.8',
-                              style: poppinsSemiBold,
-                              fontSize: getFontSizeSmall(),
-                            ),
-                            CustomText(
-                              text: '(125 reviews)',
-                              style: poppinsRegular,
-                              fontSize: getFontSizeSmall(),
-                              color: AppColors.kExtraLightTextColor,
-                            ),
-                          ],
-                        )
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      // spacing: 6.w,
+                      children: [
+                        Obx(() {
+                          return RatingBarIndicator(
+                            itemSize: 20.sp,
+                            itemBuilder: (context, index) =>
+                                Icon(Icons.star_rate_rounded,
+                                  color: Colors.amber,),
+                            rating: CommonController.to.driverRating.value,
+
+                          );
+                        }),
+                        Obx(() {
+                          return CustomText(
+                            text: CommonController.to.driverRating.value
+                                .toString(),
+                            style: poppinsSemiBold,
+                            fontSize: getFontSizeSmall(),
+                          );
+                        }),
+                        ButtonTapWidget(
+                         onTap: () {
+Get.to(DriverReviewListPage());
+                         },
+                          child: Padding(
+                            padding: padding8,
+                            child: Obx(() {
+                              return CustomText(
+                                text: '(${CommonController.to.reviewList
+                                    .length} reviews)',
+                                style: poppinsRegular,
+                                fontSize: getFontSizeSmall(),
+                                color: AppColors.kExtraLightTextColor,
+                              );
+                            }),
+                          ),
+                        ),
+                      ],
+                    )
                         : SizedBox.shrink(),
                     CommonController.to.isDriver.value
                         ? DynamicTabWidget(
-                          tabs: AccountInformationController.to.tabs,
-                          tabContent:
-                              AccountInformationController.to.tabContent,
-                        )
+                        tabs: AccountInformationController.to.tabs,
+                        tabContent: [
+                          Obx(() {
+                            return ProfileInfoListWidget(
+                              userModel: AccountInformationController.to
+                                  .userModel.value,
+                            );
+                          }),
+                          Obx(() {
+                            return Column(
+                              spacing: 12.h,
+                              children: [
+                                ProfileCardItemWidget(
+                                  title: AppStaticStrings.nationalIdPassport,
+                                  value:
+                                  AccountInformationController.to.userModel
+                                      .value.idOrPassportNo ??
+                                      AppStaticStrings.noDataFound,
+                                ),
+                                ProfileCardItemWidget(
+                                  title: AppStaticStrings.drivingLicense,
+                                  value:
+                                  AccountInformationController.to.userModel
+                                      .value.drivingLicenseNo ??
+                                      AppStaticStrings.noDataFound,
+                                ),
+                                ProfileCardItemWidget(
+                                  title: AppStaticStrings.licenseType,
+                                  value:
+                                  AccountInformationController.to.userModel
+                                      .value.licenseType ??
+                                      AppStaticStrings.noDataFound,
+                                ),
+                                ProfileCardItemWidget(
+                                  title: AppStaticStrings.licenseExpire,
+                                  value:
+                                  AccountInformationController.to.userModel
+                                      .value.licenseExpiry ??
+                                      AppStaticStrings.noDataFound,
+                                ),
+                                // ProfileCardItemWidget(
+                                //   title: AppStaticStrings.evpNumber,
+                                //   value: AccountInformationController.to.userModel.value. ??
+                                //       AppStaticStrings.noDataFound,
+                                // ),
+                                // ProfileCardItemWidget(
+                                //   title: AppStaticStrings.evpValidityPeriod,
+                                //   value: 'Juvenal Ridge, Port Vestach',
+                                // ),
+                              ],
+                            );
+                          }),
+                          SizedBox(
+                            width: ScreenUtil().screenWidth,
+                            child: Obx(() {
+                              return Column(
+                                spacing: 8.h,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                      text: AppStaticStrings.drivingLicense),
+                                  CustomNetworkImage(
+                                    isImagePreview: true,
+                                    imageUrl:
+                                    "${ApiService()
+                                        .baseUrl}/${AccountInformationController
+                                        .to
+                                        .userModel.value.drivingLicenseImage}",
+                                    width: 150.w,
+                                    height: 150.w,
+                                  ),
+                                  CustomText(text: AppStaticStrings
+                                      .nationalIdPassport),
+                                  CustomNetworkImage(
+                                    isImagePreview: true,
+                                    imageUrl:
+                                    "${ApiService()
+                                        .baseUrl}/${AccountInformationController
+                                        .to
+                                        .userModel.value.idOrPassportImage}",
+                                    width: 150.w,
+                                    height: 150.w,
+                                  ),
+                                  CustomText(text: AppStaticStrings
+                                      .eHailingVehiclePermit),
+                                  // ${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.assignedCar?.eHailingVehiclePermitPdf}
+                                  GestureDetector(
+                                    onTap: () {
+                                      Get.to(() => PdfViewerPage());
+                                    },
+                                    child: Image.asset(
+                                      "assets/icons/pdf_placeholder.png",
+                                      width: 150.w,
+                                      height: 150.w,),
+                                  )
+                                ],
+
+                              );
+                            }),
+                          ),
+                        ]
+                    )
                         : Obx(() {
-                          return ProfileInfoListWidget(
-                            userModel: AccountInformationController.to.userModel.value,
-                          );
-                        }),
+                      return ProfileInfoListWidget(
+                        userModel: AccountInformationController.to.userModel
+                            .value,
+                      );
+                    }),
                   ],
                 ),
               ),

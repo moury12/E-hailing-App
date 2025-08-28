@@ -1,5 +1,7 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
@@ -12,6 +14,7 @@ import '../../../core/components/custom_button_tap.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
+import '../../../core/utils/variables.dart';
 import '../../home/widgets/google_map_widget.dart';
 import '../controllers/navigation_controller.dart';
 import '../widgets/nav_item_widget.dart';
@@ -37,6 +40,15 @@ class _NavigationPageState extends State<NavigationPage>
         CommonController.to.isDriver.value
             ? GoogleMapWidgetForDriver()
             : GoogleMapWidgetForRider();
+    // logger.i(Boxes.getRattingData().get("rating"));
+
+    if (!CommonController.to.isDriver.value &&
+        Boxes.getRattingData().get("rating") != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showRatingDialogs(
+          carId: Boxes.getRattingData().get("rating"),
+        );
+      });}
   }
   PreferredSizeWidget? getAppBar(int currentIndex) {
     if (currentIndex == 1) return CustomAppBar(title: AppStaticStrings.myRides);
