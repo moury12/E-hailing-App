@@ -41,7 +41,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
     // Fallback/default values
     String driverName = 'Unknown Driver';
     String driverImage = dummyProfileImage;
-    String rating = '5.0';
+    String rating = '0.0';
     String cost = 'RM 0';
     String distance = '0 km';
     String dateTime = 'N/A';
@@ -69,6 +69,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
               ? model.user?.name.toString()
               : model.driver?.name.toString()) ??
               AppStaticStrings.noDataFound;
+      rating=model.driver!.rating.toString();
       driverImage =
       model.driver?.profileImage != null
           ? "${ApiService().baseUrl}/${(isDriver ? model.user?.profileImage
@@ -123,6 +124,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
                       fontSize: getFontSizeDefault(),
                     ),
                     RatingInfoWidget(rating: rating),
+                    // !isDriver?RatingInfoWidget(rating: rating):SizedBox.shrink(),
                   ],
                 ),
               ),

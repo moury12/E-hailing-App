@@ -58,6 +58,7 @@ RxString contactNumber="".obs;
     ]);
     if(CommonController.to.isDriver.value){
       loadPdf();
+      CommonController.to.getReviewListRequest(driverId: userModel.value.sId.toString());
     }
     super.onInit();
   }
