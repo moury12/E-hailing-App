@@ -149,7 +149,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           if (isDriver && isOngoin)
             Obx(() {
               return CancelTripButtonWidget(
-                isLoading: DashBoardController.to.isCancellingTrip.value,
+                // isLoading: DashBoardController.to.isCancellingTrip.value,
                 onSubmit: () {
                   if (DashBoardController.to.cancelReason.isEmpty) {
                     showCustomSnackbar(

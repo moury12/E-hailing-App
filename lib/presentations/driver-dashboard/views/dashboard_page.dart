@@ -160,7 +160,7 @@ class _DashboardPageState extends State<DashboardPage>
                                 ),
                                 distance: availableTrip.distance.toString(),
                                 fromAddress: availableTrip.pickUpAddress,
-                                rideType: AppStaticStrings.rideReq,
+                                rideType:availableTrip.tripType,
                                 toAddress: availableTrip.dropOffAddress,
                               )
                               : DashBoardController.to.afterAccepted.value ||

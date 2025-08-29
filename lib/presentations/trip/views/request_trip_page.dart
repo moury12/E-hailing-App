@@ -1,10 +1,12 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
+import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
+import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
@@ -13,16 +15,23 @@ import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_wi
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constants/fontsize_constant.dart';
 import '../../../core/constants/text_style_constant.dart';
 
-class RequestTripPage extends StatelessWidget {
+class RequestTripPage extends StatefulWidget {
   static const String routeName = '/request-trip';
 
   const RequestTripPage({super.key});
 
+  @override
+  State<RequestTripPage> createState() => _RequestTripPageState();
+}
+
+class _RequestTripPageState extends State<RequestTripPage> {
+  TextEditingController dateTimeController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> args =
@@ -110,6 +119,26 @@ class RequestTripPage extends StatelessWidget {
                 //   child: SvgPicture.asset(calenderIcon),
                 // ),
               ),
+             Obx(() {
+               return    HomeController.to.tripType.value == "pre_book"?  ButtonTapWidget(
+                 onTap: () async{
+              String? time= await pickDateTime(context);
+              dateTimeController.text=time??"";
+                 },
+                 child: CustomTextField(borderColor: AppColors.kGreyColor,isRequired: true,
+                   textEditingController: dateTimeController,
+                   fillColor: AppColors.kWhiteColor,
+                   borderRadius: 24.r,
+                   isEnable: false,
+                   hintText: "Select Date Time",
+                   title: AppStaticStrings.pickTime,
+                    prefixIcon: Padding(
+                      padding: padding14,
+                      child: SvgPicture.asset(calenderIcon),
+                    ),
+                  ),
+               ):SizedBox.shrink();
+              }),
               CustomTextField(
                 isEnable: false,
                 isRequired: true,
@@ -170,15 +199,22 @@ class RequestTripPage extends StatelessWidget {
               CustomButton(
                 onTap: () {
                   HomeController.to.tripArgs.addAll({
-                    "paymentType": HomeController.to.selectedPaymentMethod.value,
+                    "paymentType": HomeController.to.selectedPaymentMethod
+                        .value,
                     "coupon": HomeController.to.promoCode.text,
+                    if( HomeController.to.tripType.value == "pre_book")
+                      "pickUpDate":dateTimeController.text
                   });
 
                   // logger.d(args);
-                  if (args.isNotEmpty&&HomeController.to.selectedPaymentMethod.value!=null) {
+                  if (args.isNotEmpty &&
+                      HomeController.to.selectedPaymentMethod.value != null &&(HomeController.to.tripType.value != "pre_book" ||
+                      dateTimeController.text.isNotEmpty)) {
                     HomeController.to.requestTrip(body: args);
-                  }else{
-                    showCustomSnackbar(title: "Alert", message: "This field are required",type: SnackBarType.alert);
+                  } else {
+                    showCustomSnackbar(title: "Alert",
+                        message: "This field are required",
+                        type: SnackBarType.alert);
                   }
                 },
                 title: AppStaticStrings.confirm,

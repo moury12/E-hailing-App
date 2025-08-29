@@ -22,7 +22,7 @@ class CoinContainerWidget extends StatelessWidget {
       ),
 
       child: Padding(
-        padding: paddingH16V6,
+        padding: paddingH12V6,
         child: Row(
           spacing: 12.w,
           children: [SvgPicture.asset(coinIcon), CustomText(text: coin ?? "0")],

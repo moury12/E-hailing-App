@@ -261,10 +261,10 @@ class TripRequestLoadingWidget extends StatelessWidget {
                 DriverTripStatus.cancelled.name.toString(),
                 reason: HomeController.to.cancelReason,
               );
-              Get.back();
+
             }
           },
-isLoading: HomeController.to.isCancellingTrip.value,
+ isLoading: HomeController.to.isCancellingTrip,
           )
         ],
       ),

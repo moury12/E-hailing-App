@@ -20,7 +20,7 @@ class MyRideController extends GetxController {
   final RxInt itemsProductPerPage = 5.obs;
   final RxInt totalProductPages = 5.obs;
   final RxBool isProductLoadingMore = false.obs;
-  RxString rideStatus = "completed".obs;
+
   RxList<String> tabLabels =
       [
         AppStaticStrings.ongoing,
@@ -37,24 +37,30 @@ class MyRideController extends GetxController {
   }
 
   void initPaging() {
-    pagingController.addPageRequestListener((pageKey) {
+    pagingControllerForCompletedTrip.addPageRequestListener((pageKey) {
       if (!isAllTripLoading.value) {
-        getAllRideRequest(pageKey: pageKey);
+        getAllRideRequest(pageKey: pageKey,rideStatus: "completed");
+      }
+    });pagingControllerForUpcomingTrip.addPageRequestListener((pageKey) {
+      if (!isAllTripLoading.value) {
+        getAllRideRequest(pageKey: pageKey,rideStatus: "accepted",tripType: "pre_book");
       }
     });
   }
 
   void initializeData() {
-    if (pagingController.itemList == null ||
-        pagingController.itemList!.isEmpty) {
-      pagingController.refresh();
+    if (pagingControllerForCompletedTrip.itemList == null ||
+        pagingControllerForCompletedTrip.itemList!.isEmpty) {
+      pagingControllerForCompletedTrip.refresh();
     }
   }
 
-  final PagingController<int, TripResponseModel> pagingController =
+  final PagingController<int, TripResponseModel> pagingControllerForCompletedTrip =
+      PagingController(firstPageKey: 1);
+  final PagingController<int, TripResponseModel> pagingControllerForUpcomingTrip =
       PagingController(firstPageKey: 1);
 
-  Future<void> getAllRideRequest({required int pageKey}) async {
+  Future<void> getAllRideRequest({required int pageKey, String? tripType,String? rideStatus}) async {
     if (isAllTripLoading.value) return;
     isAllTripLoading.value = true;
 
@@ -67,9 +73,11 @@ class MyRideController extends GetxController {
         queryParams: {
           'page': pageKey.toString(),
           'limit': "5",
-          'status': rideStatus.value,
+         if(rideStatus!=null) 'status': rideStatus,
+         if(tripType!=null) 'tripType':tripType
         },
       );
+     PagingController<int, TripResponseModel> pageController=rideStatus=="completed"? pagingControllerForCompletedTrip:pagingControllerForUpcomingTrip;
 logger.d(response);
       if (response['success'] == true) {
         final newItems =
@@ -80,13 +88,13 @@ logger.d(response);
         // logger.d(newItems.length);
 
         if (newItems.isEmpty) {
-          pagingController.appendLastPage(newItems);
+          pageController.appendLastPage(newItems);
         } else {
           final nextPageKey = pageKey + 1;
-          pagingController.appendPage(newItems, nextPageKey);
+          pageController.appendPage(newItems, nextPageKey);
         }
       } else {
-        pagingController.error = 'Error fetching data';
+        pageController.error = 'Error fetching data';
 
         logger.e(response);
         if (kDebugMode) {
@@ -99,7 +107,7 @@ logger.d(response);
       }
     } catch (e) {
       logger.e(e.toString());
-      pagingController.error = 'An error occurred';
+
     } finally {
       isAllTripLoading.value = false;
     }

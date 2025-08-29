@@ -234,7 +234,7 @@ class AppStaticStrings {
   static const String pickupLocation = 'Pickup Location';
   static const String dropLocation = 'Drop Location';
   static const String tripDate = 'Trip Date';
-  static const String pickTime = 'Pick Time';
+  static const String pickTime = 'Pick Date Time';
   static const String addMoreCoin = 'Add More Coin';
   static const String additionalNote = 'Additional Note';
   static const String loremIpsumText =

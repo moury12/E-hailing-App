@@ -40,7 +40,7 @@ class RideRequestCardWidget extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: CustomText(text: rideType ?? AppStaticStrings.preBookRide),
+              child: CustomText(text: "$rideType Request"),
             ),
             Expanded(
               flex: 2,

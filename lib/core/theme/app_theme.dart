@@ -14,6 +14,39 @@ class AppTheme {
       drawerTheme: DrawerThemeData(
         backgroundColor: AppColors.kWhiteColor,
       ),
+      timePickerTheme: TimePickerThemeData(backgroundColor:AppColors.kWhiteColor,
+        dialBackgroundColor: Colors.deepPurple.shade50,
+        dialHandColor: AppColors.kPrimaryColor,
+        dialTextColor: Colors.black,
+        hourMinuteTextColor: AppColors.kPrimaryColor,
+        entryModeIconColor: AppColors.kPrimaryColor,
+      ),
+      colorScheme: ColorScheme.light(
+        primary: AppColors.kPrimaryColor,
+        onPrimary: AppColors.kWhiteColor,
+        onSurface: Colors.black,
+      ),
+      datePickerTheme: DatePickerThemeData(
+
+        backgroundColor: AppColors.kWhiteColor,      // Dialog background
+        headerBackgroundColor: AppColors.kPrimaryColor, // ✅ Header color
+        headerForegroundColor: AppColors.kWhiteColor,            // ✅ Header text
+        weekdayStyle: TextStyle(color: AppColors.kPrimaryColor), // Weekday labels
+        dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.kWhiteColor; // Selected day text color
+          }
+          return Colors.black;
+        }),
+        dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.kPrimaryColor; // ✅ Selected day background
+          }
+          return Colors.transparent;
+        }),
+
+        ),
+
       popupMenuTheme: PopupMenuThemeData(
           surfaceTintColor: AppColors.kWhiteColor,
           color: AppColors.kWhiteColor),
@@ -46,7 +79,7 @@ class AppTheme {
           width: 2, // Border width
         ),
         checkColor: WidgetStateProperty.resolveWith(
-          (states) => Colors.white, // Checkmark color
+          (states) => AppColors.kWhiteColor, // Checkmark color
         ),
         fillColor: WidgetStateProperty.resolveWith(
           (states) {

@@ -62,21 +62,21 @@ class RowCallChatDetailsButton extends StatelessWidget {
         ),
         showLastButton == true
             ? Expanded(
-              child: CustomButton(
-                padding: padding8,
+          child: CustomButton(
+            padding: padding8,
 
-                onTap:
-                    onTap ??
+            onTap:
+            onTap ??
                     () {
-                      HomeController.to.updatePreviousRoute(Get.currentRoute);
-                      Get.toNamed(
-                        NavigationPage.routeName,
-                        arguments: pickupDestination,
-                      );
-                    },
-                title: lastItemName ?? AppStaticStrings.track,
-              ),
-            )
+                  HomeController.to.updatePreviousRoute(Get.currentRoute);
+                  Get.toNamed(
+                    NavigationPage.routeName,
+                    arguments: pickupDestination,
+                  );
+                },
+            title: lastItemName ?? AppStaticStrings.track,
+          ),
+        )
             : SizedBox.shrink(),
       ],
     );
@@ -85,17 +85,22 @@ class RowCallChatDetailsButton extends StatelessWidget {
 
 class CancelTripButtonWidget extends StatelessWidget {
   final Function()? onSubmit;
-  final bool? isLoading;
+  final RxBool? isLoading;
 
-  const CancelTripButtonWidget({super.key, this.onSubmit, this.isLoading});
+  const CancelTripButtonWidget(
+      {super.key, this.onSubmit,  this.isLoading});
 
   @override
   Widget build(BuildContext context) {
-    return CustomButton(
-      onTap: () {
-        tripCancellationDialog(onSubmit: onSubmit);
-      },
-      title:isLoading==true?AppStaticStrings.tripLoading: AppStaticStrings.cancelTrip,
-    );
+    return Obx(() {
+      return CustomButton(
+        onTap: isLoading!=null&&isLoading!.value == true ? () {} : () {
+          tripCancellationDialog(onSubmit: onSubmit);
+        },
+        title: isLoading!=null&&isLoading!.value == true
+            ? AppStaticStrings.tripLoading
+            : AppStaticStrings.cancelTrip,
+      );
+    });
   }
 }
