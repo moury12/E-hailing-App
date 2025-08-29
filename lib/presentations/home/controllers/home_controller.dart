@@ -253,13 +253,17 @@ class HomeController extends GetxController {
         Get.back();
       }
       tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
-      CommonController.to.getReviewListRequest(
-        driverId: tripAcceptedModel.value.driver!.sId.toString(),
-      );
+     if(tripAcceptedModel.value.tripType!="pre_book") {
+        CommonController.to.getReviewListRequest(
+          driverId: tripAcceptedModel.value.driver!.sId.toString(),
+        );
 
-      polyLineShow();
+        polyLineShow();
 
-      Get.offAndToNamed(TripDetailsPage.routeName);
+        Get.offAndToNamed(TripDetailsPage.routeName);
+      }else{
+       /// TODO
+     }
     });
 
     socket.on(TripEvents.tripDriverLocationUpdate, (data) {
@@ -300,7 +304,7 @@ class HomeController extends GetxController {
           for (TripCancellationModel cancel in tripCancellationList) {
             cancel.isChecked.value = false;
           }
-          isCancellingTrip.value = false;
+          // isCancellingTrip.value = false;
         } else if (status == DriverTripStatus.destination_reached.name) {
           Get.toNamed(
             PaymentPage.routeName,
@@ -571,7 +575,7 @@ class HomeController extends GetxController {
       return;
     }
     isRequestingTrip.value = true;
-    isCancellingTrip.value = false;
+    isCancellingTrip.value = true;
 
     status.value = 'Requesting trip...';
     Get.dialog(
@@ -618,13 +622,12 @@ class HomeController extends GetxController {
       return;
     }
 
-    // Set loading state if it's a cancellation
-    if (status == DriverTripStatus.cancelled.name) {
-      isCancellingTrip.value = true;
-    }
+
+
 
     try {
-      socket.emit(DriverEvent.tripUpdateStatus, {
+      logger.d("cancel emit");
+      socket.emit(TripEvents.tripUpdateStatus, {
         "tripId": tripId,
         "newStatus": status,
         if (reason != null) "reason": reason,
@@ -643,7 +646,7 @@ class HomeController extends GetxController {
       );
     } finally {
       if (status == DriverTripStatus.cancelled.name) {
-        isCancellingTrip.value = false;
+        // isCancellingTrip.value = false;
       }
     }
   }

@@ -10,8 +10,10 @@ import 'package:e_hailing_app/presentations/message/controllers/message_controll
 import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
 import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
@@ -99,6 +101,75 @@ class MessageCardItemWidget extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class MessageCardShimmer extends StatelessWidget {
+  const MessageCardShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: AppColors.kShimmerBaseColor,
+      highlightColor: AppColors.kShimmerHighlightColor,
+      child: Container(
+        margin: paddingH12V6,
+        decoration: BoxDecoration(
+          color: AppColors.kWhiteColor,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.all(12),
+        child: Row(
+          children: [
+            // Profile Image Placeholder
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: AppColors.kShimmerBaseColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Name placeholder
+                  Container(
+                    width: double.infinity,
+                    height: 14,
+                    color: AppColors.kShimmerBaseColor,
+                  ),
+                  SizedBox(height: 8),
+                  // Message count placeholder
+                  Container(
+                    width: 100,
+                    height: 12,
+                    color: AppColors.kShimmerBaseColor,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 12),
+            // Date placeholder
+            Container(
+              width: 40,
+              height: 12,
+              color: AppColors.kShimmerBaseColor,
+            ),
+          ],
         ),
       ),
     );

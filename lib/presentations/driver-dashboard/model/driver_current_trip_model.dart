@@ -18,6 +18,7 @@ class DriverCurrentTripModel {
   String? paymentType;
   String? createdAt;
   String? updatedAt;
+  String? tripType;
   num? iV;
   User? driver;
   String? driverTripAcceptedAt;
@@ -25,6 +26,7 @@ class DriverCurrentTripModel {
   DriverCurrentTripModel({
     this.sId,
     this.user,
+    this.tripType,
     this.pickUpAddress,
     this.pickUpCoordinates,
     this.dropOffAddress,
@@ -68,6 +70,7 @@ class DriverCurrentTripModel {
     distance = json['distance'];
     estimatedFare = json['estimatedFare'];
     tollFee = json['tollFee'];
+    tripType = json['tripType'];
     extraCharge = json['extraCharge'];
     isPeakHourApplied = json['isPeakHourApplied'];
     isCouponApplied = json['isCouponApplied'];
@@ -103,6 +106,7 @@ class DriverCurrentTripModel {
     data['distance'] = distance;
     data['estimatedFare'] = estimatedFare;
     data['tollFee'] = tollFee;
+    data['tripType'] = tripType;
     data['extraCharge'] = extraCharge;
     data['isPeakHourApplied'] = isPeakHourApplied;
     data['isCouponApplied'] = isCouponApplied;

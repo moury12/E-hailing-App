@@ -288,7 +288,7 @@ class TripDetailsPage extends StatelessWidget {
                   )
                       : Obx(() {
                     return CancelTripButtonWidget(
-                      isLoading: HomeController.to.isCancellingTrip.value,
+                      isLoading: HomeController.to.isCancellingTrip,
                       onSubmit: () {
                         if (HomeController.to.cancelReason.isEmpty) {
                           showCustomSnackbar(

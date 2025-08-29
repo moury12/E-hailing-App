@@ -502,3 +502,34 @@ void showRatingDialogs({required String carId}) {
   });
 
 }
+Future<String?> pickDateTime(BuildContext context) async {
+  // Pick Date
+  final DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2100),
+  );
+
+  if (pickedDate == null) return null;
+
+  // Pick Time
+  final TimeOfDay? pickedTime = await showTimePicker(
+    context: context,
+    initialTime: TimeOfDay.now(),
+  );
+
+  if (pickedTime == null) return null;
+
+  // Combine and return ISO string
+  final dateTime = DateTime(
+    pickedDate.year,
+    pickedDate.month,
+    pickedDate.day,
+    pickedTime.hour,
+    pickedTime.minute,
+  );
+
+  return dateTime.toIso8601String();
+}
+

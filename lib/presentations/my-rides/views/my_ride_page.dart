@@ -48,12 +48,28 @@ class _MyRidePageState extends State<MyRidePage>
   }
 
   Widget _buildUpcomingTab() {
-    return Obx(() {
-      return HistoryListStructureWidget(
+    return PageStorage(
+      bucket: _pageStorageBucket,
+      child: PagedListView<int, TripResponseModel>(
         key: const PageStorageKey('upcoming_tab'),
-        isDriver: CommonController.to.isDriver.value,
-      );
-    });
+        pagingController: MyRideController.to.pagingControllerForUpcomingTrip,
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        builderDelegate: PagedChildBuilderDelegate<TripResponseModel>(
+          itemBuilder:
+              (context, item, index) => MyRidesHistoryCardItemWidget(
+            rideModel: item,
+            isDriver: CommonController.to.isDriver.value,
+          ),
+          firstPageProgressIndicatorBuilder:
+              (_) => const DefaultProgressIndicator(),
+          newPageProgressIndicatorBuilder:
+              (_) => const DefaultProgressIndicator(),
+          noItemsFoundIndicatorBuilder:
+              (_) => const EmptyWidget(text: "No rides found"),
+        ),
+      ),
+    );
   }
 
   Widget _buildCompletedTab() {
@@ -61,7 +77,7 @@ class _MyRidePageState extends State<MyRidePage>
       bucket: _pageStorageBucket,
       child: PagedListView<int, TripResponseModel>(
         key: const PageStorageKey('completed_tab'),
-        pagingController: MyRideController.to.pagingController,
+        pagingController: MyRideController.to.pagingControllerForCompletedTrip,
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
         builderDelegate: PagedChildBuilderDelegate<TripResponseModel>(
@@ -86,7 +102,7 @@ class _MyRidePageState extends State<MyRidePage>
     super.build(context); // Required for AutomaticKeepAliveClientMixin
     return CustomRefreshIndicator(
       onRefresh: () async {
-        MyRideController.to.pagingController.refresh();
+        MyRideController.to.pagingControllerForCompletedTrip.refresh();
         final isDriver = CommonController.to.isDriver.value;
         if (isDriver) {
           DashBoardController.to.getDriverCurrentTripRequest();
@@ -100,6 +116,9 @@ class _MyRidePageState extends State<MyRidePage>
             child: Padding(
               padding: padding12H,
               child: DynamicTabWidget(
+                onTabChanged: (value) {
+
+                },
                 tabs: MyRideController.to.tabLabels,
                 tabContent: [
                   _buildOngoingTab(),

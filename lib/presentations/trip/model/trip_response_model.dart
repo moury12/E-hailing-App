@@ -19,6 +19,7 @@ class TripResponseModel {
   String? status;
   String? createdAt;
   String? updatedAt;
+  String? tripType;
   num? iV;
   Driver? driver;
   String? driverTripAcceptedAt;
@@ -41,6 +42,7 @@ class TripResponseModel {
     this.cancellationReason,
     this.status,
     this.createdAt,
+    this.tripType,
     this.updatedAt,
     this.iV,
 
@@ -77,6 +79,7 @@ class TripResponseModel {
     status = json['status'];
 
     createdAt = json['createdAt'];
+    tripType = json['tripType'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
     driver = json['driver'] != null ? Driver.fromJson(json['driver']) : null;
@@ -111,6 +114,7 @@ class TripResponseModel {
     data['cancellationReason'] = cancellationReason;
     data['status'] = status;
     data['createdAt'] = createdAt;
+    data['tripType'] = tripType;
     data['updatedAt'] = updatedAt;
     data['__v'] = iV;
     if (driver != null) {
