@@ -50,7 +50,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
 
     if (rideModel is DriverCurrentTripModel) {
       final model = rideModel as DriverCurrentTripModel;
-
+      // rating=isDriver?model.driver!.rating.toString():"0.0";
       driverName = model.user?.name ?? driverName;
       driverImage =
       model.user?.profileImage != null
@@ -69,7 +69,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
               ? model.user?.name.toString()
               : model.driver?.name.toString()) ??
               AppStaticStrings.noDataFound;
-      rating=model.driver!.rating.toString();
+      rating=!isDriver?model.driver!.rating.toString():"0.0";
       driverImage =
       model.driver?.profileImage != null
           ? "${ApiService().baseUrl}/${(isDriver ? model.user?.profileImage

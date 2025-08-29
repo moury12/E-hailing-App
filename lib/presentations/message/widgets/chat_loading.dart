@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -44,8 +45,8 @@ class ShimmerMessageCard extends StatelessWidget {
                   ),
                   constraints: BoxConstraints(maxWidth: Get.width * 0.8),
                   child: Shimmer.fromColors(
-                    baseColor: const Color(0xffF3E8FF),
-                    highlightColor: const Color(0xffEEDDFF),
+                    baseColor:AppColors.kShimmerBaseColor,
+                    highlightColor: AppColors.kShimmerHighlightColor,
                     child: Container(
                       height: 80,
                       decoration: BoxDecoration(

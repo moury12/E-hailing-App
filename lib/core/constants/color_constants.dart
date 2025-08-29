@@ -13,6 +13,8 @@ class AppColors {
   static const Color kBorderColor = Color(0xff64748B);
   static const Color kTextBlueGreyColor = Color(0xff334155);
   static const Color kTextDarkBlueColor = Color(0xff1E293B);
+  static const Color kShimmerBaseColor = Color(0xffe1d5ef);
+  static const Color kShimmerHighlightColor = Color(0xffdfc0f6);
 
   static const Color kGreenColor = Color(0xff4ADE80);
   static const Color kUnreadColor = Color(0xffEFFFFF);
