@@ -38,7 +38,7 @@ class HomeController extends GetxController {
   RxBool isLoadingPostReview = false.obs;
   RxBool isLoadingCar = false.obs;
   RxBool mapDragable = false.obs;
-  RxBool mapDraging= false.obs;
+  RxBool mapDraging = false.obs;
   RxBool isLoadingPostFair = false.obs;
   RxInt estimatedFare = 0.obs;
   LatLng? lastPickupLatLng;
@@ -52,7 +52,7 @@ class HomeController extends GetxController {
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
   RxString tripType = "ride".obs;
-RxList<String> tripDetailsTabs= ["Car info", "Driver Reviews"].obs;
+  RxList<String> tripDetailsTabs = ["Car info", "Driver Reviews"].obs;
   RxBool isCancellingTrip = false.obs;
 
   RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;
@@ -65,9 +65,9 @@ RxList<String> tripDetailsTabs= ["Car info", "Driver Reviews"].obs;
   RxString previousRoute = ''.obs;
   RxString driverStatus = ''.obs;
   var selectedPaymentMethod = Rx<String?>(null);
-TextEditingController promoCode=TextEditingController();
+  TextEditingController promoCode = TextEditingController();
   Map<String, dynamic> tripArgs = {};
-  final  socket = SocketService();
+  final socket = SocketService();
   RxString status = "Disconnected".obs;
   RxBool isRequestingTrip = false.obs;
   RxBool hasActiveTrip = false.obs;
@@ -80,7 +80,6 @@ TextEditingController promoCode=TextEditingController();
 
   @override
   void onInit() async {
-
     initializeSocket();
     await getUserCurrentTrip();
 
@@ -126,27 +125,26 @@ TextEditingController promoCode=TextEditingController();
     }
   }
 
-
   ///------------------------------ Post Review method -------------------------///
 
-
-  Future<void> postReviewRatingRequest({required String rating,required String review,required String carId,}) async {
+  Future<void> postReviewRatingRequest({
+    required String rating,
+    required String review,
+    required String carId,
+  }) async {
     try {
-     isLoadingPostReview.value=true;
+      isLoadingPostReview.value = true;
 
       final response = await ApiService().request(
         endpoint: postReviewEndpoint,
         method: 'POST',
-        body: {"rating": rating,
-        "review":review,
-        "carId":carId},
+        body: {"rating": rating, "review": review, "carId": carId},
       );
-
 
       if (response['success'] == true) {
         logger.d(response);
         showCustomSnackbar(title: 'Success', message: response['message']);
-        // Boxes.getRattingData().delete("rating");
+        Boxes.getRattingData().delete("rating");
         Get.back();
       } else {
         logger.e(response);
@@ -160,10 +158,11 @@ TextEditingController promoCode=TextEditingController();
     } catch (e) {
       // loadingProcess.value = AuthProcess.none;
       logger.e(e.toString());
-    }finally{
-      isLoadingPostReview.value=false;
+    } finally {
+      isLoadingPostReview.value = false;
     }
   }
+
   void resetHomePage() {
     // Clear polyline
     isPolylineDrawn.value = false;
@@ -194,7 +193,7 @@ TextEditingController promoCode=TextEditingController();
   }
 
   void initializeSocket() {
-    if (socket.socket==null ||!socket.socket!.connected) {
+    if (socket.socket == null || !socket.socket!.connected) {
       socketConnection(); // your own connect method
     }
 
@@ -209,7 +208,6 @@ TextEditingController promoCode=TextEditingController();
   void registerTripEventListeners() {
     logger.i("Listening socket event for rider");
 
-
     // Always clean up old listeners
     socket.off(TripEvents.tripRequested);
     socket.off(TripEvents.tripNoDriverFound);
@@ -220,7 +218,7 @@ TextEditingController promoCode=TextEditingController();
     socket.on(TripEvents.tripRequested, (data) {
       logger.d('🚕 tripRequested: $data');
       currentTrip.value = data;
-      isCancellingTrip.value=false;
+      isCancellingTrip.value = false;
       showCustomSnackbar(
         title: 'Success',
         message: 'Trip requested successfully! Looking for nearby drivers...',
@@ -242,7 +240,7 @@ TextEditingController promoCode=TextEditingController();
       Get.offAllNamed(
         NavigationPage.routeName,
         arguments: {'reconnectSocket': true},
-      );      // Get.back(); Get.back();
+      ); // Get.back(); Get.back();
     });
 
     socket.on(TripEvents.tripAccepted, (data) {
@@ -255,7 +253,9 @@ TextEditingController promoCode=TextEditingController();
         Get.back();
       }
       tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
-      CommonController.to.getReviewListRequest(driverId: tripAcceptedModel.value.driver!.sId.toString());
+      CommonController.to.getReviewListRequest(
+        driverId: tripAcceptedModel.value.driver!.sId.toString(),
+      );
 
       polyLineShow();
 
@@ -287,9 +287,15 @@ TextEditingController promoCode=TextEditingController();
             NavigationPage.routeName,
             arguments: {'reconnectSocket': true},
           );
-          if(status == DriverTripStatus.completed.name){
-            Boxes.getRattingData().put("rating", tripAcceptedModel.value.driver!.assignedCar!.sId.toString());
-            showRatingDialogs(carId: tripAcceptedModel.value.driver!.assignedCar!.sId.toString());
+          if (status == DriverTripStatus.completed.name) {
+            Boxes.getRattingData().put(
+              "rating",
+              tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
+            );
+            showRatingDialogs(
+              carId:
+                  tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
+            );
           }
           for (TripCancellationModel cancel in tripCancellationList) {
             cancel.isChecked.value = false;
@@ -306,9 +312,11 @@ TextEditingController promoCode=TextEditingController();
   }
 
   void socketConnection() {
-    Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(
+      Boxes.getUserData().get(tokenKey).toString(),
+    );
 
-    socket.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+    socket.connect(decodedToken['userId'], decodedToken['role'] == "DRIVER");
   }
 
   bool shouldRedrawPolyline() {
@@ -448,7 +456,7 @@ TextEditingController promoCode=TextEditingController();
     } catch (e) {
       isLoadingPostFair.value = false;
       logger.e(e.toString());
-    }finally{
+    } finally {
       isLoadingPostFair.value = false;
     }
   }
@@ -498,8 +506,9 @@ TextEditingController promoCode=TextEditingController();
         tripAcceptedModel.value = TripResponseModel.fromJson(response['data']);
         driverStatus.value = tripAcceptedModel.value.status.toString();
         updateDriverLocation();
-        CommonController.to.getReviewListRequest(driverId: tripAcceptedModel.value.driver!.sId.toString());
-
+        CommonController.to.getReviewListRequest(
+          driverId: tripAcceptedModel.value.driver!.sId.toString(),
+        );
       } else {
         isLoadingUserCurrentTrip.value = false;
 
@@ -562,7 +571,7 @@ TextEditingController promoCode=TextEditingController();
       return;
     }
     isRequestingTrip.value = true;
-    isCancellingTrip.value=false;
+    isCancellingTrip.value = false;
 
     status.value = 'Requesting trip...';
     Get.dialog(
@@ -632,7 +641,7 @@ TextEditingController promoCode=TextEditingController();
         message: 'Failed to update trip. Please try again.',
         type: SnackBarType.failed,
       );
-    }finally{
+    } finally {
       if (status == DriverTripStatus.cancelled.name) {
         isCancellingTrip.value = false;
       }
