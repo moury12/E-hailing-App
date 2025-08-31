@@ -41,6 +41,8 @@
     <true/>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>This app needs constant location access to track trips in the background.</string>
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
 
     <key>IOGoogleMapsAPIKey</key>
 	<string>AIzaSyC_qKHmzl-HHB9hr8-fWGmhETSVR2H0894</string>

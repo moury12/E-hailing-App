@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
+import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 
@@ -531,6 +532,7 @@ class AuthController extends GetxController {
                   hintText: "e.g. +8801XXXXXXXXX",
                   onChanged: (value) => userPhoneNumber = value,
                 ),
+                space6H,
                 CustomButton(
                   onTap: () {
                     if (userPhoneNumber.isNotEmpty) {
