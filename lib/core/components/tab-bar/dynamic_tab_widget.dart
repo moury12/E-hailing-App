@@ -13,12 +13,12 @@ class DynamicTabWidget extends StatelessWidget {
   final List<String> tabs; // Changed from RxList to regular List
   final List<Widget> tabContent; // Changed from RxList to regular List
   final ValueChanged<int>? onTabChanged; // Renamed from 'function' for clarity
-
+final int? initialIndex;
   const DynamicTabWidget({
     super.key,
     required this.tabs,
     required this.tabContent,
-    this.onTabChanged,
+    this.onTabChanged, this.initialIndex,
   }) : assert(
          tabs.length == tabContent.length,
          'Tabs and content must have the same length',
@@ -27,6 +27,7 @@ class DynamicTabWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      initialIndex:initialIndex??0 ,
       length: tabs.length, // Dynamically set the number of tabs
       child: Column(
         children: [

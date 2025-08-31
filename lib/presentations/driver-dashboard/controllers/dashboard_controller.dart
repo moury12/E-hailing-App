@@ -401,14 +401,19 @@ logger.i("Listening socket event for driver");
 
       if (data['success'] == true) {
         currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-        startTrackingUserLocationMethod(
-          tripId: currentTrip.value.sId.toString(),
-        );
-        drawPolylineMethod();
-
-        DashBoardController.to.afterAccepted.value = true;
-        resetRideFlow(rideType: RideFlowState.pickup);
-        _showSuccess(data['message']);
+        if(currentTrip.value.tripType==preBook){
+          startTrackingUserLocationMethod(
+            tripId: currentTrip.value.sId.toString(),
+          );
+          drawPolylineMethod();
+          DashBoardController.to.afterAccepted.value = true;
+          resetRideFlow(rideType: RideFlowState.pickup);
+          _showSuccess(data['message']);
+        }else{
+          Get.offAllNamed(
+            NavigationPage.routeName,
+            arguments: {'reconnectSocket': true,"pre_book":true},
+          );        }
       } else {
         _showError(data['message']);
       }

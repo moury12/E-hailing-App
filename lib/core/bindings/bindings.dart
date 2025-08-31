@@ -3,6 +3,7 @@ import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
+import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
 import 'package:e_hailing_app/presentations/notification/controller/notification_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
@@ -82,6 +83,7 @@ class NavigationBinding extends Bindings {
           });
         } else {
           Future.delayed(Duration(milliseconds: 200), () {
+
             if (Get.isRegistered<HomeController>()) {
               final homeController = Get.find<HomeController>();
               homeController.registerTripEventListeners();
@@ -90,7 +92,14 @@ class NavigationBinding extends Bindings {
         }
       });
     }
-
+if(arguments[preBook]!=null && arguments[preBook]==true){
+  final navCtrl = Get.find<NavigationController>();
+  navCtrl.currentNavIndex.value=1;
+  if(Get.isRegistered<MyRideController>()){
+    final rideCtrl = Get.find<MyRideController>();
+    rideCtrl.currentTabIndex.value=1;
+  }
+}
   }
 }
 
