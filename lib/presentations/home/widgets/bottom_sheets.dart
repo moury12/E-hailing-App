@@ -41,6 +41,8 @@ class _HomeSetLocationWidgetState extends State<HomeSetLocationWidget> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       HomeController.to.mapDraging.value = true;
+      HomeController.to.pickupLatLng.value =
+          CommonController.to.markerPositionRider.value;
     });
   }
 
@@ -98,8 +100,10 @@ class _HomeSetLocationWidgetState extends State<HomeSetLocationWidget> {
             if (!HomeController.to.setDestination.value) {
               HomeController.to.setDestination.value = true;
               HomeController.to.setPickup.value = false;
+              HomeController.to.dropoffLatLng.value = LocationTrackingService().offsetByDistance(CommonController.to.markerPositionRider.value,
+                  1.0, 90);
             } else {
-              // HomeController.to.selectEv.value = false;
+
               HomeController.to.wantToGo.value = true;
               HomeController.to.setDestination.value = false;
             }
