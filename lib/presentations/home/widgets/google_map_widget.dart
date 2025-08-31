@@ -22,6 +22,9 @@ class GoogleMapWidgetForRider extends StatefulWidget {
 class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
     with AutomaticKeepAliveClientMixin {
   final Rx<BitmapDescriptor?> customIcon = Rx<BitmapDescriptor?>(null);
+  final Rx<BitmapDescriptor?> sourceIcon = Rx<BitmapDescriptor?>(null);
+  final Rx<BitmapDescriptor?> destinationIcon = Rx<BitmapDescriptor?>(null);
+  final Rx<BitmapDescriptor?> currentLocationIcon = Rx<BitmapDescriptor?>(null);
 
   Future<void> loadCustomMarker() async {
     try {
@@ -30,18 +33,36 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
         purpleCarImage2,
       );
       customIcon.value = bitmap;
+      final sIcon = await BitmapDescriptor.asset(
+        ImageConfiguration(size: Size(40, 40)),
+        sourceLocationIcon,
+      );
+      sourceIcon.value = sIcon;
+      final dIcon = await BitmapDescriptor.asset(
+        ImageConfiguration(size: Size(40, 40)),
+        destinationLocationIcon,
+      );
+      destinationIcon.value = dIcon;
+      currentLocationIcon.value = await BitmapDescriptor.asset(
+        ImageConfiguration(size: Size(40, 40)),
+        currentLocationUserIcon,
+      );
     } catch (e) {
       debugPrint('Error loading custom marker: $e');
       // Fallback to default marker if custom marker fails
       customIcon.value = BitmapDescriptor.defaultMarker;
+      sourceIcon.value = BitmapDescriptor.defaultMarker;
+      destinationIcon.value = BitmapDescriptor.defaultMarker;
+      currentLocationIcon.value = BitmapDescriptor.defaultMarker;
     }
   }
 
   @override
   void initState() {
     super.initState();
-
     loadCustomMarker();
+    HomeController.to.pickupLatLng.value =
+        CommonController.to.markerPositionRider.value;
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -68,13 +89,16 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
     super.build(context);
     return Obx(() {
       final position = CommonController.to.markerPositionRider.value;
+      if(HomeController.to.setDestination.value){
+        HomeController.to.dropoffLatLng.value = CommonController.to.markerPositionRider.value;
+      }
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
-        cameraTargetBounds:
-            BoundaryController.to.bounds.value != null
-                ? CameraTargetBounds(BoundaryController.to.bounds.value)
-                : CameraTargetBounds.unbounded,
+        // cameraTargetBounds:
+        //     BoundaryController.to.bounds.value != null
+        //         ? CameraTargetBounds(BoundaryController.to.bounds.value)
+        //         : CameraTargetBounds.unbounded,
         polylines: NavigationController.to.routePolylines.value,
 
         onMapCreated: _onMapCreated,
@@ -97,87 +121,143 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
             return;
           }
         },
-        markers:
-            NavigationController.to.routePolylines.isNotEmpty
-                ? {
-                  if (HomeController.to.driverPosition.value != null &&
-                      customIcon.value != null)
-                    Marker(
-                      markerId: const MarkerId("driver_marker"),
-                      position: HomeController.to.driverPosition.value!,
-                      icon: customIcon.value!,
-                    ),
+        markers: {
+          if (HomeController.to.driverPosition.value != null &&
+              customIcon.value != null)
+            Marker(
+              markerId: const MarkerId("driver_marker"),
+              position: HomeController.to.driverPosition.value!,
+              icon: customIcon.value!,
+            ),
+        if(!HomeController.to.mapDraging.value)  Marker(
+            markerId: const MarkerId("selected_location"),
+            position: CommonController.to.markerPositionRider.value,
+
+            icon: currentLocationIcon.value!,
+            // Variable to store last valid position
+
+          ),
+          if (HomeController.to.pickupLatLng.value !=
+              null /*||HomeController.to.mapDragable.value*/ )
+            Marker(
+              draggable:
+                  HomeController.to.mapDragable.value &&
+                  HomeController.to.mapDraging.value,
+              markerId: MarkerId("source Marker"),
+              position: HomeController.to.pickupLatLng.value!,
+              icon: sourceIcon.value!,
+              onTap: () {
+                if (HomeController.to.mapDraging.value) {
+                  HomeController.to.mapDragable.value = true;
                 }
-                : {
-                  Marker(
-                    markerId: const MarkerId("selected_location"),
-                    position:
-                        HomeController.to.dropoffLatLng.value ??
-                        CommonController.to.markerPositionRider.value,
-                    draggable:
-                        HomeController.to.mapDragable.value &&
-                        HomeController.to.mapDraging.value,
+                logger.d(
+                  "---------------------onTap"
+                      "",
+                );
+              },
+              onDragStart: (value) {
+                if (HomeController.to.mapDraging.value&&!HomeController.to.setDestination.value) {
+                  HomeController.to.mapDragable.value = true;
+                }
+                logger.d("---------------------onDragStart $value");
+              },
+              onDragEnd: (value) async {
+                logger.d("---------------------onDragEnd $value");
+                if (!BoundaryController.to.contains(value)) {
+                  // Show custom snackbar if the point is outside the country's boundary
+                  showCustomSnackbar(
+                    title: "Failed",
+                    message: 'Outside country boundary.',
+                    type: SnackBarType.alert,
+                  );
+                  HomeController.to.mapDragable.value = false;
+                  // Snap back to last valid location
+                  if (lastValidPosition != null) {
+                    CommonController.to.markerPositionRider.value =
+                        lastValidPosition!;
+                  }
+                  return;
+                }
 
-                    // Variable to store last valid position
-                    onTap: () {
-                      if (HomeController.to.mapDraging.value) {
-                        HomeController.to.mapDragable.value = true;
-                      }
-                      logger.d(
-                        "---------------------onTap"
-                        "",
-                      );
-                    },
+                // Update the last valid position
+                lastValidPosition = value;
 
-                    onDragStart: (value) {
-                      if (HomeController.to.mapDraging.value) {
-                        HomeController.to.mapDragable.value = true;
-                      }
-                      logger.d("---------------------onDragStart $value");
-                    },
-                    onDragEnd: (value) async {
-                      logger.d("---------------------onDragEnd $value");
-                      if (!BoundaryController.to.contains(value)) {
-                        // Show custom snackbar if the point is outside the country's boundary
-                        showCustomSnackbar(
-                          title: "Failed",
-                          message: 'Outside country boundary.',
-                          type: SnackBarType.alert,
-                        );
-                        HomeController.to.mapDragable.value = false;
-                        // Snap back to last valid location
-                        if (lastValidPosition != null) {
-                          CommonController.to.markerPositionRider.value =
-                              lastValidPosition!;
-                        }
-                        return;
-                      }
 
-                      // Update the last valid position
-                      lastValidPosition = value;
+                HomeController.to.pickupLatLng.value = value;
+                // Set either the dropoff or pickup location based on the state
 
-                      // Update the marker position
-                      CommonController.to.markerPositionRider.value = value;
 
-                      // Set either the dropoff or pickup location based on the state
-                      if (HomeController.to.setDestination.value) {
-                        HomeController.to.dropoffLatLng.value = value;
-                      } else {
-                        HomeController.to.pickupLatLng.value = value;
-                      }
+                // Reverse geocode the new position (optional, based on your app)
+                await HomeController.to.getPlaceName(
+                  value,
+                  HomeController.to.setDestination.value
+                      ? HomeController.to.dropOffLocationController.value
+                      : HomeController.to.pickupLocationController.value,
+                );
 
-                      // Reverse geocode the new position (optional, based on your app)
-                      await HomeController.to.getPlaceName(
-                        value,
-                        HomeController.to.setDestination.value
-                            ? HomeController.to.dropOffLocationController.value
-                            : HomeController.to.pickupLocationController.value,
-                      );
+                HomeController.to.mapDragable.value = false;
+              },
+            ),
+          if (HomeController.to.dropoffLatLng.value !=
+              null /*||HomeController.to.mapDragable.value*/ )
+            Marker(
+              draggable:
+                  HomeController.to.mapDragable.value &&
+                  HomeController.to.mapDraging.value,
+              markerId: MarkerId("destination Marker"),
+              position: HomeController.to.dropoffLatLng.value!,
+              icon: destinationIcon.value!,
+              onTap: () {
+                if (HomeController.to.mapDraging.value) {
+                  HomeController.to.mapDragable.value = true;
+                }
+                logger.d(
+                  "---------------------onTap"
+                      "",
+                );
+              },
+              onDragStart: (value) {
+                if (HomeController.to.mapDraging.value&&HomeController.to.setDestination.value) {
+                  HomeController.to.mapDragable.value = true;
+                }
+                logger.d("---------------------onDragStart $value");
+              },
+              onDragEnd: (value) async {
+                logger.d("---------------------onDragEnd $value");
+                if (!BoundaryController.to.contains(value)) {
+                  // Show custom snackbar if the point is outside the country's boundary
+                  showCustomSnackbar(
+                    title: "Failed",
+                    message: 'Outside country boundary.',
+                    type: SnackBarType.alert,
+                  );
+                  HomeController.to.mapDragable.value = false;
+                  // Snap back to last valid location
+                  if (lastValidPosition != null) {
+                    CommonController.to.markerPositionRider.value =
+                        lastValidPosition!;
+                  }
+                  return;
+                }
 
-                      HomeController.to.mapDragable.value = false;
-                    },
-                  ),
-                },
+                // Update the last valid position
+                lastValidPosition = value;
+
+
+                  HomeController.to.dropoffLatLng.value = value;
+
+
+                await HomeController.to.getPlaceName(
+                  value,
+                  HomeController.to.setDestination.value
+                      ? HomeController.to.dropOffLocationController.value
+                      : HomeController.to.pickupLocationController.value,
+                );
+
+                HomeController.to.mapDragable.value = false;
+              },
+            ),
+        },
       );
     });
   }
