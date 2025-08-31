@@ -23,6 +23,7 @@ class TripResponseModel {
   num? iV;
   Driver? driver;
   String? driverTripAcceptedAt;
+  String? pickUpDate;
 
   TripResponseModel({
     this.pickUpCoordinates,
@@ -48,6 +49,7 @@ class TripResponseModel {
 
     this.driver,
     this.driverTripAcceptedAt,
+    this.pickUpDate,
   });
 
   TripResponseModel.fromJson(Map<String, dynamic> json) {
@@ -71,6 +73,7 @@ class TripResponseModel {
     distance = json['distance'];
     estimatedFare = json['estimatedFare'];
     tollFee = json['tollFee'];
+    pickUpDate = json['pickUpDate'];
     extraCharge = json['extraCharge'];
     isPeakHourApplied = json['isPeakHourApplied'];
     isCouponApplied = json['isCouponApplied'];
@@ -105,6 +108,7 @@ class TripResponseModel {
     data['dropOffAddress'] = dropOffAddress;
     data['duration'] = duration;
     data['distance'] = distance;
+    data['pickUpDate'] = pickUpDate;
     data['estimatedFare'] = estimatedFare;
     data['tollFee'] = tollFee;
 

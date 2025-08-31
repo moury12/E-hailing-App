@@ -120,7 +120,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
                 // ),
               ),
              Obx(() {
-               return    HomeController.to.tripType.value == "pre_book"?  ButtonTapWidget(
+               return    HomeController.to.tripType.value == preBook?  ButtonTapWidget(
                  onTap: () async{
               String? time= await pickDateTime(context);
               dateTimeController.text=time??"";
@@ -202,13 +202,13 @@ class _RequestTripPageState extends State<RequestTripPage> {
                     "paymentType": HomeController.to.selectedPaymentMethod
                         .value,
                     "coupon": HomeController.to.promoCode.text,
-                    if( HomeController.to.tripType.value == "pre_book")
+                    if( HomeController.to.tripType.value == preBook)
                       "pickUpDate":dateTimeController.text
                   });
 
                   // logger.d(args);
                   if (args.isNotEmpty &&
-                      HomeController.to.selectedPaymentMethod.value != null &&(HomeController.to.tripType.value != "pre_book" ||
+                      HomeController.to.selectedPaymentMethod.value != null &&(HomeController.to.tripType.value != preBook ||
                       dateTimeController.text.isNotEmpty)) {
                     HomeController.to.requestTrip(body: args);
                   } else {

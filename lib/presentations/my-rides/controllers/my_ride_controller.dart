@@ -17,6 +17,7 @@ class MyRideController extends GetxController {
   ///====================ride pagination variable========================///
 
   final RxInt currentProductPage = 1.obs;
+  final RxInt currentTabIndex = 0.obs;
   final RxInt itemsProductPerPage = 5.obs;
   final RxInt totalProductPages = 5.obs;
   final RxBool isProductLoadingMore = false.obs;
@@ -43,7 +44,7 @@ class MyRideController extends GetxController {
       }
     });pagingControllerForUpcomingTrip.addPageRequestListener((pageKey) {
       if (!isAllTripLoading.value) {
-        getAllRideRequest(pageKey: pageKey,rideStatus: "accepted",tripType: "pre_book");
+        getAllRideRequest(pageKey: pageKey,rideStatus: "accepted",tripType: preBook);
       }
     });
   }

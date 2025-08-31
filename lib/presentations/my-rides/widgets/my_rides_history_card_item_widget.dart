@@ -58,7 +58,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           : driverImage;
       cost = 'RM ${model.estimatedFare?.toStringAsFixed(2) ?? "0"}';
       distance = '${model.distance ?? 0} km';
-      dateTime = formatDateTime(model.createdAt.toString());
+      dateTime = formatDateTime(model.pickUpDate!=null?model.pickUpDate.toString():model.createdAt.toString());
       pickup = model.pickUpAddress;
       dropOff = model.dropOffAddress; // define this method below
     } else if (rideModel is TripResponseModel) {
@@ -77,7 +77,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           : driverImage;
       cost = 'RM ${model.estimatedFare?.toStringAsFixed(2) ?? "0"}';
       distance = '${model.distance ?? 0} km';
-      dateTime = formatDateTime(model.createdAt.toString());
+      dateTime = formatDateTime(model.pickUpDate!=null?model.pickUpDate.toString():model.createdAt.toString());
       pickup = model.pickUpAddress;
       dropOff = model.dropOffAddress;
     }
@@ -147,8 +147,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           ///============================Timeline==============================///
           FromToTimeLine(pickUpAddress: pickup, dropOffAddress: dropOff),
           if (isDriver && isOngoin)
-            Obx(() {
-              return CancelTripButtonWidget(
+            CancelTripButtonWidget(
                 // isLoading: DashBoardController.to.isCancellingTrip.value,
                 onSubmit: () {
                   if (DashBoardController.to.cancelReason.isEmpty) {
@@ -166,8 +165,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
                     Get.back();
                   }
                 },
-              );
-            }),
+              )
         ],
       ),
     );

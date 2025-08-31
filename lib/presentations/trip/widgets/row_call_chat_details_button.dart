@@ -92,15 +92,26 @@ class CancelTripButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      return CustomButton(
-        onTap: isLoading!=null&&isLoading!.value == true ? () {} : () {
-          tripCancellationDialog(onSubmit: onSubmit);
-        },
-        title: isLoading!=null&&isLoading!.value == true
-            ? AppStaticStrings.tripLoading
-            : AppStaticStrings.cancelTrip,
-      );
-    });
+
+
+      if (isLoading == null) {
+        return CustomButton(
+          onTap: () => tripCancellationDialog(onSubmit: onSubmit),
+          title: AppStaticStrings.cancelTrip,
+        );
+      }
+
+      return Obx(() {
+        final loading = isLoading!.value;
+        return CustomButton(
+          onTap: loading ? () {} : () => tripCancellationDialog(onSubmit: onSubmit),
+          title: loading
+              ? AppStaticStrings.tripLoading
+              : AppStaticStrings.cancelTrip,
+        );
+      });
+    }
+
+
   }
-}
+

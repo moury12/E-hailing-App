@@ -458,7 +458,7 @@ class HomeInitialContentWidget extends StatelessWidget {
               ServiceWidget(
                 onTap: () {
                   HomeController.to.wantToGo.value = true;
-                  HomeController.to.tripType.value="pre_book";
+                  HomeController.to.tripType.value=preBook;
                 },
                 title: AppStaticStrings.preBookRide,
                 img: purpleCarImage,

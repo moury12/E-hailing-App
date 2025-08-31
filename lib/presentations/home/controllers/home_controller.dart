@@ -253,7 +253,7 @@ class HomeController extends GetxController {
         Get.back();
       }
       tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
-     if(tripAcceptedModel.value.tripType!="pre_book") {
+     if(tripAcceptedModel.value.tripType!=preBook) {
         CommonController.to.getReviewListRequest(
           driverId: tripAcceptedModel.value.driver!.sId.toString(),
         );
@@ -262,6 +262,11 @@ class HomeController extends GetxController {
 
         Get.offAndToNamed(TripDetailsPage.routeName);
       }else{
+       resetAllStates();
+       Get.offAllNamed(
+         NavigationPage.routeName,
+         arguments: {'reconnectSocket': true,"pre_book":true},
+       );
        /// TODO
      }
     });

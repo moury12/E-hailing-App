@@ -33,9 +33,9 @@ class _MyRidePageState extends State<MyRidePage>
     return Obx(() {
       final isDriver = CommonController.to.isDriver.value;
       final rideModel =
-          isDriver
-              ? DashBoardController.to.currentTrip.value
-              : HomeController.to.tripAcceptedModel.value;
+      isDriver
+          ? DashBoardController.to.currentTrip.value
+          : HomeController.to.tripAcceptedModel.value;
 
       return HistoryListStructureWidget(
         key: const PageStorageKey('ongoing_tab'),
@@ -57,10 +57,11 @@ class _MyRidePageState extends State<MyRidePage>
         physics: const ClampingScrollPhysics(),
         builderDelegate: PagedChildBuilderDelegate<TripResponseModel>(
           itemBuilder:
-              (context, item, index) => MyRidesHistoryCardItemWidget(
-            rideModel: item,
-            isDriver: CommonController.to.isDriver.value,
-          ),
+              (context, item, index) =>
+              MyRidesHistoryCardItemWidget(
+                rideModel: item,
+                isDriver: CommonController.to.isDriver.value,
+              ),
           firstPageProgressIndicatorBuilder:
               (_) => const DefaultProgressIndicator(),
           newPageProgressIndicatorBuilder:
@@ -82,7 +83,8 @@ class _MyRidePageState extends State<MyRidePage>
         physics: const ClampingScrollPhysics(),
         builderDelegate: PagedChildBuilderDelegate<TripResponseModel>(
           itemBuilder:
-              (context, item, index) => MyRidesHistoryCardItemWidget(
+              (context, item, index) =>
+              MyRidesHistoryCardItemWidget(
                 rideModel: item,
                 isDriver: CommonController.to.isDriver.value,
               ),
@@ -115,17 +117,20 @@ class _MyRidePageState extends State<MyRidePage>
           SliverToBoxAdapter(
             child: Padding(
               padding: padding12H,
-              child: DynamicTabWidget(
-                onTabChanged: (value) {
+              child: Obx(() {
+                return DynamicTabWidget(
+                  initialIndex: MyRideController.to.currentTabIndex.value,
+                  onTabChanged: (value) {
 
-                },
-                tabs: MyRideController.to.tabLabels,
-                tabContent: [
-                  _buildOngoingTab(),
-                  _buildUpcomingTab(),
-                  _buildCompletedTab(),
-                ],
-              ),
+                  },
+                  tabs: MyRideController.to.tabLabels,
+                  tabContent: [
+                    _buildOngoingTab(),
+                    _buildUpcomingTab(),
+                    _buildCompletedTab(),
+                  ],
+                );
+              }),
             ),
           ),
         ],
