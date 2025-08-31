@@ -61,8 +61,7 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
   void initState() {
     super.initState();
     loadCustomMarker();
-    HomeController.to.pickupLatLng.value =
-        CommonController.to.markerPositionRider.value;
+
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -89,9 +88,7 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
     super.build(context);
     return Obx(() {
       final position = CommonController.to.markerPositionRider.value;
-      if(HomeController.to.setDestination.value){
-        HomeController.to.dropoffLatLng.value = CommonController.to.markerPositionRider.value;
-      }
+
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
@@ -138,7 +135,7 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
 
           ),
           if (HomeController.to.pickupLatLng.value !=
-              null /*||HomeController.to.mapDragable.value*/ )
+              null  )
             Marker(
               draggable:
                   HomeController.to.mapDragable.value &&
@@ -164,7 +161,6 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
               onDragEnd: (value) async {
                 logger.d("---------------------onDragEnd $value");
                 if (!BoundaryController.to.contains(value)) {
-                  // Show custom snackbar if the point is outside the country's boundary
                   showCustomSnackbar(
                     title: "Failed",
                     message: 'Outside country boundary.',
@@ -196,10 +192,12 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
                 );
 
                 HomeController.to.mapDragable.value = false;
+
+
               },
             ),
           if (HomeController.to.dropoffLatLng.value !=
-              null /*||HomeController.to.mapDragable.value*/ )
+              null  )
             Marker(
               draggable:
                   HomeController.to.mapDragable.value &&

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
@@ -33,7 +34,8 @@ bool isRunning=false;
     required Rx<LatLng> markerPosition,
     required GoogleMapController? mapController,
     bool emitToSocket = true,
-  }) async {
+  })
+  async {
     try{
       if(isRunning){
         return;
@@ -62,8 +64,9 @@ bool isRunning=false;
       }
 
       // Prevent duplicate tracking
-      if (tripId != null && _lastTripId == tripId && _positionStream != null)
+      if (tripId != null && _lastTripId == tripId && _positionStream != null) {
         return;
+      }
 
       _positionStream?.cancel(); // Cancel previous
 
@@ -97,7 +100,8 @@ bool isRunning=false;
 
   Future<void> fetchCurrentLocation({
     required Rx<LatLng> markerPosition,
-  }) async {
+  })
+  async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -210,7 +214,24 @@ bool isRunning=false;
   //     debugPrint(e.toString());
   //   }
   // }
+  LatLng offsetByDistance(LatLng start, double distanceInKm, double bearingInDegrees) {
+    const double earthRadius = 6371.0; // 🌍 in km
 
+    double distRad = distanceInKm / earthRadius;
+    double bearingRad = bearingInDegrees * pi / 180;
+
+    double lat1 = start.latitude * pi / 180;
+    double lon1 = start.longitude * pi / 180;
+
+    double lat2 = asin(sin(lat1) * cos(distRad) +
+        cos(lat1) * sin(distRad) * cos(bearingRad));
+
+    double lon2 = lon1 +
+        atan2(sin(bearingRad) * sin(distRad) * cos(lat1),
+            cos(distRad) - sin(lat1) * sin(lat2));
+
+    return LatLng(lat2 * 180 / pi, lon2 * 180 / pi);
+  }
   Future<bool> drawPolylineBetweenPoints(
     LatLng start,
     LatLng end,
@@ -219,7 +240,8 @@ bool isRunning=false;
     RxInt? duration,
     required LatLng userPosition,
     GoogleMapController? mapController,
-  }) async {
+  })
+  async {
     try {
       final apiKey = GoogleClient.googleMapUrl;
       final url =
@@ -241,7 +263,7 @@ bool isRunning=false;
           final polyline = Polyline(
             polylineId: const PolylineId('route_line'),
             color: AppColors.kPrimaryColor,
-            width: 6,
+            width: 4,
             // startCap: Cap.customCapFromBitmap(
             //   await BitmapDescriptor.asset(
             //     ImageConfiguration(size: Size(48, 48)),
@@ -302,7 +324,8 @@ bool isRunning=false;
     List<LatLng> polylinePoints, {
     required LatLng userPosition,
     GoogleMapController? mapController,
-  }) async {
+  })
+  async {
     if (mapController == null || polylinePoints.isEmpty) return;
 
     try {

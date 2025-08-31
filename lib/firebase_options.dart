@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'duducar-db900.firebasestorage.app',
     iosBundleId: 'com.dudu.ios.app',
   );
+
 }
