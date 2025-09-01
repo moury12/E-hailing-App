@@ -31,7 +31,7 @@ class SplashController extends GetxController {
     }
 
     await Future.delayed(const Duration(seconds: 2));
-    FlutterNativeSplash.remove();
+
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
       Get.offAllNamed(
