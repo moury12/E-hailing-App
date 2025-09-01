@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:e_hailing_app/core/service/notification-service/notification_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/firebase_options.dart';
@@ -13,25 +15,77 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'core/bindings/bindings.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
-// @pragma('vm:entry-point')
-// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp();
-//
-// }
-String? fcmToken;
-// final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-// FlutterLocalNotificationsPlugin();
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
 
+}
+String? fcmToken;
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+
+
+Future<void> _initLocalNotifs() async {
+  const DarwinInitializationSettings iosInit = DarwinInitializationSettings(
+    requestAlertPermission: false,
+    requestBadgePermission: false,
+    requestSoundPermission: false,
+  );
+
+  const InitializationSettings initSettings =
+  InitializationSettings(iOS: iosInit);
+
+  await flutterLocalNotificationsPlugin.initialize(initSettings);
+}
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-  // await FirebaseMessaging.instance.requestPermission();
-  // fcmToken = await FirebaseMessaging.instance.getToken();
-  // logger.i("-------------fcm token----------------$fcmToken");
-  // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  // await NotificationService.instance.init();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await _initLocalNotifs();
+
+
+
+  // iOS foreground presentation (CRITICAL FOR YOUR ISSUE)
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  // Handle messages when app is in foreground
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+
+    if (message.notification == null && Platform.isIOS) {
+      await flutterLocalNotificationsPlugin.show(
+        message.hashCode,
+        message.data['title'] ?? 'Notification',
+        message.data['body'] ?? '',
+        const NotificationDetails(
+          iOS: DarwinNotificationDetails(presentAlert: true, presentSound: true, presentBadge: true),
+        ),
+        payload: message.data['payload'],
+      );
+    }});
+  await FirebaseMessaging.instance.requestPermission(  alert: true,
+    badge: true,
+    sound: true,);
+  fcmToken = await FirebaseMessaging.instance.getToken();
+  logger.i("-------------fcm token----------------$fcmToken");
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  await NotificationService.instance.init();
+  await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  // Show foreground notifications
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
   await Hive.initFlutter();
   await Hive.openBox(userRole);
   await Hive.openBox(userBoxName);

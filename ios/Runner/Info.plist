@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>E Hailing App</string>
+	<string>DUDU Car</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -22,48 +24,70 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>IOGoogleMapsAPIKey</key>
+	<string>AIzaSyC_qKHmzl-HHB9hr8-fWGmhETSVR2H0894</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>sms</string>
+		<string>tel</string>
+		<string>mailto</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>sms</string>
-      <string>tel</string>
-      <string>mailto</string>
-    </array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>This app needs your location even when in background.</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>This app requires location access to function properly.</string>
-    <key>io.flutter.embedded_views_preview</key>
-    <true/>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>This app needs constant location access to track trips in the background.</string>
-    <key>io.flutter.embedded_views_preview</key>
-    <true/>
+	<string>This app needs your location even when in background.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs constant location access to track trips in the background.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app requires location access to function properly.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 
-    <key>IOGoogleMapsAPIKey</key>
-	<string>AIzaSyC_qKHmzl-HHB9hr8-fWGmhETSVR2H0894</string>
+	<key>UIStatusBarStyle</key>
+    <string>UIStatusBarStyleDefault</string>
+    <key>UIApplicationIconBadgeNumber</key>
+    <true/>
+    <key>UILaunchImages</key>
+    <array/>
+    <key>CFBundleIcons</key>
+    <dict>
+      <key>CFBundlePrimaryIcon</key>
+      <dict>
+        <key>CFBundleIconFiles</key>
+        <array>
+          <string>AppIcon</string>
+        </array>
+        <key>UIPrerenderedIcon</key>
+        <false/>
+      </dict>
+      <key>CFBundleAlternateIcons</key>
+      <dict/>
+    </dict>
+    <key>UIAppFonts</key>
+    <array/>
+
+
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen.storyboard</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 </dict>
 </plist>
