@@ -68,12 +68,22 @@ dependencies:
   jwt_decoder: ^2.0.1
   device_info_plus: ^11.5.0
   pdfx: ^2.9.2
+  flutter_native_splash: ^2.4.6
+
+
 
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
+flutter_native_splash:
+  color: "#8C52FF"
+  image: assets/images/DUDU.png
+  android: true
+  ios: true
+  web: false
+
 flutter_launcher_icons:
   ios: true
   android: false   # 🚫 Don’t touch Android icons

@@ -29,6 +29,19 @@ import '../../presentations/payment/widgets/ratting_dialog_widget.dart';
 import '../../presentations/trip/widgets/trip_cancellation_reason_card_item.dart';
 import '../utils/google_map_api_key.dart';
 
+launchGoogleMapsApp(String startLatitude, String startLongitude, String endLatitude, String endLongitude) async {
+  // Construct the Google Maps deep link URL for directions
+  final String googleMapsUrl =
+      'comgooglemaps://?saddr=$startLatitude,$startLongitude&daddr=$endLatitude,$endLongitude&directionsmode=driving';
+
+  // Check if Google Maps app is available and launch the URL
+  if (await canLaunch(googleMapsUrl)) {
+    await launch(googleMapsUrl);
+  } else {
+    throw 'Could not launch $googleMapsUrl';
+  }
+}
+
 Future<dynamic> tripCancellationDialog({
   Function()? onSubmit,
   bool? isLoading,

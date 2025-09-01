@@ -277,7 +277,8 @@ class GoogleMapWidgetForDriver extends StatefulWidget {
 
 class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
   final Rx<BitmapDescriptor?> customIcon = Rx<BitmapDescriptor?>(null);
-
+  final Rx<BitmapDescriptor?> sourceIcon = Rx<BitmapDescriptor?>(null);
+  final Rx<BitmapDescriptor?> destinationIcon = Rx<BitmapDescriptor?>(null);
   Future<void> loadCustomMarker() async {
     try {
       final bitmap = await BitmapDescriptor.asset(
@@ -285,7 +286,19 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
         purpleCarImage2,
       );
       customIcon.value = bitmap;
+      final sIcon = await BitmapDescriptor.asset(
+        ImageConfiguration(size: Size(40, 40)),
+        sourceLocationIcon,
+      );
+      sourceIcon.value = sIcon;
+      final dIcon = await BitmapDescriptor.asset(
+        ImageConfiguration(size: Size(40, 40)),
+        destinationLocationIcon,
+      );
+      destinationIcon.value = dIcon;
     } catch (e) {
+      sourceIcon.value = BitmapDescriptor.defaultMarker;
+      destinationIcon.value = BitmapDescriptor.defaultMarker;
       debugPrint('Error loading custom marker: $e');
       // Fallback to default marker if custom marker fails
       customIcon.value = BitmapDescriptor.defaultMarker;
@@ -318,6 +331,9 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
     // logger.d("---------------------------------------");
     return Obx(() {
       final position = CommonController.to.markerPositionDriver.value;
+      final trip = DashBoardController.to.currentTrip.value;
+      final coords = trip.pickUpCoordinates?.coordinates;
+      final dropCoords = trip.dropOffCoordinates?.coordinates;
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
@@ -333,34 +349,18 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
             markerId: const MarkerId("driver_marker"),
             position: CommonController.to.markerPositionDriver.value,
             icon: customIcon.value ?? BitmapDescriptor.defaultMarker,
-
-            onTap: () {
-              NavigationController.to.markerDraging.value = true;
-            },
-            onDragStart: (value) {
-              NavigationController.to.markerDraging.value = true;
-            },
-            onDragEnd: (value) async {
-              //   CommonController.to.marketPosition.value = value;
-              //   if (HomeController.to.setDestination.value) {
-              //     HomeController.to.dropoffLatLng.value = value;
-              //   } else {
-              //     HomeController.to.pickupLatLng.value = value;
-              //   }
-              //
-              //   await HomeController.to.getPlaceName(
-              //     value,
-              //     HomeController.to.setDestination.value
-              //         ? HomeController.to.dropOffLocationController.value
-              //         : HomeController.to.pickupLocationController.value,
-              //   );
-              //   NavigationController.to.markerDraging.value = false;
-            },
-            infoWindow: const InfoWindow(
-              title: "Selected Location",
-              snippet: "This is the chosen spot.",
-            ),
           ),
+       if( coords!=null ) Marker(
+            markerId: MarkerId("source Marker"),
+            position:  LatLng(coords.last.toDouble(), coords.first.toDouble()),
+            icon: sourceIcon.value!,
+
+          ),  if( dropCoords!=null ) Marker(
+            markerId: MarkerId("destination Marker"),
+            position:  LatLng(dropCoords.last.toDouble(), dropCoords.first.toDouble()),
+            icon: destinationIcon.value!,
+
+          )
         },
       );
     });

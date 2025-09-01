@@ -97,47 +97,58 @@ bool isRunning=false;
       isRunning= false;
     }
   }
-
-  Future<void> fetchCurrentLocation({
-    required Rx<LatLng> markerPosition,
-  })
-  async {
+  Future<bool> handleLocationPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
 
     // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      Get.snackbar('Location Disabled', 'Please enable location services');
+      showCustomSnackbar(
+          title:   'Location Disabled',
+          message: 'Please enable location services',
+          type: SnackBarType.alert
+      );
       await Geolocator.openLocationSettings();
-      return;
+      return false;
     }
 
-    // Check for permissions
+    // Check permission
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        Get.snackbar('Permission Denied', 'Location permission denied');
+        showCustomSnackbar(
+            title:   'Permission Denied',
+            message: 'Location permission denied',
+            type: SnackBarType.alert
+        );
         await Geolocator.openAppSettings();
-
-        return;
+        return false;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      Get.snackbar(
-        'Permission Denied',
-        'Location permission permanently denied. Please enable in settings.',
+      showCustomSnackbar(
+      title:   'Permission Denied',
+       message: 'Location permission permanently denied. Please enable in settings.',
+        type: SnackBarType.alert
       );
       await Geolocator.openAppSettings();
-
-      openAppSettings();
-      return;
+      return false;
     }
 
+    return true;
+  }
+
+  Future<void> fetchCurrentLocation({
+    required Rx<LatLng> markerPosition,
+  })
+  async {
+
     try {
-      // Get the current position - THIS WAS MISSING
+      final hasPermission = await handleLocationPermission();
+      if (!hasPermission) return;
       Position position = await Geolocator.getCurrentPosition(
         // Add timeout
       );
@@ -146,7 +157,8 @@ bool isRunning=false;
       markerPosition.value = LatLng(position.latitude, position.longitude);
       await getAddressFromLatLng(markerPosition.value);
     } catch (e) {
-      Get.snackbar('Error', 'Could not get current location: ${e.toString()}');
+      showCustomSnackbar(title: 'Error',message:  'Could not get current location: ${e.toString()}',
+      type: SnackBarType.failed);
 
       // Use fallback if error occurs
       markerPosition.value = LatLng(23.8168, 90.3675); // Dhaka, Bangladesh
