@@ -121,98 +121,121 @@ class _DashboardPageState extends State<DashboardPage>
                       top: Radius.circular(34.r),
                     ),
                   ),
-                  child: Padding(
-                    padding: padding12,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Handle indicator
-                        Container(
-                          height: 4.w,
-                          width: 40.w,
-                          decoration: BoxDecoration(
-                            color: AppColors.kPrimaryColor,
-                            // Replace with your AppColors.kPrimaryColor
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        space12H,
-                        Obx(() {
-                          DriverCurrentTripModel driverTrip =
-                              DashBoardController.to.currentTrip.value;
-                          DriverCurrentTripModel availableTrip =
-                              DashBoardController.to.availableTrip.value;
-                          return DashBoardController.to.isLoadingCurrentTrip.value?Padding(
-                            padding: padding12,
-                            child: GradientProgressIndicator(),
-                          ): DashBoardController.to.findingRide.value
-                              ? NoNewRideReqWidget()
-                              : DashBoardController.to.rideRequest.value
-                              ? RideRequestCardWidget(
-                                userName: availableTrip.user?.name,
-                                userImg:
-                                    "${ApiService().baseUrl}/${availableTrip.user?.name}",
+                  child: Stack(
+                     alignment: AlignmentGeometry.center,
+                    children: [
+                      Padding(
+                        padding: padding12,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
 
-                                fare: availableTrip.estimatedFare.toString(),
-                                dateTime: formatDateTime(
-                                  availableTrip.createdAt ??
-                                      AppStaticStrings.noDataFound,
-                                ),
-                                distance: availableTrip.distance.toString(),
-                                fromAddress: availableTrip.pickUpAddress,
-                                rideType:availableTrip.tripType,
-                                toAddress: availableTrip.dropOffAddress,
-                              )
-                              : DashBoardController.to.afterAccepted.value ||
-                                  DashBoardController.to.afterOnTheWay.value
-                              ? DriverAfterAcceptedWidget(
-                                driverCurrentTripModel: driverTrip,
-                                user: driverTrip.user,
-                                fare: driverTrip.estimatedFare.toString(),
-                                tripId: driverTrip.sId,
-                                fromAddress: driverTrip.pickUpAddress,
-                                time: driverTrip.duration.toString(),
-                              )
-                              : DashBoardController.to.afterArrived.value
-                              ? AfterArrivedPickupLocationWidget(
-                                tripId: driverTrip.sId,
-                              )
-                              : DashBoardController.to.afterPickup.value
-                              ? AfterPickedUpWidget(
-                                tripId: driverTrip.sId,
-                                fare: driverTrip.estimatedFare.toString(),
-                                fromAddress: driverTrip.pickUpAddress,
-                                toAddress: driverTrip.dropOffAddress,
-                                user: driverTrip.user,
-                                duration: driverTrip.duration.toString(),
-                              )
-                              : DashBoardController.to.afterTripStarted.value
-                              ? AfterTripStartedWidget(
-                                tripDistance: driverTrip.distance.toString(),
-                                dropOffAddress: driverTrip.dropOffAddress,
-                                pickUpAddress: driverTrip.pickUpAddress,
-                                estimatedTime: driverTrip.duration.toString(),
-                              )
-                              : DashBoardController.to.sendPaymentReq.value
-                              ? SendPaymentRequestWidget(
-                                driverTripResponseModel: driverTrip,
-                                tripId: driverTrip.sId.toString(),
-                              )
-                              : DashBoardController
-                                  .to
-                                  .afterDestinationReached
-                                  .value
-                              ? AfterDestinationReachedWidget()
-                              : SizedBox.shrink();
-                        }),
-                        space12H,
-                      ],
-                    ),
+                            Container(
+                              height: 4.w,
+                              width: 40.w,
+                              decoration: BoxDecoration(
+                                color: AppColors.kPrimaryColor,
+                                // Replace with your AppColors.kPrimaryColor
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            space12H,
+                            Obx(() {
+                              DriverCurrentTripModel driverTrip =
+                                  DashBoardController.to.currentTrip.value;
+                              DriverCurrentTripModel availableTrip =
+                                  DashBoardController.to.availableTrip.value;
+                              return DashBoardController.to.isLoadingCurrentTrip.value?Padding(
+                                padding: padding12,
+                                child: GradientProgressIndicator(),
+                              ): DashBoardController.to.findingRide.value
+                                  ? NoNewRideReqWidget()
+                                  : DashBoardController.to.rideRequest.value
+                                  ? RideRequestCardWidget(
+                                    userName: availableTrip.user?.name,
+                                    userImg:
+                                        "${ApiService().baseUrl}/${availableTrip.user?.name}",
+
+                                    fare: availableTrip.estimatedFare.toString(),
+                                    dateTime: formatDateTime(
+                                      availableTrip.createdAt ??
+                                          AppStaticStrings.noDataFound,
+                                    ),
+                                    distance: availableTrip.distance.toString(),
+                                    fromAddress: availableTrip.pickUpAddress,
+                                    rideType:availableTrip.tripType,
+                                    toAddress: availableTrip.dropOffAddress,
+                                  )
+                                  : DashBoardController.to.afterAccepted.value ||
+                                      DashBoardController.to.afterOnTheWay.value
+                                  ? DriverAfterAcceptedWidget(
+                                    driverCurrentTripModel: driverTrip,
+                                    user: driverTrip.user,
+                                    fare: driverTrip.estimatedFare.toString(),
+                                    tripId: driverTrip.sId,
+                                    fromAddress: driverTrip.pickUpAddress,
+                                    time: driverTrip.duration.toString(),
+                                  )
+                                  : DashBoardController.to.afterArrived.value
+                                  ? AfterArrivedPickupLocationWidget(
+                                    tripId: driverTrip.sId,
+                                  )
+                                  : DashBoardController.to.afterPickup.value
+                                  ? AfterPickedUpWidget(
+                                    tripId: driverTrip.sId,
+                                    fare: driverTrip.estimatedFare.toString(),
+                                    fromAddress: driverTrip.pickUpAddress,
+                                    toAddress: driverTrip.dropOffAddress,
+                                    user: driverTrip.user,
+                                    duration: driverTrip.duration.toString(),
+                                  )
+                                  : DashBoardController.to.afterTripStarted.value
+                                  ? AfterTripStartedWidget(
+                                    tripDistance: driverTrip.distance.toString(),
+                                    dropOffAddress: driverTrip.dropOffAddress,
+                                    pickUpAddress: driverTrip.pickUpAddress,
+                                    estimatedTime: driverTrip.duration.toString(),
+                                  )
+                                  : DashBoardController.to.sendPaymentReq.value
+                                  ? SendPaymentRequestWidget(
+                                    driverTripResponseModel: driverTrip,
+                                    tripId: driverTrip.sId.toString(),
+                                  )
+                                  : DashBoardController
+                                      .to
+                                      .afterDestinationReached
+                                      .value
+                                  ? AfterDestinationReachedWidget()
+                                  : SizedBox.shrink();
+                            }),
+                            space12H,
+                          ],
+                        ),
+                      ),
+                      Positioned(
+
+                        right: 6.sp,
+                        top: 6.sp,
+
+                        child: Obx(() => DashBoardController.to.currentTrip.value.pickUpCoordinates!=null&&DashBoardController.to.currentTrip.value.dropOffCoordinates!=null?
+                        FloatingActionButton.small(
+                          shape: CircleBorder(),
+                          child: Icon(Icons.directions),
+                          onPressed: () {
+                          launchGoogleMapsApp(DashBoardController.to.currentTrip.value.pickUpCoordinates!.coordinates!.last.toString(),
+                            DashBoardController.to.currentTrip.value.pickUpCoordinates!.coordinates!.first.toString(),
+                            DashBoardController.to.currentTrip.value.dropOffCoordinates!.coordinates!.last.toString(),
+                            DashBoardController.to.currentTrip.value.dropOffCoordinates!.coordinates!.first.toString(),);
+                        },)
+                            :SizedBox.shrink(),),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
+
         ],
       ),
     );

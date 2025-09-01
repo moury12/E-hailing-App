@@ -157,6 +157,18 @@ class _NavigationPageState extends State<NavigationPage>
                   ),
                 );
               }),
+            currentIndex==0?  Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FloatingActionButton.small(onPressed: () {
+                  if(CommonController.to.isDriver==true){
+                    DashBoardController.to.getDriverCurrentTripRequest();
+                  }else{
+                    HomeController.to.getUserCurrentTrip();
+                  }
+                },
+                    shape: CircleBorder(),
+                    child: Icon(Icons.refresh_rounded)),
+              ):SizedBox.shrink(),
             ],
           ),
           bottomNavigationBar: Stack(

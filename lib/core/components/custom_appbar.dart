@@ -48,13 +48,7 @@ class CustomAppBarForHome extends StatelessWidget implements PreferredSizeWidget
       ),
       actions: [
         
-        IconButton(onPressed: () {
-          if(isDriver==true){
-            DashBoardController.to.getDriverCurrentTripRequest();
-          }else{
-            HomeController.to.getUserCurrentTrip();
-          }
-        }, icon: Icon(Icons.refresh,color: AppColors.kPrimaryColor,)),
+
         if (isDriver == true) CustomToggleSwitch(),
         IconButton(
           onPressed: () {

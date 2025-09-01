@@ -1,7 +1,9 @@
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/pagination_loading_widget.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
+import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pdfx/pdfx.dart';
 
 class PdfViewerPage extends StatefulWidget {
@@ -21,14 +23,15 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("E-Hailing Vehicle Permit")),
-      body: AccountInformationController.to.pdfController == null
-          ? PaginationLoadingWidget()
+      body: Obx(() => AccountInformationController.to.pdfLoading.value?
+          PaginationLoadingWidget():AccountInformationController.to.pdfController == null&&!AccountInformationController.to.pdfLoading.value
+          ? EmptyWidget(text: "Pdf File is Empty")
           : PdfViewPinch(
-       controller:  AccountInformationController.to.pdfController!,
+        controller:  AccountInformationController.to.pdfController!,
 
         backgroundDecoration:BoxDecoration(color: AppColors.kScaffoldBackgroundColor,
 
-      ),
-    ));
+        ),
+      ),));
   }
 }

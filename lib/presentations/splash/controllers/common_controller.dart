@@ -14,7 +14,6 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/api-client/api_endpoints.dart';
 import '../../../core/utils/google_map_api_key.dart';
@@ -82,6 +81,7 @@ logger.d(response);
 
   @override
   void onInit() async {
+    // locationService.handleLocationPermission();
     logger.d(
       "--check role----${Boxes.getUserRole().get(role, defaultValue: user).toString()}",
     );
@@ -95,14 +95,7 @@ logger.d(response);
     super.onInit();
   }
 
-  Future<void> requestLocationPermission() async {
-    var status = await Permission.location.request();
-    if (status.isGranted) {
-      debugPrint("Location permission granted.");
-    } else {
-      debugPrint("Location permission denied.");
-    }
-  }
+
 
   Future<void> fetchSuggestedPlacesWithRadius(
     String input, {
@@ -155,6 +148,7 @@ logger.d(response);
   }
 
   void initialSetup() {
+
     Future.wait([fetchCurrentLocationMethod(), checkUserRole()]);
   }
 

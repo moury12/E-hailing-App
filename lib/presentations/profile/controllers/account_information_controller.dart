@@ -63,10 +63,14 @@ RxString contactNumber="".obs;
     super.onInit();
   }
    PdfControllerPinch? pdfController;
-
+RxBool pdfLoading =false.obs;
   Future<void> loadPdf() async {
     try {
-      final response = await http.get(Uri.parse("${ApiService().baseUrl}/${userModel.value.assignedCar?.eHailingVehiclePermitPdf}"));
+      pdfLoading.value=true;
+      final url = "${ApiService().baseUrl}/${userModel.value.assignedCar?.eHailingVehiclePermitPdf}";
+      logger.d("📄 PDF URL: $url");
+
+      final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         final bytes = response.bodyBytes;
@@ -77,12 +81,15 @@ RxString contactNumber="".obs;
 
 
       } else {
+        pdfController=null;
         print("Failed to load PDF: ${response.statusCode}");
-        Get.snackbar("Error", "Failed to load PDF");
+        // Get.snackbar("Error", "Failed to load PDF");
       }
     } catch (e) {
       print("PDF Load Error: $e");
-      Get.snackbar("Error", "Failed to load PDF");
+      // Get.snackbar("Error", "Failed to load PDF");
+    }finally{
+      pdfLoading.value=false;
     }
   }
   Future<void> getUserProfileRequest({bool needReinitilaize = false}) async {

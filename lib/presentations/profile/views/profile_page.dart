@@ -37,6 +37,7 @@ class ProfilePage extends StatelessWidget {
     return CustomRefreshIndicator(
       onRefresh: () async {
         AccountInformationController.to.getUserProfileRequest();
+        await AccountInformationController.to.loadPdf();
       },
       child: Column(
         children: [
