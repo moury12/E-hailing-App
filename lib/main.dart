@@ -63,56 +63,40 @@ Future<void> initFCM() async {
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+  // Keep splash visible during async setup
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
-  // Initialize local notifications first
-  await _initLocalNotifs();
+    await _initLocalNotifs();
+    await initFCM();
 
-  // Initialize FCM (permission request + token)
-  await initFCM();
+    // iOS foreground notification options
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
-  // iOS foreground notification presentation
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  // Background handler
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    await Hive.initFlutter();
+    await Hive.openBox(userRole);
+    await Hive.openBox(userBoxName);
+    await Hive.openBox(authBox);
+    await Hive.openBox("ratingData");
 
-  // Foreground messages
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    if (Platform.isIOS) {
-      await flutterLocalNotificationsPlugin.show(
-        message.hashCode,
-        message.notification?.title ?? message.data['title'] ?? 'Notification',
-        message.notification?.body ?? message.data['body'] ?? '',
-        const NotificationDetails(
-          iOS: DarwinNotificationDetails(
-            presentAlert: true,
-            presentSound: true,
-            presentBadge: true,
-          ),
-        ),
-        payload: message.data['payload'],
-      );
-    }
-  });
-
-  // Initialize Hive
-  await Hive.initFlutter();
-  await Hive.openBox(userRole);
-  await Hive.openBox(userBoxName);
-  await Hive.openBox(authBox);
-  await Hive.openBox("ratingData");
-
-  await ScreenUtil.ensureScreenSize();
-
+    await ScreenUtil.ensureScreenSize();
+  } catch (e) {
+    print("Initialization error: $e");
+  } finally {
+    // MUST remove splash screen
+    FlutterNativeSplash.remove();
+  }
   runApp(const MyApp());
 }
 
