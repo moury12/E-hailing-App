@@ -55,7 +55,7 @@ class CommonController extends GetxController {
       );
 logger.d(response);
       if (response['success'] == true) {
-        driverRating.value=response['data']['averageRating'];
+        driverRating.value=double.parse(response['data']['averageRating'].toString());
         reviewList.value =
             (response['data']['reviews'] as List)
                 .map((e) => ReviewModel.fromJson(e))

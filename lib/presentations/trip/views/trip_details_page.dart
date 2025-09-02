@@ -286,8 +286,8 @@ class TripDetailsPage extends StatelessWidget {
                     },
                     title: AppStaticStrings.payment,
                   )
-                      : Obx(() {
-                    return CancelTripButtonWidget(
+                      :
+                  CancelTripButtonWidget(
                       isLoading: HomeController.to.isCancellingTrip,
                       onSubmit: () {
                         if (HomeController.to.cancelReason.isEmpty) {
@@ -305,8 +305,7 @@ class TripDetailsPage extends StatelessWidget {
                           Get.back();
                         }
                       },
-                    );
-                  }),
+                    )
                 ],
               );
             }),

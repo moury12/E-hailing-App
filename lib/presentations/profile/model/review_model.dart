@@ -1,7 +1,7 @@
 class ReviewModel {
   String? sId;
   User? user;
-  int? rating;
+  num? rating;
   String? review;
 
   ReviewModel({this.sId, this.user, this.rating, this.review});
@@ -9,7 +9,7 @@ class ReviewModel {
   ReviewModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     user = json['user'] != null ? User.fromJson(json['user']) : null;
-    rating = json['rating'];
+    rating = (json['rating'] as num).toDouble();;
     review = json['review'];
   }
 

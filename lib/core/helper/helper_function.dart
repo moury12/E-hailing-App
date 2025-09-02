@@ -141,13 +141,12 @@ Future<String?> getDeviceId() async {
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       return iosInfo.identifierForVendor; // Unique ID for iOS
-    } else {
-      return null; // If it's neither Android nor iOS
     }
   } catch (e) {
     print("Error getting device ID: $e");
     return null;
   }
+  return null;
 }
 
 // Function to dismiss the loading dialog

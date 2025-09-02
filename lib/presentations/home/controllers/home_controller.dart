@@ -82,7 +82,10 @@ class HomeController extends GetxController {
   void onInit() async {
     initializeSocket();
     await getUserCurrentTrip();
-
+if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dropOffCoordinates!=null){
+  pickupLatLng.value=LatLng(double.parse(tripAcceptedModel.value.pickUpCoordinates!.coordinates!.last.toString()),double.parse(tripAcceptedModel.value.pickUpCoordinates!.coordinates!.first.toString()));
+  dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinates!.coordinates!.last.toString()),double.parse(tripAcceptedModel.value.dropOffCoordinates!.coordinates!.first.toString()));
+}
     super.onInit();
   }
 
@@ -219,10 +222,10 @@ class HomeController extends GetxController {
       logger.d('🚕 tripRequested: $data');
       currentTrip.value = data;
       isCancellingTrip.value = false;
-      showCustomSnackbar(
-        title: 'Success',
-        message: 'Trip requested successfully! Looking for nearby drivers...',
-      );
+      // showCustomSnackbar(
+      //   title: 'Success',
+      //   message: 'Trip requested successfully! Looking for nearby drivers...',
+      // );
     });
 
     socket.on(TripEvents.tripNoDriverFound, (data) {
@@ -231,10 +234,10 @@ class HomeController extends GetxController {
       isRequestingTrip.value = false;
       hasActiveTrip.value = false;
       if (Get.isDialogOpen == true) Get.back();
-      showCustomSnackbar(
-        title: 'No Drivers Available',
-        message: 'Sorry, no drivers are available in your area right now.',
-      );
+      // showCustomSnackbar(
+      //   title: 'No Drivers Available',
+      //   message: 'Sorry, no drivers are available in your area right now.',
+      // );
 
       resetAllStates();
       Get.offAllNamed(
@@ -259,7 +262,8 @@ class HomeController extends GetxController {
         );
 
         polyLineShow();
-
+pickupLatLng.value=LatLng(double.parse(tripAcceptedModel.value.pickUpCoordinates!.coordinates!.last.toString()),double.parse(tripAcceptedModel.value.pickUpCoordinates!.coordinates!.first.toString()));
+dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinates!.coordinates!.last.toString()),double.parse(tripAcceptedModel.value.dropOffCoordinates!.coordinates!.first.toString()));
         Get.offAndToNamed(TripDetailsPage.routeName);
       }else{
        resetAllStates();
