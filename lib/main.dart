@@ -41,12 +41,12 @@ Future<void> main() async {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
     await Hive.initFlutter();
-  Future.wait([
-   Hive.openBox(userRole),
-     Hive.openBox(userBoxName),
-     Hive.openBox(authBox),
-     Hive.openBox("ratingData"),
-  ]);
+
+   await Hive.openBox(userRole);
+     await Hive.openBox(userBoxName);
+     await Hive.openBox(authBox);
+     await Hive.openBox("ratingData");
+
 
     await ScreenUtil.ensureScreenSize();
   } catch (e) {

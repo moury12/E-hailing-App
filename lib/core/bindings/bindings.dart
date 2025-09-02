@@ -8,6 +8,7 @@ import 'package:e_hailing_app/presentations/notification/controller/notification
 import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -93,14 +94,17 @@ class NavigationBinding extends Bindings {
         }
       });
     }
-if(arguments[preBook]!=null && arguments[preBook]==true){
-  final navCtrl = Get.find<NavigationController>();
-  navCtrl.currentNavIndex.value=1;
-  if(Get.isRegistered<MyRideController>()){
-    final rideCtrl = Get.find<MyRideController>();
-    rideCtrl.currentTabIndex.value=1;
-  }
-}
+    if (arguments is Map && arguments['pre_book'] != null && arguments['pre_book'] == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final navCtrl = Get.find<NavigationController>();
+        navCtrl.currentNavIndex.value = 1;
+
+        if (Get.isRegistered<MyRideController>()) {
+          final rideCtrl = Get.find<MyRideController>();
+          rideCtrl.currentTabIndex.value = 1;
+        }
+      });
+    }
   }
 }
 

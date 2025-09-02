@@ -1,6 +1,7 @@
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/service/internet_service.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
+import 'package:e_hailing_app/core/service/notification-service/notification_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/main.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
@@ -67,8 +68,8 @@ class SplashController extends GetxController {
     // Request FCM + permissions
     await initFCM();
 
-    // iOS foreground notification settings
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+await NotificationService.instance.init();
+await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
