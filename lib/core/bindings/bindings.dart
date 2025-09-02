@@ -24,14 +24,15 @@ class SplashBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(SplashController());
+    Get.put(CommonController(), permanent: true);
+    Get.put(BoundaryController(), permanent: true);
   }
 }
 
 class CommonBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(CommonController(), permanent: true);
-    Get.put(BoundaryController(), permanent: true);
+
   }
 }
 
