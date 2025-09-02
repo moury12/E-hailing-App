@@ -25,80 +25,39 @@ String? fcmToken;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
-Future<void> _initLocalNotifs() async {
-  const DarwinInitializationSettings iosInit = DarwinInitializationSettings(
-    requestAlertPermission: false,
-    requestBadgePermission: false,
-    requestSoundPermission: false,
-  );
 
-  const InitializationSettings initSettings =
-  InitializationSettings(iOS: iosInit);
-
-  await flutterLocalNotificationsPlugin.initialize(initSettings);
-}
-
-Future<void> initFCM() async {
-  try {
-    // Request permission first (critical on iOS)
-    NotificationSettings settings =
-    await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized ||
-        settings.authorizationStatus == AuthorizationStatus.provisional) {
-      // Only now get the token
-      fcmToken = await FirebaseMessaging.instance.getToken();
-      logger.i("-------------fcm token----------------$fcmToken");
-    } else {
-      logger.w("User declined notification permissions");
-    }
-  } catch (e) {
-    print("Error getting FCM token: $e");
-  }
-}
 
 Future<void> main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-
-  // Keep splash visible during async setup
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(
+    widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
+  );
 
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    await _initLocalNotifs();
-    await initFCM();
-
-    // iOS foreground notification options
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
     await Hive.initFlutter();
-    await Hive.openBox(userRole);
-    await Hive.openBox(userBoxName);
-    await Hive.openBox(authBox);
-    await Hive.openBox("ratingData");
+  Future.wait([
+   Hive.openBox(userRole),
+     Hive.openBox(userBoxName),
+     Hive.openBox(authBox),
+     Hive.openBox("ratingData"),
+  ]);
 
     await ScreenUtil.ensureScreenSize();
   } catch (e) {
     print("Initialization error: $e");
   } finally {
-    // MUST remove splash screen
-    FlutterNativeSplash.remove();
+
   }
+
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -114,7 +73,7 @@ class MyApp extends StatelessWidget {
         themeMode: ThemeMode.dark,
         initialRoute: SplashPage.routeName,
         getPages: AppRoutes.route(),
-        initialBinding: CommonBinding(),
+        initialBinding: SplashBinding(),
         debugShowCheckedModeBanner: false,
       ),
     );

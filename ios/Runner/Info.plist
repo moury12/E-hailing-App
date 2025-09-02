@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>e_hailing_app</string>
+	<string>DUDU Car</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -50,6 +50,22 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+    <!-- Google Sign-In configuration -->
+       <key>GIDClientID</key>
+       <string>862744998497-3h3veq7n922p8f4k4ejtde5k3a03q7n7.apps.googleusercontent.com</string>
+
+       <!-- Correct URL scheme for Google Sign-In -->
+       <key>CFBundleURLTypes</key>
+       <array>
+         <dict>
+           <key>CFBundleTypeRole</key>
+           <string>Editor</string>
+           <key>CFBundleURLSchemes</key>
+           <array>
+             <string>com.googleusercontent.apps.862744998497-3h3veq7n922p8f4k4ejtde5k3a03q7n7</string> <!-- Correct scheme -->
+           </array>
+         </dict>
+       </array>
     <key>CFBundleIconName</key>
     <string>AppIcon</string>
 	<key>CFBundleNotificationIcon</key>
