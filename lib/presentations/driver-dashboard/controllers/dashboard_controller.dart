@@ -130,7 +130,7 @@ class DashBoardController extends GetxController {
   }
 
   void showAvailableTrip() {
-    rideRequest.value = true;
+    // rideRequest.value = true;
     logger.d(availableTrip.value.sId);
     resetRideFlow(rideType: RideFlowState.rideRequest);
   }
@@ -370,6 +370,7 @@ logger.i("Listening socket event for driver");
       if (data["success"]) {
         availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
         showAvailableTrip();
+        logger.d(rideRequest.value);
       }
     });
 
@@ -401,7 +402,7 @@ logger.i("Listening socket event for driver");
 
       if (data['success'] == true) {
         currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-        if(currentTrip.value.tripType==preBook){
+        if(currentTrip.value.tripType!=preBook){
           startTrackingUserLocationMethod(
             tripId: currentTrip.value.sId.toString(),
           );

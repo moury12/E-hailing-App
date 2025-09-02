@@ -154,7 +154,7 @@ class _DashboardPageState extends State<DashboardPage>
                                   ? RideRequestCardWidget(
                                     userName: availableTrip.user?.name,
                                     userImg:
-                                        "${ApiService().baseUrl}/${availableTrip.user?.name}",
+                                        "${ApiService().baseUrl}/${availableTrip.user?.profileImage}",
 
                                     fare: availableTrip.estimatedFare.toString(),
                                     dateTime: formatDateTime(
