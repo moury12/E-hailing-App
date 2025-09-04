@@ -180,7 +180,7 @@ RxBool pdfLoading =false.obs;
         endpoint: deleteProfileEndPoint,
         method: 'DELETE',
         useAuth: true,
-        body: {"password": password},
+        body: {"email":userModel.value.email,"password": password},
       );
 
       isLoadingDeleteAcc.value = false;
@@ -188,7 +188,7 @@ RxBool pdfLoading =false.obs;
       if (response['success'] == true) {
         logger.d(response);
         logoutRequest();
-        // Get.toNamed(LoginPage.routeName);
+         Get.toNamed(LoginPage.routeName);
         showCustomSnackbar(title: 'Success', message: response['message']);
       } else {
         logger.e(response);
