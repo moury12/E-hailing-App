@@ -17,6 +17,8 @@ import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/gradient_progress_indicator.dart';
+import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
+import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -131,6 +133,19 @@ void showLoadingDialog({required String text}) {
     ),
   );
 }
+void handleNotificationTap(Map<String, dynamic> data) {
+  logger.d(data);
+  if (data.containsKey('chatId')) {
+    final chatId = data['chatId'];
+    Get.toNamed(
+      ChattingPage.routeName,
+      arguments: {"chatId": chatId},
+    );
+  } else  {
+    Get.toNamed(NavigationPage.routeName);
+  }
+}
+
 Future<String?> getDeviceId() async {
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 

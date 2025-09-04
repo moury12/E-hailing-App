@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -44,14 +45,14 @@ class NotificationService {
     // When tapping a notification (background)
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       logger.i("Notification tapped (background): ${message.data}");
-      _handleNotificationTap(message.data);
+      handleNotificationTap(message.data);
     });
 
     // When app is opened from terminated
     RemoteMessage? initialMessage = await _messaging.getInitialMessage();
     if (initialMessage != null) {
       logger.i("Notification opened from terminated: ${initialMessage.data}");
-      _handleNotificationTap(initialMessage.data);
+      handleNotificationTap(initialMessage.data);
     }
   }
 
@@ -106,10 +107,4 @@ class NotificationService {
     }
   }
 
-  void _handleNotificationTap(Map<String, dynamic> data) {
-    // Example: route based on data['screen']
-    if (data.containsKey('screen')) {
-      Get.toNamed(data['screen'], arguments: data);
-    }
-  }
 }
