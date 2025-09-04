@@ -71,8 +71,10 @@ class NotificationService {
 
     await _flutterLocalNotificationsPlugin.initialize(
       initSettings,
+
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        logger.i("Local notification tapped: ${response.payload}");
+        logger.d(response.payload);
+       handleNotificationTap(response.data);
         // Navigate or handle payload here
       },
     );

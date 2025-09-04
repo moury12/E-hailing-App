@@ -148,7 +148,8 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
         logger.d(response);
         showCustomSnackbar(title: 'Success', message: response['message']);
         Boxes.getRattingData().delete("rating");
-        Get.back();
+
+        Navigator.pop(Get.context!);
       } else {
         logger.e(response);
 

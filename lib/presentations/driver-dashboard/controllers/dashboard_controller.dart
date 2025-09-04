@@ -246,6 +246,7 @@ class DashBoardController extends GetxController {
         message: 'Not connected to server. Please wait and try again.',
         type: SnackBarType.failed,
       );
+      initializeSocket();
       return;
     }
 
@@ -417,6 +418,7 @@ logger.i("Listening socket event for driver");
             arguments: {'reconnectSocket': true,"pre_book":true},
           );        }
       } else {
+        resetRideFlow(rideType: RideFlowState.findingRide);
         _showError(data['message']);
       }
     });
