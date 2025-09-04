@@ -82,10 +82,7 @@ await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       return;
     }
 
-    // Add splash delay
-    // await Future.delayed(const Duration(seconds: 2));
 
-    // Navigate based on login
     if (Boxes.getUserData().get(tokenKey)?.toString().isNotEmpty ?? false) {
       Get.offAllNamed(
         NavigationPage.routeName,

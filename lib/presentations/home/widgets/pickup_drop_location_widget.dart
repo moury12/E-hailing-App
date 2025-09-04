@@ -25,9 +25,11 @@ class PickupDropLocationWidget extends StatefulWidget {
 class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
   @override
   void initState() {
-    if (HomeController.to.pickupLocationController.value.text.isEmpty) {
-      HomeController.to.setCurrentLocationOnPickUp();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (HomeController.to.pickupLocationController.value.text.isEmpty) {
+        HomeController.to.setCurrentLocationOnPickUp();
+      }
+    });
     super.initState();
   }
 
@@ -48,19 +50,15 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             fillColor: AppColors.kWhiteColor,
             borderColor: AppColors.kGreyColor,
             onTap: () {
-              // Future.delayed(Duration(milliseconds: 50), () {
-              //   FocusScope.of(
-              //     context,
-              //   ).requestFocus(HomeController.to.pickupFocusNode);
-              // });
-              HomeController.to.activeField.value = "pickup";
-              // // FocusScope.of(context).unfocus();
-              // HomeController.to.pickupFocusNode.requestFocus(); // 👈 Add this
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                HomeController.to.activeField.value = "pickup";
+              });
             },
-            // height: 45.h,
             onChanged: (v) {
-              HomeController.to.activeField.value = "pickup";
-              CommonController.to.fetchSuggestedPlacesWithRadius(v);
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                HomeController.to.activeField.value = "pickup";
+                CommonController.to.fetchSuggestedPlacesWithRadius(v);
+              });
             },
 
             textEditingController:

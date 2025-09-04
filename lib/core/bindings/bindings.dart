@@ -66,34 +66,37 @@ class NavigationBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<NavigationController>(() => NavigationController());
     final arguments = Get.arguments;
-    if (arguments is Map && arguments['reconnectSocket'] == true)  {
-      Future.delayed(Duration(milliseconds: 500), () {
-
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(
-            Boxes.getUserData().get(tokenKey).toString());
-
-        SocketService().connect(
-            decodedToken['userId'], decodedToken['role'] == "DRIVER");
-
-        // Also re-register driver-specific listeners if user is a driver
-        if (CommonController.to.isDriver.value) {
-          Future.delayed(Duration(milliseconds: 200), () {
-            if (Get.isRegistered<DashBoardController>()) {
-              final dashboardController = Get.find<DashBoardController>();
-              dashboardController.registerSocketListeners();
-            }
-          });
-        } else {
-          Future.delayed(Duration(milliseconds: 200), () {
-
-            if (Get.isRegistered<HomeController>()) {
-              final homeController = Get.find<HomeController>();
-              homeController.registerTripEventListeners();
-            }
-          });
-        }
-      });
-    }
+    // if (arguments is Map && arguments['reconnectSocket'] == true)  {
+    //   Future.delayed(Duration(milliseconds: 500), () {
+    //
+    //     Map<String, dynamic> decodedToken = JwtDecoder.decode(
+    //         Boxes.getUserData().get(tokenKey).toString());
+    //
+    //     SocketService().connect(
+    //         decodedToken['userId'], decodedToken['role'] == "DRIVER");
+    //
+    //     // Also re-register driver-specific listeners if user is a driver
+    //     if (CommonController.to.isDriver.value) {
+    //       Future.delayed(Duration(milliseconds: 200), () {
+    //         if (Get.isRegistered<DashBoardController>()) {
+    //           Get.delete<DashBoardController>();
+    //         }
+    //         Get.lazyPut<DashBoardController>(() => DashBoardController());
+    //         final dashboardController = Get.find<DashBoardController>();
+    //         dashboardController.registerSocketListeners();
+    //       });
+    //     }
+    //     else {
+    //       Future.delayed(Duration(milliseconds: 200), () {
+    //
+    //         if (Get.isRegistered<HomeController>()) {
+    //           final homeController = Get.find<HomeController>();
+    //           homeController.registerTripEventListeners();
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
     if (arguments is Map && arguments['pre_book'] != null && arguments['pre_book'] == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final navCtrl = Get.find<NavigationController>();

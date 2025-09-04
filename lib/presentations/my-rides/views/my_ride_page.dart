@@ -105,11 +105,13 @@ class _MyRidePageState extends State<MyRidePage>
     return CustomRefreshIndicator(
       onRefresh: () async {
         MyRideController.to.pagingControllerForCompletedTrip.refresh();
-        final isDriver = CommonController.to.isDriver.value;
-        if (isDriver) {
-          DashBoardController.to.getDriverCurrentTripRequest();
-        } else {
-          HomeController.to.getUserCurrentTrip();
+       if( MyRideController.to.currentTabIndex.value==0) {
+          final isDriver = CommonController.to.isDriver.value;
+          if (isDriver) {
+            DashBoardController.to.getDriverCurrentTripRequest();
+          } else {
+            HomeController.to.getUserCurrentTrip();
+          }
         }
       },
       child: CustomScrollView(
@@ -121,7 +123,7 @@ class _MyRidePageState extends State<MyRidePage>
                 return DynamicTabWidget(
                   initialIndex: MyRideController.to.currentTabIndex.value,
                   onTabChanged: (value) {
-
+                    MyRideController.to.currentTabIndex.value=value;
                   },
                   tabs: MyRideController.to.tabLabels,
                   tabContent: [

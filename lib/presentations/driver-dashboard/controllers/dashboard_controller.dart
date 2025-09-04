@@ -201,6 +201,7 @@ class DashBoardController extends GetxController {
   }) async {
     try {
       if (!socketService.socket!.connected) {
+        initializeSocket();
         showCustomSnackbar(
           title: 'Connection Error',
           message: 'Not connected to server. Please wait and try again.',

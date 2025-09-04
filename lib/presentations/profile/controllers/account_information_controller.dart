@@ -23,6 +23,8 @@ class AccountInformationController extends GetxController {
   RxBool isLoadingProfile = false.obs;
   RxBool isLoadingLogout = false.obs;
   RxBool isLoadingHelpSupport = false.obs;
+  RxBool isLoadingDeleteAcc = false.obs;
+
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
 RxString contactEmail="".obs;
 RxString contactNumber="".obs;
@@ -165,6 +167,42 @@ RxBool pdfLoading =false.obs;
     }finally{
       isLoadingHelpSupport.value = false;
 
+    }
+  }
+
+  ///------------------------------ delete profile method -------------------------///
+
+  Future<void> deleteAccRequest({required String password}) async {
+    try {
+      isLoadingDeleteAcc.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+      final response = await ApiService().request(
+        endpoint: deleteProfileEndPoint,
+        method: 'DELETE',
+        useAuth: true,
+        body: {"password": password},
+      );
+
+      isLoadingDeleteAcc.value = false;
+
+      if (response['success'] == true) {
+        logger.d(response);
+        logoutRequest();
+        // Get.toNamed(LoginPage.routeName);
+        showCustomSnackbar(title: 'Success', message: response['message']);
+      } else {
+        logger.e(response);
+
+        showCustomSnackbar(
+          title: 'Failed',
+          message: response['message'],
+          type: SnackBarType.failed,
+        );
+
+      }
+    } catch (e) {
+      isLoadingDeleteAcc.value = false;
+      logger.e(e.toString());
     }
   }
 

@@ -44,7 +44,7 @@ class MyRideController extends GetxController {
       }
     });pagingControllerForUpcomingTrip.addPageRequestListener((pageKey) {
       if (!isAllTripLoading.value) {
-        getAllRideRequest(pageKey: pageKey,rideStatus: "accepted",tripType: preBook);
+        getAllRideRequest(pageKey: pageKey,rideStatus: "scheduled");
       }
     });
   }
@@ -61,9 +61,11 @@ class MyRideController extends GetxController {
   final PagingController<int, TripResponseModel> pagingControllerForUpcomingTrip =
       PagingController(firstPageKey: 1);
 
-  Future<void> getAllRideRequest({required int pageKey, String? tripType,String? rideStatus}) async {
+  Future<void> getAllRideRequest({required int pageKey, String?  rideStatus}) async {
     if (isAllTripLoading.value) return;
-    isAllTripLoading.value = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      isAllTripLoading.value = true;
+    });
 
     try {
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
@@ -75,7 +77,7 @@ class MyRideController extends GetxController {
           'page': pageKey.toString(),
           'limit': "5",
          if(rideStatus!=null) 'status': rideStatus,
-         if(tripType!=null) 'tripType':tripType
+
         },
       );
      PagingController<int, TripResponseModel> pageController=rideStatus=="completed"? pagingControllerForCompletedTrip:pagingControllerForUpcomingTrip;
