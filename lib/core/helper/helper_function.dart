@@ -31,19 +31,39 @@ import '../../presentations/payment/widgets/ratting_dialog_widget.dart';
 import '../../presentations/trip/widgets/trip_cancellation_reason_card_item.dart';
 import '../utils/google_map_api_key.dart';
 
-launchGoogleMapsApp(String startLatitude, String startLongitude, String endLatitude, String endLongitude) async {
-  // Construct the Google Maps deep link URL for directions
-  final String googleMapsUrl =
-      'comgooglemaps://?saddr=$startLatitude,$startLongitude&daddr=$endLatitude,$endLongitude&directionsmode=driving';
+launchGoogleMapsApp(String startLatitude, String startLongitude, String endLatitude, String endLongitude)
+async {
+if (Platform.isIOS) {
+// iOS uses comgooglemaps scheme
+final Uri iosUri = Uri.parse(
+'comgooglemaps://?saddr=$startLatitude,$startLongitude&daddr=$endLatitude,$endLongitude&directionsmode=driving',
+);
+final Uri iosFallback = Uri.parse(
+'https://www.google.com/maps/dir/?api=1&origin=$startLatitude,$startLongitude&destination=$endLatitude,$endLongitude&travelmode=driving',
+);
 
-  // Check if Google Maps app is available and launch the URL
-  if (await canLaunch(googleMapsUrl)) {
-    await launch(googleMapsUrl);
-  } else {
-    throw 'Could not launch $googleMapsUrl';
-  }
+if (await canLaunchUrl(iosUri)) {
+await launchUrl(iosUri);
+} else {
+await launchUrl(iosFallback, mode: LaunchMode.externalApplication);
 }
+} else if (Platform.isAndroid) {
+// Android uses geo intent
+final Uri androidUri = Uri.parse(
+'google.navigation:q=$endLatitude,$endLongitude&mode=d',
+);
 
+if (await canLaunchUrl(androidUri)) {
+await launchUrl(androidUri, mode: LaunchMode.externalApplication);
+} else {
+// fallback to web
+final Uri fallback = Uri.parse(
+'https://www.google.com/maps/dir/?api=1&origin=$startLatitude,$startLongitude&destination=$endLatitude,$endLongitude&travelmode=driving',
+);
+await launchUrl(fallback, mode: LaunchMode.externalApplication);
+}
+}
+}
 Future<dynamic> tripCancellationDialog({
   Function()? onSubmit,
   bool? isLoading,
@@ -139,7 +159,7 @@ void handleNotificationTap(Map<String, dynamic> data) {
     final chatId = data['chatId'];
     Get.toNamed(
       ChattingPage.routeName,
-      arguments: {"chatId": chatId},
+      arguments:  chatId,
     );
   } else  {
     Get.toNamed(NavigationPage.routeName);

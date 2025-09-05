@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/firebase_options.dart';

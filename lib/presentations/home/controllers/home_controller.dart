@@ -306,10 +306,10 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
               "rating",
               tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
             );
-            showRatingDialogs(
-              carId:
-                  tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
-            );
+            // showRatingDialogs(
+            //   carId:
+            //       tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
+            // );
           }
           for (TripCancellationModel cancel in tripCancellationList) {
             cancel.isChecked.value = false;
