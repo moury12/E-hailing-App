@@ -32,7 +32,7 @@ class AfterTripStartedWidget extends StatelessWidget {
         ),
         TitleTextWidget(
           title: 'Estimated Time',
-          text: "$estimatedTime min" ?? '00:00 min',
+          text: "$estimatedTime min",
         ),
         FromToTimeLine(
           pickUpAddress: pickUpAddress,

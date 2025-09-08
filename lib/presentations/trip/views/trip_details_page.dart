@@ -18,7 +18,6 @@ import 'package:e_hailing_app/presentations/home/controllers/home_controller.dar
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
 import 'package:e_hailing_app/presentations/navigation/widgets/custom_container_with_border.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
-import 'package:e_hailing_app/presentations/profile/model/review_model.dart';
 import 'package:e_hailing_app/presentations/profile/widgets/review_card_widget.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';

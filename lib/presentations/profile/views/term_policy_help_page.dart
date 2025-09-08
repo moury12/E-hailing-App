@@ -47,15 +47,18 @@ class _TermsPolicyHelpPageState extends State<TermsPolicyHelpPage> {
         onRefresh: () async {
           fetchInitialData();
         },
-        child: Padding(
-          padding: padding12,
-          child: Obx(() {
-            return TermsPolicyController.to.isLoadingTerms.value
-                ? DefaultProgressIndicator()
-                : HtmlWidget(
-                  '''${TermsPolicyController.to.termsModel.value.description}''',
-                );
-          }),
+        child: SingleChildScrollView(
+
+          child: Padding(
+            padding: padding12,
+            child: Obx(() {
+              return TermsPolicyController.to.isLoadingTerms.value
+                  ? DefaultProgressIndicator()
+                  : HtmlWidget(
+                    '''${TermsPolicyController.to.termsModel.value.description}''',
+                  );
+            }),
+          ),
         ),
       ),
     );

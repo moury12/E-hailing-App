@@ -11,7 +11,6 @@ import 'package:e_hailing_app/presentations/profile/controllers/account_informat
 import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/d_coin_model.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';

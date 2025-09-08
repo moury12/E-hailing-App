@@ -14,7 +14,6 @@ import '../../../core/components/custom_button_tap.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
-import '../../../core/utils/variables.dart';
 import '../../home/widgets/google_map_widget.dart';
 import '../controllers/navigation_controller.dart';
 import '../widgets/nav_item_widget.dart';
@@ -225,7 +224,6 @@ class _NavigationPageState extends State<NavigationPage>
     });
   }
 
-  @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

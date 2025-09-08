@@ -388,12 +388,12 @@ logger.i("Listening socket event for driver");
       currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
       drawPolylineMethod();
 
-      showCustomSnackbar(
-        title: 'Success',
-        message: data['message'],
-        position: SnackPosition.TOP,
-        type: SnackBarType.success,
-      );
+      // showCustomSnackbar(
+      //   title: 'Success',
+      //   message: data['message'],
+      //   position: SnackPosition.TOP,
+      //   type: SnackBarType.success,
+      // );
 
       _handleTripStatus(data['data']['status']);
     });

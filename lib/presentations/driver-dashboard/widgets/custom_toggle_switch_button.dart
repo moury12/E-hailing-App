@@ -18,19 +18,6 @@ class _CustomToggleSwitchState extends State<CustomToggleSwitch> {
   AlignmentGeometry _alignment = Alignment.centerRight;
   AlignmentGeometry _geometry = Alignment.centerLeft;
 
-  // bool DashBoardController.to.isDriverActive.value = false;
-  void _changeAlignment() {
-    DashBoardController.to.isDriverActive.value =
-        !DashBoardController.to.isDriverActive.value;
-    _alignment =
-        DashBoardController.to.isDriverActive.value
-            ? Alignment.centerLeft
-            : Alignment.centerRight;
-    _geometry =
-        !DashBoardController.to.isDriverActive.value
-            ? Alignment.centerLeft
-            : Alignment.centerRight;
-  }
 
   @override
   Widget build(BuildContext context) {

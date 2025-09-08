@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:image_picker/image_picker.dart';
+import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
@@ -19,10 +20,8 @@ import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dar
 import 'package:e_hailing_app/presentations/home/widgets/gradient_progress_indicator.dart';
 import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -241,44 +240,59 @@ Future<Map<String, dynamic>> getCredentials() async {
   return {};
 }
 
+
+
+final ImagePicker _picker = ImagePicker();
+
 Future<void> pickImages({
   bool allowMultiple = false,
   RxList<String>? uploadImages,
   RxString? singleImagePath,
-  FileType fileType = FileType.image,
+  int imageQuality = 50, // quality from 0-100
 }) async {
   try {
-    final result = await FilePicker.platform.pickFiles(
-      type: fileType, // Restrict to image files
-      allowMultiple: allowMultiple,
-      compressionQuality: 50, // Allow multiple selection
-    );
+    if (allowMultiple && uploadImages != null) {
+      // Pick multiple images
+      final List<XFile>? images = await _picker.pickMultiImage(
+        imageQuality: imageQuality,
+      );
 
-    if (result != null) {
-      final selectedPaths = result.paths.whereType<String>().toList();
+      if (images != null && images.isNotEmpty) {
+        final selectedPaths = images.map((xfile) => xfile.path).toList();
 
-      if (allowMultiple && uploadImages != null) {
         if (uploadImages.length + selectedPaths.length <= 5) {
-          uploadImages.addAll(selectedPaths); // Add selected images to the list
+          uploadImages.addAll(selectedPaths);
         } else {
           // showCustomSnackbar(
           //   title: "Limit Reached",
           //   message: "You can only add up to 5 images.",
           //   type: SnackBarType.alert,
           // );
+          debugPrint("Image limit reached");
         }
-      } else if (!allowMultiple && singleImagePath != null) {
-        singleImagePath.value = result.files.single.path ?? '';
       } else {
-        debugPrint("No files selected or improper usage of the method.");
+        debugPrint("No images selected.");
+      }
+    } else if (!allowMultiple && singleImagePath != null) {
+      // Pick a single image
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: imageQuality,
+      );
+
+      if (image != null) {
+        singleImagePath.value = image.path;
+      } else {
+        debugPrint("No image selected.");
       }
     } else {
-      debugPrint("No files selected.");
+      debugPrint("Improper usage of the method.");
     }
   } catch (e) {
-    debugPrint("File picker error: $e");
+    debugPrint("Image picker error: $e");
   }
 }
+
 
 Future<void> preloadImagesFromUrls(List<String> imageUrls) async {
   for (var imageUrl in imageUrls) {

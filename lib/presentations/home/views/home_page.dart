@@ -1,17 +1,13 @@
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
-import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/presentations/home/widgets/gradient_progress_indicator.dart';
-import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../core/components/custom_appbar.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/bottom_sheets.dart';
 import '../widgets/trip_details_card_widget.dart';
