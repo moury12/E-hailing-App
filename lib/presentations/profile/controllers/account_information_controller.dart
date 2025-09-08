@@ -37,7 +37,7 @@ RxString contactNumber="".obs;
   var tabContent = <Widget>[].obs;
   RxString profileImgPath = "".obs;
   RxBool isLoadingChangePass = false.obs;
-
+  RxnString pdfError = RxnString();
   ///=====================add dynmic name ====================///
   Rx<TextEditingController> nameController = TextEditingController().obs;
 
@@ -71,7 +71,10 @@ RxBool pdfLoading =false.obs;
       pdfLoading.value=true;
       final url = "${ApiService().baseUrl}/${userModel.value.assignedCar?.eHailingVehiclePermitPdf}";
       logger.d("📄 PDF URL: $url");
-
+if(userModel.value.assignedCar==null||userModel.value.assignedCar?.eHailingVehiclePermitPdf==null||userModel.value.assignedCar!.eHailingVehiclePermitPdf!.isEmpty){
+  pdfError.value = "Failed to load PDF. Please try again.";
+return;
+}
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
@@ -88,6 +91,7 @@ RxBool pdfLoading =false.obs;
         // Get.snackbar("Error", "Failed to load PDF");
       }
     } catch (e) {
+      pdfError.value = "Failed to load PDF. Please try again.";
       print("PDF Load Error: $e");
       // Get.snackbar("Error", "Failed to load PDF");
     }finally{

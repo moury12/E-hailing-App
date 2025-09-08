@@ -1,16 +1,7 @@
 import 'package:e_hailing_app/core/components/comming_soon_widget.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
-import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
-import 'package:e_hailing_app/core/constants/color_constants.dart';
-import 'package:e_hailing_app/core/constants/custom_text.dart';
-import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
-import 'package:e_hailing_app/core/constants/padding_constant.dart';
-import 'package:e_hailing_app/core/constants/text_style_constant.dart';
-import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/profile/widgets/custom_container_with_elevation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TransactionPage extends StatelessWidget {
   static const String routeName = '/transaction-history';

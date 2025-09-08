@@ -3,7 +3,6 @@ import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
-import 'package:e_hailing_app/core/constants/pagination_loading_widget.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/save-location/controllers/save_location_controller.dart';
 import 'package:e_hailing_app/presentations/save-location/model/save_location_model.dart';

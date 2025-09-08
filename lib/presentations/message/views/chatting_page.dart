@@ -11,7 +11,6 @@ import 'package:e_hailing_app/presentations/message/widgets/chat_loading.dart';
 import 'package:e_hailing_app/presentations/message/widgets/chat_message_card_item_widget.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

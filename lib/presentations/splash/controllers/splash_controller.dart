@@ -6,15 +6,12 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/main.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/splash/views/no_internet_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
-import '../../../core/service/socket-service/socket_service.dart';
 
 class SplashController extends GetxController {
   static SplashController get to => Get.find();

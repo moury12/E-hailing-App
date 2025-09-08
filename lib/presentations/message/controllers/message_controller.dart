@@ -7,7 +7,6 @@ import 'package:e_hailing_app/presentations/message/model/conversation_model.dar
 import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
 import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 

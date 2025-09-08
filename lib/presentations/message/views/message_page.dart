@@ -2,7 +2,6 @@ import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/presentations/message/controllers/message_controller.dart';
 import 'package:e_hailing_app/presentations/message/model/conversation_model.dart';
-import 'package:e_hailing_app/presentations/message/widgets/chat_loading.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';

@@ -1,5 +1,4 @@
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
-import 'package:e_hailing_app/core/components/custom_check_box.dart';
 import 'package:e_hailing_app/core/components/custom_checkbox_widget.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';

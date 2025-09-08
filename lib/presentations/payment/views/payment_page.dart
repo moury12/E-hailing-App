@@ -20,7 +20,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import '../../../core/helper/helper_function.dart';
 import '../widgets/payment_card_item.dart';
 
 class PaymentPage extends StatelessWidget {
