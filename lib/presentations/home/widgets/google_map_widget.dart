@@ -11,15 +11,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../navigation/controllers/navigation_controller.dart';
 
-class GoogleMapWidgetForRider extends StatefulWidget {
-  const GoogleMapWidgetForRider({super.key});
+class GoogleMapWidgetForUser extends StatefulWidget {
+  const GoogleMapWidgetForUser({super.key});
 
   @override
-  State<GoogleMapWidgetForRider> createState() =>
-      _GoogleMapWidgetForRiderState();
+  State<GoogleMapWidgetForUser> createState() =>
+      _GoogleMapWidgetForUserState();
 }
 
-class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
+class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
     with AutomaticKeepAliveClientMixin {
   final Rx<BitmapDescriptor?> customIcon = Rx<BitmapDescriptor?>(null);
   final Rx<BitmapDescriptor?> sourceIcon = Rx<BitmapDescriptor?>(null);
@@ -29,8 +29,8 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
   Future<void> loadCustomMarker() async {
     try {
       final bitmap = await BitmapDescriptor.asset(
-        const ImageConfiguration(size: Size(30, 30)),
-        purpleCarImage2,
+        const ImageConfiguration(size: Size(30, 15)),
+        "assets/images/purple_car_img.png",
       );
       customIcon.value = bitmap;
       final sIcon = await BitmapDescriptor.asset(
@@ -124,7 +124,7 @@ class _GoogleMapWidgetForRiderState extends State<GoogleMapWidgetForRider>
             Marker(
               markerId: const MarkerId("driver_marker"),
               position: HomeController.to.driverPosition.value!,
-              icon: customIcon.value!,
+               icon: customIcon.value!,
             ),
         if(!HomeController.to.mapDraging.value)  Marker(
             markerId: const MarkerId("selected_location"),
@@ -282,8 +282,8 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
   Future<void> loadCustomMarker() async {
     try {
       final bitmap = await BitmapDescriptor.asset(
-        const ImageConfiguration(size: Size(30, 30)),
-        purpleCarImage2,
+        const ImageConfiguration(size: Size(30, 15)),
+        "assets/images/purple_car_img.png",
       );
       customIcon.value = bitmap;
       final sIcon = await BitmapDescriptor.asset(
