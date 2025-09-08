@@ -510,3 +510,13 @@ logger.i("Listening socket event for driver");
     );
   }
 }
+// {
+//   "deviceId": "BE2A.250530.026.D1",
+//   "token": "f2N4tk1ORTCnRoyqxvp8aD:APA91bHjLOmnqzcPfHtVYMjXt58F1-s4I-IFr2PYwqzUdfP86F4blHNzWmXdjpzdqF0eOH-NnkCmFnw0D_ajb4tGujNs2TqwsiA5-MEDvjA_hKnK-0l_Cfo",
+//   "name": "Sadia Bennthe Azad",
+//   "email": "tanzibamouri00@gmail.com",
+//   "profile_image": "https://lh3.googleusercontent.com/a/ACg8ocIrDyEXo0GdeERbeAwPSADYBXKWXgejhRcFfvdEvsRJjU_wVxw",
+//   "phoneNumber": "56151212",
+//   "provider": "google",
+//   "role": "USER"
+// }
