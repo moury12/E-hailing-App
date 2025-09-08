@@ -40,8 +40,8 @@ class SocialMediaAuthWidget extends StatelessWidget {
             Platform.isIOS
                 ? IconButton(
                   onPressed: () {
-                    // AuthController.to.signInWithApple();
-                    showComingSoonDialog(context);
+                   AuthController.to.signInWithApple();
+                    // showComingSoonDialog(context);
                   },
                   icon: SvgPicture.asset(appleIcon),
                 )

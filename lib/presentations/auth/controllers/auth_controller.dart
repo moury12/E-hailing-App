@@ -454,45 +454,32 @@ class AuthController extends GetxController {
             ],
           );
 
-      // 🔹 Extract user data from Apple's credential
-      // Note: Name and email are only provided on the FIRST login.
-      // Your backend needs to handle cases where they are null on subsequent logins.
-      final String name =
-          (credential.givenName != null || credential.familyName != null)
-              ? "${credential.givenName ?? ''} ${credential.familyName ?? ''}"
-                  .trim()
-              : "User";
 
-      final String? email = credential.email;
+      // final String? email = credential.email;
+      //
+      // // IMPORTANT: On subsequent logins, Apple does not provide the email.
+      // // Your logic requires an email, so we must stop if it's not available.
+      // if (email == null) {
+      //   showCustomSnackbar(
+      //     title: 'Login Error',
+      //     message:
+      //         'Could not retrieve email. This can happen on subsequent logins. Please contact support if this issue persists.',
+      //     type: SnackBarType.failed,
+      //   );
+      //   isAppleAuthLoading.value = false;
+      //   return;
+      // }
 
-      // IMPORTANT: On subsequent logins, Apple does not provide the email.
-      // Your logic requires an email, so we must stop if it's not available.
-      if (email == null) {
-        showCustomSnackbar(
-          title: 'Login Error',
-          message:
-              'Could not retrieve email. This can happen on subsequent logins. Please contact support if this issue persists.',
-          type: SnackBarType.failed,
-        );
-        isAppleAuthLoading.value = false;
-        return;
-      }
-
-      // Apple does not provide a photo URL.
-      final String photoUrl = "";
-
-      // 🔹 Send initial data to backend
       final initialResponse = await ApiService().request(
-        endpoint: socialEndPoint,
+        endpoint: appleLoginEndPoint,
         method: 'POST',
         body: {
-          "deviceId": deviceId,
-          "token": fcmToken,
-          "name": name,
-          "email": email,
-          "profile_image": photoUrl, // Will be an empty string
-          "provider": "apple", // Changed from "google"
-          "role": "USER",
+          "deviceId":deviceId,
+          "provider":"apple",
+          "token":fcmToken,
+          "appleToken":credential.identityToken,
+           "role": "USER",
+
         },
         useAuth: false,
       );
@@ -517,7 +504,8 @@ class AuthController extends GetxController {
           NavigationPage.routeName,
           arguments: {'reconnectSocket': true},
         );
-      } else {
+      }
+      else {
         // 🔁 Retry with phone number if needed (logic remains identical)
         String userPhoneNumber = '';
         String? phoneNumber = await Get.dialog<String>(
@@ -560,17 +548,16 @@ class AuthController extends GetxController {
 
         // 🔄 Resend with phone number
         final retryResponse = await ApiService().request(
-          endpoint: socialEndPoint,
+          endpoint: appleLoginEndPoint,
           method: 'POST',
           body: {
-            "deviceId": deviceId,
-            "token": fcmToken,
-            "name": name,
-            "email": email,
-            "profile_image": photoUrl,
+            "deviceId":deviceId,
+            "provider":"apple",
+            "token":fcmToken,
+            "appleToken":credential.identityToken,
+             "role": "USER",
             "phoneNumber": phoneNumber,
-            "provider": "apple", // Changed from "google"
-            "role": "USER",
+
           },
           useAuth: false,
         );

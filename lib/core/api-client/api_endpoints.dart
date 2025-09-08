@@ -1,5 +1,6 @@
 String signupEndPoint = 'auth/register';
 String socialEndPoint = 'auth/social-login';
+String appleLoginEndPoint = 'auth/apple-login';
 String loginEndPoint = 'auth/login';
 String getOtpEndPoint = 'auth/activation-code-resend';
 String activeAccEndPoint = 'auth/activate-account';
