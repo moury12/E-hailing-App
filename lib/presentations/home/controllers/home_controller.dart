@@ -256,6 +256,7 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
       if (Get.isDialogOpen == true) {
         Get.back();
       }
+      updateDriverLocation();
       tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
      if(tripAcceptedModel.value.tripType!=preBook) {
         CommonController.to.getReviewListRequest(
@@ -292,7 +293,7 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
         tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
         driverStatus.value = data['message'];
         HomeController.to.showTripDetailsCard.value = true;
-
+        updateDriverLocation();
         final status = data['data']['status'];
         if (status == DriverTripStatus.cancelled.name ||
             status == DriverTripStatus.completed.name) {
@@ -476,6 +477,7 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
   }
 
   void updateDriverLocation() {
+
     final updateCoords = driverLocationUpdate.value.coordinates;
     final fallbackCoords =
         tripAcceptedModel.value.driver?.locationCoordinates?.coordinates;
@@ -488,6 +490,7 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
       driverPosition.value = null;
     }
 
+    logger.i(driverPosition.value);
     // Wait until map controller is ready
     Future.delayed(Duration(milliseconds: 300), () {
       if (CommonController.to.mapControllerRider != null) {

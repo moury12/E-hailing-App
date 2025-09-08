@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/pagination_loading_widget.dart';
@@ -24,17 +25,23 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("E-Hailing Vehicle Permit")),
-      body: Obx(() => AccountInformationController.to.pdfLoading.value?
-          PaginationLoadingWidget():AccountInformationController.to.pdfController == null&&!AccountInformationController.to.pdfLoading.value
-          ? EmptyWidget(text: "Pdf File is Empty")
-          : AccountInformationController.to.pdfError.value != null?
-          CustomText(text: AccountInformationController.to.pdfError.value!,)
-          :PdfViewPinch(
-        controller:  AccountInformationController.to.pdfController!,
+      body: CustomRefreshIndicator(
+        onRefresh: () async{
+          AccountInformationController.to.loadPdf();
+        },
+        child: Obx(() => AccountInformationController.to.pdfLoading.value?
+            PaginationLoadingWidget():AccountInformationController.to.pdfController == null&&!AccountInformationController.to.pdfLoading.value
+            ? EmptyWidget(text: "Pdf File is Empty")
 
-        backgroundDecoration:BoxDecoration(color: AppColors.kScaffoldBackgroundColor,
+            : AccountInformationController.to.pdfError.value != null?
+            CustomText(text: AccountInformationController.to.pdfError.value!,)
+            :PdfViewPinch(
+          controller:  AccountInformationController.to.pdfController!,
 
-        ),
-      ),));
+          backgroundDecoration:BoxDecoration(color: AppColors.kScaffoldBackgroundColor,
+
+          ),
+        ),),
+      ));
   }
 }

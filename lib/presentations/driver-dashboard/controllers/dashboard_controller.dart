@@ -411,7 +411,7 @@ logger.i("Listening socket event for driver");
           drawPolylineMethod();
           DashBoardController.to.afterAccepted.value = true;
           resetRideFlow(rideType: RideFlowState.pickup);
-          _showSuccess(data['message']);
+          // _showSuccess(data['message']);
         }else{
           Get.offAllNamed(
             NavigationPage.routeName,

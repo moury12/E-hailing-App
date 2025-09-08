@@ -38,7 +38,7 @@ class _NavigationPageState extends State<NavigationPage>
     _persistentMapWidget =
         CommonController.to.isDriver.value
             ? GoogleMapWidgetForDriver()
-            : GoogleMapWidgetForRider();
+            : GoogleMapWidgetForUser();
     // logger.i(Boxes.getRattingData().get("rating"));
 
     if (!CommonController.to.isDriver.value &&
