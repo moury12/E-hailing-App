@@ -13,6 +13,7 @@ import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,27 +49,27 @@ bool isRunning=false;
         return;
       }
       isRunning=true;
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        Get.snackbar('Location Disabled', 'Please enable location services');
-        await Geolocator.openLocationSettings();
-        return;
-      }
+      // bool serviceEnabled = await handleLocationPermission();
+      // if (!serviceEnabled) {
+      //   Get.snackbar('Location Disabled', 'Please enable location services');
+      //   await Geolocator.openLocationSettings();
+      //   return;
+      // }
 
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          Get.snackbar('Permission Denied', 'Location permission denied');
-          return;
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        Get.snackbar('Permission Denied', 'Enable from settings');
-        await Geolocator.openAppSettings();
-        return;
-      }
+      // LocationPermission permission = await Geolocator.checkPermission();
+      // if (permission == LocationPermission.denied) {
+      //   permission = await Geolocator.requestPermission();
+      //   if (permission == LocationPermission.denied) {
+      //     Get.snackbar('Permission Denied', 'Location permission denied');
+      //     return;
+      //   }
+      // }
+      //
+      // if (permission == LocationPermission.deniedForever) {
+      //   Get.snackbar('Permission Denied', 'Enable from settings');
+      //   await Geolocator.openAppSettings();
+      //   return;
+      // }
 
       // Prevent duplicate tracking
       if (tripId != null && _lastTripId == tripId && _positionStream != null) {
@@ -105,26 +106,24 @@ bool isRunning=false;
     }
   }
   Future<bool> handleLocationPermission() async {
-    bool serviceEnabled;
     LocationPermission permission;
 
     // Check if location services are enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      showCustomSnackbar(
-          title: 'Location Disabled',
-          message: 'Please enable location services to use this feature.',
-          type: SnackBarType.alert
-      );
-      await Geolocator.openLocationSettings();
-      return false;
-    }
+    // bool shouldRequestPermission = await showPermissionExplanationDialog();
+    // if (!shouldRequestPermission) {
+    //   showCustomSnackbar(
+    //       title: 'Location Disabled',
+    //       message: 'Please enable location services to use this feature.',
+    //       type: SnackBarType.alert
+    //   );
+    //   return false;
+    // }
 
-    // Check current permission status
+    // // Check current permission status
     permission = await Geolocator.checkPermission();
-
-    // If permission is denied, show an explanation dialog
-    if (permission == LocationPermission.denied) {
+logger.d(permission.name);
+    // // If permission is denied, show an explanation dialog
+    // if (permission == LocationPermission.denied) {
       bool shouldRequestPermission = await showPermissionExplanationDialog();
       if (shouldRequestPermission) {
         permission = await Geolocator.requestPermission();
@@ -137,7 +136,7 @@ bool isRunning=false;
           // Handle denial and allow fallback logic here if necessary
           return false;
         }
-      } else {
+       else {
         // User declined permission, show a fallback or show the map with default location
         fallbackToDefaultLocation();
         return false;
@@ -151,6 +150,8 @@ bool isRunning=false;
           message: 'Location permission is permanently denied. Please enable it in settings.',
           type: SnackBarType.alert
       );
+      fallbackToDefaultLocation();
+
       await Geolocator.openAppSettings();  // Open settings to allow the user to grant permission
       return false;
     }
@@ -164,11 +165,7 @@ bool isRunning=false;
       CommonController.to.markerPositionRider.value = LatLng(3.139, 101.6869);
     } else{
      CommonController.to.markerPositionDriver.value = LatLng(3.139, 101.6869);   }
-    showCustomSnackbar(
-        title: 'Using Default Location',
-        message: 'Location permission is required for full functionality. Using default location.',
-        type: SnackBarType.info
-    );
+
   }
 //   Future<bool> handleLocationPermission() async {
 //     bool serviceEnabled;
@@ -288,7 +285,7 @@ bool isRunning=false;
       type: SnackBarType.failed);
 
       // Use fallback if error occurs
-      markerPosition.value = LatLng(23.8168, 90.3675); // Dhaka, Bangladesh
+      markerPosition.value = LatLng(3.139, 101.6869); // Dhaka, Bangladesh
     }
   }
 

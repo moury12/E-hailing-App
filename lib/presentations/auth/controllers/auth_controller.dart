@@ -244,7 +244,7 @@ class AuthController extends GetxController {
     try {
       loadingProcess.value = AuthProcess.login;
       String? deviceId = await getDeviceId();
-
+logger.i(deviceId);
       final response = await ApiService().request(
         endpoint: loginEndPoint,
         method: 'POST',
@@ -272,7 +272,7 @@ class AuthController extends GetxController {
         Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
         ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
-        CommonController.to.initialSetup();
+         CommonController.to.initialSetup();
 
         Get.offAllNamed(
           NavigationPage.routeName,

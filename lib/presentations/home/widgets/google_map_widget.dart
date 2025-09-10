@@ -100,7 +100,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
 
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
-        myLocationEnabled: true,
+        myLocationEnabled: false,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: true,
         minMaxZoomPreference: const MinMaxZoomPreference(3, 20),
@@ -341,7 +341,7 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
 
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
-        myLocationEnabled: true,
+        myLocationEnabled: false,
         myLocationButtonEnabled: false,
         zoomControlsEnabled: true,
         markers: {

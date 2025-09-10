@@ -4,6 +4,7 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/service/location-service/location_service.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/views/account_information_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/change_password_page.dart';
@@ -49,6 +50,10 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 img: changePassIcon,
                 title: AppStaticStrings.changePassword,
                 onTap: () => Get.toNamed(ChangePasswordPage.routeName),
+              ),  ProfileActionItemWidget(
+                img: locationIcon,
+                title: AppStaticStrings.locationPermission,
+                onTap: () => LocationTrackingService().handleLocationPermission(),
               ),
               Obx(() {
                 return  CommonController.to.isDriver.value ? SizedBox.shrink() :ProfileActionItemWidget(
