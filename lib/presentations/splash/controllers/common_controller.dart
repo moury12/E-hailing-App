@@ -10,6 +10,7 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/profile/model/review_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -180,11 +181,17 @@ logger.d(response);
   }
 
   Future<void> fetchCurrentLocationMethod() async {
+   bool  serviceEnabled = await locationService.handleLocationPermission();
 
     Rx<LatLng> markerPosition =
         isDriver.value ? markerPositionDriver : markerPositionRider;
-
-    await locationService.fetchCurrentLocation(markerPosition: markerPosition);
+if(!serviceEnabled){
+  locationService.fallbackToDefaultLocation();
+  return;
+}
+  else {
+     await locationService.fetchCurrentLocation(markerPosition: markerPosition);
+   }
     await BoundaryController.to.initialize(markerPosition.value);
   }
 

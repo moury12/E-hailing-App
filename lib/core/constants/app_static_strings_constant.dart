@@ -47,6 +47,7 @@ class AppStaticStrings {
   static const String promoCode = 'Promo Code';
   static const String dashboard = 'Dashboard';
   static const String changePassword = 'Change Password';
+  static const String locationPermission = 'Location Permission';
 
   // Account Creation
   static const String createYourAccount = 'Create Your Account';
