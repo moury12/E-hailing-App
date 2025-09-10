@@ -81,7 +81,7 @@ logger.d(response);
 
   @override
   void onInit() async {
-   locationService.handleLocationPermission();
+   // locationService.handleLocationPermission();
     logger.d(
       "--check role----${Boxes.getUserRole().get(role, defaultValue: user).toString()}",
     );
@@ -180,6 +180,7 @@ logger.d(response);
   }
 
   Future<void> fetchCurrentLocationMethod() async {
+
     Rx<LatLng> markerPosition =
         isDriver.value ? markerPositionDriver : markerPositionRider;
 

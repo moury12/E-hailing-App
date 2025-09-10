@@ -345,6 +345,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.1"
+  fiuu_mobile_xdk_flutter:
+    dependency: "direct main"
+    description:
+      name: fiuu_mobile_xdk_flutter
+      sha256: a0e25e0a863e8f9cafde5585be1703e4f8653e49b3d448385c6725ee326c42d6
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.34.27"
   fixnum:
     dependency: transitive
     description:

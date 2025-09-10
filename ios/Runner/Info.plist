@@ -38,9 +38,9 @@
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs your location even when in background.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs constant location access to track trips in the background.</string>
+    <string>We use your location to track your movement during the trip and for geofencing purposes. This helps us ensure that trips are within the selected country, and it allows the driver to share their location with you in real-time for better trip coordination.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app requires location access to function properly.</string>
+    <string>We use your location to show nearby trip options within your country. Your location helps us suggest pickup and drop-off locations based on your current position. We also display the map view to show the route and nearby places.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 

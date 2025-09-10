@@ -158,7 +158,9 @@ class PaymentPage extends StatelessWidget {
           img: cardsIcon,
           title: AppStaticStrings.creditDebitCards,
           onTap: () {
-            // handle online tap
+           if( role != driver){
+
+           }
           },
         );
 
