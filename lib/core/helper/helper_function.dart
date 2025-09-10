@@ -443,7 +443,7 @@ Future<void> saveCredentials(
   await Boxes.getAuthData().put('rememberMe', rememberMe);
 }
 
-enum SnackBarType { success, failed, alert }
+enum SnackBarType { success, failed, alert,info}
 
 void showCustomSnackbar({
   required String title,
@@ -468,8 +468,12 @@ void showCustomSnackbar({
       break;
     // TODO: Handle this case.
     case SnackBarType.alert:
-      backgroundColor = Color(0xffc86900);
-      textColor = AppColors.kWhiteColor;
+      backgroundColor = Color(0xffffd9b9);
+      textColor = Colors.black;
+      break;
+      case SnackBarType.info:
+      backgroundColor = Color(0xffaad6ff);
+      textColor = Colors.black;
       break;
     // TODO: Handle this case.
   }

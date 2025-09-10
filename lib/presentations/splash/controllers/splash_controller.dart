@@ -71,7 +71,7 @@ await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       badge: true,
       sound: true,
     );
-
+await    locationService.handleLocationPermission();
     // Check internet
     bool hasInternet = await ConnectionManager().checkConnection();
     if (!hasInternet) {

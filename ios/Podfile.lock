@@ -47,6 +47,10 @@ PODS:
     - GoogleUtilities/Reachability (~> 8.1)
     - GoogleUtilities/UserDefaults (~> 8.1)
     - nanopb (~> 3.30910.0)
+  - fiuu-mobile-xdk-cocoapods (3.34.5)
+  - fiuu_mobile_xdk_flutter (0.0.1):
+    - fiuu-mobile-xdk-cocoapods (~> 3.34.5)
+    - Flutter
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
@@ -157,6 +161,7 @@ DEPENDENCIES:
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
+  - fiuu_mobile_xdk_flutter (from `.symlinks/plugins/fiuu_mobile_xdk_flutter/ios`)
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
@@ -187,6 +192,7 @@ SPEC REPOS:
     - FirebaseCoreInternal
     - FirebaseInstallations
     - FirebaseMessaging
+    - fiuu-mobile-xdk-cocoapods
     - Google-Maps-iOS-Utils
     - GoogleDataTransport
     - GoogleMaps
@@ -208,6 +214,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_messaging:
     :path: ".symlinks/plugins/firebase_messaging/ios"
+  fiuu_mobile_xdk_flutter:
+    :path: ".symlinks/plugins/fiuu_mobile_xdk_flutter/ios"
   Flutter:
     :path: Flutter
   flutter_local_notifications:
@@ -262,6 +270,8 @@ SPEC CHECKSUMS:
   FirebaseCoreInternal: 56ea29f3dad2894f81b060f706f9d53509b6ed3b
   FirebaseInstallations: 3e884b01feabdf67582a80f3250425a00979b4ed
   FirebaseMessaging: 43ec73bbfedd0c385a849bb91593ab4ad4b9e48e
+  fiuu-mobile-xdk-cocoapods: 0b30b9e19d5eb788ec5058ae00a57c01dab46041
+  fiuu_mobile_xdk_flutter: 1382bf220221caee743595e9d3783536f034f5fc
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
   flutter_native_splash: c32d145d68aeda5502d5f543ee38c192065986cf
@@ -292,6 +302,6 @@ SPEC CHECKSUMS:
   wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
   webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
 
-PODFILE CHECKSUM: 53a6aebc29ccee84c41f92f409fc20cd4ca011f1
+PODFILE CHECKSUM: e2d55cdda87475a86c7bef4a6f6621ea8ad54fae
 
 COCOAPODS: 1.16.2

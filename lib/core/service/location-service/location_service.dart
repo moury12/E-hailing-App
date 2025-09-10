@@ -3,11 +3,19 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:math';
 
+import 'package:e_hailing_app/core/components/custom_button.dart';
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
+import 'package:e_hailing_app/core/constants/custom_space.dart';
+import 'package:e_hailing_app/core/constants/custom_text.dart';
+import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
+import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -104,40 +112,160 @@ bool isRunning=false;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       showCustomSnackbar(
-          title:   'Location Disabled',
-          message: 'Please enable location services',
+          title: 'Location Disabled',
+          message: 'Please enable location services to use this feature.',
           type: SnackBarType.alert
       );
       await Geolocator.openLocationSettings();
       return false;
     }
 
-    // Check permission
+    // Check current permission status
     permission = await Geolocator.checkPermission();
+
+    // If permission is denied, show an explanation dialog
     if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        showCustomSnackbar(
-            title:   'Permission Denied',
-            message: 'Location permission denied',
-            type: SnackBarType.alert
-        );
-        await Geolocator.openAppSettings();
+      bool shouldRequestPermission = await showPermissionExplanationDialog();
+      if (shouldRequestPermission) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          showCustomSnackbar(
+              title: 'Permission Denied',
+              message: 'Location permission denied. Some features will be unavailable.',
+              type: SnackBarType.alert
+          );
+          // Handle denial and allow fallback logic here if necessary
+          return false;
+        }
+      } else {
+        // User declined permission, show a fallback or show the map with default location
+        fallbackToDefaultLocation();
         return false;
       }
     }
 
+    // If permission is permanently denied
     if (permission == LocationPermission.deniedForever) {
       showCustomSnackbar(
-      title:   'Permission Denied',
-       message: 'Location permission permanently denied. Please enable in settings.',
-        type: SnackBarType.alert
+          title: 'Permission Denied Forever',
+          message: 'Location permission is permanently denied. Please enable it in settings.',
+          type: SnackBarType.alert
       );
-      await Geolocator.openAppSettings();
+      await Geolocator.openAppSettings();  // Open settings to allow the user to grant permission
       return false;
     }
 
-    return true;
+    return true;  // Permission granted
+  }
+  void fallbackToDefaultLocation() {
+    // Fallback logic if location permission is denied (or user chooses to proceed with limited functionality)
+    // Hardcoding the fallback location (Malaysia coordinates in this example)
+   if(!CommonController.to.isDriver.value) {
+      CommonController.to.markerPositionRider.value = LatLng(3.139, 101.6869);
+    } else{
+     CommonController.to.markerPositionDriver.value = LatLng(3.139, 101.6869);   }
+    showCustomSnackbar(
+        title: 'Using Default Location',
+        message: 'Location permission is required for full functionality. Using default location.',
+        type: SnackBarType.info
+    );
+  }
+//   Future<bool> handleLocationPermission() async {
+//     bool serviceEnabled;
+//     LocationPermission permission;
+//
+//     // Check if location services are enabled
+//     serviceEnabled = await Geolocator.isLocationServiceEnabled();
+//     if (!serviceEnabled) {
+//       showCustomSnackbar(
+//           title:   'Location Disabled',
+//           message: 'Please enable location services',
+//           type: SnackBarType.alert
+//       );
+//       await Geolocator.openLocationSettings();
+//       return false;
+//     }
+//
+//     // Check permission
+//     permission = await Geolocator.checkPermission();
+//     if (permission == LocationPermission.denied) {
+//        bool shouldRequestPermission = await showPermissionExplanationDialog();
+// if(shouldRequestPermission){
+//       permission = await Geolocator.requestPermission();
+//       if (permission == LocationPermission.denied) {
+//         showCustomSnackbar(
+//             title:   'Permission Denied',
+//             message: 'Location permission denied',
+//             type: SnackBarType.alert
+//         );
+//         return false;
+//       }}else{
+//         return false;
+//       }
+//     }
+//
+//     if (permission == LocationPermission.deniedForever) {
+//       showCustomSnackbar(
+//           title:   'Permission Denied',
+//           message: 'Location permission permanently denied. Please enable in settings.',
+//           type: SnackBarType.alert
+//       );
+//       await Geolocator.openAppSettings();
+//       return false;
+//     }
+//
+//     return true;
+//   }
+
+  Future<bool> showPermissionExplanationDialog() async {
+    bool? result = await Get.dialog(
+      AlertDialog(
+        content: SizedBox(
+          width: ScreenUtil().screenWidth*.8,
+          child: Column(
+            spacing: 6.h,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomText(text: 'Location Permission Required',fontSize: getFontSizeDefault(),style: poppinsSemiBold,),
+              CustomText(
+                textAlign: TextAlign.center,
+               text:  'We need your location to show nearby trips and help you navigate during the trip. Please grant location access to proceed.',
+              style: poppinsRegular,
+                fontSize: getFontSizeSmall(),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomButton(
+                      textColor: AppColors.kPrimaryColor,
+                      fillColor: Colors.transparent,
+                      onTap: () =>               Get.back(result: false)// Return false when user cancels
+                      ,
+                      title: AppStaticStrings.cancel,
+                    ),
+                  ),
+                  space12W,
+                  Expanded(
+                    child: CustomButton(
+                      // textColor: AppColors.kPrimaryColor,
+                      // fillColor: Colors.transparent,
+                      onTap: () =>               Get.back(result: true)// Return false when user cancels
+                      ,
+                      title: "Allow",
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+     
+
+      ),
+    );
+
+    // Return the result (true or false) based on the user action
+    return result ?? false; // If the result is null (dialog dismissed without choice), return false
   }
 
   Future<void> fetchCurrentLocation({
@@ -146,8 +274,8 @@ bool isRunning=false;
   async {
 
     try {
-      final hasPermission = await handleLocationPermission();
-      if (!hasPermission) return;
+      // final hasPermission = await handleLocationPermission();
+      // if (!hasPermission) return;
       Position position = await Geolocator.getCurrentPosition(
         // Add timeout
       );
