@@ -71,9 +71,11 @@ await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       badge: true,
       sound: true,
     );
-    if(Boxes.getUserData().get(tokenKey)==null){
+
+    if(Boxes.getUserData().get(tokenKey)==null||Boxes.getUserData().get(tokenKey)!.toString().isEmpty){
+
       await locationService.handleLocationPermission();
-    }    // Check internet
+   }   // Check internet
     bool hasInternet = await ConnectionManager().checkConnection();
     if (!hasInternet) {
       Get.offAll(() => const NoInternetPage());

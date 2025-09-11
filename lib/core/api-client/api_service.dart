@@ -8,9 +8,9 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class ApiService {
-final String baseUrl = 'http://18.211.171.8:8002';
+ final String baseUrl = 'http://18.211.171.8:8002';
 
-  // final String baseUrl = 'http://10.10.20.44:8001';
+ // final String baseUrl = 'http://10.10.20.44:8001';
 
   static final ApiService _instance = ApiService._internal();
 
