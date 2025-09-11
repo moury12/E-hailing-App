@@ -199,7 +199,7 @@ class TripDetailsPage extends StatelessWidget {
                                                 8.r),),
                                           width: double.infinity,
                                           padding: padding12,
-                                          child: Column(children: [
+                                          child:trip.driver!=null? Column(children: [
 
                                             CustomText(
                                               text: "${AppStaticStrings
@@ -236,7 +236,7 @@ class TripDetailsPage extends StatelessWidget {
                                                       ),),),
                                               );
                                             })
-                                          ],),
+                                          ],):SizedBox.shrink(),
                                         )
                                       ],
                                     )

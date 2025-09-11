@@ -318,7 +318,7 @@ logger.i(deviceId);
         method: 'POST',
         body: {
           "deviceId": deviceId,
-          "token": fcmToken,
+          "token": fcmToken??"xzxz",
           "name": name,
           "email": email,
           "profile_image": photoUrl,
@@ -394,7 +394,7 @@ logger.i(deviceId);
           method: 'POST',
           body: {
             "deviceId": deviceId,
-            "token": fcmToken,
+            "token": fcmToken??"xzxz",
             "name": name,
             "email": email,
             "profile_image": photoUrl,
@@ -478,7 +478,7 @@ logger.i(deviceId);
         body: {
           "deviceId":deviceId,
           "provider":"apple",
-          "token":fcmToken,
+          "token":fcmToken??"xzxz",
           "appleToken":credential.identityToken,
            "role": "USER",
 
@@ -555,7 +555,7 @@ logger.i(deviceId);
           body: {
             "deviceId":deviceId,
             "provider":"apple",
-            "token":fcmToken,
+            "token":fcmToken??"xzxz",
             "appleToken":credential.identityToken,
              "role": "USER",
             "phoneNumber": phoneNumber,
