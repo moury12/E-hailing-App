@@ -281,9 +281,9 @@ logger.d(permission.name);
       markerPosition.value = LatLng(position.latitude, position.longitude);
       await getAddressFromLatLng(markerPosition.value);
     } catch (e) {
-      showCustomSnackbar(title: 'Error',message:  'Could not get current location: ${e.toString()}',
-      type: SnackBarType.failed);
-
+      // showCustomSnackbar(title: 'Error',message:  'Could not get current location: ${e.toString()}',
+      // type: SnackBarType.failed);
+logger.e(e);
       // Use fallback if error occurs
       markerPosition.value = LatLng(3.139, 101.6869); // Dhaka, Bangladesh
     }
