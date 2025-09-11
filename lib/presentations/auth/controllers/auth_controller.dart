@@ -22,6 +22,8 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../../../core/service/device_service/device_service.dart';
+
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
 
@@ -243,7 +245,7 @@ class AuthController extends GetxController {
   Future<void> signInRequest() async {
     try {
       loadingProcess.value = AuthProcess.login;
-      String? deviceId = await getDeviceId();
+      String? deviceId = await DeviceIdService.getDeviceId();
 logger.i(deviceId);
       final response = await ApiService().request(
         endpoint: loginEndPoint,
@@ -295,7 +297,7 @@ logger.i(deviceId);
 
   Future<void> signInWithGoogle() async {
     try {
-      String? deviceId = await getDeviceId();
+      String? deviceId = await DeviceIdService.getDeviceId();
 
       isGoogleAuthLoading.value = true;
 
@@ -442,7 +444,7 @@ logger.i(deviceId);
 
   Future<void> signInWithApple() async {
     try {
-      String? deviceId = await getDeviceId();
+      String? deviceId = await DeviceIdService.getDeviceId();
       isAppleAuthLoading.value = true;
 
       // 🔹 Trigger Apple Sign-In

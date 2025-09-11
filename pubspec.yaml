@@ -66,10 +66,11 @@ dependencies:
   firebase_core: ^4.0.0
   flutter_local_notifications: ^19.4.0
   jwt_decoder: ^2.0.1
-  device_info_plus: ^11.5.0
   pdfx: ^2.9.2
   flutter_native_splash: ^2.4.6
   fiuu_mobile_xdk_flutter: ^3.34.27
+  flutter_secure_storage: ^9.2.4
+  uuid: ^4.5.1
 
 
 

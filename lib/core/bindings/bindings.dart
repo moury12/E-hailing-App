@@ -64,7 +64,8 @@ class AuthBinding extends Bindings {
 class NavigationBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<NavigationController>(() => NavigationController());
+    Get.put(NavigationController());
+    // Get.lazyPut<NavigationController>(() => NavigationController());
     final arguments = Get.arguments;
     if (arguments is Map && arguments['reconnectSocket'] == true)  {
       Future.delayed(Duration(milliseconds: 500), () {
