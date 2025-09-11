@@ -4,6 +4,7 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/views/account_information_page.dart';
@@ -53,7 +54,11 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               ),  ProfileActionItemWidget(
                 img: locationIcon,
                 title: AppStaticStrings.locationPermission,
-                onTap: () => LocationTrackingService().handleLocationPermission(),
+                onTap: () => LocationTrackingService().handleLocationPermission().then((value) {
+                  if(value){
+                    showCustomSnackbar(title: "Success", message: "Location permission already granted.") ;
+                  }
+                }),
               ),
               Obx(() {
                 return  CommonController.to.isDriver.value ? SizedBox.shrink() :ProfileActionItemWidget(

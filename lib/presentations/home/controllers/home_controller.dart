@@ -298,6 +298,7 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
         if (status == DriverTripStatus.cancelled.name ||
             status == DriverTripStatus.completed.name) {
           resetAllStates();
+          clearPolyline();
           Get.offAllNamed(
             NavigationPage.routeName,
             arguments: {'reconnectSocket': true},
@@ -325,7 +326,6 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
       }
     });
   }
-
   void socketConnection() {
     Map<String, dynamic> decodedToken = JwtDecoder.decode(
       Boxes.getUserData().get(tokenKey).toString(),
@@ -414,14 +414,17 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
   void clearAllFocus() {
     activeField.value = "";
   }
-
+void clearPolyline(){
+  NavigationController.to.routePolylines.clear();
+  NavigationController.to.routePolylines.refresh();
+}
   // Helper method to reset all states
   void resetAllStates() {
     wantToGo.value = false;
     setPickup.value = false;
     setDestination.value = false;
     selectEv.value = false;
-  }
+      }
 
   // Optional: Methods for transitioning forward through your flow
   void goToWantToGo() {

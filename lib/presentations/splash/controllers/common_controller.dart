@@ -181,18 +181,26 @@ logger.d(response);
   }
 
   Future<void> fetchCurrentLocationMethod() async {
-   bool  serviceEnabled = await locationService.handleLocationPermission();
+    try {
+      logger.d("Starting location fetch process");
 
-    Rx<LatLng> markerPosition =
-        isDriver.value ? markerPositionDriver : markerPositionRider;
-if(!serviceEnabled){
-  locationService.fallbackToDefaultLocation();
-  return;
-}
-  else {
-     await locationService.fetchCurrentLocation(markerPosition: markerPosition);
-   }
-    await BoundaryController.to.initialize(markerPosition.value);
+      bool serviceEnabled = await locationService.handleLocationPermission();
+
+      Rx<LatLng> markerPosition = isDriver.value ? markerPositionDriver : markerPositionRider;
+
+      if (!serviceEnabled) {
+        logger.d("Location service not enabled, using fallback");
+        locationService.fallbackToDefaultLocation();
+      } else {
+        logger.d("Location service enabled, fetching current location");
+        await locationService.fetchCurrentLocation(markerPosition: markerPosition);
+      }
+      await BoundaryController.to.initialize(markerPosition.value);
+
+    } catch (e) {
+      logger.e("Error in fetchCurrentLocationMethod: $e");
+      locationService.fallbackToDefaultLocation();
+    }
   }
 
   Future<void> startTrackingLocationMethod() async {
