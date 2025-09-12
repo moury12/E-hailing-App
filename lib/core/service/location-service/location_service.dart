@@ -49,29 +49,7 @@ bool isRunning=false;
         return;
       }
       isRunning=true;
-      // bool serviceEnabled = await handleLocationPermission();
-      // if (!serviceEnabled) {
-      //   Get.snackbar('Location Disabled', 'Please enable location services');
-      //   await Geolocator.openLocationSettings();
-      //   return;
-      // }
 
-      // LocationPermission permission = await Geolocator.checkPermission();
-      // if (permission == LocationPermission.denied) {
-      //   permission = await Geolocator.requestPermission();
-      //   if (permission == LocationPermission.denied) {
-      //     Get.snackbar('Permission Denied', 'Location permission denied');
-      //     return;
-      //   }
-      // }
-      //
-      // if (permission == LocationPermission.deniedForever) {
-      //   Get.snackbar('Permission Denied', 'Enable from settings');
-      //   await Geolocator.openAppSettings();
-      //   return;
-      // }
-
-      // Prevent duplicate tracking
       if (tripId != null && _lastTripId == tripId && _positionStream != null) {
         return;
       }
@@ -117,7 +95,7 @@ bool isRunning=false;
       switch (permission) {
         case LocationPermission.whileInUse:
         case LocationPermission.always:
-        logger.d("Location permission already granted: ${permission.name}");
+          logger.d("Location permission already granted: ${permission.name}");
 
           // Check if location services are enabled
           bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -135,13 +113,13 @@ bool isRunning=false;
         // Only show dialog when permission is actually denied
           bool shouldRequestPermission = await showPermissionExplanationDialog();
           if (!shouldRequestPermission) {
-            // User declined to give permission
+            // If user declined permission request (via explanation dialog)
             logger.d("User declined permission request");
             fallbackToDefaultLocation();
             return false;
           }
 
-          // User agreed to grant permission
+          // Request permission if user accepted
           permission = await Geolocator.requestPermission();
           if (permission == LocationPermission.denied) {
             showCustomSnackbar(
@@ -176,6 +154,16 @@ bool isRunning=false;
     }
   }
 
+  void fallbackToDefaultLocation() {
+    // Fallback logic if location permission is denied (or user chooses to proceed with limited functionality)
+    // Hardcoding the fallback location (Malaysia coordinates in this example)
+    if (!CommonController.to.isDriver.value) {
+      CommonController.to.markerPositionRider.value = LatLng(37.33272, -122.08740); // Example fallback coordinates
+    } else {
+      CommonController.to.markerPositionDriver.value = LatLng(3.139, 101.6869);  // Example fallback coordinates
+    }
+  }
+
   void _handlePermanentDenial() {
     showCustomSnackbar(
       title: 'Permission Denied Forever',
@@ -186,116 +174,6 @@ bool isRunning=false;
     // Optionally open app settings
     Geolocator.openAppSettings();
   }
-
-
-//   Future<bool> handleLocationPermission() async {
-//     LocationPermission permission;
-//
-//     // Check if location services are enabled
-//     // bool shouldRequestPermission = await showPermissionExplanationDialog();
-//     // if (!shouldRequestPermission) {
-//     //   showCustomSnackbar(
-//     //       title: 'Location Disabled',
-//     //       message: 'Please enable location services to use this feature.',
-//     //       type: SnackBarType.alert
-//     //   );
-//     //   return false;
-//     // }
-//
-//     // // Check current permission status
-//     permission = await Geolocator.checkPermission();
-// logger.d(permission.name);
-//     // // If permission is denied, show an explanation dialog
-//     // if (permission == LocationPermission.denied) {
-//       bool shouldRequestPermission = await showPermissionExplanationDialog();
-//       if (shouldRequestPermission) {
-//         permission = await Geolocator.requestPermission();
-//         if (permission == LocationPermission.denied) {
-//           showCustomSnackbar(
-//               title: 'Permission Denied',
-//               message: 'Location permission denied. Some features will be unavailable.',
-//               type: SnackBarType.alert
-//           );
-//           // Handle denial and allow fallback logic here if necessary
-//           return false;
-//         }
-//        else {
-//         // User declined permission, show a fallback or show the map with default location
-//         fallbackToDefaultLocation();
-//         return false;
-//       }
-//     }
-//
-//     // If permission is permanently denied
-//     if (permission == LocationPermission.deniedForever) {
-//       showCustomSnackbar(
-//           title: 'Permission Denied Forever',
-//           message: 'Location permission is permanently denied. Please enable it in settings.',
-//           type: SnackBarType.alert
-//       );
-//       fallbackToDefaultLocation();
-//
-//       await Geolocator.openAppSettings();  // Open settings to allow the user to grant permission
-//       return false;
-//     }
-//
-//     return true;  // Permission granted
-//   }
-  void fallbackToDefaultLocation() {
-    // Fallback logic if location permission is denied (or user chooses to proceed with limited functionality)
-    // Hardcoding the fallback location (Malaysia coordinates in this example)
-   if(!CommonController.to.isDriver.value) {
-      CommonController.to.markerPositionRider.value = LatLng(37.33272, -122.08740);
-    } else{
-     CommonController.to.markerPositionDriver.value = LatLng(3.139, 101.6869);   }
-
-  }
-//   Future<bool> handleLocationPermission() async {
-//     bool serviceEnabled;
-//     LocationPermission permission;
-//
-//     // Check if location services are enabled
-//     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-//     if (!serviceEnabled) {
-//       showCustomSnackbar(
-//           title:   'Location Disabled',
-//           message: 'Please enable location services',
-//           type: SnackBarType.alert
-//       );
-//       await Geolocator.openLocationSettings();
-//       return false;
-//     }
-//
-//     // Check permission
-//     permission = await Geolocator.checkPermission();
-//     if (permission == LocationPermission.denied) {
-//        bool shouldRequestPermission = await showPermissionExplanationDialog();
-// if(shouldRequestPermission){
-//       permission = await Geolocator.requestPermission();
-//       if (permission == LocationPermission.denied) {
-//         showCustomSnackbar(
-//             title:   'Permission Denied',
-//             message: 'Location permission denied',
-//             type: SnackBarType.alert
-//         );
-//         return false;
-//       }}else{
-//         return false;
-//       }
-//     }
-//
-//     if (permission == LocationPermission.deniedForever) {
-//       showCustomSnackbar(
-//           title:   'Permission Denied',
-//           message: 'Location permission permanently denied. Please enable in settings.',
-//           type: SnackBarType.alert
-//       );
-//       await Geolocator.openAppSettings();
-//       return false;
-//     }
-//
-//     return true;
-//   }
 
   Future<bool> showPermissionExplanationDialog() async {
     try {
@@ -325,34 +203,35 @@ bool isRunning=false;
                     children: [
                       Expanded(
                         child: CustomButton(
+                          onTap: () => Navigator.of(context).pop(false), // Reject permission request
+                          title: "I Don’t Allow",
                           textColor: AppColors.kPrimaryColor,
                           fillColor: Colors.transparent,
-                          onTap: () => Navigator.of(context).pop(false),
-                          title: AppStaticStrings.cancel,
                         ),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
                         child: CustomButton(
-                          onTap: () => Navigator.of(context).pop(true),
+                          onTap: () => Navigator.of(context).pop(true), // Allow permission
                           title: "Allow",
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
           );
         },
       );
-
       return result ?? false;
     } catch (e) {
       logger.e("Error showing permission dialog: $e");
       return false; // Default to false if dialog fails
     }
   }
+
+
   Future<void> fetchCurrentLocation({
     required Rx<LatLng> markerPosition,
   })
