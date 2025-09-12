@@ -160,7 +160,7 @@ bool isRunning=false;
     if (!CommonController.to.isDriver.value) {
       CommonController.to.markerPositionRider.value = LatLng(37.33272, -122.08740); // Example fallback coordinates
     } else {
-      CommonController.to.markerPositionDriver.value = LatLng(3.139, 101.6869);  // Example fallback coordinates
+      CommonController.to.markerPositionDriver.value = LatLng(37.33272, -122.08740);  // Example fallback coordinates
     }
   }
 
@@ -252,7 +252,7 @@ bool isRunning=false;
       // type: SnackBarType.failed);
 logger.e(e);
       // Use fallback if error occurs
-      markerPosition.value = LatLng(3.139, 101.6869); // Dhaka, Bangladesh
+      markerPosition.value = LatLng(37.33272, -122.08740); // Dhaka, Bangladesh
     }
   }
 

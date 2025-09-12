@@ -174,9 +174,7 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
     lastDropoffLatLng = null;
 
     // Clear any existing polylines from the map
-    if (NavigationController.to.routePolylines.isNotEmpty) {
-      NavigationController.to.routePolylines.clear();
-    }
+
 
     // Clear drop off location
     dropoffLatLng.value = null;
@@ -292,18 +290,20 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
         // showCustomSnackbar(title: "Trip Status", message: data['message']);
         tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
         driverStatus.value = data['message'];
-        HomeController.to.showTripDetailsCard.value = true;
-        updateDriverLocation();
+       showTripDetailsCard.value = true;
+         // updateDriverLocation();
         final status = data['data']['status'];
         if (status == DriverTripStatus.cancelled.name ||
             status == DriverTripStatus.completed.name) {
           resetAllStates();
-          clearPolyline();
+ NavigationController.to.clearPolyline();
+          showTripDetailsCard.value = false;
           Get.offAllNamed(
             NavigationPage.routeName,
             arguments: {'reconnectSocket': true},
           );
           if (status == DriverTripStatus.completed.name) {
+
             Boxes.getRattingData().put(
               "rating",
               tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
@@ -414,10 +414,7 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
   void clearAllFocus() {
     activeField.value = "";
   }
-void clearPolyline(){
-  NavigationController.to.routePolylines.clear();
-  NavigationController.to.routePolylines.refresh();
-}
+
   // Helper method to reset all states
   void resetAllStates() {
     wantToGo.value = false;

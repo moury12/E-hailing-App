@@ -611,8 +611,8 @@ logger.i(deviceId);
       passSignUpController.text = '123456';
       confirmPassSignUpController.text = '123456';
       // emailLoginController.text = 'cameg29044@lewou.com';
-      emailLoginController.text = 'skyfal430@gmail.com';
-      // emailLoginController.text = 'hosainahmed534745@gmail.com';
+      // emailLoginController.text = 'skyfal430@gmail.com';
+       emailLoginController.text = 'hosainahmed534745@gmail.com';
       passLoginController.text = '123456';
 
       emailForgetController.value.text =
