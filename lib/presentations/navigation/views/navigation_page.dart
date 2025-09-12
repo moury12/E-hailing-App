@@ -161,8 +161,18 @@ class _NavigationPageState extends State<NavigationPage>
                 child: FloatingActionButton.small(onPressed: () {
                   if(CommonController.to.isDriver==true){
                     DashBoardController.to.getDriverCurrentTripRequest();
+                    if(DashBoardController.to.currentTrip.value.sId==null){
+                      NavigationController.to.clearPolyline();
+
+                    }
                   }else{
                     HomeController.to.getUserCurrentTrip();
+                    if(HomeController.to.tripAcceptedModel.value.sId==null){
+                      NavigationController.to.clearPolyline();
+                      HomeController.to.pickupLatLng.value=null;
+                      HomeController.to.dropoffLatLng.value=null;
+                      HomeController.to.resetAllStates();
+                    }
                   }
                 },
                     shape: CircleBorder(),

@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-statics/controllers/statics_controller.dart';
 import 'package:e_hailing_app/presentations/driver-statics/views/statics_page.dart';
 import 'package:e_hailing_app/presentations/home/views/home_page.dart';
@@ -44,7 +45,15 @@ class NavigationController extends GetxController {
   void changeIndex(int index) {
     currentNavIndex.value = index;
   }
+  void clearPolyline(){
+    routePolylines.clear();
+    routePolylines.refresh();
+    routePolylines.value={};
+    update();
+    logger.d("Polyline cleared: ${routePolylines.value}");
 
+
+  }
   List<Widget> getPages() {
     return [
       CommonController.to.isDriver.value ? DashboardPage() : HomePage(),

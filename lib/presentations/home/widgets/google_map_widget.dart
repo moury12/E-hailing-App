@@ -64,6 +64,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
 
   }
 
+
   void _onMapCreated(GoogleMapController controller) {
     CommonController.to.setMapControllerRider(controller);
 
@@ -97,7 +98,6 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
         //         ? CameraTargetBounds(BoundaryController.to.bounds.value)
         //         : CameraTargetBounds.unbounded,
         polylines: NavigationController.to.routePolylines.value,
-
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
         myLocationEnabled: false,

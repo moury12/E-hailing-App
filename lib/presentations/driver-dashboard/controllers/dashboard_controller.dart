@@ -425,7 +425,7 @@ logger.i("Listening socket event for driver");
 
     // ============ Driver Location Update ============
     socketService.on(DriverEvent.driverLocationUpdate, (data) {
-      logger.d("📩 driverLocationUpdate: $data");
+      // logger.d("📩 driverLocationUpdate: $data");
 
       if (data['success'] == true) {
         driverUpdatedLocation.value = DriverLocationUpdateModel.fromJson(
@@ -481,10 +481,13 @@ logger.i("Listening socket event for driver");
         break;
       case 'completed':
       case 'cancelled':
+
         removeSocketListeners();
         for (TripCancellationModel cancel in tripCancellationList) {
           cancel.isChecked.value = false;
-        }        Get.offAllNamed(
+        }
+        NavigationController.to.clearPolyline();
+        Get.offAllNamed(
           NavigationPage.routeName,
           arguments: {'reconnectSocket': true},
         );
