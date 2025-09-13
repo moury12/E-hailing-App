@@ -72,7 +72,7 @@ await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       sound: true,
     );
 
-    if(Boxes.getUserData().get(tokenKey)==null||Boxes.getUserData().get(tokenKey)!.toString().isEmpty){
+    if(Boxes.getUserData().get(tokenKey)==null){
 
       await locationService.handleLocationPermission();
    }   // Check internet

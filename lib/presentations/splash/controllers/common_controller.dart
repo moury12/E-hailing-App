@@ -150,7 +150,7 @@ logger.d(response);
 
   void initialSetup() {
 
-    Future.wait([fetchCurrentLocationMethod(), checkUserRole()]);
+    Future.wait([ checkUserRole()]);
   }
 
   /// Fetch Place Details for a given place ID

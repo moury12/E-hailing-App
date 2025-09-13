@@ -4,9 +4,9 @@ import 'dart:math' as math;
 import 'dart:math';
 
 import 'package:e_hailing_app/core/components/custom_button.dart';
+import 'package:e_hailing_app/core/components/custom_text_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
-import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
@@ -85,19 +85,11 @@ bool isRunning=false;
   }
   Future<bool> handleLocationPermission() async {
     try {
-      LocationPermission permission;
+      LocationPermission permission = await Geolocator.checkPermission();
 
-      // Check current permission status first
-      permission = await Geolocator.checkPermission();
-      logger.d("Current permission: ${permission.name}");
-
-      // Handle different permission states
       switch (permission) {
-        case LocationPermission.whileInUse:
         case LocationPermission.always:
-          logger.d("Location permission already granted: ${permission.name}");
-
-          // Check if location services are enabled
+        case LocationPermission.whileInUse:
           bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
           if (!serviceEnabled) {
             showCustomSnackbar(
@@ -110,48 +102,61 @@ bool isRunning=false;
           return true;
 
         case LocationPermission.denied:
-        // Only show dialog when permission is actually denied
-          bool shouldRequestPermission = await showPermissionExplanationDialog();
-          if (!shouldRequestPermission) {
-            // If user declined permission request (via explanation dialog)
-            logger.d("User declined permission request");
-            fallbackToDefaultLocation();
-            return false;
-          }
-
-          // Request permission if user accepted
+        // Request permission normally
           permission = await Geolocator.requestPermission();
           if (permission == LocationPermission.denied) {
-            showCustomSnackbar(
-              title: 'Permission Denied',
-              message: 'Location permission denied. Some features will be unavailable.',
-              type: SnackBarType.alert,
-            );
+            // ❌ এখানে Settings-এ পাঠানো যাবে না
             fallbackToDefaultLocation();
             return false;
-          } else if (permission == LocationPermission.deniedForever) {
-            _handlePermanentDenial();
+          }
+          if (permission == LocationPermission.deniedForever) {
+            _showSettingsDialog();
             return false;
           }
-          // Permission granted after request
           return true;
 
         case LocationPermission.deniedForever:
-          _handlePermanentDenial();
+        // ✅ User-driven option to go to settings
+          _showSettingsDialog();
           return false;
 
         case LocationPermission.unableToDetermine:
-          logger.e("Unable to determine location permission");
           fallbackToDefaultLocation();
           return false;
       }
-
-      return true;
     } catch (e) {
       logger.e("Error in handleLocationPermission: $e");
       fallbackToDefaultLocation();
       return false;
     }
+  }
+
+  void _showSettingsDialog() {
+    showDialog(
+      context: Get.context!,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Location Required"),
+          content: const Text(
+            "Location access is required to show your current position on the map and process trip requests. "
+                "You can enable location permission from your Profile > Account Settings > Location Permission, "
+                "or open the device Settings to allow access.",          ),
+          actions: [
+            CustomTextButton(
+              onPressed: () => Navigator.of(context).pop(), // dismiss only
+              title:  AppStaticStrings.cancel.tr
+            ),
+            CustomTextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Geolocator.openAppSettings();
+              },
+              title: "Open Settings",
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void fallbackToDefaultLocation() {
@@ -164,28 +169,17 @@ bool isRunning=false;
     }
   }
 
-  void _handlePermanentDenial() {
-    showCustomSnackbar(
-      title: 'Permission Denied Forever',
-      message: 'Location permission is permanently denied. Please enable it in app settings.',
-      type: SnackBarType.alert,
-    );
-    fallbackToDefaultLocation();
-    // Optionally open app settings
-    Geolocator.openAppSettings();
-  }
 
   Future<bool> showPermissionExplanationDialog() async {
     try {
       bool? result = await showDialog<bool>(
         context: Get.context!,
-        barrierDismissible: false, // Prevent accidental dismissal
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
             content: SizedBox(
               width: ScreenUtil().screenWidth * 0.8,
               child: Column(
-                spacing: 6.h,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CustomText(
@@ -195,28 +189,14 @@ bool isRunning=false;
                   ),
                   CustomText(
                     textAlign: TextAlign.center,
-                    text: 'We need your location to show nearby trips and help you navigate during the trip. Please grant location access to proceed.',
+                    text: 'Allow location access so we can show you on the map and make sure trip requests work only inside your country.',
                     style: poppinsRegular,
                     fontSize: getFontSizeSmall(),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomButton(
-                          onTap: () => Navigator.of(context).pop(false), // Reject permission request
-                          title: "I Don’t Allow",
-                          textColor: AppColors.kPrimaryColor,
-                          fillColor: Colors.transparent,
-                        ),
-                      ),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: CustomButton(
-                          onTap: () => Navigator.of(context).pop(true), // Allow permission
-                          title: "Allow",
-                        ),
-                      ),
-                    ],
+                  SizedBox(height: 12.h),
+                  CustomButton(
+                    onTap: () => Navigator.of(context).pop(true),
+                    title: "Continue",
                   ),
                 ],
               ),
@@ -227,7 +207,7 @@ bool isRunning=false;
       return result ?? false;
     } catch (e) {
       logger.e("Error showing permission dialog: $e");
-      return false; // Default to false if dialog fails
+      return false;
     }
   }
 

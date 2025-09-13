@@ -191,8 +191,12 @@ return;
 
       if (response['success'] == true) {
         logger.d(response);
-        logoutRequest();
-         Get.toNamed(LoginPage.routeName);
+        Boxes.getUserData().delete(tokenKey);
+        Boxes.getUserData().delete(roleKey);
+        Boxes.getUserRole().delete(role);
+        SocketService().disconnect();
+
+        Get.offAllNamed(LoginPage.routeName);         // Get.toNamed(LoginPage.routeName);
         showCustomSnackbar(title: 'Success', message: response['message']);
       } else {
         logger.e(response);
