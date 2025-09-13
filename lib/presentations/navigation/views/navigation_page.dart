@@ -160,6 +160,7 @@ class _NavigationPageState extends State<NavigationPage>
                 padding: const EdgeInsets.all(8.0),
                 child: FloatingActionButton.small(onPressed: () {
                   if(CommonController.to.isDriver==true){
+                    CommonController.to.fetchCurrentLocationMethod();
                     DashBoardController.to.getDriverCurrentTripRequest();
                     if(DashBoardController.to.currentTrip.value.sId==null){
                       NavigationController.to.clearPolyline();
