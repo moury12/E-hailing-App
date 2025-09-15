@@ -34,7 +34,7 @@ class _NavigationPageState extends State<NavigationPage>
   @override
   void initState() {
     super.initState();
-    // Create the map widget once and reuse it
+    CommonController.to.fetchCurrentLocationMethod();
     _persistentMapWidget =
         CommonController.to.isDriver.value
             ? GoogleMapWidgetForDriver()

@@ -179,29 +179,61 @@ logger.d(response);
       debugPrint("Failed to fetch place details for placeId: $placeId");
     }
   }
-
   Future<void> fetchCurrentLocationMethod() async {
     try {
-      logger.d("Starting location fetch process");
+      logger.d("🚀 Starting location fetch process");
 
-      bool serviceEnabled = await locationService.handleLocationPermission();
-
-      Rx<LatLng> markerPosition = isDriver.value ? markerPositionDriver : markerPositionRider;
-
-      if (!serviceEnabled) {
-        logger.d("Location service not enabled, using fallback");
+      // 1. Check permission
+      final hasPermission = await locationService.handleLocationPermission();
+      logger.i(hasPermission);
+      if (!hasPermission) {
+        logger.d("❌ Location permission not granted, using fallback");
         locationService.fallbackToDefaultLocation();
-      } else {
-        logger.d("Location service enabled, fetching current location");
-        await locationService.fetchCurrentLocation(markerPosition: markerPosition);
+        final markerPosition = isDriver.value
+            ? markerPositionDriver
+            : markerPositionRider;
+        await BoundaryController.to.initialize(markerPosition.value);
+
+        return;
       }
+
+      final markerPosition = isDriver.value
+          ? markerPositionDriver
+          : markerPositionRider;
+      logger.d("✅ Location service enabled, fetching current location...");
+      await locationService.fetchCurrentLocation(markerPosition: markerPosition);
       await BoundaryController.to.initialize(markerPosition.value);
 
-    } catch (e) {
-      logger.e("Error in fetchCurrentLocationMethod: $e");
+      // 5. Initialize boundary check
+
+    } catch (e, s) {
+      logger.e("🔥 Error in fetchCurrentLocationMethod");
       locationService.fallbackToDefaultLocation();
     }
   }
+
+  // Future<void> fetchCurrentLocationMethod() async {
+  //   try {
+  //     logger.d("Starting location fetch process");
+  //
+  //     bool serviceEnabled = await locationService.handleLocationPermission();
+  //
+  //     Rx<LatLng> markerPosition = isDriver.value ? markerPositionDriver : markerPositionRider;
+  //
+  //     if (!serviceEnabled) {
+  //       logger.d("Location service not enabled, using fallback");
+  //       locationService.fallbackToDefaultLocation();
+  //     } else {
+  //       logger.d("Location service enabled, fetching current location");
+  //       await locationService.fetchCurrentLocation(markerPosition: markerPosition);
+  //     }
+  //     await BoundaryController.to.initialize(markerPosition.value);
+  //
+  //   } catch (e) {
+  //     logger.e("Error in fetchCurrentLocationMethod: $e");
+  //     locationService.fallbackToDefaultLocation();
+  //   }
+  // }
 
   Future<void> startTrackingLocationMethod() async {
     Rx<LatLng> markerPosition =

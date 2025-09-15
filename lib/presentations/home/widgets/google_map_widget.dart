@@ -160,6 +160,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
               },
               onDragEnd: (value) async {
                 logger.d("---------------------onDragEnd $value");
+                logger.d(BoundaryController.to.contains(value));
                 if (!BoundaryController.to.contains(value)) {
                   showCustomSnackbar(
                     title: "Failed",
