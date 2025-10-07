@@ -10,7 +10,7 @@ class DCoinController extends GetxController {
   static DCoinController get to => Get.find();
   final PagingController<int, DcoinModel> dCoinsPagingController =
       PagingController(firstPageKey: 1);
-
+RxString selectedPacket = "".obs;
   @override
   void onInit() {
     super.onInit();

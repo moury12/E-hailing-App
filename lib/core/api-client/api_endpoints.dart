@@ -10,6 +10,7 @@ String resetPasswordEndPoint = 'auth/reset-password';
 String changePasswordEndPoint = 'auth/change-password';
 String socialLoginEndPoint = 'auth/social-login';
 String getProfileEndPoint = 'user/profile';
+String postPaymentEndPoint = 'payment/init';
 String editProfileEndPoint = 'user/edit-profile';
 String deleteProfileEndPoint = 'user/delete-account';
 String saveLocationEndPoint = 'saved-location/post-saved-location';
