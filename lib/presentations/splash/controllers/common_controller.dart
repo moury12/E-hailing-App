@@ -7,14 +7,18 @@ import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/payment/views/online_payment.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/review_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../core/api-client/api_endpoints.dart';
 import '../../../core/utils/google_map_api_key.dart';
@@ -29,6 +33,7 @@ class CommonController extends GetxController {
   GoogleMapController? mapControllerRider;
   RxList<ReviewModel> reviewList = <ReviewModel>[].obs;
   RxBool isDriver = false.obs;
+  RxBool isLoadingPayment = false.obs;
   RxBool isLoadingReview = false.obs;
   RxDouble driverRating = 0.0.obs;
   RxBool isLoadingOnLocationSuggestion = false.obs;
@@ -37,6 +42,7 @@ class CommonController extends GetxController {
     mapControllerRider = controller;
     startTrackingLocationMethod();
   }
+  RxString stripeUrl = ''.obs;
 
   void setMapControllerDriver(GoogleMapController controller) {
     mapControllerDriver = controller;
@@ -95,7 +101,49 @@ logger.d(response);
 
     super.onInit();
   }
+  var isLoading = true.obs;
 
+  WebViewController? webController;
+  void initializeWebViewController() {
+    if (webController != null) {
+      return; // Avoid re-initialization
+    }
+    webController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setUserAgent('Mozilla/5.0 (Mobile; rv:52.0) Gecko/52.0 Firefox/52.0')
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            debugPrint("WebView progress: $progress");
+            isLoading.value = progress < 100;
+          },
+          onPageStarted: (String url) {
+            debugPrint("Page started loading: $url");
+            isLoading.value = true;
+          },
+          onPageFinished: (String url) {
+            debugPrint("Page finished loading: $url");
+            isLoading.value = false;
+          },
+          onHttpError: (HttpResponseError error) {
+            debugPrint("HTTP Error: ${error}");
+          },
+          onWebResourceError: (WebResourceError error) {
+            debugPrint("Web Resource Error: ${error.description}");
+          },
+          onNavigationRequest: (NavigationRequest request) {
+            /* if (request.url.startsWith("https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwj4-qy6koSLAxVLRmwGHT7zHXIQPAgI")) {
+              return NavigationDecision.prevent;
+            }*/
+            // if (request.url.contains('${ApiClient.baseUrl}/payment/success')) {
+            //   Get.offAllNamed(BottomNavigationScreen.routeName);
+            // }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(stripeUrl.value));
+  }
 
 
   Future<void> fetchSuggestedPlacesWithRadius(
@@ -235,6 +283,53 @@ logger.d(response);
   //   }
   // }
 
+  ///------------------------------ Post payment method -------------------------///
+
+  Future<void> postPaymentRequest({
+     String? tripId,
+     String? dCoinId,
+
+  }) async {
+    try {
+
+      isLoadingPayment.value = true;
+
+      final response = await ApiService().request(
+        endpoint: postPaymentEndPoint,
+        method: 'POST',
+        body: {
+        if(tripId!=null) "tripId":tripId, //optional
+          "name":AccountInformationController.to.userModel.value.name,
+          "email":AccountInformationController.to.userModel.value.email,
+          "phone":AccountInformationController.to.userModel.value.phoneNumber,
+          if(dCoinId !=null)  "dCoinId":dCoinId //optional
+        },
+      );
+      logger.d(response);
+      if (response['success'] == true) {
+
+        showCustomSnackbar(title: 'Success', message: response['message']);
+        stripeUrl.value=response['data'];
+Get.to(OnlinePaymentScreen(),arguments: response['data']);
+        // Boxes.getRattingData().delete("rating");
+
+        // Navigator.pop(Get.context!);
+      } else {
+        logger.e(response);
+
+        showCustomSnackbar(
+          title: 'Failed',
+          message: response['message'],
+          type: SnackBarType.failed,
+        );
+      }
+    } catch (e) {
+      // loadingProcess.value = AuthProcess.none;
+      logger.e(e.toString());
+    } finally {
+      isLoadingPayment.value = false;
+    }
+  }
   Future<void> startTrackingLocationMethod() async {
     Rx<LatLng> markerPosition =
         isDriver.value ? markerPositionDriver : markerPositionRider;

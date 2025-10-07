@@ -1,4 +1,5 @@
 import 'package:e_hailing_app/core/components/custom_button.dart';
+import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
@@ -11,6 +12,7 @@ import 'package:e_hailing_app/presentations/profile/controllers/account_informat
 import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/d_coin_model.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -48,104 +50,107 @@ class CoinPage extends StatelessWidget {
                     Obx(() {
                       return CoinWidget(
                         coin:
-                           ( AccountInformationController.to.userModel.value.coins??0).toString(),
+                        (AccountInformationController.to.userModel.value
+                            .coins ?? 0).toString(),
                       );
                     }),
                     CustomButton(
                       onTap: () {
                         Get.dialog(
                           AlertDialog(
-                            scrollable: true,
+                            // scrollable: true,
                             contentPadding: padding12,
                             content: SizedBox(
                               width: Get.width * .8,
-                              child: Column(
-                                spacing: 12.h,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  DCoinController
-                                                  .to
-                                                  .dCoinsPagingController
-                                                  .itemList ==
-                                              null ||
-                                          DCoinController
-                                              .to
-                                              .dCoinsPagingController
-                                              .itemList!
-                                              .isEmpty
-                                      ? SizedBox.shrink()
-                                      : SizedBox(
-                                        height: 200,
-                                        child: PagedListView<int, DcoinModel>(
-                                          shrinkWrap: true,
-                                          primary: false,
-                                          pagingController:
-                                              DCoinController
-                                                  .to
-                                                  .dCoinsPagingController,
-                                          builderDelegate: PagedChildBuilderDelegate(
-                                            itemBuilder:
-                                                (
-                                                  context,
-                                                  item,
-                                                  index,
-                                                ) => Padding(
-                                                  padding: padding6V,
-                                                  child: CoinWidget(
-                                                    coin: item.coin.toString(),
-                                                    title:
-                                                        "RM ${item.mYR.toString()}",
-                                                  ),
-                                                ),
-                                            firstPageProgressIndicatorBuilder:
-                                                (_) =>
-                                                    DefaultProgressIndicator(),
-                                            newPageProgressIndicatorBuilder:
-                                                (_) =>
-                                                    DefaultProgressIndicator(),
-                                            noItemsFoundIndicatorBuilder:
-                                                (_) => Center(
-                                                  child: EmptyWidget(
-                                                    text: "No chats found.",
-                                                  ),
-                                                ),
-                                            firstPageErrorIndicatorBuilder:
-                                                (_) => Center(
-                                                  child: EmptyWidget(
-                                                    text:
-                                                        "Failed to load Notifications.",
-                                                  ),
-                                                ),
-                                            newPageErrorIndicatorBuilder:
-                                                (_) => Center(
-                                                  child: EmptyWidget(
-                                                    text:
-                                                        "Failed to load more. Pull to retry.",
-                                                  ),
-                                                ),
-                                          ),
+                              height: 200.h,
+                              child: PagedListView<int, DcoinModel>(
+                                // shrinkWrap: true,
+                                // primary: false,
+                                pagingController:
+                                DCoinController
+                                    .to
+                                    .dCoinsPagingController,
+                                builderDelegate: PagedChildBuilderDelegate(
+                                  itemBuilder:
+                                      (context,
+                                      item,
+                                      index,) =>
+                                      ButtonTapWidget(
+                                        onTap: () {
+                                          DCoinController.to.selectedPacket
+                                              .value = item.sId!;
+                                        },
+                                        child: Obx(() {
+                                          return Padding(
+                                            padding: padding6V,
+                                            child: CoinWidget(
+                                              fillColor: DCoinController.to
+                                                  .selectedPacket.value ==
+                                                  item.sId.toString()
+                                                  ? AppColors
+                                                  .kPrimaryExtraLightColor
+                                                  : null,
+                                              coin: item.coin.toString(),
+                                              title:
+                                              "RM ${item.mYR.toString()}",
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                  firstPageProgressIndicatorBuilder:
+                                      (_) =>
+                                      DefaultProgressIndicator(),
+                                  newPageProgressIndicatorBuilder:
+                                      (_) =>
+                                      DefaultProgressIndicator(),
+                                  noItemsFoundIndicatorBuilder:
+                                      (_) =>
+                                      Center(
+                                        child: EmptyWidget(
+                                          text: "No chats found.",
                                         ),
                                       ),
-                                  CustomTextField(
-                                    title: AppStaticStrings.addCoin,
-                                  ),
-                                  CustomButton(
-                                    onTap: () {
-
-                                      Get.back();
-                                      showCustomSnackbar(
-                                        title:
-                                        AppStaticStrings.featureComingSoon,
-                                        message:
-                                        AppStaticStrings
-                                            .featureNotImplemented,
-                                      );
-                                    },
-                                    title: 'Buy Now',
-                                  ),
-                                ],
+                                  firstPageErrorIndicatorBuilder:
+                                      (_) =>
+                                      Center(
+                                        child: EmptyWidget(
+                                          text:
+                                          "Failed to load Notifications.",
+                                        ),
+                                      ),
+                                  newPageErrorIndicatorBuilder:
+                                      (_) =>
+                                      Center(
+                                        child: EmptyWidget(
+                                          text:
+                                          "Failed to load more. Pull to retry.",
+                                        ),
+                                      ),
+                                ),
                               ),
                             ),
+                            actions: [Obx(() {
+                              return CustomButton(
+                                isLoading: CommonController.to.isLoadingPayment
+                                    .value,
+                                onTap: () {
+                                  Get.back();
+                                  CommonController.to.postPaymentRequest(
+                                      dCoinId: DCoinController.to.selectedPacket
+                                          .value);
+
+                                  // showCustomSnackbar(
+                                  //   title:
+                                  //   AppStaticStrings.featureComingSoon,
+                                  //   message:
+                                  //   AppStaticStrings
+                                  //       .featureNotImplemented,
+                                  // );
+                                },
+                                title: 'Buy Now',
+                              );
+                            }),
+                            ],
                           ),
                         );
                       },
@@ -164,6 +169,10 @@ class CoinPage extends StatelessWidget {
                         ],
                       ),
                     ),
+                    // CustomTextField(
+                    //   title: AppStaticStrings.addCoin,
+                    // ),
+
                   ],
                 ),
               ),
@@ -178,8 +187,9 @@ class CoinPage extends StatelessWidget {
 class CoinWidget extends StatelessWidget {
   final String? title;
   final String? coin;
+  final Color? fillColor;
 
-  const CoinWidget({super.key, this.title, this.coin});
+  const CoinWidget({super.key, this.title, this.coin, this.fillColor});
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +197,7 @@ class CoinWidget extends StatelessWidget {
       padding: padding12,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.r),
-        color: AppColors.kWhiteColor,
+        color: fillColor ?? AppColors.kWhiteColor,
         boxShadow: [
           BoxShadow(
             color: AppColors.kExtraLightGreyTextColor.withValues(alpha: .3),
@@ -199,7 +209,7 @@ class CoinWidget extends StatelessWidget {
         children: [
           CustomText(text: title ?? AppStaticStrings.totalCoin),
           Spacer(),
-          CoinContainerWidget(coin: coin),
+          CoinContainerWidget(coin: coin,),
         ],
       ),
     );
