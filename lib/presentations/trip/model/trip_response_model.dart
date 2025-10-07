@@ -8,6 +8,7 @@ class TripResponseModel {
   User? user;
   String? pickUpAddress;
   String? dropOffAddress;
+  String? paymentType;
   num? duration;
   num? distance;
   num? estimatedFare;
@@ -68,6 +69,7 @@ class TripResponseModel {
     sId = json['_id'];
     user = json['user'] != null ? User.fromJson(json['user']) : null;
     pickUpAddress = json['pickUpAddress'];
+    paymentType = json['paymentType'];
     dropOffAddress = json['dropOffAddress'];
     duration = json['duration'];
     distance = json['distance'];
@@ -105,6 +107,7 @@ class TripResponseModel {
       data['user'] = user!.toJson();
     }
     data['pickUpAddress'] = pickUpAddress;
+    data['paymentType'] = paymentType;
     data['dropOffAddress'] = dropOffAddress;
     data['duration'] = duration;
     data['distance'] = distance;

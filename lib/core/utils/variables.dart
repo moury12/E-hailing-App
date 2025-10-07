@@ -72,9 +72,9 @@ String driver = 'driver';
 String user = 'user';
 
 final List<Map<String, String>> paymentMethodList = [
-  // {"value": "online", "label":AppStaticStrings.creditDebitCards},
+   {"value": "online", "label":AppStaticStrings.creditDebitCards},
   {"value": "cash", "label":AppStaticStrings.handCash},
-  // {"value": "coin", "label":AppStaticStrings.dCoin},
+  {"value": "coin", "label":AppStaticStrings.dCoin},
 ];
 
 
