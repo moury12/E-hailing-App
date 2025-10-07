@@ -13,6 +13,7 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/car_information_widget.dart';
 import 'package:flutter/material.dart';
@@ -38,21 +39,24 @@ class PaymentPage extends StatelessWidget {
     // String rent =
     //     "${(driverTripResponseModel.finalFare ?? 0) - (driverTripResponseModel.extraCharge ?? 0)}";
     String rent =
-        role == driver
-            ? "${driverTripResponseModel.estimatedFare ?? 0}"
-            : "${userTripResponse.estimatedFare ?? 0}";
-    String? paymentType =
-        role == driver ? "${driverTripResponseModel.paymentType ?? 0}" : null;
+    role == driver
+        ? "${driverTripResponseModel.estimatedFare ?? 0}"
+        : "${userTripResponse.estimatedFare ?? 0}";
+    String paymentType =
+    role == driver
+        ? "${driverTripResponseModel.paymentType ?? 0}"
+        : "${userTripResponse.paymentType ?? 0}";
     String tollFee =
-        role == driver
-            ? "${driverTripResponseModel.tollFee ?? 0}"
-            : "${userTripResponse.tollFee ?? 0}";
+    role == driver
+        ? "${driverTripResponseModel.tollFee ?? 0}"
+        : "${userTripResponse.tollFee ?? 0}";
     String extraCharge =
-        role == driver
-            ? "${driverTripResponseModel.extraCharge ?? 0}"
-            : "${userTripResponse.extraCharge ?? 0}";
+    role == driver
+        ? "${driverTripResponseModel.extraCharge ?? 0}"
+        : "${userTripResponse.extraCharge ?? 0}";
     String finalFee =
-        "${double.parse(rent).toInt() + int.parse(tollFee) + int.parse(extraCharge)}";
+        "${double.parse(rent).toInt() + int.parse(tollFee) +
+        int.parse(extraCharge)}";
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.payment),
       body: SingleChildScrollView(
@@ -94,36 +98,36 @@ class PaymentPage extends StatelessWidget {
                   value: 'RM $finalFee',
                 ),
                 space12H,
-                if (paymentType != null) buildPaymentItem(paymentType),
+                buildPaymentItem(paymentType, userTripResponse),
                 space6H,
                 role == driver
                     ? Column(
-                      spacing: 8.h,
-                      children: [
-                        CustomButton(
-                          onTap: () {
-                            DashBoardController.to.driverTripUpdateStatus(
-                              tripId: driverTripResponseModel.sId.toString(),
+                  spacing: 8.h,
+                  children: [
+                    CustomButton(
+                      onTap: () {
+                        DashBoardController.to.driverTripUpdateStatus(
+                          tripId: driverTripResponseModel.sId.toString(),
 
-                              newStatus:
-                                  DriverTripStatus.completed.name.toString(),
-                            );
-                          },
-                          title: AppStaticStrings.confirm,
-                        ),
-                        CustomButton(
-                          onTap: () {
-                            Get.offAllNamed(
-                              NavigationPage.routeName,
-                              arguments: {'reconnectSocket': true},
-                            );
-                          },
-                          fillColor: Colors.transparent,
-                          textColor: AppColors.kPrimaryColor,
-                          title: AppStaticStrings.notYet,
-                        ),
-                      ],
-                    )
+                          newStatus:
+                          DriverTripStatus.completed.name.toString(),
+                        );
+                      },
+                      title: AppStaticStrings.confirm,
+                    ),
+                    CustomButton(
+                      onTap: () {
+                        Get.offAllNamed(
+                          NavigationPage.routeName,
+                          arguments: {'reconnectSocket': true},
+                        );
+                      },
+                      fillColor: Colors.transparent,
+                      textColor: AppColors.kPrimaryColor,
+                      title: AppStaticStrings.notYet,
+                    ),
+                  ],
+                )
                     : SizedBox.shrink(),
               ],
             ),
@@ -133,7 +137,8 @@ class PaymentPage extends StatelessWidget {
     );
   }
 
-  Widget buildPaymentItem(String? paymentType) {
+  Widget buildPaymentItem(String? paymentType,
+      TripResponseModel userTripResponse) {
     switch (paymentType) {
       case 'cash':
         return PaymentCardItem(
@@ -154,15 +159,19 @@ class PaymentPage extends StatelessWidget {
         );
 
       case 'online':
-        return PaymentCardItem(
-          img: cardsIcon,
-          title: AppStaticStrings.creditDebitCards,
-          onTap: () {
-           if( role != driver){
-
-           }
-          },
-        );
+        return Obx(() {
+          return PaymentCardItem(
+            img: cardsIcon,
+            isLoading: CommonController.to.isLoadingPayment.value,
+            title: AppStaticStrings.creditDebitCards,
+            onTap: () {
+              if (role != driver) {
+                CommonController.to.postPaymentRequest(
+                    tripId: userTripResponse.sId);
+              }
+            },
+          );
+        });
 
       default:
         return SizedBox.shrink(); // nothing if null or unknown
