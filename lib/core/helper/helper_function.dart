@@ -222,7 +222,16 @@ Future<Map<String, dynamic>> getCredentials() async {
   return {};
 }
 
-
+void removeImage({
+  required RxList<String> uploadImages,
+  required String imagePath,
+}) {
+  if (uploadImages.contains(imagePath)) {
+    uploadImages.remove(imagePath);
+  } else {
+    debugPrint("Image not found in the list.");
+  }
+}
 
 final ImagePicker _picker = ImagePicker();
 

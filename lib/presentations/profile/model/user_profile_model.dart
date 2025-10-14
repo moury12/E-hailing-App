@@ -11,6 +11,7 @@ class UserProfileModel {
   bool? isOnline;
   LocationCoordinates? locationCoordinates;
   String? idOrPassportNo;
+  String? nrcStatus;
   String? drivingLicenseNo;
   String? licenseType;
   String? licenseExpiry;
@@ -20,6 +21,8 @@ class UserProfileModel {
   String? userAccountStatus;
   String? createdAt;
   String? updatedAt;
+  String? identificationNum;
+  List<dynamic>? nrcImages;
 
   num? coins;
   int? iV;
@@ -41,6 +44,7 @@ class UserProfileModel {
     this.idOrPassportNo,
     this.drivingLicenseNo,
     this.licenseType,
+    this.nrcStatus,
     this.licenseExpiry,
     this.idOrPassportImage,
     this.psvLicenseImage,
@@ -48,6 +52,8 @@ class UserProfileModel {
     this.userAccountStatus,
     this.createdAt,
     this.coins,
+    this.nrcImages,
+    this.identificationNum,
     this.updatedAt,
     this.assignedCar,
     this.iV,
@@ -65,6 +71,10 @@ class UserProfileModel {
     phoneNumber = json['phoneNumber'];
     address = json['address'];
     isOnline = json['isOnline'];
+    identificationNum = json['identification_number'];
+    nrcImages = json['nrc_images']??<String>[];
+    isOnline = json['isOnline'];
+    nrcStatus = json['nrc_verification_status'];
     assignedCar = json['assignedCar'] != null
         ? AssignedCar.fromJson(json['assignedCar'])
         : null;
@@ -100,7 +110,10 @@ class UserProfileModel {
     data['profile_image'] = img;
     data['phoneNumber'] = phoneNumber;
     data['address'] = address;
+    data['nrc_images'] = nrcImages;
+    data['identification_number'] = identificationNum;
     data['isOnline'] = isOnline;
+    data['nrc_verification_status'] = nrcStatus;
     if (locationCoordinates != null) {
       data['locationCoordinates'] = locationCoordinates!.toJson();
     }

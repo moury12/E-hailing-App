@@ -20,6 +20,41 @@ enum DefaultSocketEvent {
 
   final String value;
 }
+enum NrcVerificationStatus {
+  unverified,
+  submitted,
+  accepted,
+  rejected;
+
+  // Parse from API string to enum
+  static NrcVerificationStatus fromString(String status) {
+    switch (status.toLowerCase()) {
+      case 'submitted':
+        return NrcVerificationStatus.submitted;
+      case 'accepted':
+        return NrcVerificationStatus.accepted;
+      case 'rejected':
+        return NrcVerificationStatus.rejected;
+      case 'unverified':
+      default:
+        return NrcVerificationStatus.unverified;
+    }
+  }
+
+  // Convert back to string (if needed)
+  String get name {
+    switch (this) {
+      case NrcVerificationStatus.submitted:
+        return 'submitted';
+      case NrcVerificationStatus.accepted:
+        return 'accepted';
+      case NrcVerificationStatus.rejected:
+        return 'rejected';
+      case NrcVerificationStatus.unverified:
+        return 'unverified';
+    }
+  }
+}
 
 enum RideFlowState {
   findingRide,

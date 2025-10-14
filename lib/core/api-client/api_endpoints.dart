@@ -12,6 +12,7 @@ String socialLoginEndPoint = 'auth/social-login';
 String getProfileEndPoint = 'user/profile';
 String postPaymentEndPoint = 'payment/init';
 String editProfileEndPoint = 'user/edit-profile';
+String verifyIdentityEndPoint = 'user/verify-identity';
 String deleteProfileEndPoint = 'user/delete-account';
 String saveLocationEndPoint = 'saved-location/post-saved-location';
 String getSpecificSaveLocationEndPoint = 'saved-location/get-saved-location';

@@ -9,6 +9,7 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/views/driver_review_list_page.dart';
 import 'package:e_hailing_app/presentations/profile/views/edit_profile_page.dart';
@@ -68,12 +69,23 @@ class AccountInformationPage extends StatelessWidget {
                       );
                     }),
                     Obx(() {
-                      return CustomText(
-                        text:
-                        AccountInformationController.to.userModel.value.name ??
-                            AppStaticStrings.noDataFound,
-                        style: poppinsSemiBold,
-                        fontSize: getFontSizeExtraLarge(),
+                      bool isVerified = AccountInformationController
+                          .to.userModel.value.nrcStatus!=null&& AccountInformationController
+                          .to.userModel.value.nrcStatus ==
+                          NrcVerificationStatus.accepted.name;
+                      return Row(
+                        spacing: 6,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomText(
+                            text:
+                            AccountInformationController.to.userModel.value.name ??
+                                AppStaticStrings.noDataFound,
+                            style: poppinsSemiBold,
+                            fontSize: getFontSizeExtraLarge(),
+                          ),
+                       isVerified?Icon(Icons.verified,color: AppColors.kPrimaryColor, size: 15.sp,):SizedBox.shrink()
+                        ],
                       );
                     }),
                     CommonController.to.isDriver.value
@@ -223,12 +235,55 @@ Get.to(DriverReviewListPage());
                           ),
                         ]
                     )
-                        : Obx(() {
-                      return ProfileInfoListWidget(
-                        userModel: AccountInformationController.to.userModel
-                            .value,
-                      );
-                    }),
+                        :DynamicTabWidget(
+                        tabs: AccountInformationController.to.tabsForUser,
+                        tabContent: [
+                          Obx(() {
+                            return ProfileInfoListWidget(
+                              userModel: AccountInformationController.to
+                                  .userModel.value,
+                            );
+                          }),
+                          SizedBox(
+                            width: ScreenUtil().screenWidth,
+                            child: Obx(() {
+                              return Column(
+                                spacing: 8.h,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ProfileCardItemWidget(
+                                    title: AppStaticStrings.nricPassport,
+                                    value:
+                                    AccountInformationController.to.userModel
+                                        .value.identificationNum ??
+                                        AppStaticStrings.noDataFound,
+                                  ),
+                                  // CustomText(
+                                  //     text: AppStaticStrings.nricPassport),
+                             if(AccountInformationController.to
+                                 .userModel.value.nrcImages!=null)     Wrap(
+
+                               children: List.generate(AccountInformationController.to
+                                      .userModel.value.nrcImages!.length, (index) {
+                            return  CustomNetworkImage(
+                              isImagePreview: true,
+                              imageUrl:
+                              "${ApiService()
+                                  .baseUrl}/${AccountInformationController.to
+                                  .userModel.value.nrcImages![index]}",
+                              width: 150.w,
+                              height: 150.w,
+                              );
+                              }),
+                             spacing: 8.h,runSpacing: 8.h,)
+
+                                ],
+
+                              );
+                            }),
+                          ),
+                        ]
+                    )
                   ],
                 ),
               ),
