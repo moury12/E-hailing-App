@@ -5,8 +5,10 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
+import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,6 +34,10 @@ RxString contactNumber="".obs;
       [
         AppStaticStrings.general,
         AppStaticStrings.driving,
+        AppStaticStrings.document,
+      ].obs;  RxList<String> tabsForUser =
+      [
+        AppStaticStrings.general,
         AppStaticStrings.document,
       ].obs;
   var tabContent = <Widget>[].obs;
@@ -121,6 +127,9 @@ return;
         }
         if (needReinitilaize) {
           reinitializeProfileControllers();
+        }
+        if(userModel.value.nrcStatus==NrcVerificationStatus.unverified.name||userModel.value.nrcStatus==NrcVerificationStatus.rejected.name){
+          Get.to(VerifyIdentityPage());
         }
       } else {
         logger.e(response);

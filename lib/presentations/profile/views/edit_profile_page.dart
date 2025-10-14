@@ -9,6 +9,7 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -103,6 +104,10 @@ class EditProfilePage extends StatelessWidget {
                   textEditingController:
                       AccountInformationController.to.placeController.value,
                 ),
+                CustomButton(onTap: () {
+                  Get.to(VerifyIdentityPage());
+                },
+                title: AppStaticStrings.verifyYourIdentity,fillColor: AppColors.kPrimaryLightColor,textColor: AppColors.kPrimaryColor,),
                 CustomButton(
                   onTap: () {
                     AccountInformationController.to.updateProfileRequest();

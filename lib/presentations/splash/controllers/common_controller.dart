@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/payment/views/online_payment.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
@@ -25,7 +27,7 @@ import '../../../core/utils/google_map_api_key.dart';
 
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
-
+RxList<String> images =<String>[].obs;
   final locationService = LocationTrackingService();
   Rx<LatLng> markerPositionDriver = Rx<LatLng>(LatLng(0.0, 0.0));
   Rx<LatLng> markerPositionRider = Rx<LatLng>(LatLng(0.0, 0.0));
@@ -33,6 +35,7 @@ class CommonController extends GetxController {
   GoogleMapController? mapControllerRider;
   RxList<ReviewModel> reviewList = <ReviewModel>[].obs;
   RxBool isDriver = false.obs;
+  RxBool isVerifingIdentity = false.obs;
   RxBool isLoadingPayment = false.obs;
   RxBool isLoadingReview = false.obs;
   RxDouble driverRating = 0.0.obs;
@@ -42,6 +45,7 @@ class CommonController extends GetxController {
     mapControllerRider = controller;
     startTrackingLocationMethod();
   }
+
   RxString stripeUrl = ''.obs;
 
   void setMapControllerDriver(GoogleMapController controller) {
@@ -60,15 +64,15 @@ class CommonController extends GetxController {
         useAuth: true,
         queryParams: {'driverId': driverId},
       );
-logger.d(response);
+      logger.d(response);
       if (response['success'] == true) {
-        driverRating.value=double.parse(response['data']['averageRating'].toString());
+        driverRating.value = double.parse(
+          response['data']['averageRating'].toString(),
+        );
         reviewList.value =
             (response['data']['reviews'] as List)
                 .map((e) => ReviewModel.fromJson(e))
                 .toList();
-
-
       } else {
         logger.e(response);
         if (kDebugMode) {
@@ -86,9 +90,39 @@ logger.d(response);
     }
   }
 
+  Future<NrcVerificationStatus> verifyUserIdentity({
+    required String id,
+    required List<String> images,
+    required String token,
+  }) async {
+    isVerifingIdentity.value = true;
+    try {
+      ApiService().setAuthToken(token);
+      Map<String, String> fields = {'identification_number': id};
+      List<File> imageFiles = images.map((e) => File(e)).toList();
+
+      Map<String, dynamic> files = {'nrc_image': imageFiles};
+      final response = await ApiService().multipartRequest(
+        endpoint: verifyIdentityEndPoint,
+        method: "POST",
+        fields: fields,
+        files: files,
+      );
+      final statusString =
+          response['data']['nrc_verification_status'] as String?;
+      // if (statusString == null) return NrcVerificationStatus.unverified;
+      return NrcVerificationStatus.fromString(statusString ?? 'unverified');
+    } catch (e) {
+      logger.e(e.toString());
+      return NrcVerificationStatus.unverified;
+    } finally {
+      isVerifingIdentity.value = false;
+    }
+  }
+
   @override
   void onInit() async {
-   // locationService.handleLocationPermission();
+    // locationService.handleLocationPermission();
     logger.d(
       "--check role----${Boxes.getUserRole().get(role, defaultValue: user).toString()}",
     );
@@ -101,6 +135,7 @@ logger.d(response);
 
     super.onInit();
   }
+
   var isLoading = true.obs;
 
   WebViewController? webController;
@@ -108,43 +143,45 @@ logger.d(response);
     if (webController != null) {
       return; // Avoid re-initialization
     }
-    webController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setUserAgent('Mozilla/5.0 (Mobile; rv:52.0) Gecko/52.0 Firefox/52.0')
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            debugPrint("WebView progress: $progress");
-            isLoading.value = progress < 100;
-          },
-          onPageStarted: (String url) {
-            debugPrint("Page started loading: $url");
-            isLoading.value = true;
-          },
-          onPageFinished: (String url) {
-            debugPrint("Page finished loading: $url");
-            isLoading.value = false;
-          },
-          onHttpError: (HttpResponseError error) {
-            debugPrint("HTTP Error: ${error}");
-          },
-          onWebResourceError: (WebResourceError error) {
-            debugPrint("Web Resource Error: ${error.description}");
-          },
-          onNavigationRequest: (NavigationRequest request) {
-            /* if (request.url.startsWith("https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwj4-qy6koSLAxVLRmwGHT7zHXIQPAgI")) {
+    webController =
+        WebViewController()
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..setUserAgent(
+            'Mozilla/5.0 (Mobile; rv:52.0) Gecko/52.0 Firefox/52.0',
+          )
+          ..setNavigationDelegate(
+            NavigationDelegate(
+              onProgress: (int progress) {
+                debugPrint("WebView progress: $progress");
+                isLoading.value = progress < 100;
+              },
+              onPageStarted: (String url) {
+                debugPrint("Page started loading: $url");
+                isLoading.value = true;
+              },
+              onPageFinished: (String url) {
+                debugPrint("Page finished loading: $url");
+                isLoading.value = false;
+              },
+              onHttpError: (HttpResponseError error) {
+                debugPrint("HTTP Error: ${error}");
+              },
+              onWebResourceError: (WebResourceError error) {
+                debugPrint("Web Resource Error: ${error.description}");
+              },
+              onNavigationRequest: (NavigationRequest request) {
+                /* if (request.url.startsWith("https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwj4-qy6koSLAxVLRmwGHT7zHXIQPAgI")) {
               return NavigationDecision.prevent;
             }*/
-            // if (request.url.contains('${ApiClient.baseUrl}/payment/success')) {
-            //   Get.offAllNamed(BottomNavigationScreen.routeName);
-            // }
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(stripeUrl.value));
+                // if (request.url.contains('${ApiClient.baseUrl}/payment/success')) {
+                //   Get.offAllNamed(BottomNavigationScreen.routeName);
+                // }
+                return NavigationDecision.navigate;
+              },
+            ),
+          )
+          ..loadRequest(Uri.parse(stripeUrl.value));
   }
-
 
   Future<void> fetchSuggestedPlacesWithRadius(
     String input, {
@@ -197,8 +234,7 @@ logger.d(response);
   }
 
   void initialSetup() {
-
-    Future.wait([ checkUserRole()]);
+    Future.wait([checkUserRole()]);
   }
 
   /// Fetch Place Details for a given place ID
@@ -227,6 +263,7 @@ logger.d(response);
       debugPrint("Failed to fetch place details for placeId: $placeId");
     }
   }
+
   Future<void> fetchCurrentLocationMethod() async {
     try {
       logger.d("🚀 Starting location fetch process");
@@ -237,23 +274,22 @@ logger.d(response);
       if (!hasPermission) {
         logger.d("❌ Location permission not granted, using fallback");
         locationService.fallbackToDefaultLocation();
-        final markerPosition = isDriver.value
-            ? markerPositionDriver
-            : markerPositionRider;
+        final markerPosition =
+            isDriver.value ? markerPositionDriver : markerPositionRider;
         await BoundaryController.to.initialize(markerPosition.value);
 
         return;
       }
 
-      final markerPosition = isDriver.value
-          ? markerPositionDriver
-          : markerPositionRider;
+      final markerPosition =
+          isDriver.value ? markerPositionDriver : markerPositionRider;
       logger.d("✅ Location service enabled, fetching current location...");
-      await locationService.fetchCurrentLocation(markerPosition: markerPosition);
+      await locationService.fetchCurrentLocation(
+        markerPosition: markerPosition,
+      );
       await BoundaryController.to.initialize(markerPosition.value);
 
       // 5. Initialize boundary check
-
     } catch (e, s) {
       logger.e("🔥 Error in fetchCurrentLocationMethod");
       locationService.fallbackToDefaultLocation();
@@ -285,32 +321,26 @@ logger.d(response);
 
   ///------------------------------ Post payment method -------------------------///
 
-  Future<void> postPaymentRequest({
-     String? tripId,
-     String? dCoinId,
-
-  }) async {
+  Future<void> postPaymentRequest({String? tripId, String? dCoinId}) async {
     try {
-
       isLoadingPayment.value = true;
 
       final response = await ApiService().request(
         endpoint: postPaymentEndPoint,
         method: 'POST',
         body: {
-        if(tripId!=null) "tripId":tripId, //optional
-          "name":AccountInformationController.to.userModel.value.name,
-          "email":AccountInformationController.to.userModel.value.email,
-          "phone":AccountInformationController.to.userModel.value.phoneNumber,
-          if(dCoinId !=null)  "dCoinId":dCoinId //optional
+          if (tripId != null) "tripId": tripId, //optional
+          "name": AccountInformationController.to.userModel.value.name,
+          "email": AccountInformationController.to.userModel.value.email,
+          "phone": AccountInformationController.to.userModel.value.phoneNumber,
+          if (dCoinId != null) "dCoinId": dCoinId, //optional
         },
       );
       logger.d(response);
       if (response['success'] == true) {
-
         showCustomSnackbar(title: 'Success', message: response['message']);
-        stripeUrl.value=response['data'];
-Get.to(OnlinePaymentScreen(),arguments: response['data']);
+        stripeUrl.value = response['data'];
+        Get.to(OnlinePaymentScreen(), arguments: response['data']);
         // Boxes.getRattingData().delete("rating");
 
         // Navigator.pop(Get.context!);
@@ -330,6 +360,7 @@ Get.to(OnlinePaymentScreen(),arguments: response['data']);
       isLoadingPayment.value = false;
     }
   }
+
   Future<void> startTrackingLocationMethod() async {
     Rx<LatLng> markerPosition =
         isDriver.value ? markerPositionDriver : markerPositionRider;
