@@ -25,7 +25,6 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
 
@@ -138,7 +137,10 @@ class AuthController extends GetxController {
         showCustomSnackbar(title: 'Success', message: response['message']);
 
         if (isAccVerify) {
-          Get.to(VerifyIdentityPage(),arguments: response['data']['accessToken']);
+          Get.to(
+            VerifyIdentityPage(),
+            arguments: response['data']['accessToken'],
+          );
           nameSignUpController.clear();
           passSignUpController.clear();
           confirmPassSignUpController.clear();
@@ -248,7 +250,7 @@ class AuthController extends GetxController {
     try {
       loadingProcess.value = AuthProcess.login;
       String? deviceId = await DeviceIdService.getDeviceId();
-logger.i(deviceId);
+      logger.i(deviceId);
       final response = await ApiService().request(
         endpoint: loginEndPoint,
         method: 'POST',
@@ -276,12 +278,9 @@ logger.i(deviceId);
         Boxes.getUserData().put(tokenKey, response["data"]['accessToken']);
         ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
-         CommonController.to.initialSetup();
+        CommonController.to.initialSetup();
 
-        Get.offAllNamed(
-          NavigationPage.routeName,
-          arguments: {'reconnectSocket': true},
-        );
+        checkVerifiedOrNot(status:  response["data"][nrcVerificationField]);
       } else {
         logger.e(response);
 
@@ -294,6 +293,18 @@ logger.i(deviceId);
     } catch (e) {
       loadingProcess.value = AuthProcess.none;
       logger.e(e.toString());
+    }
+  }
+
+  void checkVerifiedOrNot({ String? status, String? token}) {
+    if (status!=null&&(status == NrcVerificationStatus.unverified.name ||
+        status == NrcVerificationStatus.rejected.name)) {
+      Get.to(VerifyIdentityPage());
+    } else {
+      Get.offAllNamed(
+        NavigationPage.routeName,
+        arguments: {'reconnectSocket': true},
+      );
     }
   }
 
@@ -320,7 +331,7 @@ logger.i(deviceId);
         method: 'POST',
         body: {
           "deviceId": deviceId,
-          "token": fcmToken??"xzxz",
+          "token": fcmToken ?? "xzxz",
           "name": name,
           "email": email,
           "profile_image": photoUrl,
@@ -334,101 +345,101 @@ logger.i(deviceId);
 
       // ✅ Success - store token and navigate
       if (initialResponse['success'] == true) {
-        Boxes.getUserData().put(
-          tokenKey,
-          initialResponse["data"]['accessToken'],
-        );
-        ApiService().setAuthToken(initialResponse["data"]['accessToken']);
+        if (initialResponse['message'] == "phoneNumber is required") {
+          // 🔁 Retry with phone number if needed
+          String userPhoneNumber = '';
+          String? phoneNumber = await Get.dialog<String>(
+            AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8.h,
+                children: [
+                  CustomTextField(
+                    title: AppStaticStrings.phoneNumber,
+                    keyboardType: TextInputType.phone,
+                    hintText: "e.g. +8801XXXXXXXXX",
 
-        showCustomSnackbar(
-          title: 'Success',
-          message: initialResponse['message'],
-        );
-        CommonController.to.initialSetup();
-
-        Get.offAllNamed(
-          NavigationPage.routeName,
-          arguments: {'reconnectSocket': true},
-        );
-      } else {
-        // 🔁 Retry with phone number if needed
-        String userPhoneNumber = '';
-        String? phoneNumber = await Get.dialog<String>(
-          AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 8.h,
-              children: [
-                CustomTextField(
-                  title: AppStaticStrings.phoneNumber,
-                  keyboardType: TextInputType.phone,
-                  hintText: "e.g. +8801XXXXXXXXX",
-
-                  onChanged: (value) => userPhoneNumber = value,
-                ),
-                CustomButton(
-                  onTap: () {
-                    if (userPhoneNumber.isNotEmpty) {
-                      Get.back(result: userPhoneNumber);
-                    }
-                  },
-                  title: AppStaticStrings.submit.tr,
-                ),
-              ],
+                    onChanged: (value) => userPhoneNumber = value,
+                  ),
+                  CustomButton(
+                    onTap: () {
+                      if (userPhoneNumber.isNotEmpty) {
+                        Get.back(result: userPhoneNumber);
+                      }
+                    },
+                    title: AppStaticStrings.submit.tr,
+                  ),
+                ],
+              ),
             ),
-          ),
-          barrierDismissible: false,
-        );
-
-        // 🚫 Cancelled or empty input
-        if (phoneNumber == null || phoneNumber.isEmpty) {
-          showCustomSnackbar(
-            title: 'Phone Required',
-            message: 'Phone number is required to continue.',
-            type: SnackBarType.failed,
+            barrierDismissible: false,
           );
-          return;
-        }
 
-        // 🔄 Resend with phone number
-        final retryResponse = await ApiService().request(
-          endpoint: socialEndPoint,
-          method: 'POST',
-          body: {
-            "deviceId": deviceId,
-            "token": fcmToken??"xzxz",
-            "name": name,
-            "email": email,
-            "profile_image": photoUrl,
-            "phoneNumber": phoneNumber,
-            "provider": "google",
-            "role": "USER",
-          },
-          useAuth: false,
-        );
+          // 🚫 Cancelled or empty input
+          if (phoneNumber == null || phoneNumber.isEmpty) {
+            showCustomSnackbar(
+              title: 'Phone Required',
+              message: 'Phone number is required to continue.',
+              type: SnackBarType.failed,
+            );
+            return;
+          }
 
-        if (retryResponse['success'] == true) {
+          // 🔄 Resend with phone number
+          final retryResponse = await ApiService().request(
+            endpoint: socialEndPoint,
+            method: 'POST',
+            body: {
+              "deviceId": deviceId,
+              "token": fcmToken ?? "xzxz",
+              "name": name,
+              "email": email,
+              "profile_image": photoUrl,
+              "phoneNumber": phoneNumber,
+              "provider": "google",
+              "role": "USER",
+            },
+            useAuth: false,
+          );
+
+          if (retryResponse['success'] == true) {
+            Boxes.getUserData().put(
+              tokenKey,
+              retryResponse["data"]['accessToken'],
+            );
+            ApiService().setAuthToken(retryResponse["data"]['accessToken']);
+
+            showCustomSnackbar(
+              title: 'Success',
+              message: retryResponse['message'],
+            );
+            // NavigationController.to.isLoggedIn;CommonController.to.initialSetup();
+
+            checkVerifiedOrNot(
+              status: retryResponse["data"][nrcVerificationField],
+            );
+          } else {
+            showCustomSnackbar(
+              title: 'Failed',
+              message: retryResponse['message'],
+              type: SnackBarType.failed,
+            );
+          }
+        } else {
           Boxes.getUserData().put(
             tokenKey,
-            retryResponse["data"]['accessToken'],
+            initialResponse["data"]['accessToken'],
           );
-          ApiService().setAuthToken(retryResponse["data"]['accessToken']);
+          ApiService().setAuthToken(initialResponse["data"]['accessToken']);
 
           showCustomSnackbar(
             title: 'Success',
-            message: retryResponse['message'],
+            message: initialResponse['message'],
           );
-          // NavigationController.to.isLoggedIn;CommonController.to.initialSetup();
+          CommonController.to.initialSetup();
 
-          Get.offAllNamed(
-            NavigationPage.routeName,
-            arguments: {'reconnectSocket': true},
-          );
-        } else {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: retryResponse['message'],
-            type: SnackBarType.failed,
+          checkVerifiedOrNot(
+            status: initialResponse["data"][nrcVerificationField],
           );
         }
       }
@@ -458,7 +469,6 @@ logger.i(deviceId);
             ],
           );
 
-
       // final String? email = credential.email;
       //
       // // IMPORTANT: On subsequent logins, Apple does not provide the email.
@@ -478,12 +488,11 @@ logger.i(deviceId);
         endpoint: appleLoginEndPoint,
         method: 'POST',
         body: {
-          "deviceId":deviceId,
-          "provider":"apple",
-          "token":fcmToken??"xzxz",
-          "appleToken":credential.identityToken,
-           "role": "USER",
-
+          "deviceId": deviceId,
+          "provider": "apple",
+          "token": fcmToken ?? "xzxz",
+          "appleToken": credential.identityToken,
+          "role": "USER",
         },
         useAuth: false,
       );
@@ -492,102 +501,100 @@ logger.i(deviceId);
 
       // ✅ Success - store token and navigate
       if (initialResponse['success'] == true) {
-        Boxes.getUserData().put(
-          tokenKey,
-          initialResponse["data"]['accessToken'],
-        );
-        ApiService().setAuthToken(initialResponse["data"]['accessToken']);
-
-        showCustomSnackbar(
-          title: 'Success',
-          message: initialResponse['message'],
-        );
-        CommonController.to.initialSetup();
-
-        Get.offAllNamed(
-          NavigationPage.routeName,
-          arguments: {'reconnectSocket': true},
-        );
-      }
-      else {
-        // 🔁 Retry with phone number if needed (logic remains identical)
-        String userPhoneNumber = '';
-        String? phoneNumber = await Get.dialog<String>(
-          AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              // spacing: 8.h, // Your UI-specific code
-              children: [
-                CustomTextField(
-                  title: AppStaticStrings.phoneNumber,
-                  keyboardType: TextInputType.phone,
-                  hintText: "e.g. +8801XXXXXXXXX",
-                  onChanged: (value) => userPhoneNumber = value,
-                ),
-                space6H,
-                CustomButton(
-                  onTap: () {
-                    if (userPhoneNumber.isNotEmpty) {
-                      Get.back(result: userPhoneNumber);
-                    }
-                  },
-                  title: AppStaticStrings.submit.tr,
-                ),
-              ],
+        if (initialResponse['message'] == "phoneNumber is required") {
+          // 🔁 Retry with phone number if needed (logic remains identical)
+          String userPhoneNumber = '';
+          String? phoneNumber = await Get.dialog<String>(
+            AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                // spacing: 8.h, // Your UI-specific code
+                children: [
+                  CustomTextField(
+                    title: AppStaticStrings.phoneNumber,
+                    keyboardType: TextInputType.phone,
+                    hintText: "e.g. +8801XXXXXXXXX",
+                    onChanged: (value) => userPhoneNumber = value,
+                  ),
+                  space6H,
+                  CustomButton(
+                    onTap: () {
+                      if (userPhoneNumber.isNotEmpty) {
+                        Get.back(result: userPhoneNumber);
+                      }
+                    },
+                    title: AppStaticStrings.submit.tr,
+                  ),
+                ],
+              ),
             ),
-          ),
-          barrierDismissible: false,
-        );
-
-        // 🚫 Cancelled or empty input
-        if (phoneNumber == null || phoneNumber.isEmpty) {
-          showCustomSnackbar(
-            title: 'Phone Required',
-            message: 'Phone number is required to continue.',
-            type: SnackBarType.failed,
+            barrierDismissible: false,
           );
-          isAppleAuthLoading.value = false; // Stop loading here
-          return;
-        }
 
-        // 🔄 Resend with phone number
-        final retryResponse = await ApiService().request(
-          endpoint: appleLoginEndPoint,
-          method: 'POST',
-          body: {
-            "deviceId":deviceId,
-            "provider":"apple",
-            "token":fcmToken??"xzxz",
-            "appleToken":credential.identityToken,
-             "role": "USER",
-            "phoneNumber": phoneNumber,
+          // 🚫 Cancelled or empty input
+          if (phoneNumber == null || phoneNumber.isEmpty) {
+            showCustomSnackbar(
+              title: 'Phone Required',
+              message: 'Phone number is required to continue.',
+              type: SnackBarType.failed,
+            );
+            isAppleAuthLoading.value = false; // Stop loading here
+            return;
+          }
 
-          },
-          useAuth: false,
-        );
+          // 🔄 Resend with phone number
+          final retryResponse = await ApiService().request(
+            endpoint: appleLoginEndPoint,
+            method: 'POST',
+            body: {
+              "deviceId": deviceId,
+              "provider": "apple",
+              "token": fcmToken ?? "xzxz",
+              "appleToken": credential.identityToken,
+              "role": "USER",
+              "phoneNumber": phoneNumber,
+            },
+            useAuth: false,
+          );
 
-        if (retryResponse['success'] == true) {
+          if (retryResponse['success'] == true) {
+            Boxes.getUserData().put(
+              tokenKey,
+              retryResponse["data"]['accessToken'],
+            );
+            ApiService().setAuthToken(retryResponse["data"]['accessToken']);
+
+            showCustomSnackbar(
+              title: 'Success',
+              message: retryResponse['message'],
+            );
+            CommonController.to.initialSetup();
+
+            checkVerifiedOrNot(
+              status: retryResponse["data"][nrcVerificationField],
+            );
+          } else {
+            showCustomSnackbar(
+              title: 'Failed',
+              message: retryResponse['message'],
+              type: SnackBarType.failed,
+            );
+          }
+        } else {
           Boxes.getUserData().put(
             tokenKey,
-            retryResponse["data"]['accessToken'],
+            initialResponse["data"]['accessToken'],
           );
-          ApiService().setAuthToken(retryResponse["data"]['accessToken']);
+          ApiService().setAuthToken(initialResponse["data"]['accessToken']);
 
           showCustomSnackbar(
             title: 'Success',
-            message: retryResponse['message'],
+            message: initialResponse['message'],
           );
           CommonController.to.initialSetup();
 
-          Get.offAllNamed(
-            NavigationPage.routeName,
-            arguments: {'reconnectSocket': true},
-          );
-        } else {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: retryResponse['message'],
-            type: SnackBarType.failed,
+          checkVerifiedOrNot(
+            status: initialResponse["data"][nrcVerificationField],
           );
         }
       }
@@ -612,7 +619,7 @@ logger.i(deviceId);
       phoneSignUpController.text = '01566026603';
       passSignUpController.text = '123456';
       confirmPassSignUpController.text = '123456';
-        emailLoginController.text = 'rovax11594@reifide.com';
+      emailLoginController.text = 'rovax11594@reifide.com';
       // emailLoginController.text = 'skyfal430@gmail.com';
       //  emailLoginController.text = 'hosainahmed534745@gmail.com';
       passLoginController.text = '123456';
