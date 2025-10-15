@@ -69,7 +69,8 @@ class AccountInformationPage extends StatelessWidget {
                       );
                     }),
                     Obx(() {
-                      bool isVerified = AccountInformationController
+                      bool isVerified =
+                          AccountInformationController
                           .to.userModel.value.nrcStatus!=null&& AccountInformationController
                           .to.userModel.value.nrcStatus ==
                           NrcVerificationStatus.accepted.name;

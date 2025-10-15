@@ -344,7 +344,7 @@ class AuthController extends GetxController {
       logger.d(initialResponse.toString());
 
       // ✅ Success - store token and navigate
-      if (initialResponse['success'] == true) {
+      // if (initialResponse['success'] == true) {
         if (initialResponse['message'] == "phoneNumber is required") {
           // 🔁 Retry with phone number if needed
           String userPhoneNumber = '';
@@ -425,7 +425,8 @@ class AuthController extends GetxController {
               type: SnackBarType.failed,
             );
           }
-        } else {
+        }
+        else {
           Boxes.getUserData().put(
             tokenKey,
             initialResponse["data"]['accessToken'],
@@ -442,7 +443,7 @@ class AuthController extends GetxController {
             status: initialResponse["data"][nrcVerificationField],
           );
         }
-      }
+
     } catch (e) {
       logger.e('Google Sign-In Error: $e');
       showCustomSnackbar(
@@ -500,7 +501,7 @@ class AuthController extends GetxController {
       logger.d(initialResponse.toString());
 
       // ✅ Success - store token and navigate
-      if (initialResponse['success'] == true) {
+      // if (initialResponse['success'] == true) {
         if (initialResponse['message'] == "phoneNumber is required") {
           // 🔁 Retry with phone number if needed (logic remains identical)
           String userPhoneNumber = '';
@@ -580,7 +581,8 @@ class AuthController extends GetxController {
               type: SnackBarType.failed,
             );
           }
-        } else {
+        }
+        else {
           Boxes.getUserData().put(
             tokenKey,
             initialResponse["data"]['accessToken'],
@@ -597,7 +599,7 @@ class AuthController extends GetxController {
             status: initialResponse["data"][nrcVerificationField],
           );
         }
-      }
+      // }
     } catch (e) {
       // This will catch errors, including when the user cancels the Apple Sign-In dialog
       logger.e('Apple Sign-In Error: $e');

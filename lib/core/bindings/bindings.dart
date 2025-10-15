@@ -79,11 +79,16 @@ class NavigationBinding extends Bindings {
         // Also re-register driver-specific listeners if user is a driver
         if (CommonController.to.isDriver.value) {
           Future.delayed(Duration(milliseconds: 200), () {
+            DashBoardController dashboardController;
+
             if (Get.isRegistered<DashBoardController>()) {
-              Get.delete<DashBoardController>();
+              dashboardController = Get.find<DashBoardController>();
+              dashboardController.resetController(); // Reset existing controller
+            } else {
+              Get.lazyPut<DashBoardController>(() => DashBoardController());
+              dashboardController = Get.find<DashBoardController>();
             }
-            Get.lazyPut<DashBoardController>(() => DashBoardController());
-            final dashboardController = Get.find<DashBoardController>();
+
             dashboardController.registerSocketListeners();
           });
         }

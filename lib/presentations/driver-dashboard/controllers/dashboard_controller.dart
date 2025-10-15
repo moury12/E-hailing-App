@@ -370,9 +370,12 @@ logger.i("Listening socket event for driver");
     socketService.on(DriverEvent.tripAvailableStatus, (data) {
       logger.d("📩 tripAvailableStatus: $data");
       if (data["success"]) {
-        availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-        showAvailableTrip();
-        logger.d(rideRequest.value);
+        // Ensure UI updates happen on the main thread
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
+          showAvailableTrip();
+          logger.d(rideRequest.value);
+        });
       }
     });
 
@@ -482,11 +485,7 @@ logger.i("Listening socket event for driver");
       case 'completed':
       case 'cancelled':
 
-        removeSocketListeners();
-        for (TripCancellationModel cancel in tripCancellationList) {
-          cancel.isChecked.value = false;
-        }
-        NavigationController.to.clearPolyline();
+      resetController();
         Get.offAllNamed(
           NavigationPage.routeName,
           arguments: {'reconnectSocket': true},
@@ -496,7 +495,27 @@ logger.i("Listening socket event for driver");
         logger.w("Unknown trip status: $status");
     }
   }
+  void resetController() {
+    // Remove listeners
+    removeSocketListeners();
 
+    // Reset all state
+    // resetRideFlow(rideType: RideFlowState.findingRide);
+    // // currentTrip.value = DriverCurrentTripModel();
+    // availableTrip.value = DriverCurrentTripModel();
+    // driverUpdatedLocation.value = DriverLocationUpdateModel();
+    // extraCost.clear();
+
+    // Reset cancel reasons
+    for (TripCancellationModel cancel in tripCancellationList) {
+      cancel.isChecked.value = false;
+    }
+
+    // Clear polylines
+    NavigationController.to.clearPolyline();
+
+    logger.i("DashBoardController reset completed");
+  }
   void _showSuccess(String message) {
     showCustomSnackbar(
       title: 'Success',
