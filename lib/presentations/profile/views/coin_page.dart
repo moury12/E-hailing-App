@@ -37,7 +37,7 @@ class CoinPage extends StatelessWidget {
       body: CustomRefreshIndicator(
         onRefresh: () async {
           DCoinController.to.dCoinsPagingController.refresh();
-          // CommonController.to.getUserProfileRequest();
+      AccountInformationController.to.getUserProfileRequest();
         },
         child: CustomScrollView(
           slivers: [

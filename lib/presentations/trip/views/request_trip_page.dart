@@ -13,6 +13,7 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/pickup_drop_location_widget.dart';
 import 'package:e_hailing_app/presentations/home/widgets/select_car_item_widget.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -89,6 +90,16 @@ class _RequestTripPageState extends State<RequestTripPage> {
                       fontSize: 11.sp,
                     ),
                     onChanged: (String? newValue) {
+                      if (newValue == "coin") {
+                        if((AccountInformationController.to.userModel.value.coins??0).toInt()
+                            >= HomeController.to.estimatedFare.value){
+                          HomeController.to.selectedPaymentMethod.value = newValue!;
+                          return;
+                        }else{
+                          showCustomSnackbar(title: AppStaticStrings.dCoin, message: "You don't have enough coin to purchase this trip!!");
+                          return;
+                        }
+                      }
                       HomeController.to.selectedPaymentMethod.value = newValue!;
                     },
                     items:
