@@ -30,6 +30,7 @@ class DashBoardController extends GetxController {
   RxBool afterAccepted = false.obs;
   RxBool afterOnTheWay = false.obs;
   RxBool afterPickup = false.obs;
+
   RxBool afterTripStarted = false.obs;
   RxBool afterArrived = false.obs;
   RxBool sendPaymentReq = false.obs;
@@ -438,6 +439,15 @@ logger.i("Listening socket event for driver");
       } else {
         // _showError(data['message']);
       }
+    });
+    socketService.on(PaymentEvent.paymentReceived, (data) {
+      logger.d('payment paid: $data');
+      CommonController.to.isPaid.value=data['success'];
+
+      showCustomSnackbar(
+        title: 'Success',
+        message: data['message'],
+      );
     });
   }
 

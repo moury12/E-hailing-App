@@ -7,7 +7,11 @@ class TripEvents {
   static const String tripCancelled = 'trip_cancelled';
   static const String tripCompleted = 'trip_completed';
 }
+class PaymentEvent{
+  static const String paymentPaid = 'payment_paid';
+  static const String paymentReceived = 'payment_received';
 
+}
 class DriverEvent {
   static const String driverOnlineStatus = 'online_status';
   static const String driverLocationUpdate = 'trip_driver_location_update';

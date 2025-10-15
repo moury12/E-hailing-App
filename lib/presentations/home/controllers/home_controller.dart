@@ -216,6 +216,7 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
     socket.off(TripEvents.tripAccepted);
     socket.off(TripEvents.tripDriverLocationUpdate);
     socket.off(TripEvents.tripUpdateStatus);
+    socket.off(PaymentEvent.paymentPaid);
     // Now re-register
     socket.on(TripEvents.tripRequested, (data) {
       logger.d('🚕 tripRequested: $data');
@@ -225,6 +226,14 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
       //   title: 'Success',
       //   message: 'Trip requested successfully! Looking for nearby drivers...',
       // );
+    });  socket.on(PaymentEvent.paymentPaid, (data) {
+      logger.d('payment paid: $data');
+      CommonController.to.isPaid.value=data['success'];
+
+      showCustomSnackbar(
+        title: 'Success',
+        message: data['message'],
+      );
     });
 
     socket.on(TripEvents.tripNoDriverFound, (data) {
