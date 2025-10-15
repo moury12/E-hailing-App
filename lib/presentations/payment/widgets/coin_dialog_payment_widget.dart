@@ -5,13 +5,19 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/widgets/coin_container_widget.dart';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class DCoinDialogPaymentWidget extends StatelessWidget {
+  final String tripId;
+  final String extraCost;
+
   const DCoinDialogPaymentWidget({
-    super.key,
+    super.key, required this.tripId, required this.extraCost,
   });
 
   @override
@@ -46,7 +52,11 @@ class DCoinDialogPaymentWidget extends StatelessWidget {
                       AppStaticStrings.availableCoin,
                     ),
                   ),
-                  CoinContainerWidget(),
+                  Obx(() {
+                    return CoinContainerWidget(
+                      coin: AccountInformationController.to.userModel.value
+                          .coins.toString(),);
+                  }),
                 ],
               ),
             ),
@@ -67,38 +77,47 @@ class DCoinDialogPaymentWidget extends StatelessWidget {
                       color:
                       AppColors.kExtraLightTextColor,
                     ),
-                    CoinContainerWidget(),
+                    CoinContainerWidget(coin: extraCost,),
                   ],
                 ),
               ),
 
-              Expanded(
-                child: Column(
-                  spacing: 6.h,
-                  crossAxisAlignment:
-                  CrossAxisAlignment.end,
-
-                  children: [
-                    CustomText(
-                      text: AppStaticStrings.tripDuration,
-                      color:
-                      AppColors.kExtraLightTextColor,
-                    ),
-                    CustomText(
-                      text: '1.07 km',
-                      style: poppinsSemiBold,
-                      fontSize: getFontSizeDefault(),
-                    ),
-                  ],
-                ),
-              ),
+              // Expanded(
+              //   child: Column(
+              //     spacing: 6.h,
+              //     crossAxisAlignment:
+              //     CrossAxisAlignment.end,
+              //
+              //     children: [
+              //       CustomText(
+              //         text: AppStaticStrings.tripDuration,
+              //         color:
+              //         AppColors.kExtraLightTextColor,
+              //       ),
+              //       CustomText(
+              //         text: '1.07 km',
+              //         style: poppinsSemiBold,
+              //         fontSize: getFontSizeDefault(),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
 
-          CustomButton(
-            onTap: () {},
-            title: AppStaticStrings.confirm,
-          ),
+          Obx(() {
+            return CustomButton(
+              isLoading: CommonController.to.isLoadingPayment.value,
+
+              onTap: () {
+                CommonController.to.postPaymentRequest(
+                  tripId: tripId,
+                  fromDcoin: true
+                );
+              },
+              title: AppStaticStrings.confirm,
+            );
+          }),
           // FromToTimeLine()
         ],
       ),

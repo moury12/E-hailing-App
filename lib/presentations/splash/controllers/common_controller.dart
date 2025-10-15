@@ -9,6 +9,7 @@ import 'package:e_hailing_app/core/service/location-service/location_service.dar
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/payment/views/online_payment.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/review_model.dart';
@@ -28,6 +29,8 @@ import '../../../core/utils/google_map_api_key.dart';
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
 RxList<String> images =<String>[].obs;
+  RxBool isPaid =false.obs;
+
   final locationService = LocationTrackingService();
   Rx<LatLng> markerPositionDriver = Rx<LatLng>(LatLng(0.0, 0.0));
   Rx<LatLng> markerPositionRider = Rx<LatLng>(LatLng(0.0, 0.0));
@@ -321,10 +324,10 @@ RxList<String> images =<String>[].obs;
 
   ///------------------------------ Post payment method -------------------------///
 
-  Future<void> postPaymentRequest({String? tripId, String? dCoinId}) async {
+  Future<void> postPaymentRequest({String? tripId, String? dCoinId,bool fromDcoin= false}) async {
     try {
       isLoadingPayment.value = true;
-
+logger.i("-----------------payment hit---------------");
       final response = await ApiService().request(
         endpoint: postPaymentEndPoint,
         method: 'POST',
@@ -338,9 +341,19 @@ RxList<String> images =<String>[].obs;
       );
       logger.d(response);
       if (response['success'] == true) {
-        showCustomSnackbar(title: 'Success', message: response['message']);
-        stripeUrl.value = response['data'];
-        Get.to(OnlinePaymentScreen(), arguments: response['data']);
+        if(fromDcoin){
+          showCustomSnackbar(title: 'Success', message: response['message']);
+
+          // Get.back();
+          isPaid.value=true;
+
+        }
+        else{
+          showCustomSnackbar(title: 'Success', message: response['message']);
+
+          stripeUrl.value = response['data'];
+          Get.to(OnlinePaymentScreen(), arguments: response['data']);
+        }
         // Boxes.getRattingData().delete("rating");
 
         // Navigator.pop(Get.context!);
