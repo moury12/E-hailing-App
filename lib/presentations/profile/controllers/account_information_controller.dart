@@ -128,7 +128,7 @@ return;
         if (needReinitilaize) {
           reinitializeProfileControllers();
         }
-        if(userModel.value.nrcStatus==NrcVerificationStatus.unverified.name||userModel.value.nrcStatus==NrcVerificationStatus.rejected.name){
+        if(userModel.value.role=="USER"&&(userModel.value.nrcStatus==NrcVerificationStatus.unverified.name||userModel.value.nrcStatus==NrcVerificationStatus.rejected.name)){
           Get.to(VerifyIdentityPage());
         }
       } else {

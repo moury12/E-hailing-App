@@ -19,6 +19,7 @@ String today = "today";
 String thisWeek = "last-7-days";
 String thisMonth = "this-month";
 String preBook= "pre_book";
+String nrcVerificationField= "nrc_verification_status";
 List<TripCancellationModel> tripCancellationList =CommonController.to.isDriver.value? [
   TripCancellationModel(
     title: AppStaticStrings.riderNoShow,
