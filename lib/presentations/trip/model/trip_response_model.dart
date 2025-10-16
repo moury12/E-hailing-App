@@ -20,6 +20,7 @@ class TripResponseModel {
   String? status;
   String? createdAt;
   String? updatedAt;
+  String? paymentStatus;
   String? tripType;
   num? iV;
   Driver? driver;
@@ -32,6 +33,7 @@ class TripResponseModel {
     this.driverCoordinates,
     this.sId,
     this.user,
+    this.paymentStatus,
     this.pickUpAddress,
     this.dropOffAddress,
     this.duration,
@@ -72,6 +74,7 @@ class TripResponseModel {
     paymentType = json['paymentType'];
     dropOffAddress = json['dropOffAddress'];
     duration = json['duration'];
+    paymentStatus = json['paymentStatus'];
     distance = json['distance'];
     estimatedFare = json['estimatedFare'];
     tollFee = json['tollFee'];
@@ -107,6 +110,7 @@ class TripResponseModel {
       data['user'] = user!.toJson();
     }
     data['pickUpAddress'] = pickUpAddress;
+    data['paymentStatus'] = paymentStatus;
     data['paymentType'] = paymentType;
     data['dropOffAddress'] = dropOffAddress;
     data['duration'] = duration;

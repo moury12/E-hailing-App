@@ -280,7 +280,7 @@ class AuthController extends GetxController {
 
         CommonController.to.initialSetup();
 
-        checkVerifiedOrNot(status:  response["data"][nrcVerificationField]);
+        checkVerifiedOrNot(status: response["data"][nrcVerificationField]);
       } else {
         logger.e(response);
 
@@ -296,9 +296,10 @@ class AuthController extends GetxController {
     }
   }
 
-  void checkVerifiedOrNot({ String? status, String? token}) {
-    if (status!=null&&(status == NrcVerificationStatus.unverified.name ||
-        status == NrcVerificationStatus.rejected.name)) {
+  void checkVerifiedOrNot({String? status, String? token}) {
+    if (status != null &&
+        (status == NrcVerificationStatus.unverified.name ||
+            status == NrcVerificationStatus.rejected.name)) {
       Get.to(VerifyIdentityPage());
     } else {
       Get.offAllNamed(
@@ -345,105 +346,103 @@ class AuthController extends GetxController {
 
       // ✅ Success - store token and navigate
       // if (initialResponse['success'] == true) {
-        if (initialResponse['message'] == "phoneNumber is required") {
-          // 🔁 Retry with phone number if needed
-          String userPhoneNumber = '';
-          String? phoneNumber = await Get.dialog<String>(
-            AlertDialog(
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 8.h,
-                children: [
-                  CustomTextField(
-                    title: AppStaticStrings.phoneNumber,
-                    keyboardType: TextInputType.phone,
-                    hintText: "e.g. +8801XXXXXXXXX",
+      if (initialResponse['message'] == "phoneNumber is required") {
+        // 🔁 Retry with phone number if needed
+        String userPhoneNumber = '';
+        String? phoneNumber = await Get.dialog<String>(
+          AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 8.h,
+              children: [
+                CustomTextField(
+                  title: AppStaticStrings.phoneNumber,
+                  keyboardType: TextInputType.phone,
+                  hintText: "e.g. +8801XXXXXXXXX",
 
-                    onChanged: (value) => userPhoneNumber = value,
-                  ),
-                  CustomButton(
-                    onTap: () {
-                      if (userPhoneNumber.isNotEmpty) {
-                        Get.back(result: userPhoneNumber);
-                      }
-                    },
-                    title: AppStaticStrings.submit.tr,
-                  ),
-                ],
-              ),
+                  onChanged: (value) => userPhoneNumber = value,
+                ),
+                CustomButton(
+                  onTap: () {
+                    if (userPhoneNumber.isNotEmpty) {
+                      Get.back(result: userPhoneNumber);
+                    }
+                  },
+                  title: AppStaticStrings.submit.tr,
+                ),
+              ],
             ),
-            barrierDismissible: false,
+          ),
+          barrierDismissible: false,
+        );
+
+        // 🚫 Cancelled or empty input
+        if (phoneNumber == null || phoneNumber.isEmpty) {
+          showCustomSnackbar(
+            title: 'Phone Required',
+            message: 'Phone number is required to continue.',
+            type: SnackBarType.failed,
           );
-
-          // 🚫 Cancelled or empty input
-          if (phoneNumber == null || phoneNumber.isEmpty) {
-            showCustomSnackbar(
-              title: 'Phone Required',
-              message: 'Phone number is required to continue.',
-              type: SnackBarType.failed,
-            );
-            return;
-          }
-
-          // 🔄 Resend with phone number
-          final retryResponse = await ApiService().request(
-            endpoint: socialEndPoint,
-            method: 'POST',
-            body: {
-              "deviceId": deviceId,
-              "token": fcmToken ?? "xzxz",
-              "name": name,
-              "email": email,
-              "profile_image": photoUrl,
-              "phoneNumber": phoneNumber,
-              "provider": "google",
-              "role": "USER",
-            },
-            useAuth: false,
-          );
-
-          if (retryResponse['success'] == true) {
-            Boxes.getUserData().put(
-              tokenKey,
-              retryResponse["data"]['accessToken'],
-            );
-            ApiService().setAuthToken(retryResponse["data"]['accessToken']);
-
-            showCustomSnackbar(
-              title: 'Success',
-              message: retryResponse['message'],
-            );
-            // NavigationController.to.isLoggedIn;CommonController.to.initialSetup();
-
-            checkVerifiedOrNot(
-              status: retryResponse["data"][nrcVerificationField],
-            );
-          } else {
-            showCustomSnackbar(
-              title: 'Failed',
-              message: retryResponse['message'],
-              type: SnackBarType.failed,
-            );
-          }
+          return;
         }
-        else {
+
+        // 🔄 Resend with phone number
+        final retryResponse = await ApiService().request(
+          endpoint: socialEndPoint,
+          method: 'POST',
+          body: {
+            "deviceId": deviceId,
+            "token": fcmToken ?? "xzxz",
+            "name": name,
+            "email": email,
+            "profile_image": photoUrl,
+            "phoneNumber": phoneNumber,
+            "provider": "google",
+            "role": "USER",
+          },
+          useAuth: false,
+        );
+
+        if (retryResponse['success'] == true) {
           Boxes.getUserData().put(
             tokenKey,
-            initialResponse["data"]['accessToken'],
+            retryResponse["data"]['accessToken'],
           );
-          ApiService().setAuthToken(initialResponse["data"]['accessToken']);
+          ApiService().setAuthToken(retryResponse["data"]['accessToken']);
 
           showCustomSnackbar(
             title: 'Success',
-            message: initialResponse['message'],
+            message: retryResponse['message'],
           );
-          CommonController.to.initialSetup();
+          // NavigationController.to.isLoggedIn;CommonController.to.initialSetup();
 
           checkVerifiedOrNot(
-            status: initialResponse["data"][nrcVerificationField],
+            status: retryResponse["data"][nrcVerificationField],
+          );
+        } else {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: retryResponse['message'],
+            type: SnackBarType.failed,
           );
         }
+      } else {
+        Boxes.getUserData().put(
+          tokenKey,
+          initialResponse["data"]['accessToken'],
+        );
+        ApiService().setAuthToken(initialResponse["data"]['accessToken']);
 
+        showCustomSnackbar(
+          title: 'Success',
+          message: initialResponse['message'],
+        );
+        CommonController.to.initialSetup();
+
+        checkVerifiedOrNot(
+          status: initialResponse["data"][nrcVerificationField],
+        );
+      }
     } catch (e) {
       logger.e('Google Sign-In Error: $e');
       showCustomSnackbar(
@@ -502,103 +501,102 @@ class AuthController extends GetxController {
 
       // ✅ Success - store token and navigate
       // if (initialResponse['success'] == true) {
-        if (initialResponse['message'] == "phoneNumber is required") {
-          // 🔁 Retry with phone number if needed (logic remains identical)
-          String userPhoneNumber = '';
-          String? phoneNumber = await Get.dialog<String>(
-            AlertDialog(
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                // spacing: 8.h, // Your UI-specific code
-                children: [
-                  CustomTextField(
-                    title: AppStaticStrings.phoneNumber,
-                    keyboardType: TextInputType.phone,
-                    hintText: "e.g. +8801XXXXXXXXX",
-                    onChanged: (value) => userPhoneNumber = value,
-                  ),
-                  space6H,
-                  CustomButton(
-                    onTap: () {
-                      if (userPhoneNumber.isNotEmpty) {
-                        Get.back(result: userPhoneNumber);
-                      }
-                    },
-                    title: AppStaticStrings.submit.tr,
-                  ),
-                ],
-              ),
+      if (initialResponse['message'] == "phoneNumber is required") {
+        // 🔁 Retry with phone number if needed (logic remains identical)
+        String userPhoneNumber = '';
+        String? phoneNumber = await Get.dialog<String>(
+          AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              // spacing: 8.h, // Your UI-specific code
+              children: [
+                CustomTextField(
+                  title: AppStaticStrings.phoneNumber,
+                  keyboardType: TextInputType.phone,
+                  hintText: "e.g. +8801XXXXXXXXX",
+                  onChanged: (value) => userPhoneNumber = value,
+                ),
+                space6H,
+                CustomButton(
+                  onTap: () {
+                    if (userPhoneNumber.isNotEmpty) {
+                      Get.back(result: userPhoneNumber);
+                    }
+                  },
+                  title: AppStaticStrings.submit.tr,
+                ),
+              ],
             ),
-            barrierDismissible: false,
+          ),
+          barrierDismissible: false,
+        );
+
+        // 🚫 Cancelled or empty input
+        if (phoneNumber == null || phoneNumber.isEmpty) {
+          showCustomSnackbar(
+            title: 'Phone Required',
+            message: 'Phone number is required to continue.',
+            type: SnackBarType.failed,
           );
-
-          // 🚫 Cancelled or empty input
-          if (phoneNumber == null || phoneNumber.isEmpty) {
-            showCustomSnackbar(
-              title: 'Phone Required',
-              message: 'Phone number is required to continue.',
-              type: SnackBarType.failed,
-            );
-            isAppleAuthLoading.value = false; // Stop loading here
-            return;
-          }
-
-          // 🔄 Resend with phone number
-          final retryResponse = await ApiService().request(
-            endpoint: appleLoginEndPoint,
-            method: 'POST',
-            body: {
-              "deviceId": deviceId,
-              "provider": "apple",
-              "token": fcmToken ?? "xzxz",
-              "appleToken": credential.identityToken,
-              "role": "USER",
-              "phoneNumber": phoneNumber,
-            },
-            useAuth: false,
-          );
-
-          if (retryResponse['success'] == true) {
-            Boxes.getUserData().put(
-              tokenKey,
-              retryResponse["data"]['accessToken'],
-            );
-            ApiService().setAuthToken(retryResponse["data"]['accessToken']);
-
-            showCustomSnackbar(
-              title: 'Success',
-              message: retryResponse['message'],
-            );
-            CommonController.to.initialSetup();
-
-            checkVerifiedOrNot(
-              status: retryResponse["data"][nrcVerificationField],
-            );
-          } else {
-            showCustomSnackbar(
-              title: 'Failed',
-              message: retryResponse['message'],
-              type: SnackBarType.failed,
-            );
-          }
+          isAppleAuthLoading.value = false; // Stop loading here
+          return;
         }
-        else {
+
+        // 🔄 Resend with phone number
+        final retryResponse = await ApiService().request(
+          endpoint: appleLoginEndPoint,
+          method: 'POST',
+          body: {
+            "deviceId": deviceId,
+            "provider": "apple",
+            "token": fcmToken ?? "xzxz",
+            "appleToken": credential.identityToken,
+            "role": "USER",
+            "phoneNumber": phoneNumber,
+          },
+          useAuth: false,
+        );
+
+        if (retryResponse['success'] == true) {
           Boxes.getUserData().put(
             tokenKey,
-            initialResponse["data"]['accessToken'],
+            retryResponse["data"]['accessToken'],
           );
-          ApiService().setAuthToken(initialResponse["data"]['accessToken']);
+          ApiService().setAuthToken(retryResponse["data"]['accessToken']);
 
           showCustomSnackbar(
             title: 'Success',
-            message: initialResponse['message'],
+            message: retryResponse['message'],
           );
           CommonController.to.initialSetup();
 
           checkVerifiedOrNot(
-            status: initialResponse["data"][nrcVerificationField],
+            status: retryResponse["data"][nrcVerificationField],
+          );
+        } else {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: retryResponse['message'],
+            type: SnackBarType.failed,
           );
         }
+      } else {
+        Boxes.getUserData().put(
+          tokenKey,
+          initialResponse["data"]['accessToken'],
+        );
+        ApiService().setAuthToken(initialResponse["data"]['accessToken']);
+
+        showCustomSnackbar(
+          title: 'Success',
+          message: initialResponse['message'],
+        );
+        CommonController.to.initialSetup();
+
+        checkVerifiedOrNot(
+          status: initialResponse["data"][nrcVerificationField],
+        );
+      }
       // }
     } catch (e) {
       // This will catch errors, including when the user cancels the Apple Sign-In dialog

@@ -226,10 +226,13 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
       //   title: 'Success',
       //   message: 'Trip requested successfully! Looking for nearby drivers...',
       // );
-    });  socket.on(PaymentEvent.paymentPaid, (data) {
+    });
+    socket.on(PaymentEvent.paymentPaid, (data) {
       logger.d('payment paid: $data');
       CommonController.to.isPaid.value=data['success'];
-
+      if(data['success']){
+        getUserCurrentTrip();
+      }
       showCustomSnackbar(
         title: 'Success',
         message: data['message'],

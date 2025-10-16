@@ -443,8 +443,10 @@ logger.i("Listening socket event for driver");
     socketService.on(PaymentEvent.paymentReceived, (data) {
       logger.d('payment paid: $data');
       CommonController.to.isPaid.value=data['success'];
-
-      showCustomSnackbar(
+if(data['success']){
+  getDriverCurrentTripRequest();
+}
+             showCustomSnackbar(
         title: 'Success',
         message: data['message'],
       );
