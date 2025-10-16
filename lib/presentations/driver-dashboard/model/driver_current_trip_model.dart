@@ -19,6 +19,7 @@ class DriverCurrentTripModel {
   String? createdAt;
   String? updatedAt;
   String? tripType;
+  String? paymentStatus;
   String? pickUpDate;
   num? iV;
   User? driver;
@@ -35,6 +36,7 @@ class DriverCurrentTripModel {
     this.driverCoordinates,
     this.duration,
     this.distance,
+    this.paymentStatus,
     this.estimatedFare,
     this.tollFee,
     this.extraCharge,
@@ -69,6 +71,7 @@ class DriverCurrentTripModel {
             ? DriverCoordinates.fromJson(json['driverCoordinates'])
             : null;
     duration = json['duration'];
+    paymentStatus = json['paymentStatus'];
     distance = json['distance'];
     estimatedFare = json['estimatedFare'];
     tollFee = json['tollFee'];
@@ -107,6 +110,7 @@ class DriverCurrentTripModel {
     }
     data['duration'] = duration;
     data['distance'] = distance;
+    data['paymentStatus'] = paymentStatus;
     data['estimatedFare'] = estimatedFare;
     data['tollFee'] = tollFee;
     data['tripType'] = tripType;

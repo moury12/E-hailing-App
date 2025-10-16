@@ -10,7 +10,6 @@ class TripEvents {
 class PaymentEvent{
   static const String paymentPaid = 'payment_paid';
   static const String paymentReceived = 'payment_received';
-
 }
 class DriverEvent {
   static const String driverOnlineStatus = 'online_status';
