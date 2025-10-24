@@ -1,0 +1,78 @@
+# 1. Workflow name
+name: Dudu Car Deploy
+
+# 2. Trigger conditions
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+
+# 3. Job definition
+jobs:
+  build:
+    name: Build Android & iOS
+    runs-on: macos-latest
+
+    steps:
+      # 5. Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 6. Setup Java (for Android)
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # 7. Setup Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.35.2'
+
+      # 8. Install dependencies
+      - name: Install Flutter packages
+        run: flutter pub get
+
+      # 9. Analyze code (optional but recommended)
+      - name: Analyze Dart code
+        run: flutter analyze
+
+      # 10. Run tests (you can skip if none yet)
+      - name: Run unit tests
+        run: flutter test
+
+      # 11. Build Android release APK
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      # 12. Build iOS IPA (without code signing)
+      - name: Build iOS IPA
+        run: flutter build ipa --no-codesign
+
+      # 13. Compress iOS build for artifact upload
+      - name: Compress iOS build
+        run: |
+          cd build
+          tar -czf ios_build.tar.gz ios
+
+      # 14. Upload both APK and IPA
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: DuduCar-Releases
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/ios_build.tar.gz
+
+      # 15. Deploy to Play Store
+      - name: Deploy to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ secrets.PACKAGE_NAME }}
+          releaseFile: build/app/outputs/flutter-apk/app-release.apk
+          track: ${{ secrets.TRACK }}
