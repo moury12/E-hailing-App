@@ -2,6 +2,7 @@ import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
+import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/save-location/controllers/save_location_controller.dart';
@@ -167,7 +168,7 @@ class SearchAddress extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: padding6V, child: CustomText(text: title)),
+          Padding(padding: padding2V, child: CustomText(text: title,overflow: TextOverflow.ellipsis, fontSize: getFontSizeSmall(),maxLines: 2,)),
           Divider(),
         ],
       ),

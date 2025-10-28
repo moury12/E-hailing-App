@@ -27,7 +27,7 @@ class SplashController extends GetxController {
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
-
+      defaultPresentSound: true,
     );
     const AndroidInitializationSettings androidInit =
     AndroidInitializationSettings('@mipmap/ic_launcher');
