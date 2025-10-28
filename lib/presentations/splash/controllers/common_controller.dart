@@ -189,7 +189,8 @@ RxList<String> images =<String>[].obs;
   Future<void> fetchSuggestedPlacesWithRadius(
     String input, {
     double radiusInMeters = 5000,
-  }) async {
+  })
+  async {
     isLoadingOnLocationSuggestion.value = true;
 
     try {
@@ -248,7 +249,7 @@ RxList<String> images =<String>[].obs;
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> detailsData = jsonDecode(response.body);
-
+logger.d(detailsData);
       if (detailsData['status'] == 'OK') {
         var location = detailsData['result']['geometry']['location'];
         double lat = location['lat'];
