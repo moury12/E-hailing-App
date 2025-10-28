@@ -72,5 +72,4 @@ String carImage = 'assets/images/car_img.svg';
 String emptyLottie = 'assets/lottie/empty_list.json';
 String logoImage = 'assets/images/logo.svg';
 String orImage = 'assets/images/or_img.svg';
-String purpleCarImage = 'assets/images/purple_car_img.png';
-String purpleCarImage2 = 'assets/images/purple_car_img2.png';
+String purpleCarImage2 = 'assets/images/purple_car_img2.jpeg';
