@@ -44,7 +44,7 @@ class SelectCarITemWidget extends StatelessWidget {
           child: Row(
             spacing: 12.w,
             children: [
-              Image.asset(purpleCarImage, height: 45.w),
+              Image.asset(purpleCarImage2, height: 45.w),
               Column(
                 children: [
                   CustomText(text: 'Sedan', style: poppinsSemiBold),

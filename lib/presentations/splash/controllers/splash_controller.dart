@@ -24,9 +24,10 @@ class SplashController extends GetxController {
   }
   Future<void> _initLocalNotifs() async {
     const DarwinInitializationSettings iosInit = DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+
     );
     const AndroidInitializationSettings androidInit =
     AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -34,6 +35,19 @@ class SplashController extends GetxController {
     InitializationSettings(iOS: iosInit,android: androidInit, );
 
     await flutterLocalNotificationsPlugin.initialize(initSettings);
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // name
+      description: 'This channel is used for important notifications.',
+      importance: Importance.max,
+      playSound: true,
+      enableVibration: true,
+      // sound: RawResourceAndroidNotificationSound('notification'), // from res/raw/notification.mp3
+    );
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
   }
 
   Future<void> initFCM() async {
@@ -44,6 +58,11 @@ class SplashController extends GetxController {
         alert: true,
         badge: true,
         sound: true,
+      );
+      await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true, // ✅ this enables sound
       );
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized ||

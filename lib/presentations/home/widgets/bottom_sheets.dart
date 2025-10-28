@@ -451,7 +451,7 @@ class HomeInitialContentWidget extends StatelessWidget {
             children: [
               ServiceWidget(
                 title: AppStaticStrings.generalRide,
-                img: purpleCarImage,
+                img: purpleCarImage2,
                 onTap: () {
 
                   HomeController.to.wantToGo.value = true;
@@ -465,7 +465,7 @@ class HomeInitialContentWidget extends StatelessWidget {
                   HomeController.to.tripType.value=preBook;
                 },
                 title: AppStaticStrings.preBookRide,
-                img: purpleCarImage,
+                img: purpleCarImage2,
               ),
               ServiceWidget(
                 onTap: () {
@@ -473,7 +473,7 @@ class HomeInitialContentWidget extends StatelessWidget {
                   // HomeController.to.setPickup.value = true;
                 },
                 title: AppStaticStrings.womanOnlyRide,
-                img: purpleCarImage,
+                img: purpleCarImage2,
               ),
             ],
           ),

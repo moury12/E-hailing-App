@@ -54,7 +54,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           ? "${ApiService().baseUrl}/${model.user!.profileImage}"
           : driverImage;
       cost = 'RM ${model.estimatedFare?.toStringAsFixed(2) ?? "0"}';
-      distance = '${model.distance ?? 0} km';
+      distance = '${((model.distance??0) /1000).toStringAsFixed(1)} km';
       dateTime = formatDateTime(model.pickUpDate!=null?model.pickUpDate.toString():model.createdAt.toString());
       pickup = model.pickUpAddress;
       dropOff = model.dropOffAddress; // define this method below
@@ -73,7 +73,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           .toString() : model.driver?.profileImage.toString())}"
           : driverImage;
       cost = 'RM ${model.estimatedFare?.toStringAsFixed(2) ?? "0"}';
-      distance = '${model.distance ?? 0} km';
+      distance = '${((model.distance??0) /1000).toStringAsFixed(1)} km';
       dateTime = formatDateTime(model.pickUpDate!=null?model.pickUpDate.toString():model.createdAt.toString());
       pickup = model.pickUpAddress;
       dropOff = model.dropOffAddress;
@@ -133,8 +133,8 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
               ),
               Expanded(
                 child: MyRidesHistoryTripInfoWidget(
-                  title: AppStaticStrings.tripDuration,
-                  text: distance,
+                  title: AppStaticStrings.tripDistance,
+                  text: distance, 
                 ),
               ),
             ],
