@@ -14,6 +14,7 @@ import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -315,15 +316,16 @@ logger.e(e);
 
     return LatLng(lat2 * 180 / pi, lon2 * 180 / pi);
   }
+
   Future<bool> drawPolylineBetweenPoints(
-    LatLng start,
-    LatLng end,
-    RxSet routePolylines, {
-    RxInt? distance,
-    RxInt? duration,
-    required LatLng userPosition,
-    GoogleMapController? mapController,
-  })
+      LatLng start,
+      LatLng end,
+      RxSet<Polyline> routePolylines, {
+        RxInt? distance,
+        RxInt? duration,
+        required LatLng userPosition,
+        GoogleMapController? mapController,
+      })
   async {
     try {
       final apiKey = GoogleClient.googleMapUrl;
@@ -331,9 +333,6 @@ logger.e(e);
           'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
 
       final response = await http.get(Uri.parse(url));
-      // logger.d("------------------------------");
-      // logger.d(response.body);
-      // logger.d(response.statusCode.toString());
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -343,42 +342,37 @@ logger.e(e);
           List<LatLng> polylinePoints = decodePolyline(points);
           final leg = data['routes'][0]['legs'][0];
 
+          // 🆕 Give each polyline a unique ID
+          final polylineId = PolylineId(
+            'route_${DateTime.now().millisecondsSinceEpoch}',
+          );
+
           final polyline = Polyline(
-            polylineId: const PolylineId('route_line'),
-            color: AppColors.kPrimaryColor,
-            width: 4,
-            // startCap: Cap.customCapFromBitmap(
-            //   await BitmapDescriptor.asset(
-            //     ImageConfiguration(size: Size(48, 48)),
-            //     "assets/icons/circle_icon.png",
-            //   ),
-            // ),
-            // endCap: Cap.customCapFromBitmap(
-            //   await BitmapDescriptor.asset(
-            //     ImageConfiguration(size: Size(48, 48)),
-            //     "assets/icons/circle_icon.png",
-            //   ),
-            // ),
+            polylineId: polylineId,
+            color: routePolylines == NavigationController.to.routePolylines
+                ? Colors.blue // pickup → dropoff
+                : Colors.green, // driver → pickup
+            width: 5,
             points: polylinePoints,
           );
-          if (distance != null && duration != null) {
-            distance.value = leg['distance']['value']; // e.g., 4690
 
-            // ✅ Duration in seconds
+          if (distance != null && duration != null) {
+            distance.value = leg['distance']['value'];
             duration.value = (leg['duration']['value'] / 60).ceil();
           }
-          // Alternative if you still have issues:
-          Set<Polyline> newPolylines = <Polyline>{};
-          newPolylines.add(polyline);
-          routePolylines.value = newPolylines;
-          // Animate camera to show the route
+
+          // ✅ Don't clear previous polylines — just add new
+          routePolylines.add(polyline);
+          routePolylines.refresh(); // important to update UI
+
+          // ✅ Animate camera to fit both routes
           await _animateCameraToRoute(
             polylinePoints,
             userPosition: userPosition,
             mapController: mapController,
           );
 
-          return true; // Successfully drew polyline
+          return true;
         } else {
           showCustomSnackbar(
             title: "Sorry!!",
@@ -402,6 +396,94 @@ logger.e(e);
       return false;
     }
   }
+
+  // Future<bool> drawPolylineBetweenPoints(
+  //   LatLng start,
+  //   LatLng end,
+  //   RxSet routePolylines, {
+  //   RxInt? distance,
+  //   RxInt? duration,
+  //   required LatLng userPosition,
+  //   GoogleMapController? mapController,
+  // })
+  // async {
+  //   try {
+  //     final apiKey = GoogleClient.googleMapUrl;
+  //     final url =
+  //         'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
+  //
+  //     final response = await http.get(Uri.parse(url));
+  //     // logger.d("------------------------------");
+  //     // logger.d(response.body);
+  //     // logger.d(response.statusCode.toString());
+  //
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //
+  //       if (data['routes'] != null && data['routes'].isNotEmpty) {
+  //         final points = data['routes'][0]['overview_polyline']['points'];
+  //         List<LatLng> polylinePoints = decodePolyline(points);
+  //         final leg = data['routes'][0]['legs'][0];
+  //
+  //         final polyline = Polyline(
+  //           polylineId: const PolylineId('route_line'),
+  //           color: AppColors.kPrimaryColor,
+  //           width: 4,
+  //           // startCap: Cap.customCapFromBitmap(
+  //           //   await BitmapDescriptor.asset(
+  //           //     ImageConfiguration(size: Size(48, 48)),
+  //           //     "assets/icons/circle_icon.png",
+  //           //   ),
+  //           // ),
+  //           // endCap: Cap.customCapFromBitmap(
+  //           //   await BitmapDescriptor.asset(
+  //           //     ImageConfiguration(size: Size(48, 48)),
+  //           //     "assets/icons/circle_icon.png",
+  //           //   ),
+  //           // ),
+  //           points: polylinePoints,
+  //         );
+  //         if (distance != null && duration != null) {
+  //           distance.value = leg['distance']['value']; // e.g., 4690
+  //
+  //           // ✅ Duration in seconds
+  //           duration.value = (leg['duration']['value'] / 60).ceil();
+  //         }
+  //         // Alternative if you still have issues:
+  //         Set<Polyline> newPolylines = <Polyline>{};
+  //         newPolylines.add(polyline);
+  //         routePolylines.value = newPolylines;
+  //         // Animate camera to show the route
+  //         await _animateCameraToRoute(
+  //           polylinePoints,
+  //           userPosition: userPosition,
+  //           mapController: mapController,
+  //         );
+  //
+  //         return true; // Successfully drew polyline
+  //       } else {
+  //         showCustomSnackbar(
+  //           title: "Sorry!!",
+  //           message: "No route found between selected locations.",
+  //         );
+  //         return false;
+  //       }
+  //     } else {
+  //       showCustomSnackbar(
+  //         title: "Error!!",
+  //         message: "Failed to get route. Please try again.",
+  //       );
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Error in drawPolylineBetweenPoints: $e");
+  //     showCustomSnackbar(
+  //       title: "Error!!",
+  //       message: "Something went wrong. Please try again.",
+  //     );
+  //     return false;
+  //   }
+  // }
 
   Future<void> _animateCameraToRoute(
     List<LatLng> polylinePoints, {

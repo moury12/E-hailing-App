@@ -67,7 +67,7 @@ RxList<String> images =<String>[].obs;
         useAuth: true,
         queryParams: {'driverId': driverId},
       );
-      logger.d(response);
+      // logger.d(response);
       if (response['success'] == true) {
         driverRating.value = double.parse(
           response['data']['averageRating'].toString(),

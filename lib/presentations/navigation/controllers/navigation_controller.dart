@@ -25,6 +25,7 @@ class NavigationController extends GetxController {
   RxInt currentNavIndex = 0.obs;
   RxBool markerDraging = false.obs;
   RxSet<Polyline> routePolylines = <Polyline>{}.obs;
+  RxSet<Polyline> routePolylinesDrivers = <Polyline>{}.obs;
 
   @override
   void onInit() async {

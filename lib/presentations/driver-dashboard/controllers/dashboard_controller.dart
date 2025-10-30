@@ -14,6 +14,7 @@ import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -303,8 +304,23 @@ class DashBoardController extends GetxController {
         distance: int.tryParse(trip.distance.toString())?.obs ?? 0.obs,
         duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
       );
-
+double distanceInMeters =  Geolocator.distanceBetween(coords.last.toDouble(),
+    coords.first.toDouble(), CommonController.to.markerPositionDriver.value.latitude,
+    CommonController.to.markerPositionDriver.value.longitude);
       updateRideFlowState(trip.status);
+      if(distanceInMeters>=100){
+        await locationService.drawPolylineBetweenPoints(
+          userPosition: CommonController.to.markerPositionDriver.value,
+          mapController: CommonController.to.mapControllerDriver,
+          LatLng(CommonController.to.markerPositionDriver.value.latitude,
+              CommonController.to.markerPositionDriver.value.longitude),
+          LatLng(coords.last.toDouble(), coords.first.toDouble()),
+
+          NavigationController.to.routePolylinesDrivers,
+          distance: int.tryParse(distanceInMeters.toString())?.obs ?? 0.obs,
+          duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
+        );
+      }
     }
   }
 

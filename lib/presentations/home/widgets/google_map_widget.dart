@@ -30,7 +30,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
     try {
       final bitmap = await BitmapDescriptor.asset(
         const ImageConfiguration(size: Size(30, 15)),
-        "assets/images/purple_car_img.png",
+        purpleCarImage2,
       );
       customIcon.value = bitmap;
       final sIcon = await BitmapDescriptor.asset(
@@ -284,7 +284,7 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
     try {
       final bitmap = await BitmapDescriptor.asset(
         const ImageConfiguration(size: Size(30, 15)),
-        "assets/images/purple_car_img.png",
+        purpleCarImage2,
       );
       customIcon.value = bitmap;
       final sIcon = await BitmapDescriptor.asset(
@@ -338,7 +338,8 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
-        polylines: NavigationController.to.routePolylines.value,
+        polylines: { ...NavigationController.to.routePolylines.value,
+        ...NavigationController.to.routePolylinesDrivers.value},
 
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
