@@ -13,6 +13,7 @@ import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
@@ -317,85 +318,169 @@ logger.e(e);
     return LatLng(lat2 * 180 / pi, lon2 * 180 / pi);
   }
 
+  // Future<bool> drawPolylineBetweenPoints(
+  //     LatLng start,
+  //     LatLng end,
+  //     RxSet<Polyline> routePolylines, {
+  //       RxInt? distance,
+  //       RxInt? duration,
+  //       required LatLng userPosition,
+  //       GoogleMapController? mapController,
+  //     })
+  // async  {
+  //   try {
+  //     final apiKey = GoogleClient.googleMapUrl;
+  //     final url =
+  //         'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
+  //
+  //     final response = await http.get(Uri.parse(url));
+  //
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //
+  //       if (data['routes'] != null && data['routes'].isNotEmpty) {
+  //         final points = data['routes'][0]['overview_polyline']['points'];
+  //         List<LatLng> polylinePoints = decodePolyline(points);
+  //         final leg = data['routes'][0]['legs'][0];
+  //
+  //         // 🆕 Give each polyline a unique ID
+  //         final polylineId = PolylineId(
+  //           'route_${DateTime.now().millisecondsSinceEpoch}',
+  //         );
+  //
+  //         final polyline = Polyline(
+  //           polylineId: polylineId,
+  //           color: routePolylines == NavigationController.to.routePolylines
+  //               ? Colors.blue // pickup → dropoff
+  //               : Colors.green, // driver → pickup
+  //           width: 5,
+  //           points: polylinePoints,
+  //         );
+  //
+  //         if (distance != null && duration != null) {
+  //           distance.value = leg['distance']['value'];
+  //           duration.value = (leg['duration']['value'] / 60).ceil();
+  //         }
+  //
+  //         // ✅ Don't clear previous polylines — just add new
+  //         routePolylines.add(polyline);
+  //         routePolylines.refresh(); // important to update UI
+  //
+  //         // ✅ Animate camera to fit both routes
+  //         await _animateCameraToRoute(
+  //           polylinePoints,
+  //           userPosition: userPosition,
+  //           mapController: mapController,
+  //         );
+  //
+  //         return true;
+  //       } else {
+  //         showCustomSnackbar(
+  //           title: "Sorry!!",
+  //           message: "No route found between selected locations.",
+  //         );
+  //         return false;
+  //       }
+  //     } else {
+  //       showCustomSnackbar(
+  //         title: "Error!!",
+  //         message: "Failed to get route. Please try again.",
+  //       );
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Error in drawPolylineBetweenPoints: $e");
+  //     showCustomSnackbar(
+  //       title: "Error!!",
+  //       message: "Something went wrong. Please try again.",
+  //     );
+  //     return false;
+  //   }
+  // }
+
   Future<bool> drawPolylineBetweenPoints(
-      LatLng start,
-      LatLng end,
-      RxSet<Polyline> routePolylines, {
-        RxInt? distance,
-        RxInt? duration,
-        required LatLng userPosition,
-        GoogleMapController? mapController,
-      })
-  async  {
-    try {
-      final apiKey = GoogleClient.googleMapUrl;
-      final url =
-          'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
+  LatLng start,
+  LatLng end,
+  RxSet<Polyline> routePolylines, {
+  RxInt? distance,
+  RxInt? duration,
+  required LatLng userPosition,
+  GoogleMapController? mapController,
+  required PolylineType type, // 👈 Add this
+  })
+  async {
+  try {
+  final apiKey = GoogleClient.googleMapUrl;
+  final url =
+  'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
 
-      final response = await http.get(Uri.parse(url));
+  final response = await http.get(Uri.parse(url));
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+  if (response.statusCode == 200) {
+  final data = jsonDecode(response.body);
 
-        if (data['routes'] != null && data['routes'].isNotEmpty) {
-          final points = data['routes'][0]['overview_polyline']['points'];
-          List<LatLng> polylinePoints = decodePolyline(points);
-          final leg = data['routes'][0]['legs'][0];
+  if (data['routes'] != null && data['routes'].isNotEmpty) {
+  final points = data['routes'][0]['overview_polyline']['points'];
+  List<LatLng> polylinePoints = decodePolyline(points);
+  final leg = data['routes'][0]['legs'][0];
 
-          // 🆕 Give each polyline a unique ID
-          final polylineId = PolylineId(
-            'route_${DateTime.now().millisecondsSinceEpoch}',
-          );
-
-          final polyline = Polyline(
-            polylineId: polylineId,
-            color: routePolylines == NavigationController.to.routePolylines
-                ? Colors.blue // pickup → dropoff
-                : Colors.green, // driver → pickup
-            width: 5,
-            points: polylinePoints,
-          );
-
-          if (distance != null && duration != null) {
-            distance.value = leg['distance']['value'];
-            duration.value = (leg['duration']['value'] / 60).ceil();
-          }
-
-          // ✅ Don't clear previous polylines — just add new
-          routePolylines.add(polyline);
-          routePolylines.refresh(); // important to update UI
-
-          // ✅ Animate camera to fit both routes
-          await _animateCameraToRoute(
-            polylinePoints,
-            userPosition: userPosition,
-            mapController: mapController,
-          );
-
-          return true;
-        } else {
-          showCustomSnackbar(
-            title: "Sorry!!",
-            message: "No route found between selected locations.",
-          );
-          return false;
-        }
-      } else {
-        showCustomSnackbar(
-          title: "Error!!",
-          message: "Failed to get route. Please try again.",
-        );
-        return false;
-      }
-    } catch (e) {
-      debugPrint("Error in drawPolylineBetweenPoints: $e");
-      showCustomSnackbar(
-        title: "Error!!",
-        message: "Something went wrong. Please try again.",
-      );
-      return false;
-    }
+  // 🟢 Use color based on route type
+  Color polylineColor;
+  switch (type) {
+  case PolylineType.driverToPickup:
+  polylineColor = AppColors.kBlueColor;
+  break;
+  case PolylineType.pickupToDropoff:
+  polylineColor = AppColors.kPrimaryColor;
+  break;
   }
+
+  final polyline = Polyline(
+  polylineId: PolylineId('route_${DateTime.now().millisecondsSinceEpoch}'),
+  color: polylineColor,
+  width: 5,
+  points: polylinePoints,
+  );
+
+  if (distance != null && duration != null) {
+  distance.value = leg['distance']['value'];
+  duration.value = (leg['duration']['value'] / 60).ceil();
+  }
+
+  routePolylines.add(polyline);
+  routePolylines.refresh();
+
+  await _animateCameraToRoute(
+  polylinePoints,
+  userPosition: userPosition,
+  mapController: mapController,
+  );
+
+  return true;
+  } else {
+  showCustomSnackbar(
+  title: "Sorry!!",
+  message: "No route found between selected locations.",
+  );
+  return false;
+  }
+  } else {
+  showCustomSnackbar(
+  title: "Error!!",
+  message: "Failed to get route. Please try again.",
+  );
+  return false;
+  }
+  } catch (e) {
+  debugPrint("Error in drawPolylineBetweenPoints: $e");
+  showCustomSnackbar(
+  title: "Error!!",
+  message: "Something went wrong. Please try again.",
+  );
+  return false;
+  }
+  }
+
 
   // Future<bool> drawPolylineBetweenPoints(
   //   LatLng start,

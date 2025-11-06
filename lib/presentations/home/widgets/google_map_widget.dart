@@ -97,7 +97,8 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
         //     BoundaryController.to.bounds.value != null
         //         ? CameraTargetBounds(BoundaryController.to.bounds.value)
         //         : CameraTargetBounds.unbounded,
-        polylines: NavigationController.to.routePolylines.value,
+        polylines: { ...NavigationController.to.routePolylines.value,
+          ...NavigationController.to.routePolylinesDrivers.value},
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
         myLocationEnabled: false,
@@ -320,7 +321,7 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
         controller.animateCamera(CameraUpdate.newLatLngZoom(userPosition, 14));
       }
     } else {
-      // If we already have a polyline, ensure it's properly visible
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         DashBoardController.to.drawPolylineMethod();
       });
@@ -357,7 +358,8 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
             position:  LatLng(coords.last.toDouble(), coords.first.toDouble()),
             icon: sourceIcon.value!,
 
-          ),  if( dropCoords!=null ) Marker(
+          ),
+          if( dropCoords!=null ) Marker(
             markerId: MarkerId("destination Marker"),
             position:  LatLng(dropCoords.last.toDouble(), dropCoords.first.toDouble()),
             icon: destinationIcon.value!,

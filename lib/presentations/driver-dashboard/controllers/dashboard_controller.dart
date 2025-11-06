@@ -57,6 +57,7 @@ class DashBoardController extends GetxController {
     initializeSocket();
    await Future.wait(
         [getDriverCurrentTripRequest() ,
+
         ]
     );
 
@@ -200,7 +201,8 @@ class DashBoardController extends GetxController {
     int? duration,
     int? distance,
     List<String>? reason,
-  }) async {
+  })
+  async {
     try {
       if (!socketService.socket!.connected) {
         initializeSocket();
@@ -241,7 +243,8 @@ class DashBoardController extends GetxController {
     required String tripId,
     required double lat,
     required double lng,
-  }) async {
+  })
+  async {
     if (!socketService.socket!.connected) {
       showCustomSnackbar(
         title: 'Connection Error',
@@ -268,6 +271,9 @@ class DashBoardController extends GetxController {
       );
       if (response['success'] == true) {
         logger.d(response);
+        startTrackingUserLocationMethod(
+          tripId: currentTrip.value.sId.toString(),
+        );
         currentTrip.value = DriverCurrentTripModel.fromJson(response['data']);
         drawPolylineMethod();
       } else {
@@ -294,29 +300,39 @@ class DashBoardController extends GetxController {
     final trip = currentTrip.value;
     final coords = trip.pickUpCoordinates?.coordinates;
     final dropCoords = trip.dropOffCoordinates?.coordinates;
+
     if (trip.sId != null && coords != null && dropCoords != null) {
+      // 🟦 Pickup → Dropoff (Blue)
       await locationService.drawPolylineBetweenPoints(
         userPosition: CommonController.to.markerPositionDriver.value,
         mapController: CommonController.to.mapControllerDriver,
         LatLng(coords.last.toDouble(), coords.first.toDouble()),
         LatLng(dropCoords.last.toDouble(), dropCoords.first.toDouble()),
         NavigationController.to.routePolylines,
+        type: PolylineType.pickupToDropoff,
         distance: int.tryParse(trip.distance.toString())?.obs ?? 0.obs,
         duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
       );
-double distanceInMeters =  Geolocator.distanceBetween(coords.last.toDouble(),
-    coords.first.toDouble(), CommonController.to.markerPositionDriver.value.latitude,
-    CommonController.to.markerPositionDriver.value.longitude);
+
+      double distanceInMeters = Geolocator.distanceBetween(
+        coords.last.toDouble(),
+        coords.first.toDouble(),
+        CommonController.to.markerPositionDriver.value.latitude,
+        CommonController.to.markerPositionDriver.value.longitude,
+      );
+
       updateRideFlowState(trip.status);
-      if(distanceInMeters>=100){
+
+      if (distanceInMeters >= 100 && trip.status == 'on_the_way' && trip.status == 'accepted') {
+        // 🟩 Driver → Pickup (Green)
         await locationService.drawPolylineBetweenPoints(
           userPosition: CommonController.to.markerPositionDriver.value,
           mapController: CommonController.to.mapControllerDriver,
           LatLng(CommonController.to.markerPositionDriver.value.latitude,
               CommonController.to.markerPositionDriver.value.longitude),
           LatLng(coords.last.toDouble(), coords.first.toDouble()),
-
           NavigationController.to.routePolylinesDrivers,
+          type: PolylineType.driverToPickup,
           distance: int.tryParse(distanceInMeters.toString())?.obs ?? 0.obs,
           duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
         );
@@ -378,9 +394,7 @@ double distanceInMeters =  Geolocator.distanceBetween(coords.last.toDouble(),
   }
 
   void registerSocketListeners() {
-    // logger.i("🚦 Is driver online? ${socketService.isDriverActive}");
 
-    // Clear all previous listeners to avoid duplication
     removeSocketListeners();
 logger.i("Listening socket event for driver");
     // ============ Trip Available Event ============
@@ -399,7 +413,9 @@ logger.i("Listening socket event for driver");
     // ============ Trip Update Status Event ============
     socketService.on(DriverEvent.tripUpdateStatus, (data) async {
       logger.d("📩 tripUpdateStatus: $data");
-
+      startTrackingUserLocationMethod(
+        tripId: currentTrip.value.sId.toString(),
+      );
       if (data['success'] != true) {
         _showError(data['message']);
         return;

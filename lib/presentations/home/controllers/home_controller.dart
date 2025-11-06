@@ -16,6 +16,7 @@ import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -89,6 +90,7 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
     super.onInit();
   }
 
+
   void polyLineShow() async {
     if (tripAcceptedModel.value.sId != null) {
       resetAllStates();
@@ -117,7 +119,35 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
         NavigationController.to.routePolylines,
         userPosition: CommonController.to.markerPositionRider.value,
         mapController: CommonController.to.mapControllerRider,
+        type: PolylineType.pickupToDropoff,
       );
+      final driverCoords = tripAcceptedModel.value.driverCoordinates?.coordinates;
+      final pickupCoords = tripAcceptedModel.value.pickUpCoordinates?.coordinates;
+
+      if (driverCoords != null && driverCoords.length >= 2 && pickupCoords != null && pickupCoords.length >= 2) {
+        double distanceInMeters = Geolocator.distanceBetween(
+          pickupCoords.last,
+          pickupCoords.first,
+          driverCoords.last,
+          driverCoords.first,
+        );
+        if (distanceInMeters >= 100 && tripAcceptedModel.value.status == 'on_the_way' && tripAcceptedModel.value.status == 'accepted') {
+
+        await locationService.drawPolylineBetweenPoints(
+          LatLng(driverCoords.last, driverCoords.first), // start
+          LatLng(pickupCoords.last, pickupCoords.first), // end
+          NavigationController.to.routePolylinesDrivers,
+          userPosition: LatLng(driverCoords.last, driverCoords.first),
+          mapController: CommonController.to.mapControllerRider,
+          type: PolylineType.driverToPickup,
+          distance: int.tryParse(distanceInMeters.toString())?.obs ?? 0.obs,
+          duration: int.tryParse(tripAcceptedModel.value.duration?.toString() ?? '0')?.obs ?? 0.obs,
+        );}
+      }
+
+
+      /*     }*/
+
       if (tripAcceptedModel.value.status ==
           DriverTripStatus.destination_reached.name) {
         Get.toNamed(
@@ -461,7 +491,8 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
   Future<void> getTripFare({
     required int duration,
     required int distance,
-  }) async {
+  })
+  async {
     try {
       isLoadingPostFair.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
@@ -557,7 +588,8 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
   Future<void> getPlaceName(
     LatLng position,
     TextEditingController controller,
-  ) async {
+  )
+  async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
