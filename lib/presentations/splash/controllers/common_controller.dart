@@ -6,6 +6,7 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
@@ -268,7 +269,7 @@ logger.d(detailsData);
     }
   }
 
-  Future<void> fetchCurrentLocationMethod() async {
+  Future<void> fetchCurrentLocationMethod({String? tripId}) async {
     try {
       logger.d("🚀 Starting location fetch process");
 
@@ -278,50 +279,43 @@ logger.d(detailsData);
       if (!hasPermission) {
         logger.d("❌ Location permission not granted, using fallback");
         locationService.fallbackToDefaultLocation();
-        final markerPosition =
-            isDriver.value ? markerPositionDriver : markerPositionRider;
+        final markerPosition = isDriver.value ? markerPositionDriver : markerPositionRider;
         await BoundaryController.to.initialize(markerPosition.value);
-
         return;
       }
 
-      final markerPosition =
-          isDriver.value ? markerPositionDriver : markerPositionRider;
+      final markerPosition = isDriver.value ? markerPositionDriver : markerPositionRider;
       logger.d("✅ Location service enabled, fetching current location...");
-      await locationService.fetchCurrentLocation(
-        markerPosition: markerPosition,
-      );
+
+      // 2. Fetch location
+      await locationService.fetchCurrentLocation(markerPosition: markerPosition);
+
+      // 3. Initialize boundary
       await BoundaryController.to.initialize(markerPosition.value);
 
-      // 5. Initialize boundary check
+      // 4. Emit driver location update if user is driver
+      if (isDriver.value && tripId!=null) {
+      SocketService().emit(
+          DriverEvent.driverLocationUpdate,
+          {
+
+              "tripId":tripId,
+              "lat":markerPosition.value.latitude,
+              "long":markerPosition.value.longitude
+
+
+            // Add any other info you want to send
+          },
+        );
+        logger.d("📡 Emitted driver location update");
+      }
+
     } catch (e, s) {
-      logger.e("🔥 Error in fetchCurrentLocationMethod");
+      logger.e("🔥 Error in fetchCurrentLocationMethod: $e");
       locationService.fallbackToDefaultLocation();
     }
   }
 
-  // Future<void> fetchCurrentLocationMethod() async {
-  //   try {
-  //     logger.d("Starting location fetch process");
-  //
-  //     bool serviceEnabled = await locationService.handleLocationPermission();
-  //
-  //     Rx<LatLng> markerPosition = isDriver.value ? markerPositionDriver : markerPositionRider;
-  //
-  //     if (!serviceEnabled) {
-  //       logger.d("Location service not enabled, using fallback");
-  //       locationService.fallbackToDefaultLocation();
-  //     } else {
-  //       logger.d("Location service enabled, fetching current location");
-  //       await locationService.fetchCurrentLocation(markerPosition: markerPosition);
-  //     }
-  //     await BoundaryController.to.initialize(markerPosition.value);
-  //
-  //   } catch (e) {
-  //     logger.e("Error in fetchCurrentLocationMethod: $e");
-  //     locationService.fallbackToDefaultLocation();
-  //   }
-  // }
 
   ///------------------------------ Post payment method -------------------------///
 

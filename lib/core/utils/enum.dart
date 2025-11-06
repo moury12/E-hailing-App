@@ -55,6 +55,7 @@ enum NrcVerificationStatus {
     }
   }
 }
+enum PolylineType { driverToPickup, pickupToDropoff }
 
 enum RideFlowState {
   findingRide,
