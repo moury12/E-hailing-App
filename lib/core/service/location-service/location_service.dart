@@ -326,7 +326,7 @@ logger.e(e);
         required LatLng userPosition,
         GoogleMapController? mapController,
       })
-  async {
+  async  {
     try {
       final apiKey = GoogleClient.googleMapUrl;
       final url =
