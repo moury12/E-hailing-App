@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
+import 'package:e_hailing_app/core/utils/google_map_api_key.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
@@ -19,6 +22,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../../core/api-client/api_service.dart';
@@ -131,7 +135,7 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
           driverCoords.last,
           driverCoords.first,
         );
-        if (distanceInMeters >= 100 && tripAcceptedModel.value.status == 'on_the_way' && tripAcceptedModel.value.status == 'accepted') {
+        if (distanceInMeters >= 100 && (tripAcceptedModel.value.status == 'on_the_way' || tripAcceptedModel.value.status == 'accepted')) {
 
         await locationService.drawPolylineBetweenPoints(
           LatLng(driverCoords.last, driverCoords.first), // start
@@ -393,8 +397,8 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
 
   void setCurrentLocationOnPickUp() async {
     fetchAndSetAddress(CommonController.to.markerPositionRider.value);
-    HomeController.to.pickupLatLng.value =
-        CommonController.to.markerPositionRider.value;
+    // HomeController.to.pickupLatLng.value =
+    //     CommonController.to.markerPositionRider.value;
   }
 
   void fetchAndSetAddress(LatLng latLng) async {
@@ -585,41 +589,70 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
     }
   }
 
-  Future<void> getPlaceName(
-    LatLng position,
-    TextEditingController controller,
-  )
-  async {
+
+  Future<String> getPlaceNameFromGoogle(LatLng position) async {
+    final url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=${GoogleClient.googleMapUrl}',
+    );
+
+    final res = await http.get(url);
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body);
+      if (data['results'] != null && data['results'].isNotEmpty) {
+        logger.d(url);
+        logger.d(data['results']);
+        // First result usually has the POI name or formatted address
+        return data['results'][0]['formatted_address'];
+      }
+    }
+    return "";
+  }
+
+  Future<void> getPlaceName(LatLng position, TextEditingController controller) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
+      String placemarks = await getPlaceNameFromGoogle(
+        LatLng(position.latitude,
+            position.longitude,)
       );
       if (placemarks.isNotEmpty) {
-        Placemark place = placemarks[0];
-        logger.d(place.toString());
+
+
         String address =
-            ' ${place.subLocality ?? place.subAdministrativeArea} ${place.locality} ${place.country}';
+            placemarks;
+        logger.d("Formatted address: $address");
+
         controller.text = address;
 
         // ✅ Also update the observable string
         if (setDestination.value) {
           dropoffAddressText.value = address;
+          logger.d("Updated dropoff address: $address");
         } else {
           pickupAddressText.value = address;
+          logger.d("Updated pickup address: $address");
+        }
+      } else {
+        logger.w("No placemarks found for this location.");
+        controller.text = 'Unknown location';
+
+        if (setDestination.value) {
+          dropoffAddressText.value = 'Unknown location';
+        } else {
+          pickupAddressText.value = 'Unknown location';
         }
       }
     } catch (e) {
-      debugPrint(e.toString());
-      controller.text = 'unknown location';
+      logger.e("Error while getting place name: $e");
+      controller.text = 'Unknown location';
 
       if (setDestination.value) {
-        dropoffAddressText.value = 'unknown location';
+        dropoffAddressText.value = 'Unknown location';
       } else {
-        pickupAddressText.value = 'unknown location';
+        pickupAddressText.value = 'Unknown location';
       }
     }
   }
+
 
   Future<void> requestTrip({required Map<String, dynamic> body}) async {
     if (!socket.socket!.connected) {

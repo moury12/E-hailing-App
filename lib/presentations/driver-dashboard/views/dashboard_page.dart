@@ -219,12 +219,7 @@ class _DashboardPageState extends State<DashboardPage>
                         FloatingActionButton.small(
                           shape: CircleBorder(),
                           child: Icon(Icons.directions),
-                          onPressed: () {
-                          launchGoogleMapsApp(DashBoardController.to.currentTrip.value.pickUpCoordinates!.coordinates!.last.toString(),
-                            DashBoardController.to.currentTrip.value.pickUpCoordinates!.coordinates!.first.toString(),
-                            DashBoardController.to.currentTrip.value.dropOffCoordinates!.coordinates!.last.toString(),
-                            DashBoardController.to.currentTrip.value.dropOffCoordinates!.coordinates!.first.toString(),);
-                        },)
+                          onPressed: DashBoardController.to.navigateToGoogleMap)
                             :SizedBox.shrink(),),
                       ),
                     ],
