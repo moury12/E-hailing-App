@@ -6,6 +6,7 @@ import 'package:e_hailing_app/presentations/home/controllers/home_controller.dar
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -15,8 +16,7 @@ class GoogleMapWidgetForUser extends StatefulWidget {
   const GoogleMapWidgetForUser({super.key});
 
   @override
-  State<GoogleMapWidgetForUser> createState() =>
-      _GoogleMapWidgetForUserState();
+  State<GoogleMapWidgetForUser> createState() => _GoogleMapWidgetForUserState();
 }
 
 class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
@@ -61,9 +61,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
   void initState() {
     super.initState();
     loadCustomMarker();
-
   }
-
 
   void _onMapCreated(GoogleMapController controller) {
     CommonController.to.setMapControllerRider(controller);
@@ -82,6 +80,9 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
     }
   }
 
+  LatLng? _pickupCenter;
+  LatLng? _dropoffCenter;
+
   LatLng? lastValidPosition;
 
   @override
@@ -90,174 +91,234 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
     return Obx(() {
       final position = CommonController.to.markerPositionRider.value;
 
-      return GoogleMap(
-        zoomGesturesEnabled: true,
-        scrollGesturesEnabled: true,
-        // cameraTargetBounds:
-        //     BoundaryController.to.bounds.value != null
-        //         ? CameraTargetBounds(BoundaryController.to.bounds.value)
-        //         : CameraTargetBounds.unbounded,
-        polylines: { ...NavigationController.to.routePolylines.value,
-          ...NavigationController.to.routePolylinesDrivers.value},
-        onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(target: position, zoom: 13),
-        myLocationEnabled: false,
-        myLocationButtonEnabled: false,
-        zoomControlsEnabled: true,
-        minMaxZoomPreference: const MinMaxZoomPreference(3, 20),
-        mapToolbarEnabled: false,
-        compassEnabled: true,
-        rotateGesturesEnabled: true,
-        tiltGesturesEnabled: true,
-        onTap: (argument) {
-          if (!BoundaryController.to.contains(argument)) {
-            showCustomSnackbar(
-              title: "Failed",
-              message: "Please select a location within the country.",
-              type: SnackBarType.alert,
-            );
-            return;
-          }
-        },
-        markers: {
-          if (HomeController.to.driverPosition.value != null &&
-              customIcon.value != null)
-            Marker(
-              markerId: const MarkerId("driver_marker"),
-              position: HomeController.to.driverPosition.value!,
-               icon: customIcon.value!,
-            ),
-        if(!HomeController.to.mapDraging.value)  Marker(
-            markerId: const MarkerId("selected_location"),
-            position: CommonController.to.markerPositionRider.value,
+      return Stack(
+        alignment: AlignmentGeometry.center,
+        children: [
+          GoogleMap(
+            zoomGesturesEnabled: true,
+            scrollGesturesEnabled: true,
+            onCameraMove: (position) {
+              if (HomeController.to.setPickup.value) {
+                _pickupCenter = position.target;
+              } else if (HomeController.to.setDestination.value) {
+                _dropoffCenter = position.target;
+              }
+            },
+            onCameraMoveStarted: () {
+              HomeController.to.mapDraging.value = true;
+            },
 
-            icon: currentLocationIcon.value!,
-            // Variable to store last valid position
+            onCameraIdle: () async {
+              HomeController.to.mapDraging.value = false;
+              final LatLng? current =
+                  HomeController.to.setDestination.value
+                      ? _dropoffCenter
+                      : _pickupCenter;
+              if (current == null) return;
 
+              if (!BoundaryController.to.contains(current)) {
+                showCustomSnackbar(
+                  title: "Failed",
+                  message: "Outside country boundary.",
+                  type: SnackBarType.alert,
+                );
+                if (lastValidPosition != null) {
+                  CommonController.to.mapControllerRider?.animateCamera(
+                    CameraUpdate.newLatLng(lastValidPosition!),
+                  );
+                }
+                return;
+              }
+
+              lastValidPosition = current;
+
+              if (HomeController.to.setDestination.value) {
+                HomeController.to.dropoffLatLng.value = current;
+              } else {
+                HomeController.to.pickupLatLng.value = current;
+              }
+
+              await HomeController.to.getPlaceName(
+                current,
+                HomeController.to.setDestination.value
+                    ? HomeController.to.dropOffLocationController.value
+                    : HomeController.to.pickupLocationController.value,
+              );
+
+              HomeController.to.mapDragable.value = false;
+            },
+
+            // cameraTargetBounds:
+            //     BoundaryController.to.bounds.value != null
+            //         ? CameraTargetBounds(BoundaryController.to.bounds.value)
+            //         : CameraTargetBounds.unbounded,
+            polylines: {
+              ...NavigationController.to.routePolylines.value,
+              ...NavigationController.to.routePolylinesDrivers.value,
+            },
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(target: position, zoom: 13),
+            myLocationEnabled: false,
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: true,
+            minMaxZoomPreference: const MinMaxZoomPreference(3, 20),
+            mapToolbarEnabled: false,
+            compassEnabled: true,
+            rotateGesturesEnabled: true,
+            tiltGesturesEnabled: true,
+            onTap: (argument) {
+              if (!BoundaryController.to.contains(argument)) {
+                showCustomSnackbar(
+                  title: "Failed",
+                  message: "Please select a location within the country.",
+                  type: SnackBarType.alert,
+                );
+                return;
+              }
+            },
+            markers: {
+              if (HomeController.to.driverPosition.value != null &&
+                  customIcon.value != null)
+                Marker(
+                  markerId: const MarkerId("driver_marker"),
+                  position: HomeController.to.driverPosition.value!,
+                  icon: customIcon.value!,
+                ),
+              if (!HomeController.to.mapDraging.value)
+                Marker(
+                  markerId: const MarkerId("selected_location"),
+                  position: CommonController.to.markerPositionRider.value,
+
+                  icon: currentLocationIcon.value!,
+
+                  // Variable to store last valid position
+                ),
+
+              if (HomeController.to.pickupLatLng.value != null &&
+                  HomeController.to.pickupLatLng.value !=
+                      CommonController.to.markerPositionRider.value &&
+                  !HomeController.to.mapDraging.value)
+                Marker(
+                  // draggable:
+                  //     HomeController.to.mapDragable.value &&
+                  //     HomeController.to.mapDraging.value,
+                  markerId: MarkerId("source Marker"),
+                  position: HomeController.to.pickupLatLng.value!,
+                  icon: sourceIcon.value!,
+                  // onTap: () {
+                  //   if (HomeController.to.mapDraging.value) {
+                  //     HomeController.to.mapDragable.value = true;
+                  //   }
+                  //   logger.d(
+                  //     "---------------------onTap"
+                  //     "",
+                  //   );
+                  // },
+                  // onDragStart: (value) {
+                  //   if (HomeController.to.mapDraging.value &&
+                  //       !HomeController.to.setDestination.value) {
+                  //     HomeController.to.mapDragable.value = true;
+                  //   }
+                  //   logger.d("---------------------onDragStart $value");
+                  // },
+                  // onDragEnd: (value) async {
+                  //   logger.d("---------------------onDragEnd $value");
+                  //   logger.d(BoundaryController.to.contains(value));
+                  //   if (!BoundaryController.to.contains(value)) {
+                  //     showCustomSnackbar(
+                  //       title: "Failed",
+                  //       message: 'Outside country boundary.',
+                  //       type: SnackBarType.alert,
+                  //     );
+                  //     HomeController.to.mapDragable.value = false;
+                  //     // Snap back to last valid location
+                  //     if (lastValidPosition != null) {
+                  //       CommonController.to.markerPositionRider.value =
+                  //           lastValidPosition!;
+                  //     }
+                  //     return;
+                  //   }
+                  //   lastValidPosition = value;
+                  //   HomeController.to.pickupLatLng.value = value;
+                  //   await HomeController.to.getPlaceName(
+                  //     value,
+                  //     HomeController.to.setDestination.value
+                  //         ? HomeController.to.dropOffLocationController.value
+                  //         : HomeController.to.pickupLocationController.value,
+                  //   );
+                  //
+                  //   HomeController.to.mapDragable.value = false;
+                  // },
+                ),
+              if (HomeController.to.dropoffLatLng.value != null &&
+                  !HomeController.to.mapDraging.value)
+                Marker(
+                  // draggable:
+                  //     HomeController.to.mapDragable.value &&
+                  //     HomeController.to.mapDraging.value,
+                  markerId: MarkerId("destination Marker"),
+                  position: HomeController.to.dropoffLatLng.value!,
+                  icon: destinationIcon.value!,
+                  // onTap: () {
+                  //   if (HomeController.to.mapDraging.value) {
+                  //     HomeController.to.mapDragable.value = true;
+                  //   }
+                  //   logger.d(
+                  //     "---------------------onTap"
+                  //     "",
+                  //   );
+                  // },
+                  // onDragStart: (value) {
+                  //   if (HomeController.to.mapDraging.value &&
+                  //       HomeController.to.setDestination.value) {
+                  //     HomeController.to.mapDragable.value = true;
+                  //   }
+                  //   logger.d("---------------------onDragStart $value");
+                  // },
+                  // onDragEnd: (value) async {
+                  //   logger.d("---------------------onDragEnd $value");
+                  //   if (!BoundaryController.to.contains(value)) {
+                  //     // Show custom snackbar if the point is outside the country's boundary
+                  //     showCustomSnackbar(
+                  //       title: "Failed",
+                  //       message: 'Outside country boundary.',
+                  //       type: SnackBarType.alert,
+                  //     );
+                  //     HomeController.to.mapDragable.value = false;
+                  //     // Snap back to last valid location
+                  //     if (lastValidPosition != null) {
+                  //       CommonController.to.markerPositionRider.value =
+                  //           lastValidPosition!;
+                  //     }
+                  //     return;
+                  //   }
+                  //
+                  //   // Update the last valid position
+                  //   lastValidPosition = value;
+                  //
+                  //   HomeController.to.dropoffLatLng.value = value;
+                  //
+                  //   await HomeController.to.getPlaceName(
+                  //     value,
+                  //     HomeController.to.setDestination.value
+                  //         ? HomeController.to.dropOffLocationController.value
+                  //         : HomeController.to.pickupLocationController.value,
+                  //   );
+                  //
+                  //   HomeController.to.mapDragable.value = false;
+                  // },
+                ),
+            },
           ),
-          if (HomeController.to.pickupLatLng.value !=
-              null  )
-            Marker(
-              draggable:
-                  HomeController.to.mapDragable.value &&
-                  HomeController.to.mapDraging.value,
-              markerId: MarkerId("source Marker"),
-              position: HomeController.to.pickupLatLng.value!,
-              icon: sourceIcon.value!,
-              onTap: () {
-                if (HomeController.to.mapDraging.value) {
-                  HomeController.to.mapDragable.value = true;
-                }
-                logger.d(
-                  "---------------------onTap"
-                      "",
-                );
-              },
-              onDragStart: (value) {
-                if (HomeController.to.mapDraging.value&&!HomeController.to.setDestination.value) {
-                  HomeController.to.mapDragable.value = true;
-                }
-                logger.d("---------------------onDragStart $value");
-              },
-              onDragEnd: (value) async {
-                logger.d("---------------------onDragEnd $value");
-                logger.d(BoundaryController.to.contains(value));
-                if (!BoundaryController.to.contains(value)) {
-                  showCustomSnackbar(
-                    title: "Failed",
-                    message: 'Outside country boundary.',
-                    type: SnackBarType.alert,
-                  );
-                  HomeController.to.mapDragable.value = false;
-                  // Snap back to last valid location
-                  if (lastValidPosition != null) {
-                    CommonController.to.markerPositionRider.value =
-                        lastValidPosition!;
-                  }
-                  return;
-                }
-
-                // Update the last valid position
-                lastValidPosition = value;
-
-
-                HomeController.to.pickupLatLng.value = value;
-                // Set either the dropoff or pickup location based on the state
-
-
-                // Reverse geocode the new position (optional, based on your app)
-                await HomeController.to.getPlaceName(
-                  value,
-                  HomeController.to.setDestination.value
-                      ? HomeController.to.dropOffLocationController.value
-                      : HomeController.to.pickupLocationController.value,
-                );
-
-                HomeController.to.mapDragable.value = false;
-
-
-              },
+          if (HomeController.to.setPickup.value)
+            IgnorePointer(
+              child: Image.asset(sourceLocationIcon, height: 30.sp),
             ),
-          if (HomeController.to.dropoffLatLng.value !=
-              null  )
-            Marker(
-              draggable:
-                  HomeController.to.mapDragable.value &&
-                  HomeController.to.mapDraging.value,
-              markerId: MarkerId("destination Marker"),
-              position: HomeController.to.dropoffLatLng.value!,
-              icon: destinationIcon.value!,
-              onTap: () {
-                if (HomeController.to.mapDraging.value) {
-                  HomeController.to.mapDragable.value = true;
-                }
-                logger.d(
-                  "---------------------onTap"
-                      "",
-                );
-              },
-              onDragStart: (value) {
-                if (HomeController.to.mapDraging.value&&HomeController.to.setDestination.value) {
-                  HomeController.to.mapDragable.value = true;
-                }
-                logger.d("---------------------onDragStart $value");
-              },
-              onDragEnd: (value) async {
-                logger.d("---------------------onDragEnd $value");
-                if (!BoundaryController.to.contains(value)) {
-                  // Show custom snackbar if the point is outside the country's boundary
-                  showCustomSnackbar(
-                    title: "Failed",
-                    message: 'Outside country boundary.',
-                    type: SnackBarType.alert,
-                  );
-                  HomeController.to.mapDragable.value = false;
-                  // Snap back to last valid location
-                  if (lastValidPosition != null) {
-                    CommonController.to.markerPositionRider.value =
-                        lastValidPosition!;
-                  }
-                  return;
-                }
-
-                // Update the last valid position
-                lastValidPosition = value;
-
-
-                  HomeController.to.dropoffLatLng.value = value;
-
-
-                await HomeController.to.getPlaceName(
-                  value,
-                  HomeController.to.setDestination.value
-                      ? HomeController.to.dropOffLocationController.value
-                      : HomeController.to.pickupLocationController.value,
-                );
-
-                HomeController.to.mapDragable.value = false;
-              },
+          if (HomeController.to.setDestination.value)
+            IgnorePointer(
+              child: Image.asset(destinationLocationIcon, height: 30.sp),
             ),
-        },
+        ],
       );
     });
   }
@@ -321,7 +382,6 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
         controller.animateCamera(CameraUpdate.newLatLngZoom(userPosition, 14));
       }
     } else {
-
       WidgetsBinding.instance.addPostFrameCallback((_) {
         DashBoardController.to.drawPolylineMethod();
       });
@@ -339,8 +399,10 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
       return GoogleMap(
         zoomGesturesEnabled: true,
         scrollGesturesEnabled: true,
-        polylines: { ...NavigationController.to.routePolylines.value,
-        ...NavigationController.to.routePolylinesDrivers.value},
+        polylines: {
+          ...NavigationController.to.routePolylines.value,
+          ...NavigationController.to.routePolylinesDrivers.value,
+        },
 
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(target: position, zoom: 13),
@@ -353,18 +415,21 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
             position: CommonController.to.markerPositionDriver.value,
             icon: customIcon.value ?? BitmapDescriptor.defaultMarker,
           ),
-       if( coords!=null ) Marker(
-            markerId: MarkerId("source Marker"),
-            position:  LatLng(coords.last.toDouble(), coords.first.toDouble()),
-            icon: sourceIcon.value!,
-
-          ),
-          if( dropCoords!=null ) Marker(
-            markerId: MarkerId("destination Marker"),
-            position:  LatLng(dropCoords.last.toDouble(), dropCoords.first.toDouble()),
-            icon: destinationIcon.value!,
-
-          )
+          if (coords != null)
+            Marker(
+              markerId: MarkerId("source Marker"),
+              position: LatLng(coords.last.toDouble(), coords.first.toDouble()),
+              icon: sourceIcon.value!,
+            ),
+          if (dropCoords != null)
+            Marker(
+              markerId: MarkerId("destination Marker"),
+              position: LatLng(
+                dropCoords.last.toDouble(),
+                dropCoords.first.toDouble(),
+              ),
+              icon: destinationIcon.value!,
+            ),
         },
       );
     });

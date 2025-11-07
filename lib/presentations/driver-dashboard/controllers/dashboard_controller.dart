@@ -47,7 +47,7 @@ class DashBoardController extends GetxController {
   Rx<DriverCurrentTripModel> availableTrip = DriverCurrentTripModel().obs;
 
   TextEditingController extraCost = TextEditingController();
-  final  socketService = SocketService();
+  final socketService = SocketService();
   RxBool isLoadingCurrentTrip = false.obs;
   RxBool isLoadingUpdateTollFee = false.obs;
   RxString estimatedPickupTime = "0:00 Min".obs;
@@ -55,11 +55,7 @@ class DashBoardController extends GetxController {
   @override
   void onInit() async {
     initializeSocket();
-   await Future.wait(
-        [getDriverCurrentTripRequest() ,
-
-        ]
-    );
+    await Future.wait([getDriverCurrentTripRequest()]);
 
     super.onInit();
   }
@@ -139,10 +135,15 @@ class DashBoardController extends GetxController {
   }
 
   void initializeSocket() {
-    if (socketService.socket==null||!socketService.socket!.connected) {
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
+    if (socketService.socket == null || !socketService.socket!.connected) {
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(
+        Boxes.getUserData().get(tokenKey).toString(),
+      );
 
-      socketService.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+      socketService.connect(
+        decodedToken['userId'],
+        decodedToken['role'] == "DRIVER",
+      );
       // async
       socketService.onConnected = () {
         registerSocketListeners(); // Register events **after** connection
@@ -201,8 +202,7 @@ class DashBoardController extends GetxController {
     int? duration,
     int? distance,
     List<String>? reason,
-  })
-  async {
+  }) async {
     try {
       if (!socketService.socket!.connected) {
         initializeSocket();
@@ -238,13 +238,11 @@ class DashBoardController extends GetxController {
     }
   }
 
-
   Future<void> driverTripAccept({
     required String tripId,
     required double lat,
     required double lng,
-  })
-  async {
+  }) async {
     if (!socketService.socket!.connected) {
       showCustomSnackbar(
         title: 'Connection Error',
@@ -289,12 +287,10 @@ class DashBoardController extends GetxController {
     } catch (e) {
       logger.e(e.toString());
       isLoadingCurrentTrip.value = false;
-    }finally{
+    } finally {
       isLoadingCurrentTrip.value = false;
-
     }
   }
-
 
   Future<void> drawPolylineMethod() async {
     final trip = currentTrip.value;
@@ -323,13 +319,16 @@ class DashBoardController extends GetxController {
 
       updateRideFlowState(trip.status);
 
-      if (distanceInMeters >= 100 && trip.status == 'on_the_way' && trip.status == 'accepted') {
+      if (distanceInMeters >= 100 &&
+          (trip.status == 'on_the_way' || trip.status == 'accepted')) {
         // 🟩 Driver → Pickup (Green)
         await locationService.drawPolylineBetweenPoints(
           userPosition: CommonController.to.markerPositionDriver.value,
           mapController: CommonController.to.mapControllerDriver,
-          LatLng(CommonController.to.markerPositionDriver.value.latitude,
-              CommonController.to.markerPositionDriver.value.longitude),
+          LatLng(
+            CommonController.to.markerPositionDriver.value.latitude,
+            CommonController.to.markerPositionDriver.value.longitude,
+          ),
           LatLng(coords.last.toDouble(), coords.first.toDouble()),
           NavigationController.to.routePolylinesDrivers,
           type: PolylineType.driverToPickup,
@@ -379,6 +378,36 @@ class DashBoardController extends GetxController {
     return true;
   }
 
+  void navigateToGoogleMap() {
+    final trip = currentTrip.value;
+    final coords = trip.pickUpCoordinates?.coordinates;
+    if (trip.sId != null && coords != null) {
+      double distanceInMeters = Geolocator.distanceBetween(
+        coords.last.toDouble(),
+        coords.first.toDouble(),
+        CommonController.to.markerPositionDriver.value.latitude,
+        CommonController.to.markerPositionDriver.value.longitude,
+      );
+
+      if (distanceInMeters >= 100 &&
+          (trip.status == 'on_the_way' || trip.status == 'accepted')) {
+        launchGoogleMapsApp(
+          CommonController.to.markerPositionDriver.value.latitude.toString(),
+          CommonController.to.markerPositionDriver.value.longitude.toString(),
+          coords.last.toString(),
+          coords.first.toString(),
+        );
+      } else {
+        launchGoogleMapsApp(
+          trip.pickUpCoordinates!.coordinates!.last.toString(),
+          trip.pickUpCoordinates!.coordinates!.first.toString(),
+          trip.dropOffCoordinates!.coordinates!.last.toString(),
+          trip.dropOffCoordinates!.coordinates!.first.toString(),
+        );
+      }
+    }
+  }
+
   void removeSocketListeners() {
     socketService.off(DriverEvent.tripAvailableStatus);
     socketService.off(DriverEvent.tripUpdateStatus);
@@ -394,9 +423,8 @@ class DashBoardController extends GetxController {
   }
 
   void registerSocketListeners() {
-
     removeSocketListeners();
-logger.i("Listening socket event for driver");
+    logger.i("Listening socket event for driver");
     // ============ Trip Available Event ============
     socketService.on(DriverEvent.tripAvailableStatus, (data) {
       logger.d("📩 tripAvailableStatus: $data");
@@ -413,9 +441,7 @@ logger.i("Listening socket event for driver");
     // ============ Trip Update Status Event ============
     socketService.on(DriverEvent.tripUpdateStatus, (data) async {
       logger.d("📩 tripUpdateStatus: $data");
-      startTrackingUserLocationMethod(
-        tripId: currentTrip.value.sId.toString(),
-      );
+      startTrackingUserLocationMethod(tripId: currentTrip.value.sId.toString());
       if (data['success'] != true) {
         _showError(data['message']);
         return;
@@ -440,7 +466,7 @@ logger.i("Listening socket event for driver");
 
       if (data['success'] == true) {
         currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-        if(currentTrip.value.tripType!=preBook){
+        if (currentTrip.value.tripType != preBook) {
           startTrackingUserLocationMethod(
             tripId: currentTrip.value.sId.toString(),
           );
@@ -448,11 +474,12 @@ logger.i("Listening socket event for driver");
           DashBoardController.to.afterAccepted.value = true;
           resetRideFlow(rideType: RideFlowState.pickup);
           // _showSuccess(data['message']);
-        }else{
+        } else {
           Get.offAllNamed(
             NavigationPage.routeName,
-            arguments: {'reconnectSocket': true,"pre_book":true},
-          );        }
+            arguments: {'reconnectSocket': true, "pre_book": true},
+          );
+        }
       } else {
         resetRideFlow(rideType: RideFlowState.findingRide);
         _showError(data['message']);
@@ -474,14 +501,11 @@ logger.i("Listening socket event for driver");
     });
     socketService.on(PaymentEvent.paymentReceived, (data) {
       logger.d('payment paid: $data');
-      CommonController.to.isPaid.value=data['success'];
-if(data['success']){
-  getDriverCurrentTripRequest();
-}
-             showCustomSnackbar(
-        title: 'Success',
-        message: data['message'],
-      );
+      CommonController.to.isPaid.value = data['success'];
+      if (data['success']) {
+        getDriverCurrentTripRequest();
+      }
+      showCustomSnackbar(title: 'Success', message: data['message']);
     });
   }
 
@@ -528,8 +552,7 @@ if(data['success']){
         break;
       case 'completed':
       case 'cancelled':
-
-      resetController();
+        resetController();
         Get.offAllNamed(
           NavigationPage.routeName,
           arguments: {'reconnectSocket': true},
@@ -539,6 +562,7 @@ if(data['success']){
         logger.w("Unknown trip status: $status");
     }
   }
+
   void resetController() {
     // Remove listeners
     removeSocketListeners();
@@ -560,6 +584,7 @@ if(data['success']){
 
     logger.i("DashBoardController reset completed");
   }
+
   void _showSuccess(String message) {
     showCustomSnackbar(
       title: 'Success',
@@ -576,6 +601,7 @@ if(data['success']){
     );
   }
 }
+
 // {
 //   "deviceId": "BE2A.250530.026.D1",
 //   "token": "f2N4tk1ORTCnRoyqxvp8aD:APA91bHjLOmnqzcPfHtVYMjXt58F1-s4I-IFr2PYwqzUdfP86F4blHNzWmXdjpzdqF0eOH-NnkCmFnw0D_ajb4tGujNs2TqwsiA5-MEDvjA_hKnK-0l_Cfo",
