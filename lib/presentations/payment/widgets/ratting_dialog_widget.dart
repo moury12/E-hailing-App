@@ -84,7 +84,7 @@ class _RattingDialogWidgetState extends State<RattingDialogWidget> {
                     isLoading: HomeController.to.isLoadingPostReview.value,
                     onTap: () {
                       final review = _reviewController.text.trim();
-                      if (_rating != null && review.isNotEmpty) {
+                      if (_rating != null ) {
                         HomeController.to.postReviewRatingRequest(
                           rating: _rating.toString(),
                           review: review,

@@ -10,6 +10,7 @@ import '../../../core/constants/padding_constant.dart';
 class CustomWhiteContainerWithBorder extends StatelessWidget {
   final String? text;
   final String? img;
+  final Color? backgroundColor;
   final Function()? onTap;
   final Widget? child;
   final TextAlign? textAlign;
@@ -21,7 +22,7 @@ class CustomWhiteContainerWithBorder extends StatelessWidget {
     this.child,
     this.onTap,
     this.cross,
-    this.textAlign,
+    this.textAlign, this.backgroundColor,
   });
 
   @override
@@ -29,7 +30,7 @@ class CustomWhiteContainerWithBorder extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24.r),
-        color: AppColors.kWhiteColor,
+        color:backgroundColor?? AppColors.kWhiteColor,
         border: Border.all(color: AppColors.kBorderColor, width: 0.5.w),
       ),
       child: ButtonTapWidget(
