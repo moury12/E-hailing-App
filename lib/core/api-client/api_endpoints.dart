@@ -26,6 +26,7 @@ String postReviewEndpoint = 'review/post-review';
 String updateTollFeeEndpoint = 'trip/update-toll-fee';
 String getAllTripEndpoint = 'trip/get-all-trips';
 String getAlChatEndpoint = 'chat/get-all-chats';
+String getAnnouncmentEndpoint = 'dashboard/get-announcement';
 String getAlDCoinEndpoint = 'dcoin/get-all-dCoins';
 String getAllNotificationEndpoint = 'notification/get-all-notifications';
 String updateMessageSeenEndpoint = 'chat/update-message-as-seen';

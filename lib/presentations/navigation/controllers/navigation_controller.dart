@@ -30,6 +30,7 @@ class NavigationController extends GetxController {
   @override
   void onInit() async {
     CommonController.to.fetchCurrentLocationMethod();
+
     CommonController.to.isDriver.value
         ? Get.put(DashBoardController())
         : Get.put(HomeController());
