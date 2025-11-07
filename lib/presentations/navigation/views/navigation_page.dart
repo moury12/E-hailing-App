@@ -1,4 +1,6 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/components/custom_button.dart';
+import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
@@ -8,6 +10,7 @@ import 'package:e_hailing_app/presentations/notification/views/notification_page
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 
 import '../../../core/components/custom_button_tap.dart';
@@ -40,7 +43,20 @@ class _NavigationPageState extends State<NavigationPage>
             ? GoogleMapWidgetForDriver()
             : GoogleMapWidgetForUser();
     // logger.i(Boxes.getRattingData().get("rating"));
-
+if(CommonController.to.announcement.value.isActive ==true){
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    Get.dialog(AlertDialog(
+      title: CustomText(text: CommonController.to.announcement.value.title??""),
+      content:  Obx(() {
+        return CommonController.to.isLoadingAnnouncement.value
+            ? DefaultProgressIndicator()
+            : HtmlWidget(
+          '''${CommonController.to.announcement.value.description}''',
+        );
+      }),
+    ));
+  });
+}
     if (!CommonController.to.isDriver.value &&
         Boxes.getRattingData().get("rating") != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

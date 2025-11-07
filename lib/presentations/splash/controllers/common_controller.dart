@@ -15,6 +15,8 @@ import 'package:e_hailing_app/presentations/payment/views/online_payment.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/review_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
+import 'package:e_hailing_app/presentations/splash/model/announcment_model.dart';
+import 'package:e_hailing_app/presentations/splash/model/announcment_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -38,10 +40,13 @@ RxList<String> images =<String>[].obs;
   GoogleMapController? mapControllerDriver;
   GoogleMapController? mapControllerRider;
   RxList<ReviewModel> reviewList = <ReviewModel>[].obs;
+  Rx<AnnouncementModel> announcement = AnnouncementModel().obs;
+
   RxBool isDriver = false.obs;
   RxBool isVerifingIdentity = false.obs;
   RxBool isLoadingPayment = false.obs;
   RxBool isLoadingReview = false.obs;
+  RxBool isLoadingAnnouncement = false.obs;
   RxDouble driverRating = 0.0.obs;
   RxBool isLoadingOnLocationSuggestion = false.obs;
   RxList<dynamic> addressSuggestion = [].obs;
@@ -91,6 +96,37 @@ RxList<String> images =<String>[].obs;
       logger.e(e.toString());
     } finally {
       isLoadingReview.value = false;
+    }
+  }
+  Future<void> getAnnouncmentRequest() async {
+    isLoadingAnnouncement.value = true;
+
+    try {
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+      final response = await ApiService().request(
+        endpoint: getAnnouncmentEndpoint,
+        method: 'GET',
+        useAuth: true,
+
+      );
+      // logger.d(response);
+      if (response['success'] == true) {
+        
+        announcement.value = AnnouncementModel.fromJson(response['data']);
+      } else {
+        logger.e(response);
+        if (kDebugMode) {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed,
+          );
+        }
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    } finally {
+      isLoadingAnnouncement.value = false;
     }
   }
 
