@@ -254,12 +254,23 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
     // Now re-register
     socket.on(TripEvents.tripRequested, (data) {
       logger.d('🚕 tripRequested: $data');
-      currentTrip.value = data;
-      isCancellingTrip.value = false;
-      // showCustomSnackbar(
-      //   title: 'Success',
-      //   message: 'Trip requested successfully! Looking for nearby drivers...',
-      // );
+
+      if(data['data']['tripType']=="pre_book"){
+        showCustomSnackbar(
+          title: 'Pre Booked ride successfully!',
+          message: 'Request sent to admin panel admin will assign you driver!!',
+        );
+        resetAllStates();
+        Get.offAllNamed(
+          NavigationPage.routeName,
+          arguments: {'reconnectSocket': true,/*"pre_book":true*/},
+        );
+      }
+      else{
+        currentTrip.value = data;
+        isCancellingTrip.value = false;
+      }
+
     });
     socket.on(PaymentEvent.paymentPaid, (data) {
       logger.d('payment paid: $data');
@@ -397,8 +408,8 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
 
   void setCurrentLocationOnPickUp() async {
     fetchAndSetAddress(CommonController.to.markerPositionRider.value);
-    // HomeController.to.pickupLatLng.value =
-    //     CommonController.to.markerPositionRider.value;
+    HomeController.to.pickupLatLng.value =
+        CommonController.to.markerPositionRider.value;
   }
 
   void fetchAndSetAddress(LatLng latLng) async {

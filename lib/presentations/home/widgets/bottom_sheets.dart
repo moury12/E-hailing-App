@@ -470,6 +470,7 @@ class HomeInitialContentWidget extends StatelessWidget {
                 img: purpleCarImage2,
               ),
               ServiceWidget(
+                backgroundColor: Colors.grey.shade400,
                 onTap: () {
                   showComingSoonDialog(context);
                   // HomeController.to.setPickup.value = true;
@@ -490,17 +491,19 @@ class ServiceWidget extends StatelessWidget {
   final String title;
   final String img;
   final Function()? onTap;
+  final Color? backgroundColor;
 
   const ServiceWidget({
     super.key,
     required this.title,
     required this.img,
-    this.onTap,
+    this.onTap, this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return CustomWhiteContainerWithBorder(
+      backgroundColor: backgroundColor,
       onTap: onTap,
       child: Column(
         children: [

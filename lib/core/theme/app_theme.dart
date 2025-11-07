@@ -14,18 +14,43 @@ class AppTheme {
       drawerTheme: DrawerThemeData(
         backgroundColor: AppColors.kWhiteColor,
       ),
-      timePickerTheme: TimePickerThemeData(backgroundColor:AppColors.kWhiteColor,
+      timePickerTheme: TimePickerThemeData(
+        backgroundColor: AppColors.kWhiteColor,
         dialBackgroundColor: Colors.deepPurple.shade50,
         dialHandColor: AppColors.kPrimaryColor,
         dialTextColor: Colors.black,
-        hourMinuteTextColor: AppColors.kPrimaryColor,
+
+        // 🟣 Make text visible & centered properly
+        hourMinuteTextColor: AppColors.kShimmerHighlightColor,
+        hourMinuteShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: AppColors.kPrimaryColor, width: 1.5),
+        ),
+        // hourMinuteColor: WidgetStateProperty.resolveWith<Color>((states) {
+        //   if (states.contains(WidgetState.selected)) {
+        //     return AppColors.kPrimaryColor; // Selected box background
+        //   }
+        //   return Colors.grey.shade100; // Unselected box
+        // }),
+        hourMinuteTextStyle: const TextStyle(
+          fontSize: 48,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
         entryModeIconColor: AppColors.kPrimaryColor,
       ),
+
       colorScheme: ColorScheme.light(
         primary: AppColors.kPrimaryColor,
         onPrimary: AppColors.kWhiteColor,
         onSurface: Colors.black,
       ),
+      //
+      // colorScheme: ColorScheme.light(
+      //   primary: AppColors.kPrimaryColor,
+      //   onPrimary: AppColors.kWhiteColor,
+      //   onSurface: Colors.black,
+      // ),
       datePickerTheme: DatePickerThemeData(
 
         backgroundColor: AppColors.kWhiteColor,      // Dialog background
