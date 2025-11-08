@@ -495,7 +495,8 @@ class DashBoardController extends GetxController {
           data['data'],
         );
         // _showSuccess(data['message']);
-      } else {
+      }
+      else {
         // _showError(data['message']);
       }
     });
