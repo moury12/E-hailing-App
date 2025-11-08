@@ -109,7 +109,7 @@ RxList<String> images =<String>[].obs;
         useAuth: true,
 
       );
-      // logger.d(response);
+    logger.d(response);
       if (response['success'] == true) {
         
         announcement.value = AnnouncementModel.fromJson(response['data']);
@@ -170,7 +170,7 @@ RxList<String> images =<String>[].obs;
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
       initialSetup();
     }
-
+    getAnnouncmentRequest();
     // Only setup socket if we have a valid user ID
 
     super.onInit();
