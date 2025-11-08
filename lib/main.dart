@@ -15,6 +15,7 @@ import 'core/bindings/bindings.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
 
+
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();

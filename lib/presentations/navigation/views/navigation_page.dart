@@ -37,34 +37,65 @@ class _NavigationPageState extends State<NavigationPage>
   @override
   void initState() {
     super.initState();
+
     CommonController.to.fetchCurrentLocationMethod();
-    _persistentMapWidget =
-        CommonController.to.isDriver.value
-            ? GoogleMapWidgetForDriver()
-            : GoogleMapWidgetForUser();
-    // logger.i(Boxes.getRattingData().get("rating"));
-if(CommonController.to.announcement.value.isActive ==true){
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    Get.dialog(AlertDialog(
-      title: CustomText(text: CommonController.to.announcement.value.title??""),
-      content:  Obx(() {
-        return CommonController.to.isLoadingAnnouncement.value
-            ? DefaultProgressIndicator()
-            : HtmlWidget(
-          '''${CommonController.to.announcement.value.description}''',
+
+    _persistentMapWidget = CommonController.to.isDriver.value
+        ? GoogleMapWidgetForDriver()
+        : GoogleMapWidgetForUser();
+
+    // 🌟 Move dialog logic to onReady to ensure widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setupAnnouncementDialog();
+      _setupRatingDialog();
+    });
+  }
+
+  void _setupAnnouncementDialog() {
+    // Reactive listener — triggers when announcement changes
+    ever(CommonController.to.announcement, (announcement) {
+      if (announcement.isActive == true) {
+        Get.dialog(
+          AlertDialog(
+            title: CustomText(text: announcement.title ?? ""),
+            content: Obx(() {
+              return CommonController.to.isLoadingAnnouncement.value
+                  ? DefaultProgressIndicator()
+                  : HtmlWidget('''${announcement.description}''');
+            }),
+          ),
         );
-      }),
-    ));
-  });
-}
+      }
+    });
+
+    // In case it's already active at startup
+    if (CommonController.to.announcement.value.isActive == true) {
+      Get.dialog(
+        AlertDialog(
+          title: CustomText(
+            text: CommonController.to.announcement.value.title ?? "",
+          ),
+          content: Obx(() {
+            return CommonController.to.isLoadingAnnouncement.value
+                ? DefaultProgressIndicator()
+                : HtmlWidget(
+              '''${CommonController.to.announcement.value.description}''',
+            );
+          }),
+        ),
+      );
+    }
+  }
+
+  void _setupRatingDialog() {
     if (!CommonController.to.isDriver.value &&
         Boxes.getRattingData().get("rating") != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showRatingDialogs(
-          carId: Boxes.getRattingData().get("rating"),
-        );
-      });}
+      showRatingDialogs(
+        carId: Boxes.getRattingData().get("rating"),
+      );
+    }
   }
+
   PreferredSizeWidget? getAppBar(int currentIndex) {
     if (currentIndex == 1) return CustomAppBar(title: AppStaticStrings.myRides);
 
