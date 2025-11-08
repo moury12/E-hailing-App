@@ -35,31 +35,21 @@ class SplashController extends GetxController {
     InitializationSettings(iOS: iosInit,android: androidInit, );
 
     await flutterLocalNotificationsPlugin.initialize(initSettings);
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'high_importance_channel', // id
-      'High Importance Notifications', // name
-      description: 'This channel is used for important notifications.',
-      importance: Importance.max,
-      playSound: true,
-      enableVibration: true,
-      // sound: RawResourceAndroidNotificationSound('notification'), // from res/raw/notification.mp3
-    );
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
+
   }
 
   Future<void> initFCM() async {
     try {
       // Request permission first (critical on iOS)
       NotificationSettings settings =
-      await FirebaseMessaging.instance.requestPermission(
+      await FirebaseMessaging.instance.
+      requestPermission(
         alert: true,
         badge: true,
         sound: true,
       );
-      await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      await FirebaseMessaging.instance.
+      setForegroundNotificationPresentationOptions(
         alert: true,
         badge: true,
         sound: true, // ✅ this enables sound
