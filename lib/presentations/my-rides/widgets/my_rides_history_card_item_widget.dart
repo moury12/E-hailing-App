@@ -12,8 +12,10 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
+import 'package:e_hailing_app/presentations/payment/views/payment_invoice_page.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/row_call_chat_details_button.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -25,12 +27,13 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
   final dynamic rideModel;
   final bool isDriver;
   final bool isOngoin;
+  final bool showInvoice;
 
   const MyRidesHistoryCardItemWidget({
     super.key,
     required this.rideModel,
     required this.isDriver,
-    this.isOngoin = false,
+    this.isOngoin = false,this.showInvoice = false,
   });
 
   @override
@@ -92,10 +95,20 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
         children: [
 
           ///============================dynamic date==============================///
-          CustomText(
-            text: dateTime,
-            style: poppinsSemiBold,
-            fontSize: getFontSizeExtraLarge(),
+          Row(
+            children: [
+              Expanded(
+                child: CustomText(
+                  text: dateTime,
+                  style: poppinsSemiBold,
+                  fontSize: getFontSizeExtraLarge(),
+                ),
+              ),
+              if(showInvoice)
+                IconButton(onPressed: () {
+                  Get.to(PaymentInvoicePage(rideModel: rideModel,isDriver: isDriver,));
+                }, icon: Icon(Icons.receipt_long,color: AppColors.kPrimaryColor,))
+            ],
           ),
           space6H,
           Row(

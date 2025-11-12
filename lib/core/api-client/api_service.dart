@@ -10,7 +10,7 @@ import 'package:http_parser/http_parser.dart';
 class ApiService {
  // final String baseUrl = 'http://18.211.171.8:8002';
 
- final String baseUrl = 'http://10.10.20.44:8002';
+ final String baseUrl = 'https://fttfmf0j-8002.inc1.devtunnels.ms';
 
   static final ApiService _instance = ApiService._internal();
 

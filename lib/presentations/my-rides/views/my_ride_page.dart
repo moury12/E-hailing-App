@@ -85,6 +85,7 @@ class _MyRidePageState extends State<MyRidePage>
           itemBuilder:
               (context, item, index) =>
               MyRidesHistoryCardItemWidget(
+                showInvoice: true,
                 rideModel: item,
                 isDriver: CommonController.to.isDriver.value,
               ),
