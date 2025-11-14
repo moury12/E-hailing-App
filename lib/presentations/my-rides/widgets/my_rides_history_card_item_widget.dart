@@ -61,7 +61,8 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
       dateTime = formatDateTime(model.pickUpDate!=null?model.pickUpDate.toString():model.createdAt.toString());
       pickup = model.pickUpAddress;
       dropOff = model.dropOffAddress; // define this method below
-    } else if (rideModel is TripResponseModel) {
+    }
+    else if (rideModel is TripResponseModel) {
       final model = rideModel as TripResponseModel;
 
       driverName =
@@ -106,11 +107,10 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
               ),
               if(showInvoice)
                 IconButton(onPressed: () {
-                  Get.to(PaymentInvoicePage(rideModel: rideModel,isDriver: isDriver,));
+                  Get.to(PaymentInvoicePage(rideModel: rideModel,isDriver: isDriver));
                 }, icon: Icon(Icons.receipt_long,color: AppColors.kPrimaryColor,))
             ],
           ),
-          space6H,
           Row(
             spacing: 6.w,
             children: [

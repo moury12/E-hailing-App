@@ -38,19 +38,18 @@ class LocationTrackingService {
   StreamSubscription<Position>? _positionStream;
   String? _lastTripId;
   final SocketService socketService = SocketService();
-bool isRunning=false;
+  bool isRunning = false;
   Future<void> startTrackingLocation({
     String? tripId,
     required Rx<LatLng> markerPosition,
     required GoogleMapController? mapController,
     bool emitToSocket = true,
-  })
-  async {
-    try{
-      if(isRunning){
+  }) async {
+    try {
+      if (isRunning) {
         return;
       }
-      isRunning=true;
+      isRunning = true;
 
       if (tripId != null && _lastTripId == tripId && _positionStream != null) {
         return;
@@ -79,12 +78,12 @@ bool isRunning=false;
       });
 
       _lastTripId = tripId;
-    }catch(_){
-
-    }finally{
-      isRunning= false;
+    } catch (_) {
+    } finally {
+      isRunning = false;
     }
   }
+
   Future<bool> handleLocationPermission() async {
     try {
       LocationPermission permission = await Geolocator.checkPermission();
@@ -96,7 +95,8 @@ bool isRunning=false;
           if (!serviceEnabled) {
             showCustomSnackbar(
               title: 'Location Services Disabled',
-              message: 'Please enable location services in your device settings.',
+              message:
+                  'Please enable location services in your device settings.',
               type: SnackBarType.alert,
             );
             return false;
@@ -104,7 +104,7 @@ bool isRunning=false;
           return true;
 
         case LocationPermission.denied:
-        // Request permission normally
+          // Request permission normally
           permission = await Geolocator.requestPermission();
           if (permission == LocationPermission.denied) {
             // ❌ এখানে Settings-এ পাঠানো যাবে না
@@ -118,7 +118,7 @@ bool isRunning=false;
           return true;
 
         case LocationPermission.deniedForever:
-        // ✅ User-driven option to go to settings
+          // ✅ User-driven option to go to settings
           _showSettingsDialog();
           return false;
 
@@ -141,12 +141,13 @@ bool isRunning=false;
           title: const Text("Location Required"),
           content: const Text(
             "Location access is required to show your current position on the map and process trip requests. "
-                "You can enable location permission from your Profile > Account Settings > Location Permission, "
-                "or open the device Settings to allow access.",          ),
+            "You can enable location permission from your Profile > Account Settings > Location Permission, "
+            "or open the device Settings to allow access.",
+          ),
           actions: [
             CustomTextButton(
               onPressed: () => Navigator.of(context).pop(), // dismiss only
-              title:  AppStaticStrings.cancel.tr
+              title: AppStaticStrings.cancel.tr,
             ),
             CustomTextButton(
               onPressed: () {
@@ -165,12 +166,17 @@ bool isRunning=false;
     // Fallback logic if location permission is denied (or user chooses to proceed with limited functionality)
     // Hardcoding the fallback location (Malaysia coordinates in this example)
     if (!CommonController.to.isDriver.value) {
-      CommonController.to.markerPositionRider.value = LatLng(37.33272, -122.08740); // Example fallback coordinates
+      CommonController.to.markerPositionRider.value = LatLng(
+        37.33272,
+        -122.08740,
+      ); // Example fallback coordinates
     } else {
-      CommonController.to.markerPositionDriver.value = LatLng(37.33272, -122.08740);  // Example fallback coordinates
+      CommonController.to.markerPositionDriver.value = LatLng(
+        37.33272,
+        -122.08740,
+      ); // Example fallback coordinates
     }
   }
-
 
   Future<bool> showPermissionExplanationDialog() async {
     try {
@@ -191,7 +197,8 @@ bool isRunning=false;
                   ),
                   CustomText(
                     textAlign: TextAlign.center,
-                    text: 'Allow location access so we can show you on the map and make sure trip requests work only inside your country.',
+                    text:
+                        'Allow location access so we can show you on the map and make sure trip requests work only inside your country.',
                     style: poppinsRegular,
                     fontSize: getFontSizeSmall(),
                   ),
@@ -213,12 +220,9 @@ bool isRunning=false;
     }
   }
 
-
   Future<void> fetchCurrentLocation({
     required Rx<LatLng> markerPosition,
-  })
-  async {
-
+  }) async {
     try {
       // final hasPermission = await handleLocationPermission();
       // if (!hasPermission) return;
@@ -232,7 +236,7 @@ bool isRunning=false;
     } catch (e) {
       // showCustomSnackbar(title: 'Error',message:  'Could not get current location: ${e.toString()}',
       // type: SnackBarType.failed);
-logger.e(e);
+      logger.e(e);
       // Use fallback if error occurs
       markerPosition.value = LatLng(37.33272, -122.08740); // Dhaka, Bangladesh
     }
@@ -299,7 +303,11 @@ logger.e(e);
   //     debugPrint(e.toString());
   //   }
   // }
-  LatLng offsetByDistance(LatLng start, double distanceInKm, double bearingInDegrees) {
+  LatLng offsetByDistance(
+    LatLng start,
+    double distanceInKm,
+    double bearingInDegrees,
+  ) {
     const double earthRadius = 6371.0; // 🌍 in km
 
     double distRad = distanceInKm / earthRadius;
@@ -308,12 +316,16 @@ logger.e(e);
     double lat1 = start.latitude * pi / 180;
     double lon1 = start.longitude * pi / 180;
 
-    double lat2 = asin(sin(lat1) * cos(distRad) +
-        cos(lat1) * sin(distRad) * cos(bearingRad));
+    double lat2 = asin(
+      sin(lat1) * cos(distRad) + cos(lat1) * sin(distRad) * cos(bearingRad),
+    );
 
-    double lon2 = lon1 +
-        atan2(sin(bearingRad) * sin(distRad) * cos(lat1),
-            cos(distRad) - sin(lat1) * sin(lat2));
+    double lon2 =
+        lon1 +
+        atan2(
+          sin(bearingRad) * sin(distRad) * cos(lat1),
+          cos(distRad) - sin(lat1) * sin(lat2),
+        );
 
     return LatLng(lat2 * 180 / pi, lon2 * 180 / pi);
   }
@@ -399,88 +411,88 @@ logger.e(e);
   // }
 
   Future<bool> drawPolylineBetweenPoints(
-  LatLng start,
-  LatLng end,
-  RxSet<Polyline> routePolylines, {
-  RxInt? distance,
-  RxInt? duration,
-  required LatLng userPosition,
-  GoogleMapController? mapController,
-  required PolylineType type, // 👈 Add this
-  })
-  async {
-  try {
-  final apiKey = GoogleClient.googleMapUrl;
-  final url =
-  'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
+    LatLng start,
+    LatLng end,
+    RxSet<Polyline> routePolylines, {
+    RxInt? distance,
+    RxInt? duration,
+    required LatLng userPosition,
+    GoogleMapController? mapController,
+    required PolylineType type, // 👈 Add this
+  }) async {
+    try {
+      final apiKey = GoogleClient.googleMapUrl;
+      final url =
+          'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
 
-  final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(url));
+logger.d(response.body);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-  if (response.statusCode == 200) {
-  final data = jsonDecode(response.body);
+        if (data['routes'] != null && data['routes'].isNotEmpty) {
+          final points = data['routes'][0]['overview_polyline']['points'];
+          List<LatLng> polylinePoints = decodePolyline(points);
+          final leg = data['routes'][0]['legs'][0];
 
-  if (data['routes'] != null && data['routes'].isNotEmpty) {
-  final points = data['routes'][0]['overview_polyline']['points'];
-  List<LatLng> polylinePoints = decodePolyline(points);
-  final leg = data['routes'][0]['legs'][0];
+          // 🟢 Use color based on route type
+          Color polylineColor;
+          switch (type) {
+            case PolylineType.driverToPickup:
+              polylineColor = AppColors.kBlueColor;
+              break;
+            case PolylineType.pickupToDropoff:
+              polylineColor = AppColors.kPrimaryColor;
+              break;
+          }
 
-  // 🟢 Use color based on route type
-  Color polylineColor;
-  switch (type) {
-  case PolylineType.driverToPickup:
-  polylineColor = AppColors.kBlueColor;
-  break;
-  case PolylineType.pickupToDropoff:
-  polylineColor = AppColors.kPrimaryColor;
-  break;
+          final polyline = Polyline(
+            polylineId: PolylineId(
+              'route_${DateTime.now().millisecondsSinceEpoch}',
+            ),
+            color: polylineColor,
+            width: 5,
+            points: polylinePoints,
+          );
+
+          if (distance != null && duration != null) {
+            distance.value = leg['distance']['value'];
+            duration.value = (leg['duration']['value'] / 60).ceil();
+          }
+
+          routePolylines.add(polyline);
+          routePolylines.refresh();
+
+          await _animateCameraToRoute(
+            polylinePoints,
+            userPosition: userPosition,
+            mapController: mapController,
+          );
+
+          return true;
+        } else {
+          showCustomSnackbar(
+            title: "Sorry!!",
+            message: "No route found between selected locations.",
+          );
+          return false;
+        }
+      } else {
+        showCustomSnackbar(
+          title: "Error!!",
+          message: "Failed to get route. Please try again.",
+        );
+        return false;
+      }
+    } catch (e) {
+      debugPrint("Error in drawPolylineBetweenPoints: $e");
+      showCustomSnackbar(
+        title: "Error!!",
+        message: "Something went wrong. Please try again.",
+      );
+      return false;
+    }
   }
-
-  final polyline = Polyline(
-  polylineId: PolylineId('route_${DateTime.now().millisecondsSinceEpoch}'),
-  color: polylineColor,
-  width: 5,
-  points: polylinePoints,
-  );
-
-  if (distance != null && duration != null) {
-  distance.value = leg['distance']['value'];
-  duration.value = (leg['duration']['value'] / 60).ceil();
-  }
-
-  routePolylines.add(polyline);
-  routePolylines.refresh();
-
-  await _animateCameraToRoute(
-  polylinePoints,
-  userPosition: userPosition,
-  mapController: mapController,
-  );
-
-  return true;
-  } else {
-  showCustomSnackbar(
-  title: "Sorry!!",
-  message: "No route found between selected locations.",
-  );
-  return false;
-  }
-  } else {
-  showCustomSnackbar(
-  title: "Error!!",
-  message: "Failed to get route. Please try again.",
-  );
-  return false;
-  }
-  } catch (e) {
-  debugPrint("Error in drawPolylineBetweenPoints: $e");
-  showCustomSnackbar(
-  title: "Error!!",
-  message: "Something went wrong. Please try again.",
-  );
-  return false;
-  }
-  }
-
 
   // Future<bool> drawPolylineBetweenPoints(
   //   LatLng start,
@@ -574,8 +586,7 @@ logger.e(e);
     List<LatLng> polylinePoints, {
     required LatLng userPosition,
     GoogleMapController? mapController,
-  })
-  async {
+  }) async {
     if (mapController == null || polylinePoints.isEmpty) return;
 
     try {
