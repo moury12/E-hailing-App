@@ -83,7 +83,8 @@ class NavigationBinding extends Bindings {
 
             if (Get.isRegistered<DashBoardController>()) {
               dashboardController = Get.find<DashBoardController>();
-              dashboardController.resetController(); // Reset existing controller
+              dashboardController.removeSocketListeners();
+              dashboardController.registerSocketListeners();
             } else {
               Get.lazyPut<DashBoardController>(() => DashBoardController());
               dashboardController = Get.find<DashBoardController>();

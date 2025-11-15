@@ -426,7 +426,8 @@ class LocationTrackingService {
           'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
 
       final response = await http.get(Uri.parse(url));
-logger.d(response.body);
+logger.d(url);
+// logger.d(response.body);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 

@@ -10,6 +10,7 @@ import 'package:e_hailing_app/core/utils/google_map_api_key.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
+import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_invoice_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
@@ -340,7 +341,6 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
       );
       updateDriverLocation();
     });
-
     socket.on(TripEvents.tripUpdateStatus, (data) {
       logger.d('🔄 Trip status update:');
       logger.d(data);
@@ -348,28 +348,22 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
         // showCustomSnackbar(title: "Trip Status", message: data['message']);
         tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
         driverStatus.value = data['message'];
-       showTripDetailsCard.value = true;
-         // updateDriverLocation();
+        showTripDetailsCard.value = true;
+        // updateDriverLocation();
         final status = data['data']['status'];
         if (status == DriverTripStatus.cancelled.name ||
             status == DriverTripStatus.completed.name) {
-          if(status == DriverTripStatus.completed.name){
-            Get.offAll(PaymentInvoicePage(isDriver: false,rideModel: tripAcceptedModel,fromCompleteTrip: true,));
-            resetAllStates();
-            NavigationController.to.clearPolyline();
-            showTripDetailsCard.value = false;
+          resetAllStates();
+          NavigationController.to.clearPolyline();
+          showTripDetailsCard.value = false;
+          if( status == DriverTripStatus.completed.name){
+            NavigationController.to.currentNavIndex.value=1;
+            MyRideController.to.currentTabIndex.value =2;
           }
-
-
-          else{
-            Get.offAllNamed(
-              NavigationPage.routeName,
-              arguments: {'reconnectSocket': true},
-            );
-            resetAllStates();
-            NavigationController.to.clearPolyline();
-            showTripDetailsCard.value = false;
-          }
+          Get.offAllNamed(
+            NavigationPage.routeName,
+            arguments: {'reconnectSocket': true},
+          );
           if (status == DriverTripStatus.completed.name) {
 
             Boxes.getRattingData().put(
@@ -393,6 +387,59 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
         }
       }
     });
+
+    // socket.on(TripEvents.tripUpdateStatus, (data) {
+    //   logger.d('🔄 Trip status update:');
+    //   logger.d(data);
+    //   if (data['success']) {
+    //     // showCustomSnackbar(title: "Trip Status", message: data['message']);
+    //     tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
+    //     driverStatus.value = data['message'];
+    //    showTripDetailsCard.value = true;
+    //      // updateDriverLocation();
+    //     final status = data['data']['status'];
+    //     if (status == DriverTripStatus.cancelled.name ||
+    //         status == DriverTripStatus.completed.name) {
+    //       if(status == DriverTripStatus.completed.name){
+    //         Get.offAll(PaymentInvoicePage(isDriver: false,rideModel: tripAcceptedModel,fromCompleteTrip: true,));
+    //         resetAllStates();
+    //         NavigationController.to.clearPolyline();
+    //         showTripDetailsCard.value = false;
+    //       }
+    //
+    //
+    //       else{
+    //         Get.offAllNamed(
+    //           NavigationPage.routeName,
+    //           arguments: {'reconnectSocket': true},
+    //         );
+    //         resetAllStates();
+    //         NavigationController.to.clearPolyline();
+    //         showTripDetailsCard.value = false;
+    //       }
+    //       if (status == DriverTripStatus.completed.name) {
+    //
+    //         Boxes.getRattingData().put(
+    //           "rating",
+    //           tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
+    //         );
+    //         // showRatingDialogs(
+    //         //   carId:
+    //         //       tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
+    //         // );
+    //       }
+    //       for (TripCancellationModel cancel in tripCancellationList) {
+    //         cancel.isChecked.value = false;
+    //       }
+    //       // isCancellingTrip.value = false;
+    //     } else if (status == DriverTripStatus.destination_reached.name) {
+    //       Get.toNamed(
+    //         PaymentPage.routeName,
+    //         arguments: {"user": tripAcceptedModel.value, "role": user},
+    //       );
+    //     }
+    //   }
+    // });
   }
   void socketConnection() {
     Map<String, dynamic> decodedToken = JwtDecoder.decode(
