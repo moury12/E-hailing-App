@@ -431,11 +431,11 @@ class DashBoardController extends GetxController {
       logger.d("📩 tripAvailableStatus: $data");
       if (data["success"]) {
         // Ensure UI updates happen on the main thread
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-          showAvailableTrip();
-          logger.d(rideRequest.value);
-        });
+        if (Get.isRegistered<DashBoardController>()) {
+          DashBoardController.to.availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
+          DashBoardController.to.resetRideFlow(rideType: RideFlowState.rideRequest);
+        }
+
       }
     });
 
@@ -553,18 +553,12 @@ class DashBoardController extends GetxController {
         );
         break;
       case 'completed':
-        resetController();
-
-        Get.offAll(PaymentInvoicePage(isDriver: false,rideModel: currentTrip,fromCompleteTrip: true,));
       case 'cancelled':
         resetController();
-
-
-          Get.offAllNamed(
-            NavigationPage.routeName,
-            arguments: {'reconnectSocket': true},
-          );
-
+        Get.offAllNamed(
+          NavigationPage.routeName,
+          arguments: {'reconnectSocket': true},
+        );
         break;
       default:
         logger.w("Unknown trip status: $status");
