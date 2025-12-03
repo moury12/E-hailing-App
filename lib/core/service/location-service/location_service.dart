@@ -250,9 +250,10 @@ class LocationTrackingService {
       );
 
       if (placemarks.isNotEmpty) {
+        logger.d(placemarks.first);
         final Placemark place = placemarks.first;
         final address =
-            "${place.subLocality},${place.subAdministrativeArea}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+            "${place.name??""},${place.subLocality??""} ${place.administrativeArea??""}, ${place.country??""}";
         return address;
       } else {
         return "No address found";

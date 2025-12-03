@@ -9,6 +9,8 @@ import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -307,6 +309,15 @@ return;
       logger.e(e.toString());
     }
   }
+  void onLogout() {
+    if (Get.isRegistered<HomeController>()) {
+      Get.delete<HomeController>();
+    }
+
+    if (Get.isRegistered<DashBoardController>()) {
+      Get.delete<DashBoardController>();
+    }
+  }
 
   ///------------------------------ log out method -------------------------///
 
@@ -325,7 +336,7 @@ return;
         Boxes.getUserData().delete(roleKey);
         Boxes.getUserRole().delete(role);
         SocketService().disconnect();
-
+onLogout();
         Get.offAllNamed(LoginPage.routeName);
       } else {
         logger.e(response);

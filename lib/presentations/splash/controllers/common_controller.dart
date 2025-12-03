@@ -252,7 +252,7 @@ RxList<String> images =<String>[].obs;
 
         // Clear the previous suggestions before adding new ones
         addressSuggestion.clear();
-
+logger.d(response.body);
         // Loop through the predictions and fetch detailed info for each
         for (var prediction in data['predictions']) {
           if (addressSuggestion.length >= 5) {
@@ -260,9 +260,10 @@ RxList<String> images =<String>[].obs;
           }
 
           String placeId = prediction['place_id'];
+          String placeName = prediction['description'];
 
           // Fetch place details using Place Details API
-          await _fetchPlaceDetails(placeId);
+          await _fetchPlaceDetails(placeId,placeName);
         }
       } else {
         debugPrint("API error: ${response.statusCode}");
@@ -273,37 +274,40 @@ RxList<String> images =<String>[].obs;
       isLoadingOnLocationSuggestion.value = false;
     }
   }
-
-  void initialSetup() {
-    Future.wait([checkUserRole()]);
-  }
-
-  /// Fetch Place Details for a given place ID
-  Future<void> _fetchPlaceDetails(String placeId) async {
+  Future<void> _fetchPlaceDetails(String placeId, String placeName) async {
     final detailsUrl =
         'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=${GoogleClient.googleMapUrl}';
     final response = await http.get(Uri.parse(detailsUrl));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> detailsData = jsonDecode(response.body);
-logger.d(detailsData);
+      logger.d(detailsData);
       if (detailsData['status'] == 'OK') {
         var location = detailsData['result']['geometry']['location'];
         double lat = location['lat'];
         double lng = location['lng'];
 
         LatLng suggestionLatLng = LatLng(lat, lng);
+        logger.d(response.body);
 
         // Check if the suggestion is inside the country boundary
         if (BoundaryController.to.contains(suggestionLatLng)) {
           // If the location is within bounds, add to the list
-          addressSuggestion.add(detailsData['result']);
+          addressSuggestion.add({'lat':lat,
+          'lng':lng,
+          'name': placeName});
         }
       }
     } else {
       debugPrint("Failed to fetch place details for placeId: $placeId");
     }
   }
+
+  void initialSetup() {
+    Future.wait([checkUserRole()]);
+  }
+
+  /// Fetch Place Details for a given place ID
 
   Future<void> fetchCurrentLocationMethod({String? tripId}) async {
     try {

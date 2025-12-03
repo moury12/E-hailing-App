@@ -49,17 +49,18 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             hintText: AppStaticStrings.pickupLocation,
             fillColor: AppColors.kWhiteColor,
             borderColor: AppColors.kGreyColor,
+            height: 45.h,
+
             onTap: () {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 HomeController.to.activeField.value = "pickup";
               });
             },
-            onChanged: (v) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                HomeController.to.activeField.value = "pickup";
-                CommonController.to.fetchSuggestedPlacesWithRadius(v);
-              });
-            },
+              onChanged: (v) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  HomeController.to.activeField.value = "pickup";
+                  HomeController.to.debouncePickupLocation(v);
+                });},
 
             textEditingController:
                 HomeController.to.pickupLocationController.value,
@@ -96,10 +97,10 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             borderColor: AppColors.kGreyColor,
             textEditingController:
                 HomeController.to.dropOffLocationController.value,
-            // height: 45.h,
+            height: 45.h,
             onChanged: (v) {
               HomeController.to.activeField.value = "dropoff";
-              CommonController.to.fetchSuggestedPlacesWithRadius(v);
+              HomeController.to.debounceDropoffLocation(v);
             },
             suffixIcon:widget.isDisable==false? ButtonTapWidget(
               onTap: () {

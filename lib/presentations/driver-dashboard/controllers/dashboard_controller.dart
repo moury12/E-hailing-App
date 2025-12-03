@@ -472,8 +472,10 @@ class DashBoardController extends GetxController {
             tripId: currentTrip.value.sId.toString(),
           );
           drawPolylineMethod();
-          DashBoardController.to.afterAccepted.value = true;
           resetRideFlow(rideType: RideFlowState.pickup);
+
+          DashBoardController.to.afterAccepted.value = true;
+          // resetRideFlow(rideType: RideFlowState.pickup);
           // _showSuccess(data['message']);
         } else {
           Get.offAllNamed(
@@ -568,7 +570,9 @@ class DashBoardController extends GetxController {
   void resetController() {
     // Remove listeners
     removeSocketListeners();
-
+    currentTrip.value = DriverCurrentTripModel();  // clear UI
+    updateRideFlowState(null);
+    // NavigationController.to.clearPolyline();
     // Reset all state
     // resetRideFlow(rideType: RideFlowState.findingRide);
     // // currentTrip.value = DriverCurrentTripModel();

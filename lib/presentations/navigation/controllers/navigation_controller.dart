@@ -32,8 +32,8 @@ class NavigationController extends GetxController {
     CommonController.to.fetchCurrentLocationMethod();
 
     CommonController.to.isDriver.value
-        ? Get.put(DashBoardController())
-        : Get.put(HomeController());
+        ? Get.put(DashBoardController(),permanent: true)
+        : Get.put(HomeController(),permanent: true);
     Get.put(MessageController());
     Get.put(AccountInformationController());
     Get.put(MyRideController());

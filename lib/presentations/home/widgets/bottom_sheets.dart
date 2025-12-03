@@ -354,19 +354,18 @@ Widget locationSuggestionList() {
       ) {
         final address = CommonController.to.addressSuggestion[index];
         return SearchAddress(
-          title: address['formatted_address'],
+          title: address['name'],
           onTap: () async {
             // final locationService = LocationTrackingService();
-            var location = address['geometry']['location'];
-            double lat = location['lat'];
-            double lng = location['lng'];
+            double lat = address['lat'];
+            double lng = address['lng'];
             if (isPickup) {
               HomeController.to.pickupLatLng.value = LatLng(lat, lng);
             } else {
               HomeController.to.dropoffLatLng.value = LatLng(lat, lng);
             }
             HomeController.to.selectedAddress.value =
-                address['formatted_address'];
+            address['name'];
             // await locationService.getLatLngFromPlace(
             //   placeId,
             //   latLng:

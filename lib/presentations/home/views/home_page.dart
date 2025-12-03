@@ -102,9 +102,9 @@ class _HomePageState extends State<HomePage>
             child: SlideTransition(
               position: offset,
               child: Obx(() {
-                return HomeController.to.previousRoute.value ==
+                return HomeController.to.tripAcceptedModel.value.sId!=null &&(HomeController.to.previousRoute.value ==
                             TripDetailsPage.routeName ||
-                        HomeController.to.showTripDetailsCard.value
+                        HomeController.to.showTripDetailsCard.value)
                     ? TripDetailsDestinationCard(
                       tripModel: HomeController.to.tripAcceptedModel.value,
                     )
