@@ -34,17 +34,17 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
       );
       customIcon.value = bitmap;
       final sIcon = await BitmapDescriptor.asset(
-        ImageConfiguration(size: Size(40, 40)),
+        ImageConfiguration(size: Size(30.w, 30.w)),
         sourceLocationIcon,
       );
       sourceIcon.value = sIcon;
       final dIcon = await BitmapDescriptor.asset(
-        ImageConfiguration(size: Size(40, 40)),
+        ImageConfiguration(size: Size(30.w, 30.w)),
         destinationLocationIcon,
       );
       destinationIcon.value = dIcon;
       currentLocationIcon.value = await BitmapDescriptor.asset(
-        ImageConfiguration(size: Size(40, 40)),
+        ImageConfiguration(size: Size(30.w, 30.w)),
         currentLocationUserIcon,
       );
     } catch (e) {
@@ -196,8 +196,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
 
               if (HomeController.to.pickupLatLng.value != null &&
                   HomeController.to.pickupLatLng.value !=
-                      CommonController.to.markerPositionRider.value &&
-                  !HomeController.to.mapDraging.value)
+                      CommonController.to.markerPositionRider.value && !HomeController.to.setPickup.value)
                 Marker(
                   // draggable:
                   //     HomeController.to.mapDragable.value &&
@@ -251,7 +250,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                   // },
                 ),
               if (HomeController.to.dropoffLatLng.value != null &&
-                  !HomeController.to.mapDraging.value)
+                  !HomeController.to.setDestination.value)
                 Marker(
                   // draggable:
                   //     HomeController.to.mapDragable.value &&

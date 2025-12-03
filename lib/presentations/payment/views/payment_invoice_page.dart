@@ -4,8 +4,11 @@ import 'dart:ui' as ui;
 
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
+import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
+import 'package:e_hailing_app/core/constants/custom_space.dart';
+import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
@@ -14,6 +17,7 @@ import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dar
 import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,7 +29,12 @@ class PaymentInvoicePage extends StatefulWidget {
   final dynamic rideModel;
   final bool isDriver;
   final bool fromCompleteTrip;
-  const PaymentInvoicePage({super.key, this.rideModel, required this.isDriver,  this.fromCompleteTrip = false});
+  const PaymentInvoicePage({
+    super.key,
+    this.rideModel,
+    required this.isDriver,
+    this.fromCompleteTrip = false,
+  });
 
   @override
   State<PaymentInvoicePage> createState() => _PaymentInvoicePageState();
@@ -127,7 +136,7 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        if(widget.fromCompleteTrip){
+        if (widget.fromCompleteTrip) {
           Get.offAllNamed(
             NavigationPage.routeName,
             arguments: {'reconnectSocket': true},
@@ -175,10 +184,15 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
     String extra = 'RM 0';
     String distance = '0 km';
     String dateTime = 'N/A';
+    String paymentType = 'N/A';
     String? pickup;
     String? rideType;
     String? dropOff;
     String? duration;
+    String? userName;
+    String? userPic;
+    String? email;
+    String? title;
 
     if (rideModel is DriverCurrentTripModel) {
       final model = rideModel as DriverCurrentTripModel;
@@ -199,11 +213,19 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
       );
       pickup = model.pickUpAddress;
       rideType = model.tripType;
-          duration = model.duration?.toString() ?? "N/A";
+      duration = model.duration?.toString() ?? "N/A";
       dropOff = model.dropOffAddress;
       tripId = model.sId ?? "Unknown Trip"; // define this method below
-    }
-    else if (rideModel is TripResponseModel) {
+      paymentType =
+          model.paymentType ?? "Unknown Trip"; // define this method below
+      userName = model.user?.name ?? "Unknown User"; // define this method below
+      userPic =
+          model.user?.profileImage ??
+          "Unknown User"; // define this method below
+      email =
+          model.user?.phoneNumber ?? "Unknown User"; // define this method below
+      title = "User Info: ";
+    } else if (rideModel is TripResponseModel) {
       final model = rideModel as TripResponseModel;
 
       driverName =
@@ -227,9 +249,14 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
       );
       pickup = model.pickUpAddress;
       rideType = model.tripType;
-          duration = model.duration?.toString() ?? "N/A";
+      duration = model.duration?.toString() ?? "N/A";
       dropOff = model.dropOffAddress;
       tripId = model.sId ?? "Unknown Trip";
+      paymentType = model.paymentType ?? "Unknown Trip";
+      userName = model.driver?.name ?? "Unknown User";
+      userPic = model.driver?.profileImage ?? "Unknown User";
+      email = model.driver?.phoneNumber ?? "Unknown User";
+      title = "Driver Info: ";
     }
     return Container(
       color: Colors.white,
@@ -248,6 +275,10 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
               children: [
                 Text(
                   "Trip Type  ($rideType)",
+                  style: const TextStyle(color: Colors.white70),
+                ),
+                Text(
+                  "Payment Method: ($paymentType)",
                   style: const TextStyle(color: Colors.white70),
                 ),
                 const SizedBox(height: 8),
@@ -300,10 +331,32 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [Text("Extra Charge"), Text("$extra")],
           ),
+          space8H,
+          Text(
+            title ?? "null",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
 
-          //
+          space8H,
+          Row(spacing: 12.w,
+            children: [
+              CustomNetworkImage(
+                imageUrl: "${ApiService().baseUrl}/${userPic}",
+                height: 50,
+                width: 50,
+                boxShape: BoxShape.circle,
+              ),
+              Expanded(child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(text: userName!),
+                  // CustomText(text: email!)
+                ],
+              ))
+            ],
+          ),
           // Center(child: Text("Got an issue? We've got your back.")),
-          const SizedBox(height: 20),
+          space8H,
 
           const Text(
             "Your Trip",
@@ -315,9 +368,9 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
             style: TextStyle(color: Colors.grey),
           ),
 
-    FromToTimeLine(pickUpAddress: pickup, dropOffAddress: dropOff),]
-
-    ),
+          FromToTimeLine(pickUpAddress: pickup, dropOffAddress: dropOff),
+        ],
+      ),
     );
   }
 }

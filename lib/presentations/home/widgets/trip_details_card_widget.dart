@@ -168,7 +168,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
                   ],
                 ),
               ),
-            CustomText(text: '${int.parse(tripModel?.distance.toString() ?? "0") / 1000} km',fontSize: getFontSizeSmall(),)
+            CustomText(text: '${int.tryParse(tripModel?.distance.toString() ?? "0")??0 / 1000} km',fontSize: getFontSizeSmall(),)
             ],
           ),
           DriverDetails(
@@ -178,7 +178,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
                 "${ApiService().baseUrl}/${tripModel?.driver?.profileImage}",
             title: AppStaticStrings.tripDuration,
             value:
-            '${int.parse(tripModel?.duration.toString() ?? "0")} min',
+            '${int.tryParse(tripModel?.duration.toString() ?? "0")} min',
             rating: tripModel?.driver?.rating.toString(),
           ),
           FromToTimeLine(

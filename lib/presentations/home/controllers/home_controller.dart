@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
@@ -84,7 +85,32 @@ class HomeController extends GetxController {
       DriverLocationUpdateModel().obs;
   List<String> cancelReason = [];
   Rx<LatLng?> driverPosition = Rx<LatLng?>(null);
+  Timer? _debouncePickup;
+  Timer? _debounceDropoff;
 
+  // Other methods for handling suggestions
+
+  void fetchSuggestedPlaces(String query, String type) {
+    if (type == 'pickup') {
+      CommonController.to.fetchSuggestedPlacesWithRadius(query);
+    } else if (type == 'dropoff') {
+      CommonController.to.fetchSuggestedPlacesWithRadius(query);
+    }
+  }
+
+  void debouncePickupLocation(String value) {
+    if (_debouncePickup?.isActive ?? false) _debouncePickup!.cancel();
+    _debouncePickup = Timer(const Duration(milliseconds: 500), () {
+      fetchSuggestedPlaces(value, 'pickup');
+    });
+  }
+
+  void debounceDropoffLocation(String value) {
+    if (_debounceDropoff?.isActive ?? false) _debounceDropoff!.cancel();
+    _debounceDropoff = Timer(const Duration(milliseconds: 500), () {
+      fetchSuggestedPlaces(value, 'dropoff');
+    });
+  }
   @override
   void onInit() async {
     initializeSocket();
@@ -353,8 +379,12 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
         final status = data['data']['status'];
         if (status == DriverTripStatus.cancelled.name ||
             status == DriverTripStatus.completed.name) {
+          tripAcceptedModel.value= TripResponseModel();
           resetAllStates();
-          NavigationController.to.clearPolyline();
+dropOffLocationController.value.clear();
+dropoffLatLng.value =null;
+NavigationController.to.clearPolyline();
+driverPosition.value=null;
           showTripDetailsCard.value = false;
           if( status == DriverTripStatus.completed.name){
             NavigationController.to.currentNavIndex.value=1;
@@ -659,27 +689,27 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
   }
 
 
-  Future<String> getPlaceNameFromGoogle(LatLng position) async {
-    final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=${GoogleClient.googleMapUrl}',
-    );
-
-    final res = await http.get(url);
-    if (res.statusCode == 200) {
-      final data = jsonDecode(res.body);
-      if (data['results'] != null && data['results'].isNotEmpty) {
-        logger.d(url);
-        logger.d(data['results']);
-        // First result usually has the POI name or formatted address
-        return data['results'][0]['formatted_address'];
-      }
-    }
-    return "";
-  }
+  // Future<String> getPlaceNameFromGoogle(LatLng position) async {
+  //   final url = Uri.parse(
+  //     'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=${GoogleClient.googleMapUrl}',
+  //   );
+  //
+  //   final res = await http.get(url);
+  //   if (res.statusCode == 200) {
+  //     final data = jsonDecode(res.body);
+  //     if (data['results'] != null && data['results'].isNotEmpty) {
+  //       logger.d(url);
+  //       logger.d(data['results']);
+  //       // First result usually has the POI name or formatted address
+  //       return data['results'][0]['formatted_address'];
+  //     }
+  //   }
+  //   return "";
+  // }
 
   Future<void> getPlaceName(LatLng position, TextEditingController controller) async {
     try {
-      String placemarks = await getPlaceNameFromGoogle(
+      String placemarks = await LocationTrackingService().getAddressFromLatLng(
         LatLng(position.latitude,
             position.longitude,)
       );

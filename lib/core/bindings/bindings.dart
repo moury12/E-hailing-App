@@ -64,10 +64,11 @@ class AuthBinding extends Bindings {
 class NavigationBinding extends Bindings {
   @override
   void dependencies() {
-    // Get.put(NavigationController());
-   Get.lazyPut<NavigationController>(() => NavigationController());
+    Get.lazyPut<NavigationController>(() => NavigationController());
+
     final arguments = Get.arguments;
-    if (arguments is Map && arguments['reconnectSocket'] == true)  {
+
+    if (arguments is Map && arguments['reconnectSocket'] == true) {
       Future.delayed(Duration(milliseconds: 500), () {
 
         Map<String, dynamic> decodedToken = JwtDecoder.decode(
@@ -76,42 +77,15 @@ class NavigationBinding extends Bindings {
         SocketService().connect(
             decodedToken['userId'], decodedToken['role'] == "DRIVER");
 
-        // Also re-register driver-specific listeners if user is a driver
         if (CommonController.to.isDriver.value) {
-          Future.delayed(Duration(milliseconds: 200), () {
-            DashBoardController dashboardController;
-
-            if (Get.isRegistered<DashBoardController>()) {
-              dashboardController = Get.find<DashBoardController>();
-              dashboardController.removeSocketListeners();
-              dashboardController.registerSocketListeners();
-            } else {
-              Get.lazyPut<DashBoardController>(() => DashBoardController());
-              dashboardController = Get.find<DashBoardController>();
-            }
-
-            dashboardController.registerSocketListeners();
-          });
-        }
-        else {
-          Future.delayed(Duration(milliseconds: 200), () {
-
-            if (Get.isRegistered<HomeController>()) {
-              final homeController = Get.find<HomeController>();
-              homeController.registerTripEventListeners();
-            }
-          });
-        }
-      });
-    }
-    if (arguments is Map && arguments['pre_book'] != null && arguments['pre_book'] == true) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final navCtrl = Get.find<NavigationController>();
-        navCtrl.currentNavIndex.value = 1;
-
-        if (Get.isRegistered<MyRideController>()) {
-          final rideCtrl = Get.find<MyRideController>();
-          rideCtrl.currentTabIndex.value = 1;
+          final dash = Get.find<DashBoardController>();
+          dash.removeSocketListeners();
+          dash.registerSocketListeners();
+        } else {
+          if (Get.isRegistered<HomeController>()) {
+            final home = Get.find<HomeController>();
+            home.registerTripEventListeners();
+          }
         }
       });
     }

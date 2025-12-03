@@ -2,6 +2,7 @@ import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/components/tab-bar/dynamic_tab_widget.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
@@ -105,15 +106,21 @@ class _MyRidePageState extends State<MyRidePage>
     super.build(context); // Required for AutomaticKeepAliveClientMixin
     return CustomRefreshIndicator(
       onRefresh: () async {
-        MyRideController.to.pagingControllerForCompletedTrip.refresh();
        if( MyRideController.to.currentTabIndex.value==0) {
           final isDriver = CommonController.to.isDriver.value;
           if (isDriver) {
+            logger.i(DashBoardController.to.currentTrip.value.sId);
+
             DashBoardController.to.getDriverCurrentTripRequest();
           } else {
+
+            logger.i(HomeController.to.tripAcceptedModel.value.sId);
             HomeController.to.getUserCurrentTrip();
           }
-        }
+        }else{
+         MyRideController.to.pagingControllerForCompletedTrip.refresh();
+
+       }
       },
       child: CustomScrollView(
         slivers: [
