@@ -379,6 +379,15 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
         final status = data['data']['status'];
         if (status == DriverTripStatus.cancelled.name ||
             status == DriverTripStatus.completed.name) {
+
+          if( status == DriverTripStatus.completed.name){
+            // NavigationController.to.currentNavIndex.value=1;
+            // MyRideController.to.currentTabIndex.value =2;
+            Boxes.getRattingData().put(
+              "rating",
+              tripAcceptedModel.value.driver?.assignedCar?.sId.toString(),
+            );
+          }
           tripAcceptedModel.value= TripResponseModel();
           resetAllStates();
 dropOffLocationController.value.clear();
@@ -386,25 +395,12 @@ dropoffLatLng.value =null;
 NavigationController.to.clearPolyline();
 driverPosition.value=null;
           showTripDetailsCard.value = false;
-          if( status == DriverTripStatus.completed.name){
-            NavigationController.to.currentNavIndex.value=1;
-            MyRideController.to.currentTabIndex.value =2;
-          }
+
           Get.offAllNamed(
             NavigationPage.routeName,
             arguments: {'reconnectSocket': true},
           );
-          if (status == DriverTripStatus.completed.name) {
 
-            Boxes.getRattingData().put(
-              "rating",
-              tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
-            );
-            // showRatingDialogs(
-            //   carId:
-            //       tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
-            // );
-          }
           for (TripCancellationModel cancel in tripCancellationList) {
             cancel.isChecked.value = false;
           }

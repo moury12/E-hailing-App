@@ -18,6 +18,7 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -242,26 +243,45 @@ class LocationTrackingService {
     }
   }
 
+
+
   Future<String> getAddressFromLatLng(LatLng latLng) async {
     try {
+      // Requesting the placemarks from coordinates
       List<Placemark> placemarks = await placemarkFromCoordinates(
         latLng.latitude,
         latLng.longitude,
       );
 
+      // Check if we got any placemarks
       if (placemarks.isNotEmpty) {
+        // Logging the first placemark for debugging purposes
         logger.d(placemarks.first);
+
+        // Getting address details
         final Placemark place = placemarks.first;
         final address =
-            "${place.name??""},${place.subLocality??""} ${place.administrativeArea??""}, ${place.country??""}";
+            "${place.name ?? ""}, ${place.subLocality ?? ""} ${place.administrativeArea ?? ""}, ${place.country ?? ""}";
+
         return address;
       } else {
         return "No address found";
       }
-    } catch (e) {
+    } on PlatformException catch (e) {
+      // Catching platform-specific errors
+      logger.e("Platform error: ${e.message}");
+      return "Error retrieving address from platform";
+    } on Exception catch (e) {
+      // Catching generic errors
+      logger.e("General error: $e");
       return "Error retrieving address";
+    } catch (e) {
+      // Catching any other unhandled errors
+      logger.e("Unknown error: $e");
+      return "Unknown error occurred";
     }
   }
+
 
   // Future<void> getLatLngFromPlace(
   //   String placeId, {
@@ -453,7 +473,7 @@ logger.d(url);
               'route_${DateTime.now().millisecondsSinceEpoch}',
             ),
             color: polylineColor,
-            width: 5,
+            width: 3.w.toInt(),
             points: polylinePoints,
           );
 

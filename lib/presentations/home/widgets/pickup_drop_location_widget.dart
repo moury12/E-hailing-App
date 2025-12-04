@@ -49,7 +49,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             hintText: AppStaticStrings.pickupLocation,
             fillColor: AppColors.kWhiteColor,
             borderColor: AppColors.kGreyColor,
-            height: 45.h,
+            // height: 45.h,
 
             onTap: () {
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -73,7 +73,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
               },
               child: Padding(
                 padding: padding12,
-                child: SvgPicture.asset(crossCircleIcon),
+                child: SvgPicture.asset(crossCircleIcon,height: 10,),
               ),
             ):SizedBox.shrink(),
           );
@@ -97,7 +97,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
             borderColor: AppColors.kGreyColor,
             textEditingController:
                 HomeController.to.dropOffLocationController.value,
-            height: 45.h,
+            // height: 45.h,
             onChanged: (v) {
               HomeController.to.activeField.value = "dropoff";
               HomeController.to.debounceDropoffLocation(v);
@@ -111,7 +111,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
               },
               child: Padding(
                 padding: padding12,
-                child: SvgPicture.asset(crossCircleIcon),
+                child: SvgPicture.asset(crossCircleIcon,height: 10,),
               ),
             ):SizedBox.shrink(),
           );

@@ -184,7 +184,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                   position: HomeController.to.driverPosition.value!,
                   icon: customIcon.value!,
                 ),
-              if (!HomeController.to.mapDraging.value)
+
                 Marker(
                   markerId: const MarkerId("selected_location"),
                   position: CommonController.to.markerPositionRider.value,
