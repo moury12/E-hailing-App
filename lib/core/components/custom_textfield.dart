@@ -130,6 +130,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           SizedBox(
             height: widget.height, // Set the desired height here
             child: TextFormField(
+
               textAlign: widget.textAlign,
               onTap: widget.onTap,
               enabled: widget.isEnable,
@@ -161,7 +162,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 16.sp,
-                  vertical: widget.maxLines! > 1 ? 12.sp : 12.sp,
+                  vertical: 0,
                 ),
                 // Adjust vertical padding
                 fillColor: widget.fillColor,
