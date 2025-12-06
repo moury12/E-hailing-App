@@ -191,11 +191,10 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
     String? duration;
     String? userName;
     String? userPic;
-    String? email;
     String? title;
 
     if (rideModel is DriverCurrentTripModel) {
-      final model = rideModel as DriverCurrentTripModel;
+      final model = rideModel;
       // rating=isDriver?model.driver!.rating.toString():"0.0";
       driverName = model.user?.name ?? driverName;
       driverImage =
@@ -222,11 +221,10 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
       userPic =
           model.user?.profileImage ??
           "Unknown User"; // define this method below
-      email =
-          model.user?.phoneNumber ?? "Unknown User"; // define this method below
+// define this method below
       title = "User Info: ";
     } else if (rideModel is TripResponseModel) {
-      final model = rideModel as TripResponseModel;
+      final model = rideModel;
 
       driverName =
           (isDriver
@@ -255,7 +253,6 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
       paymentType = model.paymentType ?? "Unknown Trip";
       userName = model.driver?.name ?? "Unknown User";
       userPic = model.driver?.profileImage ?? "Unknown User";
-      email = model.driver?.phoneNumber ?? "Unknown User";
       title = "Driver Info: ";
     }
     return Container(

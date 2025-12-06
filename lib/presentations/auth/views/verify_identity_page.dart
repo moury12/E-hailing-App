@@ -13,7 +13,6 @@ import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
-import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
 import 'package:e_hailing_app/presentations/auth/widgets/auth_text_widgets.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
