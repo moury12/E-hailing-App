@@ -10,16 +10,12 @@ import 'package:e_hailing_app/core/service/socket-service/socket_events_variable
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/payment/views/online_payment.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/review_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:e_hailing_app/presentations/splash/model/announcment_model.dart';
-import 'package:e_hailing_app/presentations/splash/model/announcment_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -350,7 +346,7 @@ logger.d(response.body);
         logger.d("📡 Emitted driver location update");
       }
 
-    } catch (e, s) {
+    } catch (e) {
       logger.e("🔥 Error in fetchCurrentLocationMethod: $e");
       locationService.fallbackToDefaultLocation();
     }

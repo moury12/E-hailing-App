@@ -14,7 +14,6 @@ import 'package:e_hailing_app/main.dart';
 import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/otp_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/reset_password_page.dart';
-import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
