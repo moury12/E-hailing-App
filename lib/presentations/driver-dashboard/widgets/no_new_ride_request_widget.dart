@@ -4,6 +4,7 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class NoNewRideReqWidget extends StatelessWidget {
   const NoNewRideReqWidget({super.key});
@@ -14,7 +15,7 @@ class NoNewRideReqWidget extends StatelessWidget {
       spacing: 12.h,
       children: [
         SvgPicture.asset(carPrimaryIcon),
-        CustomText(text: AppStaticStrings.noNewRideReq),
+        CustomText(text: AppStaticStrings.noNewRideReq.tr),
       ],
     );
   }

@@ -1,326 +1,308 @@
 class AppStaticStrings {
   // validation
-
-  static const String emailRequired = 'Email is Required';
-  static const String passRequired = 'Password is Required';
-  static const String phoneRequired = 'Phone Number is Required';
-  static const String enterValidEmail = 'Enter a valid Email';
-  static const String passMustbe6 = 'Password must be 6 digit';
-  static const String passNotMatch = 'Password not matched';
-  static const String phoneMustbe11 = 'Enter a valid Phone Number';
+  static String emailRequired = 'emailRequired';
+  static String passRequired = 'passRequired';
+  static String phoneRequired = 'phoneRequired';
+  static String enterValidEmail = 'enterValidEmail';
+  static String passMustbe6 = 'passMustbe6';
+  static String passNotMatch = 'passNotMatch';
+  static String phoneMustbe11 = 'phoneMustbe11';
 
   // Authentication
-  static const String welcomeBack = 'Welcome Back!';
-  static const String logIn = 'Log In';
-  static const String oldPassword = 'Old Password ';
-  static const String signUp = 'Sign Up';
-  static const String language = 'Language';
-  static const String signUpToGetStarted =
-      'Sign up to get started. Fill in your details to create an account.';
-  static const String email = 'Email';
-  static const String reTypeNewPass = 'Re-Type New Password';
-  static const String weWillSendACode =
-      'We\'ll send a verification code to this email to confirm your account.';
-  static const String orContinueWith = 'Or continue with';
-  static const String password = 'Password';
-  static const String statics = 'Statics';
-  static const String noInternet = 'No internet connection';
-  static const String logInToContinue =
-      'Log in to continue. Enter your credentials to access your account.';
-  static const String confirmPassword = 'Confirm Password';
-  static const String rememberMe = 'Remember me';
-  static const String duduPrivacyPolicy = 'I have read and agree to DUDU Terms and Conditions and Policy.';
-  static const String createAnewPassword =
-      'Create a new password to secure your account.';
-  static const String forgotPassword = 'Forgot Password?';
-  static const String registerNow = 'Register Now?';
-  static const String dontHaveAccount = "Don't have an account?";
-  static const String alreadyHaveAccount = "Already have an account?";
-  static const String tripCancellationTitle = 'Trip Cancellation Reasons';
-  static const String riderNoShow = 'Rider No-Show';
-  static const String wrongPickupLocation = 'Wrong Pickup Location';
-  static const String safetyConcerns = 'Safety Concerns';
-  static const String vehicleIssue = 'Vehicle Issue';
-  static const String tripRequestError = 'Trip Request Error';
-  static const String submit = 'Submit';
-  static const String cancel = 'Cancel';
-  static const String pickup = 'Pickup';
-  static const String promoCode = 'Promo Code';
-  static const String dashboard = 'Dashboard';
-  static const String changePassword = 'Change Password';
-  static const String locationPermission = 'Location Permission';
+  static String welcomeBack = 'welcomeBack';
+  static String logIn = 'logIn';
+  static String oldPassword = 'oldPassword';
+  static String signUp = 'signUp';
+  static String language = 'language';
+  static String signUpToGetStarted = 'signUpToGetStarted';
+  static String email = 'email';
+  static String reTypeNewPass = 'reTypeNewPass';
+  static String weWillSendACode = 'weWillSendACode';
+  static String orContinueWith = 'orContinueWith';
+  static String password = 'password';
+  static String statics = 'statics';
+  static String noInternet = 'noInternet';
+  static String logInToContinue = 'logInToContinue';
+  static String confirmPassword = 'confirmPassword';
+  static String rememberMe = 'rememberMe';
+  static String duduPrivacyPolicy = 'duduPrivacyPolicy';
+  static String createAnewPassword = 'createAnewPassword';
+  static String forgotPassword = 'forgotPassword';
+  static String registerNow = 'registerNow';
+  static String dontHaveAccount = 'dontHaveAccount';
+  static String alreadyHaveAccount = 'alreadyHaveAccount';
+  static String tripCancellationTitle = 'tripCancellationTitle';
+  static String riderNoShow = 'riderNoShow';
+  static String wrongPickupLocation = 'wrongPickupLocation';
+  static String safetyConcerns = 'safetyConcerns';
+  static String vehicleIssue = 'vehicleIssue';
+  static String tripRequestError = 'tripRequestError';
+  static String submit = 'submit';
+  static String cancel = 'cancel';
+  static String pickup = 'pickup';
+  static String promoCode = 'promoCode';
+  static String dashboard = 'dashboard';
+  static String changePassword = 'changePassword';
+  static String locationPermission = 'locationPermission';
 
   // Account Creation
-  static const String createYourAccount = 'Create Your Account';
-  static const String fullName = 'Full Name';
-  static const String fullNameRequired = 'Full Name is Required';
-  static const String phoneNumber = 'Phone Number';
-  static const String location = 'Location';
-  static const String writeAReview = 'Write a Review';
-  static const String howWouldYouRate = 'How would you rate this pro overall?';
-  static const String review = 'Review';
-  static const String totalCost = 'Total Cost';
-  static const String availableCoin = ' Available Coin';
-  static const String paymentWithDCoin = 'Payment with D Coin';
-  static const String handCashPaymentRequest = 'Hand Cash Payment Request ';
-  static const String waitingForDriveConfirmation =
-      'Waiting for Driver confirmation';
-  static const String enterYourReview = 'Enter your Review...';
-  static const String emergencyContactNumber = 'Emergency Contact Number';
-  static const String createAccount = 'Create Account';
-  static const String rideEnded = "Yey! your ride ended";
-  static const String arriveOnLocation = "You Arrive On Location";
+  static String createYourAccount = 'createYourAccount';
+  static String fullName = 'fullName';
+  static String fullNameRequired = 'fullNameRequired';
+  static String phoneNumber = 'phoneNumber';
+  static String location = 'location';
+  static String writeAReview = 'writeAReview';
+  static String howWouldYouRate = 'howWouldYouRate';
+  static String review = 'review';
+  static String totalCost = 'totalCost';
+  static String availableCoin = 'availableCoin';
+  static String paymentWithDCoin = 'paymentWithDCoin';
+  static String handCashPaymentRequest = 'handCashPaymentRequest';
+  static String waitingForDriveConfirmation = 'waitingForDriveConfirmation';
+  static String enterYourReview = 'enterYourReview';
+  static String emergencyContactNumber = 'emergencyContactNumber';
+  static String createAccount = 'createAccount';
+  static String rideEnded = 'rideEnded';
+  static String arriveOnLocation = 'arriveOnLocation';
 
   // Settings
-  static const String accountSetting = 'Account Setting';
-  static const String duduCoinWallet = 'DUDU Coin Wallet';
-  static const String notification = 'Notification';
-  static const String savedLocation = 'Saved Location';
+  static String accountSetting = 'accountSetting';
+  static String duduCoinWallet = 'duduCoinWallet';
+  static String notification = 'notification';
+  static String savedLocation = 'savedLocation';
 
   // More
-  static const String more = 'More';
-  static const String avgRating = 'Average Rating';
-  static const String helpServiceAvailable = 'Our help line service is active: 24/7';
-  static const String pendingPenalty = 'Pending Penalty';
-  static const String feedback = 'Feedback / Contact';
-  static const String termsAndCondition = 'Terms & Condition';
-  static const String privacyPolicy = 'Privacy Policy';
-  static const String penaltyPolicy = 'Penalty Policy';
-  static const String helpSupport = 'Help/Support';
-  static const String logOut = 'Log Out';
-  static const String mailUs = 'Mail Us';
-  static const String contactUs = 'Contact Us';
+  static String more = 'more';
+  static String avgRating = 'avgRating';
+  static String helpServiceAvailable = 'helpServiceAvailable';
+  static String pendingPenalty = 'pendingPenalty';
+  static String feedback = 'feedback';
+  static String termsAndCondition = 'termsAndCondition';
+  static String privacyPolicy = 'privacyPolicy';
+  static String penaltyPolicy = 'penaltyPolicy';
+  static String helpSupport = 'helpSupport';
+  static String logOut = 'logOut';
+  static String mailUs = 'mailUs';
+  static String contactUs = 'contactUs';
 
   // Payment Details
-  static const String rent = "Rent";
-  static const String tollFee = "Toll fee";
-  static const String extraCharge = "Extra Charge";
-  static const String totalPayment = "Total payment";
+  static String rent = 'rent';
+  static String tollFee = 'tollFee';
+  static String extraCharge = 'extraCharge';
+  static String totalPayment = 'totalPayment';
 
   // Payment Methods
-  static const String creditDebitCards = "Credit/Debit Cards";
-  static const String handCash = "Hand Cash";
-  static const String dCoin = "D Coin";
+  static String creditDebitCards = 'creditDebitCards';
+  static String handCash = 'handCash';
+  static String dCoin = 'dCoin';
 
   // Currency
-  static const String currencyRM = "RM";
-  static const String destination = "Destination";
+  static String currencyRM = 'currencyRM';
+  static String destination = 'destination';
 
   // Identity Verification
-  static const String verifyYourIdentity = 'Verify Your Identity';
-  static const String nricPassport = 'NRIC / Passport';
-  static const String uploadNricPassport = 'Upload NRIC / Passport';
-  static const String uploadImage = 'Upload Image';
-  static const String confirm = 'Confirm';
+  static String verifyYourIdentity = 'verifyYourIdentity';
+  static String nricPassport = 'nricPassport';
+  static String uploadNricPassport = 'uploadNricPassport';
+  static String uploadImage = 'uploadImage';
+  static String confirm = 'confirm';
 
   // Email Verification
-  static const String verifyYourEmail = 'Verify Your Email';
-  static const String verificationCodeSent =
-      "We'll send a verification code to this email to confirm your account.";
-  static const String continueButton = 'Continue';
-  static const String stopLocation = 'Stop location';
-  static const String evpValidityPeriod = 'EVP Validity Period';
-  static const String evpNumber = 'EVP Number';
-  static const String carSeat = 'Car Seat';
+  static String verifyYourEmail = 'verifyYourEmail';
+  static String verificationCodeSent = 'verificationCodeSent';
+  static String continueButton = 'continueButton';
+  static String stopLocation = 'stopLocation';
+  static String evpValidityPeriod = 'evpValidityPeriod';
+  static String evpNumber = 'evpNumber';
+  static String carSeat = 'carSeat';
 
   // OTP
-  static const String sixDigitCode = '6-digit code';
-  static const String enterCodeSent = 'Please enter the code we’ve sent to';
+  static String sixDigitCode = 'sixDigitCode';
+  static String enterCodeSent = 'enterCodeSent';
 
   // Password Reset
-  static const String resetYourPassword = 'Reset Your Password';
-  static const String newPassword = 'New Password';
-  static const String confirmNewPassword = 'Confirm New Password';
-  static const String resetPassword = 'Reset Password';
+  static String resetYourPassword = 'resetYourPassword';
+  static String newPassword = 'newPassword';
+  static String confirmNewPassword = 'confirmNewPassword';
+  static String resetPassword = 'resetPassword';
 
   // Ride Booking
-  static const String iWantToGo = 'I want to go';
-  static const String selectDestination = 'Select where you want to go';
-  static const String chooseLocation = 'Choose a location';
-  static const String currentLocation = 'Use current location';
-  static const String confirmPickup = 'Set Your Pickup Location';
-  static const String confirmDropOff = 'Set Your Drop-off Location';
-  static const String searchLocation = 'Search Location';
-  static const String addCoin = 'Add Coin';
+  static String iWantToGo = 'iWantToGo';
+  static String selectDestination = 'selectDestination';
+  static String chooseLocation = 'chooseLocation';
+  static String currentLocation = 'currentLocation';
+  static String confirmPickup = 'confirmPickup';
+  static String confirmDropOff = 'confirmDropOff';
+  static String searchLocation = 'searchLocation';
+  static String addCoin = 'addCoin';
 
   // Ride Details
-  static const String requestRide = 'Request Ride';
-  static const String availableRides = 'Available Rides';
-  static const String selectVehicle = 'Select a Vehicle';
-  static const String estimatedFare = 'Estimated Fare';
-  static const String paymentMethod = 'Payment Method';
-  static const String confirmRide = 'Confirm Ride';
-  static const String rideInProgress = 'Your Ride is in Progress';
-  static const String driverArrived = 'Driver Arrived';
-  static const String waitingTimeIsLong = 'Waiting Time is Too Long';
-  static const String changeOfTravelPlan = 'Change of Travel Plans';
-  static const String tripReqError = 'Trip Request Error';
-  static const String youHaveArrived = 'You Arrived On Location';
+  static String requestRide = 'requestRide';
+  static String availableRides = 'availableRides';
+  static String selectVehicle = 'selectVehicle';
+  static String estimatedFare = 'estimatedFare';
+  static String paymentMethod = 'paymentMethod';
+  static String confirmRide = 'confirmRide';
+  static String rideInProgress = 'rideInProgress';
+  static String driverArrived = 'driverArrived';
+  static String waitingTimeIsLong = 'waitingTimeIsLong';
+  static String changeOfTravelPlan = 'changeOfTravelPlan';
+  static String tripReqError = 'tripReqError';
+  static String youHaveArrived = 'youHaveArrived';
 
   // Driver Details
-  static const String driverName = 'Driver Name';
-  static const String vehicleDetails = 'Vehicle Details';
-  static const String licensePlate = 'License Plate';
-  static const String license = 'License';
-  static const String vin = 'VIN :';
-  static const String insuranceStatus = 'Insurance Status :';
-  static const String registrationDate = 'Registration Date :';
-  static const String rideCost = 'Ride Cost';
-  static const String cancelRide = 'Cancel Ride';
+  static String driverName = 'driverName';
+  static String vehicleDetails = 'vehicleDetails';
+  static String licensePlate = 'licensePlate';
+  static String license = 'license';
+  static String vin = 'vin';
+  static String insuranceStatus = 'insuranceStatus';
+  static String registrationDate = 'registrationDate';
+  static String rideCost = 'rideCost';
+  static String cancelRide = 'cancelRide';
 
   // Payment
-  static const String cash = 'Cash';
-  static const String noDataFound = "No data found";
-  static const String nationalIdPassport = 'National ID/Passport';
-  static const String eHailingVehiclePermit = 'E-hailing Vehicle Permit (EVP)';
-  static const String drivingLicense = 'Driving License No ';
-  static const String licenseType = 'License Type';
-  static const String licenseExpire = 'License Expire';
-  static const String psvLicense = 'PSV License';
-  static const String tripDistanceToday = 'Trip Distance Today  ';
-  static const String activeHour = 'Active Hour ';
-  static const String tripToday = 'Trip Today';
-  static const String onlineCash = 'Online Cash';
-  static const String totalEarn = 'Total Earn ';
-  static const String preBookRide = 'Pre-Book Ride';
-  static const String womanOnlyRide = 'Women-Only Ride';
-  static const String findAnother = 'Find Another';
-  static const String featureComingSoon = 'Feature Coming Soon!';
-  static const String accept = 'Accept';
-  static const String featureNotImplemented = 'This feature is not yet implemented.Please check back in a future update!';
-  static const String noNewRideReq = 'No New Ride Request';
-  static const String rideReq = 'Ride Request';
-  static const String pleaseGoOnlineRide = 'Please Go Online Ride Request';
-  static const String pickUpWithin = 'Pick up WithIn ';
-  static const String arrive = 'Arrive';
-  static const String tripStarted = 'Trip Started';
-  static const String arrived = 'Arrived ';
-  static const String startTrip = 'Start Trip';
-  static const String sendPaymentRequest = 'Send Payment request ';
-  static const String notYet = 'Not Yet';
-  static const String cancelTrip = 'Cancel trip';
-  static const String tripLoading = 'Trip Loading...';
-  static const String recentTip = 'Recent Tip';
-  static const String service = 'Service';
-  static const String placeAddress = 'Place Address';
-  static const String placeAddressRequired = 'Place Address Required';
-  static const String placeNameRequired = 'Place Name Required';
-  static const String placeName = 'Place Name';
-  static const String savedPlace = 'Saved Place';
-  static const String save = 'Save';
-  static const String payWithCard = 'Pay with Card';
+  static String cash = 'cash';
+  static String noDataFound = 'noDataFound';
+  static String nationalIdPassport = 'nationalIdPassport';
+  static String eHailingVehiclePermit = 'eHailingVehiclePermit';
+  static String drivingLicense = 'drivingLicense';
+  static String licenseType = 'licenseType';
+  static String licenseExpire = 'licenseExpire';
+  static String psvLicense = 'psvLicense';
+  static String tripDistanceToday = 'tripDistanceToday';
+  static String activeHour = 'activeHour';
+  static String tripToday = 'tripToday';
+  static String onlineCash = 'onlineCash';
+  static String totalEarn = 'totalEarn';
+  static String preBookRide = 'preBookRide';
+  static String womanOnlyRide = 'womanOnlyRide';
+  static String findAnother = 'findAnother';
+  static String featureComingSoon = 'featureComingSoon';
+  static String accept = 'accept';
+  static String featureNotImplemented = 'featureNotImplemented';
+  static String noNewRideReq = 'noNewRideReq';
+  static String rideReq = 'rideReq';
+  static String pleaseGoOnlineRide = 'pleaseGoOnlineRide';
+  static String pickUpWithin = 'pickUpWithin';
+  static String arrive = 'arrive';
+  static String tripStarted = 'tripStarted';
+  static String arrived = 'arrived';
+  static String startTrip = 'startTrip';
+  static String sendPaymentRequest = 'sendPaymentRequest';
+  static String notYet = 'notYet';
+  static String cancelTrip = 'cancelTrip';
+  static String tripLoading = 'tripLoading';
+  static String recentTip = 'recentTip';
+  static String service = 'service';
+  static String placeAddress = 'placeAddress';
+  static String placeAddressRequired = 'placeAddressRequired';
+  static String placeNameRequired = 'placeNameRequired';
+  static String placeName = 'placeName';
+  static String savedPlace = 'savedPlace';
+  static String save = 'save';
+  static String payWithCard = 'payWithCard';
 
   // Ratings & Feedback
-  static const String rateDriver = 'Rate your Driver';
-  static const String leaveFeedback = 'Leave Feedback';
+  static String rateDriver = 'rateDriver';
+  static String leaveFeedback = 'leaveFeedback';
 
   // General UI
-  static const String home = 'Home';
-  static const String profile = 'Profile';
-  static const String notifications = 'Notifications';
-  static const String settings = 'Settings';
-  static const String setYourPickupLocation = 'Set Your Pickup Location';
-  static const String setLocationFromMap = 'Set Location from map';
-  static const String setYourDropOffLocation = 'Set Your Drop-off Location';
-  static const String scrollMapAndPin = 'Scroll Map And Pin Your Location';
-  static const String selectYourEv = 'Select your EV';
-  static const String sedan = 'Sedan';
-  static const String deleteAcc = 'Delete Account';
-  static const String details = 'Details';
-  static const String areYouSureYouWantToDelete =
-      "Are you sure you want to delete this account??";
-  static const String fourSeats = '4 seats';
-  static const String rm150 = 'RM 150';
-  static const String requestYourTrip = 'Request Your Trip';
-  static const String yourTripDetail = 'Your Trip Detail';
-  static const String pickupLocation = 'Pickup Location';
-  static const String dropLocation = 'Drop Location';
-  static const String tripDate = 'Trip Date';
-  static const String pickTime = 'Pick Date Time';
-  static const String addMoreCoin = 'Add More Coin';
-  static const String additionalNote = 'Additional Note';
-  static const String loremIpsumText =
-      'Lorem Ipsum Dolor Sit Amet Consectetur, Commodao Mauris Vitae Non Vestibulum Armet Fusce.';
-  static const String myRides = 'My Rides';
-  static const String ride = 'Ride';
-  static const String generalRide = 'General Ride';
-  static const String trackRides = 'Track Ride';
-  static const String track = 'Track';
-  static const String transactionHistory = 'Transaction History';
-  static const String newTripRequest = 'New trip Request';
-  static String ongoing = 'Ongoing';
-  static String waitingForDriverConformation =
-      'Waiting for Driver confirmation';
-  static String upcoming = 'Upcoming';
-  static String completed = 'Completed';
-  static const String addLocation = 'Add location';
-  static const String addPlace = 'Add place';
-  static const String finalCost = 'Final cost';
-  static const String tripDuration = 'Trip Duration';
-  static const String tripDistance = 'Trip Distance (KM)';
-  static const String from = 'From:';
-  static const String to = 'To:';
-
-  static const String bookingConfirmed = 'Booking Confirmed!';
-  static const String bookingCanceled = 'Booking Canceled!';
-  static const String rideDelayed = 'Ride Delayed?';
-
-  static const String messages = 'Messages';
-  static const String bookATrip = 'Book a Trip';
-  static const String allMessages = 'All Messages';
-  static const String newMessages = 'New Messages';
-
-  static const String payment = 'Payment';
-  static const String addPaymentMethod = 'Add Payment Method';
+  static String home = 'home';
+  static String profile = 'profile';
+  static String notifications = 'notifications';
+  static String settings = 'settings';
+  static String setYourPickupLocation = 'setYourPickupLocation';
+  static String setLocationFromMap = 'setLocationFromMap';
+  static String setYourDropOffLocation = 'setYourDropOffLocation';
+  static String scrollMapAndPin = 'scrollMapAndPin';
+  static String selectYourEv = 'selectYourEv';
+  static String sedan = 'sedan';
+  static String deleteAcc = 'deleteAcc';
+  static String details = 'details';
+  static String areYouSureYouWantToDelete = 'areYouSureYouWantToDelete';
+  static String fourSeats = 'fourSeats';
+  static String rm150 = 'rm150';
+  static String requestYourTrip = 'requestYourTrip';
+  static String yourTripDetail = 'yourTripDetail';
+  static String pickupLocation = 'pickupLocation';
+  static String dropLocation = 'dropLocation';
+  static String tripDate = 'tripDate';
+  static String pickTime = 'pickTime';
+  static String addMoreCoin = 'addMoreCoin';
+  static String additionalNote = 'additionalNote';
+  static String loremIpsumText = 'loremIpsumText';
+  static String myRides = 'myRides';
+  static String ride = 'ride';
+  static String generalRide = 'generalRide';
+  static String trackRides = 'trackRides';
+  static String track = 'track';
+  static String transactionHistory = 'transactionHistory';
+  static String newTripRequest = 'newTripRequest';
+  static String ongoing = 'ongoing';
+  static String waitingForDriverConformation = 'waitingForDriverConformation';
+  static String upcoming = 'upcoming';
+  static String completed = 'completed';
+  static String addLocation = 'addLocation';
+  static String addPlace = 'addPlace';
+  static String finalCost = 'finalCost';
+  static String tripDuration = 'tripDuration';
+  static String tripDistance = 'tripDistance';
+  static String from = 'from';
+  static String to = 'to';
+  static String bookingConfirmed = 'bookingConfirmed';
+  static String bookingCanceled = 'bookingCanceled';
+  static String rideDelayed = 'rideDelayed';
+  static String messages = 'messages';
+  static String bookATrip = 'bookATrip';
+  static String allMessages = 'allMessages';
+  static String newMessages = 'newMessages';
+  static String payment = 'payment';
+  static String addPaymentMethod = 'addPaymentMethod';
 
   // Profile Section
-  static const String accountInformation = 'Account Information';
-  static const String earnings = 'Earnings';
+  static String accountInformation = 'accountInformation';
+  static String earnings = 'earnings';
 
   // Profile Details
-  static const String general = 'General';
-  static const String driving = 'Driving';
-  static const String document = 'Document';
-  static const String carBrand = 'Car Brand:';
-  static const String carModel = 'Car Model:';
-  static const String carNumber = 'Car Number:';
-  static const String carType = 'Car Type:';
-  static const String carColor = 'Color:';
+  static String general = 'general';
+  static String driving = 'driving';
+  static String document = 'document';
+  static String carBrand = 'carBrand';
+  static String carModel = 'carModel';
+  static String carNumber = 'carNumber';
+  static String carType = 'carType';
+  static String carColor = 'carColor';
 
   // Earnings & Statistics
-  static const String totalEarnings = 'Total Earn';
-  static const String earningsGrowth = 'Earnings Growth';
-  static const String viewTransactionHistory = 'View Transaction History';
+  static String totalEarnings = 'totalEarnings';
+  static String earningsGrowth = 'earningsGrowth';
+  static String viewTransactionHistory = 'viewTransactionHistory';
 
   // Tabs
-  static const String today = 'Today';
-  static const String totalCoin = 'Total Coin';
-  static const String thisWeek = 'This Week';
-  static const String thisMonth = 'This Month';
+  static String today = 'today';
+  static String totalCoin = 'totalCoin';
+  static String thisWeek = 'thisWeek';
+  static String thisMonth = 'thisMonth';
 
   // Help & FAQs
-  static const String faqs = 'FAQs';
-  static const String delete = 'Delete';
-  static const String update = ' Update';
+  static String faqs = 'faqs';
+  static String delete = 'delete';
+  static String update = 'update';
 
-  // static const String tripDuration = 'Trip Duration (min)';
-  static const String howToBook = 'How to book an appointment?';
-  static const String successfulDelivery =
-      'How do I report a successful delivery?';
-  static const String updateVehicle =
-      'How do I update my vehicle or personal details?';
-  static const String deliveryRoute = 'How can I report my delivery route?';
-  static const String customerSupport = 'Customer Support (24/7)';
-
-  // Terms & Conditions
+  static String howToBook = 'howToBook';
+  static String successfulDelivery = 'successfulDelivery';
+  static String updateVehicle = 'updateVehicle';
+  static String deliveryRoute = 'deliveryRoute';
+  static String customerSupport = 'customerSupport';
 
   // Ride Flow
-  static const String youAreOnline = 'You Are Online';
-  static const String youAreOffline = 'You Are Offline';
-  static const String rideAccepted = 'Ride Accepted';
-  static const String riderIsOnTheWay = 'Rider is on the way';
-  static const String arrivingAtPickup = 'Arriving at pickup location';
-  static const String tripCompleted = 'Trip Completed';
-  static const String rateYourRide = 'Rate Your Ride';
-  static const String leaveAReview = 'Leave a Review';
+  static String youAreOnline = 'youAreOnline';
+  static String youAreOffline = 'youAreOffline';
+  static String rideAccepted = 'rideAccepted';
+  static String riderIsOnTheWay = 'riderIsOnTheWay';
+  static String arrivingAtPickup = 'arrivingAtPickup';
+  static String tripCompleted = 'tripCompleted';
+  static String rateYourRide = 'rateYourRide';
+  static String leaveAReview = 'leaveAReview';
 }

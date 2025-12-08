@@ -4,6 +4,7 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../controllers/dashboard_controller.dart';
 
@@ -43,7 +44,7 @@ class AfterTripStartedWidget extends StatelessWidget {
             DashBoardController.to.afterTripStarted.value = false;
             DashBoardController.to.sendPaymentReq.value = true;
           },
-          title: AppStaticStrings.arrived,
+          title: AppStaticStrings.arrived.tr,
         ),
       ],
     );

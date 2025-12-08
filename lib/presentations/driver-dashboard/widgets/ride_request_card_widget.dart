@@ -6,6 +6,9 @@ import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widge
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get.dart';
+import 'package:get/get.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
@@ -60,7 +63,7 @@ class RideRequestCardWidget extends StatelessWidget {
           ],
         ),
         DriverDetails(
-          title: AppStaticStrings.tripDistance,
+          title: AppStaticStrings.tripDistance.tr,
           value: "${(int.parse(distance ?? "0") / 1000).toString()} km",
           fare: fare,
           userImg: userImg,
@@ -76,7 +79,7 @@ class RideRequestCardWidget extends StatelessWidget {
               lng: CommonController.to.markerPositionDriver.value.longitude,
             );
           },
-          title: AppStaticStrings.accept,
+          title: AppStaticStrings.accept.tr,
         ),
         CustomButton(
           fillColor: AppColors.kWhiteColor,
@@ -85,7 +88,7 @@ class RideRequestCardWidget extends StatelessWidget {
             DashBoardController.to.rideRequest.value = false;
             DashBoardController.to.findingRide.value = true;
           },
-          title: AppStaticStrings.findAnother,
+          title: AppStaticStrings.findAnother.tr,
         ),
       ],
     );

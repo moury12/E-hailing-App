@@ -157,7 +157,7 @@ class _DashboardPageState extends State<DashboardPage>
                                     fare: availableTrip.estimatedFare.toString(),
                                     dateTime: formatDateTime(
                                       availableTrip.createdAt ??
-                                          AppStaticStrings.noDataFound,
+                                          AppStaticStrings.noDataFound.tr,
                                     ),
                                     distance: availableTrip.distance.toString(),
                                     fromAddress: availableTrip.pickUpAddress,

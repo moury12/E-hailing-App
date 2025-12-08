@@ -46,7 +46,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
           return CustomTextField(
             isEnable: widget.isDisable==true? false: true,
             borderRadius: 24.r,
-            hintText: AppStaticStrings.pickupLocation,
+            hintText: AppStaticStrings.pickupLocation.tr,
             fillColor: AppColors.kWhiteColor,
             borderColor: AppColors.kGreyColor,
             // height: 45.h,
@@ -92,7 +92,7 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
               //   ).requestFocus(HomeController.to.dropOffFocusNode);
               // });
             },
-            hintText: AppStaticStrings.dropLocation,
+            hintText: AppStaticStrings.dropLocation.tr,
             fillColor: AppColors.kWhiteColor,
             borderColor: AppColors.kGreyColor,
             textEditingController:

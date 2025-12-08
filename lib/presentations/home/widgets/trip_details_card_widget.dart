@@ -58,7 +58,7 @@ class DriverDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
-                text: userName ?? AppStaticStrings.noDataFound,
+                text: userName ?? AppStaticStrings.noDataFound.tr,
                 style: poppinsSemiBold,
                 fontSize: getFontSizeSemiSmall(),
               ),
@@ -147,8 +147,9 @@ class TripDetailsDestinationCard extends StatelessWidget {
                   children: [
                     CustomText(
                       text:tripModel?.driver?.assignedCar!=null?
-                          "${tripModel?.driver?.assignedCar?.brand ?? AppStaticStrings.noDataFound} "
-                          "${tripModel?.driver?.assignedCar?.model} ":AppStaticStrings.noDataFound,
+                          "${tripModel?.driver?.assignedCar?.brand ??
+                              AppStaticStrings.noDataFound.tr} "
+                          "${tripModel?.driver?.assignedCar?.model} ":AppStaticStrings.noDataFound.tr,
                       fontSize: getFontSizeSmall(),
                     ),
                     Container(
@@ -161,7 +162,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
                         fontSize: getFontSizeSmall(),
 
                         text:tripModel?.driver?.assignedCar!=null?
-                            "${tripModel?.driver?.assignedCar?.carNumber}(${tripModel?.driver?.assignedCar?.color})":AppStaticStrings.noDataFound,
+                            "${tripModel?.driver?.assignedCar?.carNumber}(${tripModel?.driver?.assignedCar?.color})":AppStaticStrings.noDataFound.tr,
                         color: AppColors.kWhiteColor,
                       ),
                     ),
@@ -176,7 +177,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
             fare: tripModel?.estimatedFare.toString(),
             userImg:
                 "${ApiService().baseUrl}/${tripModel?.driver?.profileImage}",
-            title: AppStaticStrings.tripDuration,
+            title: AppStaticStrings.tripDuration.tr,
             value:
             '${int.tryParse(tripModel?.duration.toString() ?? "0")} min',
             rating: tripModel?.driver?.rating.toString(),
@@ -190,7 +191,7 @@ class TripDetailsDestinationCard extends StatelessWidget {
           Obx(() {
             return RowCallChatDetailsButton(
               userId: tripModel!.driver!.sId.toString(),
-              lastItemName: AppStaticStrings.details,
+              lastItemName: AppStaticStrings.details.tr,
               phoneNumber: tripModel?.driver?.phoneNumber,
               isChatLoading: MessageController.to.isLoadingCreateMessage.value,
 
@@ -234,7 +235,7 @@ class TripRequestLoadingWidget extends StatelessWidget {
         spacing: 12.h,
         children: [
           CustomText(
-            text: AppStaticStrings.newTripRequest,
+            text: AppStaticStrings.newTripRequest.tr,
             fontSize: getFontSizeDefault(),
           ),
           FromToTimeLine(
@@ -243,7 +244,7 @@ class TripRequestLoadingWidget extends StatelessWidget {
           ),
           GradientProgressIndicator(),
           CustomText(
-            text: AppStaticStrings.waitingForDriverConformation,
+            text: AppStaticStrings.waitingForDriverConformation.tr,
             color: AppColors.kExtraLightBlackColor,
             fontSize: getFontSizeSmall(),
             style: poppinsRegular,
@@ -296,12 +297,12 @@ class FromToTimeLine extends StatelessWidget {
       children: <Widget>[
         FromToWidget(
           details: pickUpAddress ?? "No pick up address provided",
-          headline: AppStaticStrings.from,
+          headline: AppStaticStrings.from.tr,
         ),
         if (showTo == true)
           FromToWidget(
             details: dropOffAddress ?? "No drop off address provided",
-            headline: AppStaticStrings.to,
+            headline: AppStaticStrings.to.tr,
           ),
       ],
     );

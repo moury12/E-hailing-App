@@ -22,8 +22,8 @@ final arg = Get.arguments;
     return AuthScaffoldStructureWidget(
       space: 6.h,
       children: [
-        AuthTitleTextWidget(title: AppStaticStrings.resetYourPassword),
-        AuthSubTextWidget(text: AppStaticStrings.createAnewPassword),
+        AuthTitleTextWidget(title: AppStaticStrings.resetYourPassword.tr),
+        AuthSubTextWidget(text: AppStaticStrings.createAnewPassword.tr),
         space6H,
         Form(
           key: formKey,
@@ -32,7 +32,7 @@ final arg = Get.arguments;
             children: [
               CustomTextField(
                 textEditingController: AuthController.to.passNewController,
-                title: AppStaticStrings.newPassword,
+                title: AppStaticStrings.newPassword.tr,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppStaticStrings.passRequired.tr;
@@ -44,7 +44,7 @@ final arg = Get.arguments;
                 isPassword: true,
               ),
               CustomTextField(
-                title: AppStaticStrings.confirmNewPassword,
+                title: AppStaticStrings.confirmNewPassword.tr,
                 textEditingController:
                     AuthController.to.confirmPassNewController,
                 validator: (value) {
@@ -72,7 +72,7 @@ final arg = Get.arguments;
                 AuthController.to.resetPasswordRequest(email: arg);
               }
             },
-            title: AppStaticStrings.confirm,
+            title: AppStaticStrings.confirm.tr,
           );
         }),
       ],

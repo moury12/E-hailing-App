@@ -23,8 +23,8 @@ class OtpPage extends StatelessWidget {
     return AuthScaffoldStructureWidget(
       space: 6.h,
       children: [
-        AuthTitleTextWidget(title: AppStaticStrings.sixDigitCode),
-        AuthSubTextWidget(text: AppStaticStrings.enterCodeSent),
+        AuthTitleTextWidget(title: AppStaticStrings.sixDigitCode.tr),
+        AuthSubTextWidget(text: AppStaticStrings.enterCodeSent.tr),
         space6H,
         OtpTextField(),
         space4H,
@@ -47,7 +47,7 @@ class OtpPage extends StatelessWidget {
                 );
               }
             },
-            title: AppStaticStrings.confirm,
+            title: AppStaticStrings.confirm.tr,
           );
         }),
       ],

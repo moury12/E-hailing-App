@@ -51,8 +51,8 @@ class _LoginPageState extends State<LoginPage> {
     return AuthScaffoldStructureWidget(
       space: 6.h,
       children: [
-        AuthTitleTextWidget(title: AppStaticStrings.welcomeBack),
-        AuthSubTextWidget(text: AppStaticStrings.logInToContinue),
+        AuthTitleTextWidget(title: AppStaticStrings.welcomeBack.tr),
+        AuthSubTextWidget(text: AppStaticStrings.logInToContinue.tr),
         space12H,
         Form(
           key: formKey,
@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
             spacing: 6.h,
             children: [
               CustomTextField(
-                title: AppStaticStrings.email,
+                title: AppStaticStrings.email.tr,
                 isRequired: true,
 
                 textEditingController: AuthController.to.emailLoginController,
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
               CustomTextField(
-                title: AppStaticStrings.password,
+                title: AppStaticStrings.password.tr,
                 isPassword: true,
                 textEditingController: AuthController.to.passLoginController,
                 isRequired: true,
@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Expanded(
                     child: CustomText(
-                      text: AppStaticStrings.rememberMe,
+                      text: AppStaticStrings.rememberMe.tr,
                       // fontSize: getFontSizeSmall(),
                     ),
                   ),
@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
 
             CustomTextButton(
-              title: AppStaticStrings.forgotPassword,
+              title: AppStaticStrings.forgotPassword.tr,
               onPressed: () {
                 Get.toNamed(VerifyEmailPage.routeName);
               },
@@ -121,14 +121,14 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomText(
-              text: AppStaticStrings.dontHaveAccount,
+              text: AppStaticStrings.dontHaveAccount.tr,
               style: poppinsRegular,
             ),
             CustomTextButton(
               onPressed: () {
                 Get.toNamed(SignupPage.routeName);
               },
-              title: AppStaticStrings.registerNow,
+              title: AppStaticStrings.registerNow.tr,
               fontSize: getFontSizeSemiSmall(),
               textColor: AppColors.kBlueAccentColor,
               fontWeight: FontWeight.w600,
@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                 AuthController.to.signInRequest();
               }
             },
-            title: AppStaticStrings.logIn,
+            title: AppStaticStrings.logIn.tr,
           );
         }),
         space12H,

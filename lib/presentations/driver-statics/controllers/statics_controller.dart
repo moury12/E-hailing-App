@@ -15,13 +15,13 @@ class StaticsController extends GetxController{
   RxMap<String, List<StaticModel>> staticsCache= <String, List<StaticModel>>{}.obs;
   void initStaticList() {
     staticList.value = [
-      StaticModel(img: totalEarnIcon, title: AppStaticStrings.totalEarn, val: 'RM 0'),
-      StaticModel(img: handCash1Icon, title: AppStaticStrings.handCash, val: 'RM 0'),
-      StaticModel(img: coinIcon, title: AppStaticStrings.dCoin, val: 'RM 0'),
-      StaticModel(img: onlineCashIcon, title: AppStaticStrings.onlineCash, val: 'RM 0'),
-      StaticModel(img: tripTodayIcon, title: AppStaticStrings.tripToday, val: '0'),
-      StaticModel(img: activeHourIcon, title: AppStaticStrings.activeHour, val: '0h'),
-      StaticModel(img: distanceTodayIcon, title: AppStaticStrings.tripDistanceToday, val: '0 km'),
+      StaticModel(img: totalEarnIcon, title: AppStaticStrings.totalEarn.tr, val: 'RM 0'),
+      StaticModel(img: handCash1Icon, title: AppStaticStrings.handCash.tr, val: 'RM 0'),
+      StaticModel(img: coinIcon, title: AppStaticStrings.dCoin.tr, val: 'RM 0'),
+      StaticModel(img: onlineCashIcon, title: AppStaticStrings.onlineCash.tr, val: 'RM 0'),
+      StaticModel(img: tripTodayIcon, title: AppStaticStrings.tripToday.tr, val: '0'),
+      StaticModel(img: activeHourIcon, title: AppStaticStrings.activeHour.tr, val: '0h'),
+      StaticModel(img: distanceTodayIcon, title: AppStaticStrings.tripDistanceToday.tr, val: '0 km'),
     ];
   }
   RxBool isLoadingStatics = false.obs;
@@ -37,9 +37,9 @@ class StaticsController extends GetxController{
   }
   RxList<String> tabLabels =
       [
-        AppStaticStrings.today,
-        AppStaticStrings.thisWeek,
-        AppStaticStrings.thisMonth,
+        AppStaticStrings.today.tr,
+        AppStaticStrings.thisWeek.tr,
+        AppStaticStrings.thisMonth.tr,
       ].obs;
   Future<void> getDriverStaticsRequest({required String filter}) async {
     try {
@@ -60,13 +60,13 @@ class StaticsController extends GetxController{
         staticsVal.value = StaticsValueModel.fromJson(response['data']);
 
       final list   = [
-          StaticModel(img: totalEarnIcon, title: AppStaticStrings.totalEarn, val: 'RM ${staticsVal.value.totalEarn ?? 0}'),
-          StaticModel(img: handCash1Icon, title: AppStaticStrings.handCash, val: 'RM ${staticsVal.value.cash ?? 0}'),
-          StaticModel(img: coinIcon, title: AppStaticStrings.dCoin, val: '${staticsVal.value.coin ?? 0}'),
-          StaticModel(img: onlineCashIcon, title: AppStaticStrings.onlineCash, val: 'RM ${(staticsVal.value.totalEarn ?? 0) - (staticsVal.value.cash ?? 0)}'),
-          StaticModel(img: tripTodayIcon, title: AppStaticStrings.tripToday, val: '${staticsVal.value.numberOfTrips ?? 0}'),
-          StaticModel(img: activeHourIcon, title: AppStaticStrings.activeHour, val: '${(staticsVal.value.activeHours ?? 0).toStringAsFixed(1)} h'),
-          StaticModel(img: distanceTodayIcon, title: AppStaticStrings.tripDistanceToday, val: '${staticsVal.value.tripDistance ?? 0} km'),
+          StaticModel(img: totalEarnIcon, title: AppStaticStrings.totalEarn.tr, val: 'RM ${staticsVal.value.totalEarn ?? 0}'),
+          StaticModel(img: handCash1Icon, title: AppStaticStrings.handCash.tr, val: 'RM ${staticsVal.value.cash ?? 0}'),
+          StaticModel(img: coinIcon, title: AppStaticStrings.dCoin.tr, val: '${staticsVal.value.coin ?? 0}'),
+          StaticModel(img: onlineCashIcon, title: AppStaticStrings.onlineCash.tr, val: 'RM ${(staticsVal.value.totalEarn ?? 0) - (staticsVal.value.cash ?? 0)}'),
+          StaticModel(img: tripTodayIcon, title: AppStaticStrings.tripToday.tr, val: '${staticsVal.value.numberOfTrips ?? 0}'),
+          StaticModel(img: activeHourIcon, title: AppStaticStrings.activeHour.tr, val: '${(staticsVal.value.activeHours ?? 0).toStringAsFixed(1)} h'),
+          StaticModel(img: distanceTodayIcon, title: AppStaticStrings.tripDistanceToday.tr, val: '${staticsVal.value.tripDistance ?? 0} km'),
         ];
         staticsCache[filter] = list;
         staticList.value = list;
