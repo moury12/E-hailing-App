@@ -1,4 +1,5 @@
 
+import 'package:e_hailing_app/core/service/translation_controller.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/firebase_options.dart';
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
@@ -39,37 +40,42 @@ Future<void> main() async {
     );
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
     await Hive.initFlutter();
+    await Hive.openBox(userRole);
+    await Hive.openBox(userBoxName);
+    await Hive.openBox(authBox);
+    await Hive.openBox("ratingData");
 
-   await Hive.openBox(userRole);
-     await Hive.openBox(userBoxName);
-     await Hive.openBox(authBox);
-     await Hive.openBox("ratingData");
-
+    // IMPORTANT: Initialize and load translations BEFORE running app
+    final translationController = TranslationController();
+    await translationController.loadTranslations();
+    Get.put(translationController);
 
     await ScreenUtil.ensureScreenSize();
   } catch (e) {
     print("Initialization error: $e");
-  } finally {
-
   }
 
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Get the already initialized controller
+    final translationController = Get.find<TranslationController>();
+
     return ScreenUtilInit(
       designSize: const Size(375, 888),
       minTextAdapt: true,
       builder: (context, child) => GetMaterialApp(
         title: 'Dudu Car',
         theme: AppTheme.lightTheme,
+        translations: translationController,
+        locale: const Locale('en', 'US'), // Fixed: added const
+        fallbackLocale: const Locale('en', 'US'), // Fixed: added const
         themeMode: ThemeMode.dark,
         initialRoute: SplashPage.routeName,
         getPages: AppRoutes.route(),
