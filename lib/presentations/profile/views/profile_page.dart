@@ -7,6 +7,7 @@ import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/pagination_loading_widget.dart';
+import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
@@ -19,11 +20,11 @@ import 'package:e_hailing_app/presentations/profile/views/vehicle_details_page.d
 import 'package:e_hailing_app/presentations/profile/widgets/user_shimmer_widget.dart';
 import 'package:e_hailing_app/presentations/save-location/views/saved_location_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../core/components/custom_button_tap.dart';
 import '../../../core/constants/image_constant.dart';
 import '../widgets/profile_action_item_widget.dart';
 
@@ -63,52 +64,55 @@ class ProfilePage extends StatelessWidget {
             ),
             child: Column(
               children: [
-
                 Padding(
                   padding: padding12.copyWith(top: 0),
                   child: Obx(() {
-                    return AccountInformationController.to.isLoadingProfile
-                        .value
+                    return AccountInformationController
+                            .to
+                            .isLoadingProfile
+                            .value
                         ? UserShimmerWidget()
                         : Row(
-                      spacing: 12.w,
-                      children: [
-                        CustomNetworkImage(
-                          imageUrl:
-                          "${ApiService()
-                              .baseUrl}/${AccountInformationController.to
-                              .userModel.value.img}",
-                          height: 70.w,
-                          width: 70.w,
-                          boxShape: BoxShape.circle,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomText(
-                                text:
-                                AccountInformationController.to.userModel
-                                    .value
-                                    .name ??
-                                    AppStaticStrings.noDataFound,
-                                fontSize: getFontSizeDefault(),
-                                color: AppColors.kTextDarkBlueColor,
+                          spacing: 12.w,
+                          children: [
+                            CustomNetworkImage(
+                              imageUrl:
+                                  "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.img}",
+                              height: 70.w,
+                              width: 70.w,
+                              boxShape: BoxShape.circle,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                    text:
+                                        AccountInformationController
+                                            .to
+                                            .userModel
+                                            .value
+                                            .name ??
+                                        AppStaticStrings.noDataFound,
+                                    fontSize: getFontSizeDefault(),
+                                    color: AppColors.kTextDarkBlueColor,
+                                  ),
+                                  CustomText(
+                                    text:
+                                        AccountInformationController
+                                            .to
+                                            .userModel
+                                            .value
+                                            .email ??
+                                        AppStaticStrings.noDataFound,
+                                    fontSize: getFontSizeSmall(),
+                                    color: AppColors.kExtraLightTextColor,
+                                  ),
+                                ],
                               ),
-                              CustomText(
-                                text:
-                                AccountInformationController.to.userModel
-                                    .value
-                                    .email ??
-                                    AppStaticStrings.noDataFound,
-                                fontSize: getFontSizeSmall(),
-                                color: AppColors.kExtraLightTextColor,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
+                            ),
+                          ],
+                        );
                   }),
                 ),
               ],
@@ -132,19 +136,19 @@ class ProfilePage extends StatelessWidget {
                     ),
                     CommonController.to.isDriver.value
                         ? ProfileActionItemWidget(
-                      img: vehicleDetailsIcon,
-                      title: AppStaticStrings.vehicleDetails,
-                      onTap: () {
-                        Get.toNamed(VehicleDetailsPage.routeName);
-                      },
-                    )
+                          img: vehicleDetailsIcon,
+                          title: AppStaticStrings.vehicleDetails,
+                          onTap: () {
+                            Get.toNamed(VehicleDetailsPage.routeName);
+                          },
+                        )
                         : ProfileActionItemWidget(
-                      img: coinIcon,
-                      title: AppStaticStrings.duduCoinWallet,
-                      onTap: () {
-                        Get.toNamed(CoinPage.routeName);
-                      },
-                    ),
+                          img: coinIcon,
+                          title: AppStaticStrings.duduCoinWallet,
+                          onTap: () {
+                            Get.toNamed(CoinPage.routeName);
+                          },
+                        ),
                     ProfileActionItemWidget(
                       img: notificationProfileIcon,
                       title: AppStaticStrings.notification,
@@ -154,19 +158,19 @@ class ProfilePage extends StatelessWidget {
                     ),
                     CommonController.to.isDriver.value
                         ? ProfileActionItemWidget(
-                      img: earningIcon,
-                      title: AppStaticStrings.earnings,
-                      onTap: () {
-                        Get.toNamed(EarningsPage.routeName);
-                      },
-                    )
+                          img: earningIcon,
+                          title: AppStaticStrings.earnings,
+                          onTap: () {
+                            Get.toNamed(EarningsPage.routeName);
+                          },
+                        )
                         : ProfileActionItemWidget(
-                      img: savedLocationIcon,
-                      title: AppStaticStrings.savedLocation,
-                      onTap: () {
-                        Get.toNamed(SavedLocationPage.routeName);
-                      },
-                    ),
+                          img: savedLocationIcon,
+                          title: AppStaticStrings.savedLocation,
+                          onTap: () {
+                            Get.toNamed(SavedLocationPage.routeName);
+                          },
+                        ),
                     if (!CommonController.to.isDriver.value)
                       ProfileActionItemWidget(
                         img: penaltyIcon,
@@ -175,6 +179,41 @@ class ProfilePage extends StatelessWidget {
                           Get.to(PenaltyPage());
                         },
                       ),
+                    ProfileActionItemWidget(
+                      img: languageIcon,
+                      title: AppStaticStrings.language,
+                      onTap: () {
+                        Get.dialog(
+                          AlertDialog(
+                            contentPadding: padding8,
+                            content: Column(
+                              spacing: 6,
+
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                languageChangeCardWidget(
+                                  name: "Malay",
+                                  language: "ms",
+                                  onTap: () {
+                                    Get.updateLocale(Locale('ms', 'MY'));
+                                    Get.back();
+                                  },
+                                ),
+                                languageChangeCardWidget(
+                                  name: "English",
+                                  language: "en",
+                                  onTap: () {
+                                    Get.updateLocale(Locale('en', 'US'));
+                                    Get.back();
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+
                     CustomText(
                       text: AppStaticStrings.more,
                       fontSize: getFontSizeDefault(),
@@ -183,11 +222,10 @@ class ProfilePage extends StatelessWidget {
                       img: feedBackIcon,
                       title: AppStaticStrings.feedback,
                       onTap: () {
-                        Get.toNamed(
-                          FeedbackPage.routeName,
-                        );
+                        Get.toNamed(FeedbackPage.routeName);
                       },
-                    ), ProfileActionItemWidget(
+                    ),
+                    ProfileActionItemWidget(
                       img: termsIcon,
                       title: AppStaticStrings.termsAndCondition,
                       onTap: () {
@@ -218,15 +256,19 @@ class ProfilePage extends StatelessWidget {
                     //   },
                     // ),
                     Obx(() {
-                      return AccountInformationController.to.isLoadingLogout.value
+                      return AccountInformationController
+                              .to
+                              .isLoadingLogout
+                              .value
                           ? PaginationLoadingWidget()
-                          :  ProfileActionItemWidget(
-                        img: logoutIcon,
-                        title: AppStaticStrings.logOut,
-                        onTap: () {
-                          AccountInformationController.to.logoutRequest();
-                        },
-                      );
+                          : ProfileActionItemWidget(
+                            img: logoutIcon,
+                            title: AppStaticStrings.logOut,
+                            onTap: () {
+
+                              AccountInformationController.to.logoutRequest();
+                            },
+                          );
                     }),
                   ],
                 ),
@@ -234,6 +276,38 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class languageChangeCardWidget extends StatelessWidget {
+  final String name;
+  final String language;
+  final Function() onTap;
+  const languageChangeCardWidget({
+    super.key,
+    required this.name,
+    required this.language,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ButtonTapWidget(
+        onTap: onTap,
+        child: Padding(
+          padding: padding8,
+
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomText(text: name),
+              CustomText(text: language, style: poppinsSemiBold),
+            ],
+          ),
+        ),
       ),
     );
   }

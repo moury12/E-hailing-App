@@ -122,6 +122,7 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/lottie/
+    - assets/lang/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

@@ -14,6 +14,7 @@ class AppStaticStrings {
   static const String logIn = 'Log In';
   static const String oldPassword = 'Old Password ';
   static const String signUp = 'Sign Up';
+  static const String language = 'Language';
   static const String signUpToGetStarted =
       'Sign up to get started. Fill in your details to create an account.';
   static const String email = 'Email';
