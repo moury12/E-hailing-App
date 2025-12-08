@@ -63,8 +63,8 @@ class _HomeSetLocationWidgetState extends State<HomeSetLocationWidget> {
         CustomText(
           text:
               HomeController.to.setDestination.value
-                  ? AppStaticStrings.setYourDropOffLocation
-                  : AppStaticStrings.setYourPickupLocation,
+                  ? AppStaticStrings.setYourDropOffLocation.tr
+                  : AppStaticStrings.setYourPickupLocation.tr,
           style: poppinsSemiBold,
         ),
 
@@ -109,7 +109,7 @@ class _HomeSetLocationWidgetState extends State<HomeSetLocationWidget> {
               HomeController.to.setDestination.value = false;
             }
           },
-          title: AppStaticStrings.continueButton,
+          title: AppStaticStrings.continueButton.tr,
         ),
         space8H,
       ],
@@ -125,7 +125,7 @@ class HomeSelectEvWidget extends StatelessWidget {
     return Column(
       spacing: 12.h,
       children: [
-        CustomText(text: AppStaticStrings.selectYourEv, style: poppinsSemiBold),
+        CustomText(text: AppStaticStrings.selectYourEv.tr, style: poppinsSemiBold),
         // CarDetailsCardWidget(
         //   onTap: () {
         //     //   HomeController.to.resetAllStates();
@@ -166,7 +166,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
       // spacing: 6.h,
       children: [
         CustomText(
-          text: AppStaticStrings.selectDestination,
+          text: AppStaticStrings.selectDestination.tr,
           style: poppinsSemiBold,
         ),
         space8H,
@@ -312,7 +312,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
         locationSuggestionList(),
         IconWithTextWidget(
           icon: setLocationIcon,
-          text: AppStaticStrings.setLocationFromMap,
+          text: AppStaticStrings.setLocationFromMap.tr,
           onTap: () {
             debugPrint(HomeController.to.setPickup.value.toString());
             HomeController.to.wantToGo.value = false;
@@ -321,7 +321,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
         ),
         IconWithTextWidget(
           icon: savedPlaceIcon,
-          text: AppStaticStrings.savedPlace,
+          text: AppStaticStrings.savedPlace.tr,
           onTap: () {
             Get.toNamed(SavedLocationPage.routeName, arguments: fromHome);
           },
@@ -442,7 +442,7 @@ class HomeInitialContentWidget extends StatelessWidget {
           },
         ),
 
-        CustomText(text: AppStaticStrings.service),
+        CustomText(text: AppStaticStrings.service.tr),
 
         // space8H,
         SingleChildScrollView(
@@ -451,7 +451,7 @@ class HomeInitialContentWidget extends StatelessWidget {
             spacing: 12.w,
             children: [
               ServiceWidget(
-                title: AppStaticStrings.generalRide,
+                title: AppStaticStrings.generalRide.tr,
                 img: purpleCarImage2,
                 onTap: () {
 
@@ -465,7 +465,7 @@ class HomeInitialContentWidget extends StatelessWidget {
                   HomeController.to.wantToGo.value = true;
                   HomeController.to.tripType.value=preBook;
                 },
-                title: AppStaticStrings.preBookRide,
+                title: AppStaticStrings.preBookRide.tr,
                 img: purpleCarImage2,
               ),
               ServiceWidget(
@@ -474,7 +474,7 @@ class HomeInitialContentWidget extends StatelessWidget {
                   showComingSoonDialog(context);
                   // HomeController.to.setPickup.value = true;
                 },
-                title: AppStaticStrings.womanOnlyRide,
+                title: AppStaticStrings.womanOnlyRide.tr,
                 img: purpleCarImage2,
               ),
             ],

@@ -40,15 +40,15 @@ class _VerifyIdentityPageState extends State<VerifyIdentityPage> {
     return AuthScaffoldStructureWidget(
       space: 6.h,
       children: [
-        AuthTitleTextWidget(title: AppStaticStrings.verifyYourIdentity),
+        AuthTitleTextWidget(title: AppStaticStrings.verifyYourIdentity.tr),
         CustomTextField(
-          title: AppStaticStrings.nricPassport,
+          title: AppStaticStrings.nricPassport.tr,
           keyboardType: TextInputType.number,
           textEditingController: passportController,
         ),
         space4H,
         CustomText(
-          text: AppStaticStrings.uploadNricPassport,
+          text: AppStaticStrings.uploadNricPassport.tr,
           style: poppinsMedium,
           fontSize: getFontSizeSemiSmall(),
         ),
@@ -69,7 +69,7 @@ class _VerifyIdentityPageState extends State<VerifyIdentityPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(uploadIcon),
-              CustomText(text: AppStaticStrings.uploadImage),
+              CustomText(text: AppStaticStrings.uploadImage.tr),
             ],
           ),
         ),
@@ -92,7 +92,7 @@ class _VerifyIdentityPageState extends State<VerifyIdentityPage> {
               }
 
             },
-            title: AppStaticStrings.confirm,
+            title: AppStaticStrings.confirm.tr,
           );
         }),
       ],

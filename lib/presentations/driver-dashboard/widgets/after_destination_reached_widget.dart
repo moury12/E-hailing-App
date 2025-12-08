@@ -30,7 +30,7 @@ class AfterDestinationReachedWidget extends StatelessWidget {
               },
             );
           },
-          title: AppStaticStrings.payment,
+          title: AppStaticStrings.payment.tr,
         ),
       ],
     );

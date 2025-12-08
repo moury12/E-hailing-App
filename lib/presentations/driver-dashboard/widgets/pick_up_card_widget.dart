@@ -73,18 +73,18 @@ class _DriverAfterAcceptedWidgetState extends State<DriverAfterAcceptedWidget> {
       spacing: 6.h,
       children: [
         CustomText(
-          text: AppStaticStrings.pickup,
+          text: AppStaticStrings.pickup.tr,
           fontSize: getFontSizeDefault(),
         ),
         DriverDetails(
           userName:
               widget.user != null
                   ? widget.user?.name
-                  : AppStaticStrings.noDataFound,
+                  : AppStaticStrings.noDataFound.tr,
           userImg:
               widget.user != null
                   ? "${ApiService().baseUrl}/${widget.user?.profileImage}"
-                  : AppStaticStrings.noDataFound,
+                  : AppStaticStrings.noDataFound.tr,
           fare: widget.fare,
           value: "${widget.time} min",
         ),
@@ -105,7 +105,7 @@ class _DriverAfterAcceptedWidgetState extends State<DriverAfterAcceptedWidget> {
                     );
                   }
                 },
-                title: AppStaticStrings.arrive,
+                title: AppStaticStrings.arrive.tr,
                 fillColor: AppColors.kPrimaryColor,
                 textColor: AppColors.kWhiteColor,
               )
@@ -119,7 +119,7 @@ class _DriverAfterAcceptedWidgetState extends State<DriverAfterAcceptedWidget> {
                   }
                 },
                 title:
-                    "${AppStaticStrings.pickUpWithin}${DashBoardController.to.estimatedPickupTime.value}",
+                    "${AppStaticStrings.pickUpWithin.tr}${DashBoardController.to.estimatedPickupTime.value}",
                 fillColor: AppColors.kWhiteColor,
                 textColor: AppColors.kPrimaryColor,
               );

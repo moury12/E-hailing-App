@@ -69,7 +69,7 @@ Future<dynamic> tripCancellationDialog({
   return Get.defaultDialog(
     backgroundColor: AppColors.kWhiteColor,
     radius: 8.r,
-    title: AppStaticStrings.tripCancellationTitle,
+    title: AppStaticStrings.tripCancellationTitle.tr,
     titleStyle: poppinsSemiBold.copyWith(
       color: AppColors.kTextDarkBlueColor,
       fontSize: getFontSizeExtraLarge(),
@@ -92,7 +92,7 @@ Future<dynamic> tripCancellationDialog({
                 () {
                   Get.back();
                 },
-            title: AppStaticStrings.submit,
+            title: AppStaticStrings.submit.tr,
           ),
         ),
       ],
@@ -357,7 +357,7 @@ Future<void> showCredentialsDialog() async {
                       textColor: AppColors.kPrimaryColor,
                       fillColor: Colors.transparent,
                       onTap: () => Get.back(),
-                      title: AppStaticStrings.cancel.tr,
+                      title: AppStaticStrings.cancel.tr.tr,
                     ),
                   ),
                   Expanded(
@@ -370,7 +370,7 @@ Future<void> showCredentialsDialog() async {
 
                         Get.back();
                       },
-                      title: AppStaticStrings.confirm.tr,
+                      title: AppStaticStrings.confirm.tr.tr,
                     ),
                   ),
                 ],

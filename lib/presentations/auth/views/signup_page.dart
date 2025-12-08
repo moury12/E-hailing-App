@@ -41,8 +41,8 @@ class _SignupPageState extends State<SignupPage> {
     return AuthScaffoldStructureWidget(
       space: 6.h,
       children: [
-        AuthTitleTextWidget(title: AppStaticStrings.createYourAccount),
-        AuthSubTextWidget(text: AppStaticStrings.signUpToGetStarted),
+        AuthTitleTextWidget(title: AppStaticStrings.createYourAccount.tr),
+        AuthSubTextWidget(text: AppStaticStrings.signUpToGetStarted.tr),
         Form(
           key: formKey,
           child: Column(
@@ -50,17 +50,17 @@ class _SignupPageState extends State<SignupPage> {
             children: [
               CustomTextField(
                 textEditingController: AuthController.to.nameSignUpController,
-                title: AppStaticStrings.fullName,
+                title: AppStaticStrings.fullName.tr,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return AppStaticStrings.fullNameRequired;
+                    return AppStaticStrings.fullNameRequired.tr;
                   }
                   return null;
                 },
                 isRequired: true,
               ),
               CustomTextField(
-                title: AppStaticStrings.email,
+                title: AppStaticStrings.email.tr,
                 isRequired: true,
 
                 textEditingController:
@@ -75,7 +75,7 @@ class _SignupPageState extends State<SignupPage> {
                 },
               ),
               CustomTextField(
-                title: AppStaticStrings.phoneNumber,
+                title: AppStaticStrings.phoneNumber.tr,
                 keyboardType: TextInputType.number,
                 textEditingController: AuthController.to.phoneSignUpController,
                 isRequired: true,
@@ -94,7 +94,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
 
               CustomTextField(
-                title: AppStaticStrings.password,
+                title: AppStaticStrings.password.tr,
                 isPassword: true,
                 textEditingController: AuthController.to.passSignUpController,
                 isRequired: true,
@@ -108,7 +108,7 @@ class _SignupPageState extends State<SignupPage> {
                 },
               ),
               CustomTextField(
-                title: AppStaticStrings.confirmPassword,
+                title: AppStaticStrings.confirmPassword.tr,
                 isPassword: true,
                 textEditingController:
                 AuthController.to.confirmPassSignUpController,
@@ -140,7 +140,7 @@ class _SignupPageState extends State<SignupPage> {
                   launchWebsite("https://duducar.co/privacy-policy");
                 },
                 child: CustomText(
-                  text: AppStaticStrings.duduPrivacyPolicy,
+                  text: AppStaticStrings.duduPrivacyPolicy.tr,
                   color: AppColors.kPrimaryColor,
 decoration: TextDecoration.underline,
                   // fontSize: getFontSizeSmall(),
@@ -154,14 +154,14 @@ decoration: TextDecoration.underline,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomText(
-              text: AppStaticStrings.alreadyHaveAccount,
+              text: AppStaticStrings.alreadyHaveAccount.tr,
               style: poppinsRegular,
             ),
             CustomTextButton(
               onPressed: () {
                 Get.toNamed(LoginPage.routeName);
               },
-              title: AppStaticStrings.logIn,
+              title: AppStaticStrings.logIn.tr,
               fontSize: getFontSizeSemiSmall(),
               textColor: AppColors.kBlueAccentColor,
               fontWeight: FontWeight.w600,
@@ -182,7 +182,7 @@ decoration: TextDecoration.underline,
               }
               // Get.toNamed(VerifyEmailPage.routeName);
             },
-            title: AppStaticStrings.createAccount,
+            title: AppStaticStrings.createAccount.tr,
           );
         }),
         space12H,

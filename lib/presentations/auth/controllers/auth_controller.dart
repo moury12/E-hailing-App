@@ -355,7 +355,7 @@ class AuthController extends GetxController {
               spacing: 8.h,
               children: [
                 CustomTextField(
-                  title: AppStaticStrings.phoneNumber,
+                  title: AppStaticStrings.phoneNumber.tr,
                   keyboardType: TextInputType.phone,
                   hintText: "e.g. +8801XXXXXXXXX",
 
@@ -510,7 +510,7 @@ class AuthController extends GetxController {
               // spacing: 8.h, // Your UI-specific code
               children: [
                 CustomTextField(
-                  title: AppStaticStrings.phoneNumber,
+                  title: AppStaticStrings.phoneNumber.tr,
                   keyboardType: TextInputType.phone,
                   hintText: "e.g. +8801XXXXXXXXX",
                   onChanged: (value) => userPhoneNumber = value,

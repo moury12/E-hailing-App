@@ -22,12 +22,12 @@ class VerifyEmailPage extends StatelessWidget {
     return AuthScaffoldStructureWidget(
       space: 6.h,
       children: [
-        AuthTitleTextWidget(title: AppStaticStrings.verifyYourEmail),
-        AuthSubTextWidget(text: AppStaticStrings.weWillSendACode),
+        AuthTitleTextWidget(title: AppStaticStrings.verifyYourEmail.tr),
+        AuthSubTextWidget(text: AppStaticStrings.weWillSendACode.tr),
         Form(
           key: formKey,
           child: CustomTextField(
-            title: AppStaticStrings.email,
+            title: AppStaticStrings.email.tr,
             textEditingController:
                 AuthController.to.emailForgetController.value,
             validator: (value) {
@@ -54,7 +54,7 @@ class VerifyEmailPage extends StatelessWidget {
                 );
               }
             },
-            title: AppStaticStrings.continueButton,
+            title: AppStaticStrings.continueButton.tr,
           );
         }),
       ],

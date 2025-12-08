@@ -25,7 +25,7 @@ class AfterArrivedPickupLocationWidget extends StatelessWidget {
       spacing: 12.h,
       children: [
         CustomText(
-          text: AppStaticStrings.pickup,
+          text: AppStaticStrings.pickup.tr,
           fontSize: getFontSizeDefault(),
         ),
         SvgPicture.asset(pickUpLocationIcon),
@@ -39,7 +39,7 @@ class AfterArrivedPickupLocationWidget extends StatelessWidget {
             // DashBoardController.to.isArrived.value = false;
             // DashBoardController.to.isTripStarted.value = true;
           },
-          title: AppStaticStrings.pickup,
+          title: AppStaticStrings.pickup.tr,
         ),
       ],
     );
@@ -71,7 +71,7 @@ class SendPaymentRequestWidget extends StatelessWidget {
               child: CustomText(
                 text:
                     driverTripResponseModel.dropOffAddress ??
-                    AppStaticStrings.noDataFound,
+                    AppStaticStrings.noDataFound.tr,
               ),
             ),
           ],
@@ -113,7 +113,7 @@ class SendPaymentRequestWidget extends StatelessWidget {
                         .toDouble(),
               );
             },
-            title: AppStaticStrings.sendPaymentRequest,
+            title: AppStaticStrings.sendPaymentRequest.tr,
           );
         }),
       ],

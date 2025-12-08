@@ -151,7 +151,7 @@ class _EarningsBarChartState extends State<EarningsBarChart> {
                 return PaginationLoadingWidget();
               }
               if (monthlyRevenue == null || monthlyRevenue.toJson().isEmpty) {
-                return const CustomText(text: AppStaticStrings.noDataFound);
+                return  CustomText(text: AppStaticStrings.noDataFound);
               }
               final monthlyEarnings = monthlyRevenue.toJson().values.toList();
               final maxEarning = monthlyEarnings.reduce(

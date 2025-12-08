@@ -5,6 +5,9 @@ import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get.dart';
+import 'package:get/get.dart';
 
 import '../../../core/components/custom_button.dart';
 import '../../../core/constants/fontsize_constant.dart';
@@ -35,11 +38,11 @@ class AfterPickedUpWidget extends StatelessWidget {
       spacing: 8.h,
       children: [
         CustomText(
-          text: AppStaticStrings.tripStarted,
+          text: AppStaticStrings.tripStarted.tr,
           fontSize: getFontSizeDefault(),
         ),
         DriverDetails(
-          userName: user != null ? user?.name : AppStaticStrings.noDataFound,
+          userName: user != null ? user?.name : AppStaticStrings.noDataFound.tr,
           userImg: "${ApiService().baseUrl}/${user?.profileImage}",
           fare: fare,
           value: "$duration min",
@@ -52,7 +55,7 @@ class AfterPickedUpWidget extends StatelessWidget {
               newStatus: DriverTripStatus.started.name.toString(),
             );
           },
-          title: AppStaticStrings.startTrip,
+          title: AppStaticStrings.startTrip.tr,
         ),
       ],
     );

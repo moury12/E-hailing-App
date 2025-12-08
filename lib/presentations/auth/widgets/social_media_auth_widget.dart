@@ -10,6 +10,7 @@ import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class SocialMediaAuthWidget extends StatelessWidget {
   const SocialMediaAuthWidget({super.key});
@@ -21,7 +22,7 @@ class SocialMediaAuthWidget extends StatelessWidget {
         Center(
           child: CustomText(
             textAlign: TextAlign.center,
-            text: AppStaticStrings.orContinueWith,
+            text: AppStaticStrings.orContinueWith.tr,
             style: poppinsSemiBold,
             color: AppColors.kTextDarkBlueColor,
           ),
