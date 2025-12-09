@@ -34,13 +34,13 @@ RxString contactEmail="".obs;
 RxString contactNumber="".obs;
   RxList<String> tabs =
       [
-        AppStaticStrings.general,
-        AppStaticStrings.driving,
-        AppStaticStrings.document,
+        AppStaticStrings.general.tr,
+        AppStaticStrings.driving.tr,
+        AppStaticStrings.document.tr,
       ].obs;  RxList<String> tabsForUser =
       [
-        AppStaticStrings.general,
-        AppStaticStrings.document,
+        AppStaticStrings.general.tr,
+        AppStaticStrings.document.tr,
       ].obs;
   var tabContent = <Widget>[].obs;
   RxString profileImgPath = "".obs;
@@ -146,15 +146,15 @@ return;
   }
   reinitializeProfileControllers() {
    nameController.value.text =
-        userModel.value.name ?? AppStaticStrings.noDataFound;
+        userModel.value.name ?? AppStaticStrings.noDataFound.tr;
 
     ///=====================add dynmic email ====================///
    placeController.value.text =
-        userModel.value.address ?? AppStaticStrings.noDataFound;
+        userModel.value.address ?? AppStaticStrings.noDataFound.tr;
 
     ///=====================add dynmic contactNumber ====================///
    contactNumberController.value.text =
-        userModel.value.phoneNumber ?? AppStaticStrings.noDataFound;
+        userModel.value.phoneNumber ?? AppStaticStrings.noDataFound.tr;
   }
   ///------------------------------ get contact method -------------------------///
 

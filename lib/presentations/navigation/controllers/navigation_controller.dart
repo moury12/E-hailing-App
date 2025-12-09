@@ -71,34 +71,34 @@ class NavigationController extends GetxController {
       [
         CommonController.to.isDriver.value
             ? NavigationModel(
-              title: AppStaticStrings.dashboard,
+              title: AppStaticStrings.dashboard.tr,
               img: dashboardIcon,
               index: 0,
             )
             : NavigationModel(
-              title: AppStaticStrings.home,
+              title: AppStaticStrings.home.tr,
               img: homeIcon,
               index: 0,
             ),
         NavigationModel(
-          title: AppStaticStrings.myRides,
+          title: AppStaticStrings.myRides.tr,
           img: rideIcon,
           index: 1,
         ),
         if (CommonController.to.isDriver.value)
           NavigationModel(
-            title: AppStaticStrings.statics,
+            title: AppStaticStrings.statics.tr,
             img: staticsIcon,
             index: 2,
           ),
 
         NavigationModel(
-          title: AppStaticStrings.messages,
+          title: AppStaticStrings.messages.tr,
           img: messageIcon,
           index: CommonController.to.isDriver.value ? 3 : 2,
         ),
         NavigationModel(
-          title: AppStaticStrings.profile,
+          title: AppStaticStrings.profile.tr,
           img: profileIcon,
           index: CommonController.to.isDriver.value ? 4 : 3,
         ),

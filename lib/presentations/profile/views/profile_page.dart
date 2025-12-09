@@ -93,7 +93,7 @@ class ProfilePage extends StatelessWidget {
                                             .userModel
                                             .value
                                             .name ??
-                                        AppStaticStrings.noDataFound,
+                                        AppStaticStrings.noDataFound.tr,
                                     fontSize: getFontSizeDefault(),
                                     color: AppColors.kTextDarkBlueColor,
                                   ),
@@ -104,7 +104,7 @@ class ProfilePage extends StatelessWidget {
                                             .userModel
                                             .value
                                             .email ??
-                                        AppStaticStrings.noDataFound,
+                                        AppStaticStrings.noDataFound.tr,
                                     fontSize: getFontSizeSmall(),
                                     color: AppColors.kExtraLightTextColor,
                                   ),
@@ -129,7 +129,7 @@ class ProfilePage extends StatelessWidget {
                   children: [
                     ProfileActionItemWidget(
                       img: settingsIcon,
-                      title: AppStaticStrings.accountSetting,
+                      title: AppStaticStrings.accountSetting.tr,
                       onTap: () {
                         Get.toNamed(AccountSettingsPage.routeName);
                       },
@@ -137,21 +137,21 @@ class ProfilePage extends StatelessWidget {
                     CommonController.to.isDriver.value
                         ? ProfileActionItemWidget(
                           img: vehicleDetailsIcon,
-                          title: AppStaticStrings.vehicleDetails,
+                          title: AppStaticStrings.vehicleDetails.tr,
                           onTap: () {
                             Get.toNamed(VehicleDetailsPage.routeName);
                           },
                         )
                         : ProfileActionItemWidget(
                           img: coinIcon,
-                          title: AppStaticStrings.duduCoinWallet,
+                          title: AppStaticStrings.duduCoinWallet.tr,
                           onTap: () {
                             Get.toNamed(CoinPage.routeName);
                           },
                         ),
                     ProfileActionItemWidget(
                       img: notificationProfileIcon,
-                      title: AppStaticStrings.notification,
+                      title: AppStaticStrings.notification.tr,
                       onTap: () {
                         Get.toNamed(NotificationPage.routeName);
                       },
@@ -159,14 +159,14 @@ class ProfilePage extends StatelessWidget {
                     CommonController.to.isDriver.value
                         ? ProfileActionItemWidget(
                           img: earningIcon,
-                          title: AppStaticStrings.earnings,
+                          title: AppStaticStrings.earnings.tr,
                           onTap: () {
                             Get.toNamed(EarningsPage.routeName);
                           },
                         )
                         : ProfileActionItemWidget(
                           img: savedLocationIcon,
-                          title: AppStaticStrings.savedLocation,
+                          title: AppStaticStrings.savedLocation.tr,
                           onTap: () {
                             Get.toNamed(SavedLocationPage.routeName);
                           },
@@ -174,14 +174,14 @@ class ProfilePage extends StatelessWidget {
                     if (!CommonController.to.isDriver.value)
                       ProfileActionItemWidget(
                         img: penaltyIcon,
-                        title: AppStaticStrings.pendingPenalty,
+                        title: AppStaticStrings.pendingPenalty.tr,
                         onTap: () {
                           Get.to(PenaltyPage());
                         },
                       ),
                     ProfileActionItemWidget(
                       img: languageIcon,
-                      title: AppStaticStrings.language,
+                      title: AppStaticStrings.language.tr,
                       onTap: () {
                         Get.dialog(
                           AlertDialog(
@@ -215,43 +215,43 @@ class ProfilePage extends StatelessWidget {
                     ),
 
                     CustomText(
-                      text: AppStaticStrings.more,
+                      text: AppStaticStrings.more.tr,
                       fontSize: getFontSizeDefault(),
                     ),
                     ProfileActionItemWidget(
                       img: feedBackIcon,
-                      title: AppStaticStrings.feedback,
+                      title: AppStaticStrings.feedback.tr,
                       onTap: () {
                         Get.toNamed(FeedbackPage.routeName);
                       },
                     ),
                     ProfileActionItemWidget(
                       img: termsIcon,
-                      title: AppStaticStrings.termsAndCondition,
+                      title: AppStaticStrings.termsAndCondition.tr,
                       onTap: () {
                         Get.toNamed(
                           TermsPolicyHelpPage.routeName,
-                          arguments: AppStaticStrings.termsAndCondition,
+                          arguments: AppStaticStrings.termsAndCondition.tr,
                         );
                       },
                     ),
                     ProfileActionItemWidget(
                       img: privacyIcon,
-                      title: AppStaticStrings.privacyPolicy,
+                      title: AppStaticStrings.privacyPolicy.tr,
                       onTap: () {
                         Get.toNamed(
                           TermsPolicyHelpPage.routeName,
-                          arguments: AppStaticStrings.privacyPolicy,
+                          arguments: AppStaticStrings.privacyPolicy.tr,
                         );
                       },
                     ),
                     // ProfileActionItemWidget(
                     //   img: helpIcon,
-                    //   title: AppStaticStrings.helpSupport,
+                    //   title: AppStaticStrings.helpSupport.tr,
                     //   onTap: () {
                     //     Get.toNamed(
                     //       TermsPolicyHelpPage.routeName,
-                    //       arguments: AppStaticStrings.helpSupport,
+                    //       arguments: AppStaticStrings.helpSupport.tr,
                     //     );
                     //   },
                     // ),
@@ -263,7 +263,7 @@ class ProfilePage extends StatelessWidget {
                           ? PaginationLoadingWidget()
                           : ProfileActionItemWidget(
                             img: logoutIcon,
-                            title: AppStaticStrings.logOut,
+                            title: AppStaticStrings.logOut.tr,
                             onTap: () {
 
                               AccountInformationController.to.logoutRequest();

@@ -230,7 +230,7 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
           (isDriver
               ? model.user?.name.toString()
               : model.driver?.name.toString()) ??
-          AppStaticStrings.noDataFound;
+          AppStaticStrings.noDataFound.tr;
       rating = !isDriver ? model.driver!.rating.toString() : "0.0";
       driverImage =
           model.driver?.profileImage != null
