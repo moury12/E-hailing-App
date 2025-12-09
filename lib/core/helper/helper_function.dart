@@ -357,7 +357,7 @@ Future<void> showCredentialsDialog() async {
                       textColor: AppColors.kPrimaryColor,
                       fillColor: Colors.transparent,
                       onTap: () => Get.back(),
-                      title: AppStaticStrings.cancel.tr.tr,
+                      title: AppStaticStrings.cancel.tr,
                     ),
                   ),
                   Expanded(
@@ -370,7 +370,7 @@ Future<void> showCredentialsDialog() async {
 
                         Get.back();
                       },
-                      title: AppStaticStrings.confirm.tr.tr,
+                      title: AppStaticStrings.confirm.tr,
                     ),
                   ),
                 ],

@@ -28,7 +28,7 @@ class DCoinDialogPaymentWidget extends StatelessWidget {
         spacing: 8.h,
         children: [
           CustomText(
-            text: AppStaticStrings.paymentWithDCoin,
+            text: AppStaticStrings.paymentWithDCoin.tr,
             style: poppinsSemiBold,
             fontSize: getFontSizeDefault(),
           ),
@@ -49,7 +49,7 @@ class DCoinDialogPaymentWidget extends StatelessWidget {
                   Expanded(
                     child: CustomText(
                       text:
-                      AppStaticStrings.availableCoin,
+                      AppStaticStrings.availableCoin.tr,
                     ),
                   ),
                   Obx(() {
@@ -73,7 +73,7 @@ class DCoinDialogPaymentWidget extends StatelessWidget {
                   CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      text: AppStaticStrings.totalCost,
+                      text: AppStaticStrings.totalCost.tr,
                       color:
                       AppColors.kExtraLightTextColor,
                     ),
@@ -90,7 +90,7 @@ class DCoinDialogPaymentWidget extends StatelessWidget {
               //
               //     children: [
               //       CustomText(
-              //         text: AppStaticStrings.tripDuration,
+              //         text: AppStaticStrings.tripDuration.tr,
               //         color:
               //         AppColors.kExtraLightTextColor,
               //       ),
@@ -115,7 +115,7 @@ class DCoinDialogPaymentWidget extends StatelessWidget {
                   fromDcoin: true
                 );
               },
-              title: AppStaticStrings.confirm,
+              title: AppStaticStrings.confirm.tr,
             );
           }),
           // FromToTimeLine()

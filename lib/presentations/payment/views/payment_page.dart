@@ -74,7 +74,7 @@ class _PaymentPageState extends State<PaymentPage> {
         int.parse(extraCharge)}";
 
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.payment),
+      appBar: CustomAppBar(title: AppStaticStrings.payment.tr),
       body: SingleChildScrollView(
         child: Padding(
           padding: padding16.copyWith(top: 0),
@@ -85,32 +85,32 @@ class _PaymentPageState extends State<PaymentPage> {
                 SvgPicture.asset(successfulIcon),
 
                 CustomText(
-                  text: AppStaticStrings.rideEnded,
+                  text: AppStaticStrings.rideEnded.tr,
                   color: AppColors.kExtraLightBlackColor,
                   style: poppinsRegular,
                   fontSize: getFontSizeSmall(),
                 ),
                 CustomText(
-                  text: AppStaticStrings.arriveOnLocation,
+                  text: AppStaticStrings.arriveOnLocation.tr,
 
                   style: poppinsBold,
                   fontSize: getFontSizeExtraLarge(),
                 ),
                 CarInformationWidget(
-                  title: AppStaticStrings.rent,
+                  title: AppStaticStrings.rent.tr,
                   value: 'RM $rent',
                 ),
                 CarInformationWidget(
-                  title: AppStaticStrings.tollFee,
+                  title: AppStaticStrings.tollFee.tr,
                   value: 'RM $tollFee',
                 ),
                 CarInformationWidget(
-                  title: AppStaticStrings.extraCharge,
+                  title: AppStaticStrings.extraCharge.tr,
                   value: 'RM $extraCharge',
                 ),
                 Divider(color: AppColors.kGreyColor, height: 2, thickness: 2),
                 CarInformationWidget(
-                  title: AppStaticStrings.totalPayment,
+                  title: AppStaticStrings.totalPayment.tr,
                   value: 'RM $finalFee',
                 ),
                 space12H,
@@ -142,7 +142,7 @@ class _PaymentPageState extends State<PaymentPage> {
                           DriverTripStatus.completed.name.toString(),
                         );
                       },
-                      title: AppStaticStrings.confirm,
+                      title: AppStaticStrings.confirm.tr,
                     ),
                     CustomButton(
                       onTap: () {
@@ -153,7 +153,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       },
                       fillColor: Colors.transparent,
                       textColor: AppColors.kPrimaryColor,
-                      title: AppStaticStrings.notYet,
+                      title: AppStaticStrings.notYet.tr,
                     ),
                   ],
                 )
@@ -173,7 +173,7 @@ class _PaymentPageState extends State<PaymentPage> {
       case 'cash':
         return PaymentCardItem(
           img: handCashIcon,
-          title: AppStaticStrings.handCash,
+          title: AppStaticStrings.handCash.tr,
           onTap: () {
             // handle cash tap
           },
@@ -182,7 +182,7 @@ class _PaymentPageState extends State<PaymentPage> {
       case 'coin':
         return PaymentCardItem(
           img: coinIcon,
-          title: AppStaticStrings.dCoin,
+          title: AppStaticStrings.dCoin.tr,
           onTap: () {
             if (role != driver) {
               Get.dialog(DCoinDialogPaymentWidget(
@@ -199,7 +199,7 @@ class _PaymentPageState extends State<PaymentPage> {
           return PaymentCardItem(
             img: cardsIcon,
             isLoading: CommonController.to.isLoadingPayment.value,
-            title: AppStaticStrings.creditDebitCards,
+            title: AppStaticStrings.creditDebitCards.tr,
             onTap: () {
               if (role != driver) {
                 CommonController.to.postPaymentRequest(

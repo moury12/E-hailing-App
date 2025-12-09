@@ -69,7 +69,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           (isDriver
               ? model.user?.name.toString()
               : model.driver?.name.toString()) ??
-              AppStaticStrings.noDataFound;
+              AppStaticStrings.noDataFound.tr;
       rating=!isDriver?model.driver!.rating.toString():"0.0";
       driverImage =
       model.driver?.profileImage != null
@@ -140,13 +140,13 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
               ),
               Expanded(
                 child: MyRidesHistoryTripInfoWidget(
-                  title: AppStaticStrings.finalCost,
+                  title: AppStaticStrings.finalCost.tr,
                   text: cost,
                 ),
               ),
               Expanded(
                 child: MyRidesHistoryTripInfoWidget(
-                  title: AppStaticStrings.tripDistance,
+                  title: AppStaticStrings.tripDistance.tr,
                   text: distance, 
                 ),
               ),

@@ -22,36 +22,36 @@ String preBook= "pre_book";
 String nrcVerificationField= "nrc_verification_status";
 List<TripCancellationModel> tripCancellationList =CommonController.to.isDriver.value? [
   TripCancellationModel(
-    title: AppStaticStrings.riderNoShow,
+    title: AppStaticStrings.riderNoShow.tr,
     isChecked: false.obs,
   ),
   TripCancellationModel(
-    title: AppStaticStrings.wrongPickupLocation,
+    title: AppStaticStrings.wrongPickupLocation.tr,
     isChecked: false.obs,
   ),
   TripCancellationModel(
-    title: AppStaticStrings.safetyConcerns,
+    title: AppStaticStrings.safetyConcerns.tr,
     isChecked: false.obs,
   ),
   TripCancellationModel(
-    title: AppStaticStrings.vehicleIssue,
+    title: AppStaticStrings.vehicleIssue.tr,
     isChecked: false.obs,
   ),
   TripCancellationModel(
-    title: AppStaticStrings.tripRequestError,
+    title: AppStaticStrings.tripRequestError.tr,
     isChecked: false.obs,
   ),
 ]: [
   TripCancellationModel(
-    title: AppStaticStrings.waitingTimeIsLong,
+    title: AppStaticStrings.waitingTimeIsLong.tr,
     isChecked: false.obs,
   ),
   TripCancellationModel(
-    title: AppStaticStrings.changeOfTravelPlan,
+    title: AppStaticStrings.changeOfTravelPlan.tr,
     isChecked: false.obs,
   ),
   TripCancellationModel(
-    title: AppStaticStrings.tripReqError,
+    title: AppStaticStrings.tripReqError.tr,
     isChecked: false.obs,
   ),
 
@@ -73,9 +73,9 @@ String driver = 'driver';
 String user = 'user';
 
 final List<Map<String, String>> paymentMethodList = [
-   {"value": "online", "label":AppStaticStrings.creditDebitCards},
-  {"value": "cash", "label":AppStaticStrings.handCash},
-  {"value": "coin", "label":AppStaticStrings.dCoin},
+   {"value": "online", "label":AppStaticStrings.creditDebitCards.tr},
+  {"value": "cash", "label":AppStaticStrings.handCash.tr},
+  {"value": "coin", "label":AppStaticStrings.dCoin.tr},
 ];
 
 

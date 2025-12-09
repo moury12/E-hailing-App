@@ -25,7 +25,7 @@ class _OnlinePaymentScreenState extends State<OnlinePaymentScreen> {
     }
 
     return Scaffold(
-      appBar:CustomAppBar( title:AppStaticStrings.payment,),
+      appBar:CustomAppBar( title:AppStaticStrings.payment.tr,),
       body: Stack(
         children: [
           WebViewWidget(controller: commonController.webController!),
