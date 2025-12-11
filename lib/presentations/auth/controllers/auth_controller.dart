@@ -5,6 +5,7 @@ import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_space.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
+import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/device-service/device_service.dart';
 
@@ -15,6 +16,7 @@ import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/otp_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/reset_password_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
+import 'package:e_hailing_app/presentations/auth/widgets/referal_code_submit_widget.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/foundation.dart';
@@ -36,7 +38,7 @@ class AuthController extends GetxController {
 
   RxBool isRememberMe = false.obs;
   RxBool isPrivacyPolicyChecked = false.obs;
-
+  RxBool isLoadingApply = false.obs;
   var tabContent = <Widget>[].obs;
   Rx<AuthProcess> loadingProcess = AuthProcess.none.obs;
 
@@ -104,6 +106,38 @@ class AuthController extends GetxController {
     } catch (e) {
       loadingProcess.value = AuthProcess.none;
       logger.e(e.toString());
+    }
+  }
+  ///------------------------------ sign up method -------------------------///
+  Future<bool> applyReferalCode({required String code}) async {
+    try {
+      isLoadingApply.value = true;
+      final response = await ApiService().request(
+        endpoint: getReferralsEndpoint,
+        method: 'POST',
+        body: {
+          "code": code
+        },
+        useAuth: true,
+      );
+
+      logger.d(response);
+      if (response['success'] == true) {
+        showCustomSnackbar(title: 'Success', message: response['message']);
+        return true; // Return success
+      } else {
+        showCustomSnackbar(
+          title: 'Failed',
+          message: response['message'],
+          type: SnackBarType.failed,
+        );
+        return false; // Return failure
+      }
+    } catch (e) {
+      logger.e(e.toString());
+      return false; // Return failure on exception
+    } finally {
+      isLoadingApply.value = false;
     }
   }
 
@@ -279,7 +313,10 @@ class AuthController extends GetxController {
 
         CommonController.to.initialSetup();
 
-        checkVerifiedOrNot(status: response["data"][nrcVerificationField]);
+        checkVerifiedOrNot(
+          status: response["data"][nrcVerificationField],
+          isFirstTimeLogin: response["data"]['first_time_log_in'],
+        );
       } else {
         logger.e(response);
 
@@ -295,7 +332,28 @@ class AuthController extends GetxController {
     }
   }
 
-  void checkVerifiedOrNot({String? status, String? token}) {
+  void checkVerifiedOrNot({String? status, bool? isFirstTimeLogin}) {
+    ///**************************************************///
+    if (isFirstTimeLogin == true) {
+      Get.dialog(
+        barrierDismissible: false,
+        AlertDialog(
+          contentPadding: padding12,
+
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+          content: ReferalCodeSubmitWidget(),
+        ),
+      ).then((_) {
+        // After referral dialog is closed, check verification status
+        _checkVerificationStatus(status);
+      });
+    } else {
+      // If not first time login, directly check verification status
+      _checkVerificationStatus(status);
+    }
+  }
+
+  void _checkVerificationStatus(String? status) {
     if (status != null &&
         (status == NrcVerificationStatus.unverified.name ||
             status == NrcVerificationStatus.rejected.name)) {
@@ -417,6 +475,7 @@ class AuthController extends GetxController {
 
           checkVerifiedOrNot(
             status: retryResponse["data"][nrcVerificationField],
+            isFirstTimeLogin: retryResponse["data"]['first_time_log_in'],
           );
         } else {
           showCustomSnackbar(
@@ -440,6 +499,7 @@ class AuthController extends GetxController {
 
         checkVerifiedOrNot(
           status: initialResponse["data"][nrcVerificationField],
+          isFirstTimeLogin: initialResponse["data"]['first_time_log_in'],
         );
       }
     } catch (e) {
@@ -467,21 +527,6 @@ class AuthController extends GetxController {
               AppleIDAuthorizationScopes.fullName,
             ],
           );
-
-      // final String? email = credential.email;
-      //
-      // // IMPORTANT: On subsequent logins, Apple does not provide the email.
-      // // Your logic requires an email, so we must stop if it's not available.
-      // if (email == null) {
-      //   showCustomSnackbar(
-      //     title: 'Login Error',
-      //     message:
-      //         'Could not retrieve email. This can happen on subsequent logins. Please contact support if this issue persists.',
-      //     type: SnackBarType.failed,
-      //   );
-      //   isAppleAuthLoading.value = false;
-      //   return;
-      // }
 
       final initialResponse = await ApiService().request(
         endpoint: appleLoginEndPoint,
@@ -571,6 +616,7 @@ class AuthController extends GetxController {
 
           checkVerifiedOrNot(
             status: retryResponse["data"][nrcVerificationField],
+            isFirstTimeLogin: retryResponse["data"]['first_time_log_in'],
           );
         } else {
           showCustomSnackbar(
@@ -594,6 +640,7 @@ class AuthController extends GetxController {
 
         checkVerifiedOrNot(
           status: initialResponse["data"][nrcVerificationField],
+          isFirstTimeLogin: initialResponse["data"]['first_time_log_in'],
         );
       }
       // }
@@ -668,3 +715,4 @@ class AuthController extends GetxController {
     focusNodes[0].requestFocus();
   }
 }
+

@@ -67,40 +67,40 @@ class NavigationController extends GetxController {
     ];
   }
 
-  RxList<NavigationModel> navList =
-      [
-        CommonController.to.isDriver.value
-            ? NavigationModel(
-              title: AppStaticStrings.dashboard.tr,
-              img: dashboardIcon,
-              index: 0,
-            )
-            : NavigationModel(
-              title: AppStaticStrings.home.tr,
-              img: homeIcon,
-              index: 0,
-            ),
+  List<NavigationModel> get navList {
+    return [
+      CommonController.to.isDriver.value
+          ? NavigationModel(
+        title: AppStaticStrings.dashboard.tr,
+        img: dashboardIcon,
+        index: 0,
+      )
+          : NavigationModel(
+        title: AppStaticStrings.home.tr,
+        img: homeIcon,
+        index: 0,
+      ),
+      NavigationModel(
+        title: AppStaticStrings.myRides.tr,
+        img: rideIcon,
+        index: 1,
+      ),
+      if (CommonController.to.isDriver.value)
         NavigationModel(
-          title: AppStaticStrings.myRides.tr,
-          img: rideIcon,
-          index: 1,
+          title: AppStaticStrings.statics.tr,
+          img: staticsIcon,
+          index: 2,
         ),
-        if (CommonController.to.isDriver.value)
-          NavigationModel(
-            title: AppStaticStrings.statics.tr,
-            img: staticsIcon,
-            index: 2,
-          ),
-
-        NavigationModel(
-          title: AppStaticStrings.messages.tr,
-          img: messageIcon,
-          index: CommonController.to.isDriver.value ? 3 : 2,
-        ),
-        NavigationModel(
-          title: AppStaticStrings.profile.tr,
-          img: profileIcon,
-          index: CommonController.to.isDriver.value ? 4 : 3,
-        ),
-      ].obs;
+      NavigationModel(
+        title: AppStaticStrings.messages.tr,
+        img: messageIcon,
+        index: CommonController.to.isDriver.value ? 3 : 2,
+      ),
+      NavigationModel(
+        title: AppStaticStrings.profile.tr,
+        img: profileIcon,
+        index: CommonController.to.isDriver.value ? 4 : 3,
+      ),
+    ];
+  }
 }

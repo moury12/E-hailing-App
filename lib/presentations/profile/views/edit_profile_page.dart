@@ -23,7 +23,7 @@ class EditProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.profile),
+      appBar: CustomAppBar(title: AppStaticStrings.profile.tr),
       body: SingleChildScrollView(
         child: Padding(
           padding: padding12,
@@ -87,12 +87,12 @@ class EditProfilePage extends StatelessWidget {
                   ],
                 ),
                 CustomTextField(
-                  title: AppStaticStrings.fullName,
+                  title: AppStaticStrings.fullName.tr,
                   textEditingController:
                       AccountInformationController.to.nameController.value,
                 ),
                 CustomTextField(
-                  title: AppStaticStrings.phoneNumber,
+                  title: AppStaticStrings.phoneNumber.tr,
                   textEditingController:
                       AccountInformationController
                           .to
@@ -100,19 +100,19 @@ class EditProfilePage extends StatelessWidget {
                           .value,
                 ),
                 CustomTextField(
-                  title: AppStaticStrings.placeAddress,
+                  title: AppStaticStrings.placeAddress.tr,
                   textEditingController:
                       AccountInformationController.to.placeController.value,
                 ),
                 CustomButton(onTap: () {
                   Get.to(VerifyIdentityPage());
                 },
-                title: AppStaticStrings.verifyYourIdentity,fillColor: AppColors.kPrimaryLightColor,textColor: AppColors.kPrimaryColor,),
+                title: AppStaticStrings.verifyYourIdentity.tr,fillColor: AppColors.kPrimaryLightColor,textColor: AppColors.kPrimaryColor,),
                 CustomButton(
                   onTap: () {
                     AccountInformationController.to.updateProfileRequest();
                   },
-                  title: AppStaticStrings.save,
+                  title: AppStaticStrings.save.tr,
                   isLoading:
                       AccountInformationController
                           .to

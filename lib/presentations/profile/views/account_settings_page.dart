@@ -35,7 +35,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.accountSetting),
+      appBar: CustomAppBar(title: AppStaticStrings.accountSetting.tr),
       body: SingleChildScrollView(
         child: Padding(
           padding: padding14.copyWith(top: 0),
@@ -44,16 +44,16 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
             children: [
               ProfileActionItemWidget(
                 img: profileIcon,
-                title: AppStaticStrings.accountInformation,
+                title: AppStaticStrings.accountInformation.tr,
                 onTap: () => Get.toNamed(AccountInformationPage.routeName),
               ),
               ProfileActionItemWidget(
                 img: changePassIcon,
-                title: AppStaticStrings.changePassword,
+                title: AppStaticStrings.changePassword.tr,
                 onTap: () => Get.toNamed(ChangePasswordPage.routeName),
               ),  ProfileActionItemWidget(
                 img: locationIcon,
-                title: AppStaticStrings.locationPermission,
+                title: AppStaticStrings.locationPermission.tr,
                 onTap: () => LocationTrackingService().handleLocationPermission().then((value) {
                   if(value){
                     showCustomSnackbar(title: "Success", message: "Location permission already granted.") ;
@@ -63,7 +63,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
               Obx(() {
                 return  CommonController.to.isDriver.value ? SizedBox.shrink() :ProfileActionItemWidget(
                   img: deleteAccountIcon,
-                  title: AppStaticStrings.deleteAcc,
+                  title: AppStaticStrings.deleteAcc.tr,
                   onTap:
                       () =>
                       showDialog(
@@ -80,7 +80,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                     CustomText(
                                       text:
                                       AppStaticStrings
-                                          .areYouSureYouWantToDelete,
+                                          .areYouSureYouWantToDelete.tr,
                                       textAlign: TextAlign.center,
                                     ),
                                     space8H,
@@ -90,12 +90,12 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                       CustomTextField(
                                         textEditingController: passController,
 
-                                        title: AppStaticStrings.password,
+                                        title: AppStaticStrings.password.tr,
                                         isPassword: true,
                                         validator: (value) {
                                           if (value!.isEmpty) {
                                             return AppStaticStrings
-                                                .passRequired;
+                                                .passRequired.tr;
                                           }
                                           return null;
                                         },
@@ -111,7 +111,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                             textColor: AppColors.kPrimaryColor,
                                             fillColor: Colors.transparent,
                                             onTap: () => Get.back(),
-                                            title: AppStaticStrings.cancel,
+                                            title: AppStaticStrings.cancel.tr,
                                           ),
                                         ),
                                         Expanded(
@@ -133,7 +133,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                                                     password: "ghghghf");
                                               }
                                             },
-                                            title: AppStaticStrings.delete,
+                                            title: AppStaticStrings.delete.tr,
                                           ),
                                         ),
                                       ],

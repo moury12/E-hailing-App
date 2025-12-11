@@ -1,4 +1,10 @@
 class AppStaticStrings {
+
+  ///_______________________________
+  static String referalCode = 'Referral code';
+  static String yourReferalCode = 'Your Referral code';
+  static String referedBy = ' is referred by';
+  // –––––––––––––––––––––––––––––––
   // validation
   static String emailRequired = 'emailRequired';
   static String passRequired = 'passRequired';

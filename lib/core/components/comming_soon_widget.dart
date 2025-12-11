@@ -5,7 +5,6 @@ import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get.dart';
 class ComingSoonWidget extends StatelessWidget {
   const ComingSoonWidget({
     super.key,
