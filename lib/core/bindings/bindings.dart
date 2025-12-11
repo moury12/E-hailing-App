@@ -3,12 +3,10 @@ import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
-import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
 import 'package:e_hailing_app/presentations/notification/controller/notification_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/d_coin_controller.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/driver_settings_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 

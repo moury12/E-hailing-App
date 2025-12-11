@@ -32,16 +32,21 @@ class AccountInformationController extends GetxController {
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
 RxString contactEmail="".obs;
 RxString contactNumber="".obs;
-  RxList<String> tabs =
+
+  List<String> get tabs {
+    return
       [
         AppStaticStrings.general.tr,
         AppStaticStrings.driving.tr,
         AppStaticStrings.document.tr,
-      ].obs;  RxList<String> tabsForUser =
+      ].obs;  }
+
+  List<String> get tabsForUser {
+    return
       [
         AppStaticStrings.general.tr,
         AppStaticStrings.document.tr,
-      ].obs;
+      ].obs;}
   var tabContent = <Widget>[].obs;
   RxString profileImgPath = "".obs;
   RxBool isLoadingChangePass = false.obs;

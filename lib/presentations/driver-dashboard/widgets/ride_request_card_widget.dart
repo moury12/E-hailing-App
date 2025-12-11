@@ -7,8 +7,6 @@ import 'package:e_hailing_app/presentations/splash/controllers/common_controller
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
 
 import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';

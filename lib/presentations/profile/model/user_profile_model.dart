@@ -20,6 +20,10 @@ class UserProfileModel {
   String? drivingLicenseImage;
   String? userAccountStatus;
   String? createdAt;
+  String? referredBy;
+  String? referredCode;
+  String? referralCode;
+  int? completedReferralCount;
   String? updatedAt;
   String? identificationNum;
   List<dynamic>? nrcImages;
@@ -34,6 +38,10 @@ class UserProfileModel {
     this.sId,
     this.authId,
     this.name,
+    this.referredBy,
+    this.referredCode,
+    this.referralCode,
+    this.completedReferralCount,
     this.email,
     this.role,
     this.img,
@@ -65,6 +73,10 @@ class UserProfileModel {
     sId = json['_id'];
     authId = json['authId'] != null ? AuthId.fromJson(json['authId']) : null;
     name = json['name'];
+    referredBy= json['referredBy'];
+    referredCode= json['referredCode'];
+    referralCode= json['referralCode'];
+    completedReferralCount= json['completedReferralCount'];
     email = json['email'];
     role = json['role'];
     img = json['profile_image'];
@@ -105,6 +117,10 @@ class UserProfileModel {
       data['authId'] = authId!.toJson();
     }
     data['name'] = name;
+    data['referredBy'] = referredBy;
+    data['referredCode'] = referredCode;
+    data['referralCode'] = referralCode;
+    data['completedReferralCount'] = completedReferralCount;
     data['email'] = email;
     data['role'] = role;
     data['profile_image'] = img;

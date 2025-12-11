@@ -39,5 +39,6 @@ String getDriverEarningReportEndpoint = 'payment/get-driver-earning-report';
 String getPrivacyEndpoint = 'manage/get-privacy-policy';
 String getTermsEndpoint = 'manage/get-terms-conditions';
 String getChatMessagesEndpoint = 'chat/get-chat-messages';
+String getReferralsEndpoint = 'referrals';
 String getUserCurrentTripEndpoint = 'trip/get-user-current-trip';
 String getCurrentDriverTripEndpoint = 'trip/get-driver-current-trip';

@@ -32,7 +32,7 @@ class AccountInformationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: AppStaticStrings.profile,
+        title: AppStaticStrings.profile.tr,
         action: [
           if (!CommonController.to.isDriver.value)
             IconButton(
@@ -81,7 +81,7 @@ class AccountInformationPage extends StatelessWidget {
                           CustomText(
                             text:
                             AccountInformationController.to.userModel.value.name ??
-                                AppStaticStrings.noDataFound,
+                                AppStaticStrings.noDataFound.tr,
                             style: poppinsSemiBold,
                             fontSize: getFontSizeExtraLarge(),
                           ),
@@ -147,40 +147,40 @@ Get.to(DriverReviewListPage());
                               spacing: 12.h,
                               children: [
                                 ProfileCardItemWidget(
-                                  title: AppStaticStrings.nationalIdPassport,
+                                  title: AppStaticStrings.nationalIdPassport.tr,
                                   value:
                                   AccountInformationController.to.userModel
                                       .value.idOrPassportNo ??
-                                      AppStaticStrings.noDataFound,
+                                      AppStaticStrings.noDataFound.tr,
                                 ),
                                 ProfileCardItemWidget(
-                                  title: AppStaticStrings.drivingLicense,
+                                  title: AppStaticStrings.drivingLicense.tr,
                                   value:
                                   AccountInformationController.to.userModel
                                       .value.drivingLicenseNo ??
-                                      AppStaticStrings.noDataFound,
+                                      AppStaticStrings.noDataFound.tr,
                                 ),
                                 ProfileCardItemWidget(
-                                  title: AppStaticStrings.licenseType,
+                                  title: AppStaticStrings.licenseType.tr,
                                   value:
                                   AccountInformationController.to.userModel
                                       .value.licenseType ??
-                                      AppStaticStrings.noDataFound,
+                                      AppStaticStrings.noDataFound.tr,
                                 ),
                                 ProfileCardItemWidget(
-                                  title: AppStaticStrings.licenseExpire,
+                                  title: AppStaticStrings.licenseExpire.tr,
                                   value:
                                   AccountInformationController.to.userModel
                                       .value.licenseExpiry ??
-                                      AppStaticStrings.noDataFound,
+                                      AppStaticStrings.noDataFound.tr,
                                 ),
                                 // ProfileCardItemWidget(
-                                //   title: AppStaticStrings.evpNumber,
+                                //   title: AppStaticStrings.evpNumber.tr,
                                 //   value: AccountInformationController.to.userModel.value. ??
-                                //       AppStaticStrings.noDataFound,
+                                //       AppStaticStrings.noDataFound.tr,
                                 // ),
                                 // ProfileCardItemWidget(
-                                //   title: AppStaticStrings.evpValidityPeriod,
+                                //   title: AppStaticStrings.evpValidityPeriod.tr,
                                 //   value: 'Juvenal Ridge, Port Vestach',
                                 // ),
                               ],
@@ -194,7 +194,7 @@ Get.to(DriverReviewListPage());
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CustomText(
-                                      text: AppStaticStrings.drivingLicense),
+                                      text: AppStaticStrings.drivingLicense.tr),
                                   CustomNetworkImage(
                                     isImagePreview: true,
                                     imageUrl:
@@ -206,7 +206,7 @@ Get.to(DriverReviewListPage());
                                     height: 150.w,
                                   ),
                                   CustomText(text: AppStaticStrings
-                                      .nationalIdPassport),
+                                      .nationalIdPassport.tr),
                                   CustomNetworkImage(
                                     isImagePreview: true,
                                     imageUrl:
@@ -218,7 +218,7 @@ Get.to(DriverReviewListPage());
                                     height: 150.w,
                                   ),
                                   CustomText(text: AppStaticStrings
-                                      .eHailingVehiclePermit),
+                                      .eHailingVehiclePermit.tr),
                                   // ${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.assignedCar?.eHailingVehiclePermitPdf}
                                   GestureDetector(
                                     onTap: () {
@@ -253,14 +253,14 @@ Get.to(DriverReviewListPage());
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   ProfileCardItemWidget(
-                                    title: AppStaticStrings.nricPassport,
+                                    title: AppStaticStrings.nricPassport.tr,
                                     value:
                                     AccountInformationController.to.userModel
                                         .value.identificationNum ??
-                                        AppStaticStrings.noDataFound,
+                                        AppStaticStrings.noDataFound.tr,
                                   ),
                                   // CustomText(
-                                  //     text: AppStaticStrings.nricPassport),
+                                  //     text: AppStaticStrings.nricPassport.tr),
                              if(AccountInformationController.to
                                  .userModel.value.nrcImages!=null)     Wrap(
 
