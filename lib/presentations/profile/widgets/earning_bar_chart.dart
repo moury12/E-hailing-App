@@ -10,6 +10,7 @@ import 'package:e_hailing_app/presentations/profile/widgets/custom_container_wit
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
 class EarningsBarChart extends StatefulWidget {
@@ -50,7 +51,7 @@ class _EarningsBarChartState extends State<EarningsBarChart> {
               children: [
                 Expanded(
                   child: CustomText(
-                    text: 'Earnings Growth',
+                    text: AppStaticStrings.earningsGrowth.tr,
                     style: poppinsBold,
                     fontSize: getFontSizeDefault(),
                   ),

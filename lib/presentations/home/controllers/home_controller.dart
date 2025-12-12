@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
@@ -60,7 +61,9 @@ class HomeController extends GetxController {
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
   RxString tripType = "ride".obs;
-  RxList<String> tripDetailsTabs = ["Car info", "Driver Reviews"].obs;
+  List<String> get tripDetailsTabs {
+    return [AppStaticStrings.carInfo.tr, AppStaticStrings.driverReview.tr].obs;
+  }
   RxBool isCancellingTrip = false.obs;
 
   RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;

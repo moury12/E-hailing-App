@@ -13,8 +13,9 @@ import '../../../core/utils/variables.dart';
 
 class DriverSettingsController extends GetxController {
   static DriverSettingsController get to => Get.find();
-  RxList<String> tabLabels =
-      [AppStaticStrings.general, AppStaticStrings.licensePlate].obs;
+  List<String> get tabLabels {
+    return [AppStaticStrings.general.tr, AppStaticStrings.licensePlate.tr].obs;
+  }
 
   Rx<AssignedCarModel> assignCarModel = AssignedCarModel().obs;
   Rx<DriverEarningModel> driverEarningModel = DriverEarningModel().obs;
@@ -40,7 +41,9 @@ class DriverSettingsController extends GetxController {
         endpoint: getCarEndpoint,
         method: 'GET',
         queryParams: {
-          "carId": AccountInformationController.to.userModel.value.assignedCar!.sId.toString(),
+          "carId":
+              AccountInformationController.to.userModel.value.assignedCar!.sId
+                  .toString(),
         },
       );
       isLoadingCar.value = false;

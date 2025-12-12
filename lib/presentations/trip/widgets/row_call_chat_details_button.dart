@@ -74,7 +74,7 @@ class RowCallChatDetailsButton extends StatelessWidget {
                     arguments: pickupDestination,
                   );
                 },
-            title: lastItemName ?? AppStaticStrings.track,
+            title: lastItemName ?? AppStaticStrings.track.tr,
           ),
         )
             : SizedBox.shrink(),
@@ -97,7 +97,7 @@ class CancelTripButtonWidget extends StatelessWidget {
       if (isLoading == null) {
         return CustomButton(
           onTap: () => tripCancellationDialog(onSubmit: onSubmit),
-          title: AppStaticStrings.cancelTrip,
+          title: AppStaticStrings.cancelTrip.tr,
         );
       }
 
@@ -106,8 +106,8 @@ class CancelTripButtonWidget extends StatelessWidget {
         return CustomButton(
           onTap: loading ? () {} : () => tripCancellationDialog(onSubmit: onSubmit),
           title: loading
-              ? AppStaticStrings.tripLoading
-              : AppStaticStrings.cancelTrip,
+              ? AppStaticStrings.tripLoading.tr
+              : AppStaticStrings.cancelTrip.tr,
         );
       });
     }

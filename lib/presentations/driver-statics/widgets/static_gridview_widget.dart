@@ -60,12 +60,14 @@ class StaticsCardItemWidget extends StatelessWidget {
       child: Column(
         spacing: 8.h,
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset(static.img, height: 40.w),
-          CustomText(text: static.title),
+          CustomText(text: static.title, textAlign: TextAlign.center,),
           CustomText(
             text: static.val,
             style: poppinsBold,
+            textAlign: TextAlign.center,
             color: AppColors.kPrimaryColor,
             fontSize: getFontSizeDefault(),
           ),

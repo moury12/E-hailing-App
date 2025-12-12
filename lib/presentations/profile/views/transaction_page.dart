@@ -2,6 +2,7 @@ import 'package:e_hailing_app/core/components/comming_soon_widget.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class TransactionPage extends StatelessWidget {
   static const String routeName = '/transaction-history';
@@ -10,7 +11,7 @@ class TransactionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.transactionHistory),
+      appBar: CustomAppBar(title: AppStaticStrings.transactionHistory.tr),
       body:ComingSoonWidget() /*SingleChildScrollView(
         child: Padding(
           padding: padding16.copyWith(top: 0),

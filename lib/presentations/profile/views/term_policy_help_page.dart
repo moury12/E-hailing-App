@@ -28,7 +28,7 @@ class _TermsPolicyHelpPageState extends State<TermsPolicyHelpPage> {
   }
 
   fetchInitialData() {
-    if (arg == AppStaticStrings.termsAndCondition) {
+    if (arg == AppStaticStrings.termsAndCondition.tr) {
       TermsPolicyController.to.getTermsPrivacyRequest(
         endPoint: getTermsEndpoint,
       );

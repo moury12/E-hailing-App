@@ -31,7 +31,7 @@ class _SavedLocationPageState extends State<SavedLocationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.savedLocation),
+      appBar: CustomAppBar(title: AppStaticStrings.savedLocation.tr),
       body: CustomRefreshIndicator(
         onRefresh: () async{
           SaveLocationController.to.saveLocationPagingController.refresh();
@@ -41,7 +41,7 @@ class _SavedLocationPageState extends State<SavedLocationPage> {
             SavedLocationItemWidget(
               saveLocationModel: SaveLocationModel(),
               trailingImg: addIcon,
-              title: AppStaticStrings.addLocation,
+              title: AppStaticStrings.addLocation.tr,
               img: saveLocationIcon,
               onTap: () => Get.toNamed(AddPlacePage.routeName),
             ),

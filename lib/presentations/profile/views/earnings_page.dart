@@ -28,7 +28,7 @@ class EarningsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.earnings),
+      appBar: CustomAppBar(title: AppStaticStrings.earnings.tr),
       body: CustomRefreshIndicator(
         onRefresh: () async {
           DriverSettingsController.to.getDriverEarningReport();
@@ -51,7 +51,7 @@ class EarningsPage extends StatelessWidget {
                               spacing: 8.h,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                CustomText(text: AppStaticStrings.earnings),
+                                CustomText(text: AppStaticStrings.earnings.tr),
                                 Obx(() {
                                   final tripAnalysis =
                                       DriverSettingsController
@@ -89,17 +89,17 @@ class EarningsPage extends StatelessWidget {
                       List<StaticModel> earningList = [
                         StaticModel(
                           img: handCash1Icon,
-                          title: AppStaticStrings.handCash,
+                          title: AppStaticStrings.handCash.tr,
                           val: 'RM $cash',
                         ),
                         StaticModel(
                           img: onlineCashIcon,
-                          title: AppStaticStrings.onlineCash,
+                          title: AppStaticStrings.onlineCash.tr,
                           val: 'RM 0',
                         ),
                         StaticModel(
                           img: coinIcon,
-                          title: AppStaticStrings.dCoin,
+                          title: AppStaticStrings.dCoin.tr,
                           val: 'RM $coin',
                         ),
                       ];
@@ -140,7 +140,7 @@ class EarningsPage extends StatelessWidget {
                       onTap: () {
                         Get.toNamed(TransactionPage.routeName);
                       },
-                      title: AppStaticStrings.viewTransactionHistory,
+                      title: AppStaticStrings.viewTransactionHistory.tr,
                     ),
                   ],
                 ),

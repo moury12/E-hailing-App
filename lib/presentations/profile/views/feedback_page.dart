@@ -16,7 +16,7 @@ class FeedbackPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.feedback),
+      appBar: CustomAppBar(title: AppStaticStrings.feedback.tr),
       body: CustomRefreshIndicator(
         onRefresh: () async{
           AccountInformationController.to.getContactSupportRequest();
@@ -27,7 +27,7 @@ class FeedbackPage extends StatelessWidget {
               child: Obx(() {
                 return FeedbackContentWidget(
                   title:
-                  "${AppStaticStrings.mailUs} (${AccountInformationController.to
+                  "${AppStaticStrings.mailUs.tr} (${AccountInformationController.to
                       .isLoadingHelpSupport.value
                       ? " email loading..."
                       : AccountInformationController.to.contactEmail.value
@@ -50,8 +50,7 @@ class FeedbackPage extends StatelessWidget {
             SliverToBoxAdapter(
               child: Obx(() {
                 return FeedbackContentWidget(
-                  title: "${AppStaticStrings
-                      .contactUs} (${AccountInformationController.to
+                  title: "${AppStaticStrings.contactUs.tr} (${AccountInformationController.to
                       .isLoadingHelpSupport.value
                       ? "phone number loading..."
                       : AccountInformationController.to.contactNumber.value

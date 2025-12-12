@@ -6,6 +6,7 @@ import 'package:e_hailing_app/presentations/notification/controller/notification
 import 'package:e_hailing_app/presentations/notification/model/notification_model.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../widgets/notification_card_item_widget.dart';
@@ -32,7 +33,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.notification),
+      appBar: CustomAppBar(title: AppStaticStrings.notification.tr),
       body: CustomRefreshIndicator(
         onRefresh: () async {
           NotificationController.to.notificationPagingController.refresh();

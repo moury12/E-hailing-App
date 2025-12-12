@@ -1,9 +1,7 @@
 class AppStaticStrings {
 
   ///_______________________________
-  static String referalCode = 'Referral code';
-  static String yourReferalCode = 'Your Referral code';
-  static String referedBy = ' is referred by';
+
   // –––––––––––––––––––––––––––––––
   // validation
   static String emailRequired = 'emailRequired';
@@ -70,7 +68,15 @@ class AppStaticStrings {
   static String createAccount = 'createAccount';
   static String rideEnded = 'rideEnded';
   static String arriveOnLocation = 'arriveOnLocation';
-
+  static String referalCode = 'referalCode';
+  static String yourReferalCode = 'yourReferalCode';
+  static String referedBy = 'referedBy';
+  static String estimatedTime = 'estimatedTime';
+  static String carInfo = 'carInfo';
+  static String driverReview = 'driverReview';
+  static String active = 'active';
+  static String offline = 'offline';
+  static String pelantyMessage = 'pelantyMessage';
   // Settings
   static String accountSetting = 'accountSetting';
   static String duduCoinWallet = 'duduCoinWallet';

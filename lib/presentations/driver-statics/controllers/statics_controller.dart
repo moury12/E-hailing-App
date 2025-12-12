@@ -35,12 +35,13 @@ class StaticsController extends GetxController{
 
     super.onInit();
   }
-  RxList<String> tabLabels =
-      [
-        AppStaticStrings.today.tr,
-        AppStaticStrings.thisWeek.tr,
-        AppStaticStrings.thisMonth.tr,
-      ].obs;
+ List<String> get tabLabels  {return
+   [
+     AppStaticStrings.today.tr,
+     AppStaticStrings.thisWeek.tr,
+     AppStaticStrings.thisMonth.tr,
+   ].obs;
+}
   Future<void> getDriverStaticsRequest({required String filter}) async {
     try {
       if(staticsCache.containsKey(filter)){

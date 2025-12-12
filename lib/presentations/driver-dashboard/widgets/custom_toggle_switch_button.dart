@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
@@ -56,8 +57,8 @@ class _CustomToggleSwitchState extends State<CustomToggleSwitch> {
                   child: CustomText(
                     text:
                         DashBoardController.to.isDriverActive.value
-                            ? "Active"
-                            : "Offline",
+                            ? AppStaticStrings.active.tr
+                            :AppStaticStrings.offline.tr ,
                     style: poppinsMedium,
                     fontSize: getFontSizeSmall(),
                     color: AppColors.kTextColor,

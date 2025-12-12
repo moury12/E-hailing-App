@@ -41,12 +41,12 @@ class _RattingDialogWidgetState extends State<RattingDialogWidget> {
               children: [
                 CustomText(
                   textAlign: TextAlign.center,
-                  text: AppStaticStrings.writeAReview,
+                  text: AppStaticStrings.writeAReview.tr,
                   fontSize: getFontSizeDefault(),
                 ),
                 const Divider(),
                 CustomText(
-                  text: AppStaticStrings.howWouldYouRate,
+                  text: AppStaticStrings.howWouldYouRate.tr,
                   fontSize: getFontSizeDefault(),
                 ),
 
@@ -71,8 +71,8 @@ class _RattingDialogWidgetState extends State<RattingDialogWidget> {
                 // 📝 Review field
                 CustomTextField(
                   textEditingController: _reviewController,
-                  title: AppStaticStrings.review,
-                  hintText: AppStaticStrings.enterYourReview,
+                  title: AppStaticStrings.review.tr,
+                  hintText: AppStaticStrings.enterYourReview.tr,
                   borderColor: AppColors.kExtraLightTextColor,
                   maxLines: 4,
                 ),
@@ -94,7 +94,7 @@ class _RattingDialogWidgetState extends State<RattingDialogWidget> {
                         showCustomSnackbar(title: "Failed", message: "Rating Review Field is required");
                       }
                     },
-                    title: AppStaticStrings.submit,
+                    title: AppStaticStrings.submit.tr,
                   );
                 }),
               ],

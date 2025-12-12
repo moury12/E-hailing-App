@@ -1,6 +1,7 @@
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
@@ -41,7 +42,7 @@ class RideRequestCardWidget extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: CustomText(text: "$rideType Request"),
+              child: CustomText(text: "${rideType=='ride'? AppStaticStrings.ride.tr: AppStaticStrings.preBookRide.tr} Request"),
             ),
             Expanded(
               flex: 2,

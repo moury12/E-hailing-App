@@ -22,12 +22,14 @@ class MyRideController extends GetxController {
   final RxInt totalProductPages = 5.obs;
   final RxBool isProductLoadingMore = false.obs;
 
-  RxList<String> tabLabels =
-      [
-        AppStaticStrings.ongoing.tr,
-        AppStaticStrings.upcoming.tr,
-        AppStaticStrings.completed.tr,
-      ].obs;
+ List<String> get  tabLabels {
+  return  [
+      AppStaticStrings.ongoing.tr,
+      AppStaticStrings.upcoming.tr,
+      AppStaticStrings.completed.tr,
+    ].obs;
+  }
+
   var tabContent = <Widget>[].obs;
   RxBool isAllTripLoading = false.obs;
 
