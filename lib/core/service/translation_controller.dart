@@ -1,21 +1,23 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:e_hailing_app/core/constants/hive_boxes.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class TranslationController extends GetxController implements Translations {
   RxMap<String, Map<String, String>> translations = <String, Map<String, String>>{}.obs;
   RxBool isLoading = true.obs;
+  Rx<Locale> appLocale = const Locale('en', 'US').obs;
 
   // Hive box name for storing language preference
-  static const String _languageBoxName = 'languageBox';
   static const String _languageKey = 'selectedLanguage';
 
   @override
   void onInit() {
     super.onInit();
     loadTranslations();
+    loadSavedLocale();
   }
 
   Future<void> loadTranslations() async {
@@ -39,21 +41,22 @@ class TranslationController extends GetxController implements Translations {
   // Save selected language to Hive
   Future<void> changeLanguage(String languageCode, String countryCode) async {
     final locale = Locale(languageCode, countryCode);
+    appLocale.value = locale;
+    await Boxes.getLanguage().put(_languageKey, '${languageCode}_$countryCode');
     Get.updateLocale(locale);
-
-    // Save to Hive
-    final box = await Hive.openBox(_languageBoxName);
-    await box.put(_languageKey, '${languageCode}_$countryCode');
-
-    update();
+  }
+  Future<void> loadSavedLocale() async {
+    final savedLanguage = Boxes.getLanguage().get(_languageKey, defaultValue: 'en_US');
+    final parts = savedLanguage.split('_');
+    appLocale.value = Locale(parts[0], parts[1]);
   }
 
   // Get saved language from Hive
   static Future<Locale> getSavedLanguage() async {
     try {
-      final box = await Hive.openBox(_languageBoxName);
-      final savedLanguage = box.get(_languageKey, defaultValue: 'en_US') as String;
 
+      final savedLanguage = Boxes.getLanguage().get(_languageKey, defaultValue: 'en_US') as String;
+logger.d('--------------------${savedLanguage}');
       final parts = savedLanguage.split('_');
       return Locale(parts[0], parts[1]);
     } catch (e) {
