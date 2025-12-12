@@ -1,4 +1,3 @@
-
 import 'package:e_hailing_app/core/service/translation_controller.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/firebase_options.dart';
@@ -44,6 +43,7 @@ Future<void> main() async {
     await Hive.openBox(userBoxName);
     await Hive.openBox(authBox);
     await Hive.openBox("ratingData");
+    await Hive.openBox("languageBox");
 
     // Initialize and load translations
     final translationController = TranslationController();
@@ -65,28 +65,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final translationController = Get.find<TranslationController>();
 
-    return FutureBuilder<Locale>(
-      future: TranslationController.getSavedLanguage(),
-      builder: (context, snapshot) {
-        // Get saved locale or default to English
-        final savedLocale = snapshot.data ?? const Locale('en', 'US');
-
-        return ScreenUtilInit(
-          designSize: const Size(375, 888),
-          minTextAdapt: true,
-          builder: (context, child) => GetMaterialApp(
+    return ScreenUtilInit(
+      designSize: const Size(375, 888),
+      minTextAdapt: true,
+      builder: (context, child) {
+        return Obx(() {
+          return GetMaterialApp(
             title: 'Dudu Car',
             theme: AppTheme.lightTheme,
             translations: translationController,
-            locale: savedLocale, // Use saved locale
-            fallbackLocale: const Locale('en', 'US'),
+            locale: translationController.appLocale.value, // ✅ FIXED
             themeMode: ThemeMode.dark,
             initialRoute: SplashPage.routeName,
             getPages: AppRoutes.route(),
             initialBinding: SplashBinding(),
             debugShowCheckedModeBanner: false,
-          ),
-        );
+          );
+        });
+
       },
     );
   }
