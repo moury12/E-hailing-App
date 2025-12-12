@@ -38,7 +38,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.changePassword),
+      appBar: CustomAppBar(title: AppStaticStrings.changePassword.tr),
       body: SingleChildScrollView(
         child: Padding(
           padding: padding16,
@@ -49,50 +49,50 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomText(
-                  text: AppStaticStrings.resetYourPassword,
+                  text: AppStaticStrings.resetYourPassword.tr,
                   style: poppinsBold,
                   fontSize: getFontSizeExtraLarge(),
                 ),
                 CustomText(
-                  text: AppStaticStrings.createAnewPassword,
+                  text: AppStaticStrings.createAnewPassword.tr,
                   color: AppColors.kExtraLightTextColor,
                   style: poppinsLight,
                 ),
                 CustomTextField(
-                  title: AppStaticStrings.oldPassword,
+                  title: AppStaticStrings.oldPassword.tr,
                   isPassword: true,
                   textEditingController: oldPassController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return AppStaticStrings.passRequired;
+                      return AppStaticStrings.passRequired.tr;
                     } else if (value.length < 6) {
-                      return AppStaticStrings.passMustbe6;
+                      return AppStaticStrings.passMustbe6.tr;
                     }
                     return null;
                   },
                 ),
                 CustomTextField(
-                  title: AppStaticStrings.newPassword,
+                  title: AppStaticStrings.newPassword.tr,
                   isPassword: true,
                   textEditingController: newPassController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return AppStaticStrings.passRequired;
+                      return AppStaticStrings.passRequired.tr;
                     } else if (value.length < 6) {
-                      return AppStaticStrings.passMustbe6;
+                      return AppStaticStrings.passMustbe6.tr;
                     }
                     return null;
                   },
                 ),
                 CustomTextField(
-                  title: AppStaticStrings.reTypeNewPass,
+                  title: AppStaticStrings.reTypeNewPass.tr,
                   isPassword: true,
                   textEditingController: reEnterNewPassController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return AppStaticStrings.passRequired;
+                      return AppStaticStrings.passRequired.tr;
                     } else if (value != newPassController.text) {
-                      return AppStaticStrings.passNotMatch;
+                      return AppStaticStrings.passNotMatch.tr;
                     }
                     return null;
                   },
@@ -113,7 +113,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         );
                       }
                     },
-                    title: AppStaticStrings.update,
+                    title: AppStaticStrings.update.tr,
                   );
                 }),
               ],

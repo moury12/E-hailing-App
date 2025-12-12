@@ -8,6 +8,7 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/pagination_loading_widget.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/service/translation_controller.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/profile/views/account_settings_page.dart';
@@ -194,16 +195,26 @@ class ProfilePage extends StatelessWidget {
                                 languageChangeCardWidget(
                                   name: "Malay",
                                   language: "ms",
-                                  onTap: () {
-                                    Get.updateLocale(Locale('ms', 'MY'));
+                                  onTap: () async {
+                                    final controller =
+                                        Get.find<TranslationController>();
+                                    await controller.changeLanguage(
+                                      'ms',
+                                      'MY',
+                                    ); // Saves automatically
                                     Get.back();
                                   },
                                 ),
                                 languageChangeCardWidget(
                                   name: "English",
                                   language: "en",
-                                  onTap: () {
-                                    Get.updateLocale(Locale('en', 'US'));
+                                  onTap: () async {
+                                    final controller =
+                                        Get.find<TranslationController>();
+                                    await controller.changeLanguage(
+                                      'en',
+                                      'US',
+                                    ); // Saves automatically
                                     Get.back();
                                   },
                                 ),
@@ -265,7 +276,6 @@ class ProfilePage extends StatelessWidget {
                             img: logoutIcon,
                             title: AppStaticStrings.logOut.tr,
                             onTap: () {
-
                               AccountInformationController.to.logoutRequest();
                             },
                           );

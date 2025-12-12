@@ -31,7 +31,7 @@ class CoinPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(title: AppStaticStrings.duduCoinWallet),
+      appBar: CustomAppBar(title: AppStaticStrings.duduCoinWallet.tr),
       body: CustomRefreshIndicator(
         onRefresh: () async {
           DCoinController.to.dCoinsPagingController.refresh();
@@ -139,10 +139,10 @@ class CoinPage extends StatelessWidget {
 
                                   // showCustomSnackbar(
                                   //   title:
-                                  //   AppStaticStrings.featureComingSoon,
+                                  //   AppStaticStrings.featureComingSoon.tr,
                                   //   message:
                                   //   AppStaticStrings
-                                  //       .featureNotImplemented,
+                                  //.tr       .featureNotImplemented,
                                   // );
                                 },
                                 title: 'Buy Now',
@@ -159,7 +159,7 @@ class CoinPage extends StatelessWidget {
                         children: [
                           SvgPicture.asset(addWhiteIcon),
                           CustomText(
-                            text: AppStaticStrings.addMoreCoin,
+                            text: AppStaticStrings.addMoreCoin.tr,
                             style: poppinsSemiBold,
                             color: AppColors.kWhiteColor,
                             fontSize: getFontSizeSemiSmall(),
@@ -168,7 +168,7 @@ class CoinPage extends StatelessWidget {
                       ),
                     ),
                     // CustomTextField(
-                    //   title: AppStaticStrings.addCoin,
+                    //   title: AppStaticStrings.addCoin.tr,
                     // ),
 
                   ],
@@ -205,7 +205,7 @@ class CoinWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CustomText(text: title ?? AppStaticStrings.totalCoin),
+          CustomText(text: title ?? AppStaticStrings.totalCoin.tr),
           Spacer(),
           CoinContainerWidget(coin: coin,),
         ],

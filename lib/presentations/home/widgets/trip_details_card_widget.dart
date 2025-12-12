@@ -92,7 +92,7 @@ class DriverDetails extends StatelessWidget {
             children: [
               CustomText(
                 textAlign: TextAlign.right,
-                text: title ?? 'Estimated Time',
+                text: title ?? AppStaticStrings.estimatedTime.tr,
                 color: AppColors.kLightBlackColor,
                 fontSize: getFontSizeSmall(),
               ),

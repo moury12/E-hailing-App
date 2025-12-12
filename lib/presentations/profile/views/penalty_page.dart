@@ -21,7 +21,7 @@ class PenaltyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.pendingPenalty),
+      appBar: CustomAppBar(title: AppStaticStrings.pendingPenalty.tr),
       body: Container(
         margin: paddingH12V8,
         decoration: BoxDecoration(
@@ -53,15 +53,14 @@ class PenaltyPage extends StatelessWidget {
               children: [
                 SvgPicture.asset(penaltyPolicyIcon),
                 CustomText(
-                  text: AppStaticStrings.penaltyPolicy,
+                  text: AppStaticStrings.penaltyPolicy.tr,
                   style: poppinsSemiBold,
                 ),
               ],
             ),
             Divider(color: Colors.black, height: 2, thickness: .5),
             CustomText(
-              text:
-                  "To ensure fairness for all users, Alygo maintains a simple penalty system. Passengers who cancel rides after a driver has accepted may face a ৳30 penalty if this occurs more than three times in a week. If a passenger fails to show up at the pickup location, a minimum fare may still apply. Drivers who cancel after accepting a ride request will see an impact on their rating, and repeated violations could result in temporary suspension. Fake or spam bookings will lead to immediate account action. Additionally, consistent delays by either party may reduce their profile visibility on the platform.",
+              text:AppStaticStrings.pelantyMessage.tr
             ),
           ],
         ),

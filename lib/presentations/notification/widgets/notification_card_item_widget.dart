@@ -9,6 +9,8 @@ import 'package:e_hailing_app/presentations/notification/model/notification_mode
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get.dart';
 
 class NotificationCardItemWidget extends StatelessWidget {
   final int? index;
@@ -42,14 +44,14 @@ class NotificationCardItemWidget extends StatelessWidget {
                 children: [
                   CustomText(
                     text:
-                        notificationModel.title ?? AppStaticStrings.noDataFound,
+                        notificationModel.title ?? AppStaticStrings.noDataFound.tr,
                     style: poppinsMedium,
                     fontSize: getFontSizeSemiSmall(),
                   ),
                   CustomText(
                     text:
                         notificationModel.message ??
-                        AppStaticStrings.noDataFound,
+                        AppStaticStrings.noDataFound.tr,
                     style: poppinsRegular,
                     fontSize: getFontSizeSmall(),
                     color: AppColors.kExtraLightTextColor,

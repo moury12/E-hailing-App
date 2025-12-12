@@ -39,7 +39,7 @@ class TripDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.yourTripDetail),
+      appBar: CustomAppBar(title: AppStaticStrings.yourTripDetail.tr),
       body: CustomRefreshIndicator(
         onRefresh: () async {
           HomeController.to.getUserCurrentTrip();
@@ -105,21 +105,21 @@ class TripDetailsPage extends StatelessWidget {
                                   CustomText(
                                     text:
                                     trip.driver?.name ??
-                                        AppStaticStrings.noDataFound,
+                                        AppStaticStrings.noDataFound.tr,
                                     style: poppinsBold,
                                     fontSize: getFontSizeDefault(),
                                   ),
                                   CustomText(
                                     text:
                                     trip.driver?.email ??
-                                        AppStaticStrings.noDataFound,
+                                        AppStaticStrings.noDataFound.tr,
                                     style: poppinsRegular,
                                     fontSize: getFontSizeSmall(),
                                   ),
                                   CustomText(
                                     text:
                                     'Phone : ${trip.driver?.phoneNumber ??
-                                        AppStaticStrings.noDataFound}',
+                                        AppStaticStrings.noDataFound.tr}',
                                     style: poppinsRegular,
                                     fontSize: getFontSizeSmall(),
                                     color: AppColors.kLightBlackColor,
@@ -146,39 +146,38 @@ class TripDetailsPage extends StatelessWidget {
                                     Column(
                                       children: [
                                         CarInformationWidget(
-                                          title: AppStaticStrings.carType,
+                                          title: AppStaticStrings.carType.tr,
                                           value:
                                           trip.driver?.assignedCar?.type ??
-                                              AppStaticStrings.noDataFound,
+                                              AppStaticStrings.noDataFound.tr,
                                         ),
                                         CarInformationWidget(
-                                          title: AppStaticStrings.carColor,
+                                          title: AppStaticStrings.carColor.tr,
                                           value:
                                           trip.driver?.assignedCar?.color ??
-                                              AppStaticStrings.noDataFound,
+                                              AppStaticStrings.noDataFound.tr,
                                         ),
                                         CarInformationWidget(
-                                          title: AppStaticStrings.carNumber,
+                                          title: AppStaticStrings.carNumber.tr,
                                           value:
                                           trip.driver?.assignedCar?.carNumber ??
-                                              AppStaticStrings.noDataFound,
+                                              AppStaticStrings.noDataFound.tr,
                                         ),
                                         CarInformationWidget(
-                                          title: AppStaticStrings.carSeat,
+                                          title: AppStaticStrings.carSeat.tr,
                                           value: '4 Seats',
                                         ),
                                         CarInformationWidget(
-                                          title: AppStaticStrings.evpNumber,
+                                          title: AppStaticStrings.evpNumber.tr,
                                           value:
                                           trip.driver?.assignedCar?.evpNumber ??
-                                              AppStaticStrings.noDataFound,
+                                              AppStaticStrings.noDataFound.tr,
                                         ),
                                         CarInformationWidget(
-                                          title: AppStaticStrings
-                                              .evpValidityPeriod,
+                                          title: AppStaticStrings.evpValidityPeriod.tr,
                                           value:
                                           trip.driver?.assignedCar?.evpExpiry ??
-                                              AppStaticStrings.noDataFound,
+                                              AppStaticStrings.noDataFound.tr,
                                         ),
                                       ],
                                     ),
@@ -203,7 +202,7 @@ class TripDetailsPage extends StatelessWidget {
 
                                             CustomText(
                                               text: "${AppStaticStrings
-                                                  .avgRating} (${trip.driver!
+                                                  .avgRating.tr} (${trip.driver!
                                                   .rating ?? 0})",
                                               style: poppinsBold,),
                                             RatingBarIndicator(
@@ -283,7 +282,7 @@ class TripDetailsPage extends StatelessWidget {
                         arguments: {"user": trip, "role": user},
                       );
                     },
-                    title: AppStaticStrings.payment,
+                    title: AppStaticStrings.payment.tr,
                   )
                       :
                   CancelTripButtonWidget(

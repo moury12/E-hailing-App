@@ -25,7 +25,7 @@ class AddPlacePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.addPlace),
+      appBar: CustomAppBar(title: AppStaticStrings.addPlace.tr),
 
       body: SingleChildScrollView(
         child: Padding(
@@ -36,7 +36,7 @@ class AddPlacePage extends StatelessWidget {
               children: [
                 Obx(() {
                   return CustomTextField(
-                    title: AppStaticStrings.placeAddress,
+                    title: AppStaticStrings.placeAddress.tr,
                     textEditingController:
                         SaveLocationController.to.searchFieldController.value,
                     onChanged: (val) {
@@ -45,7 +45,7 @@ class AddPlacePage extends StatelessWidget {
                     hintText: 'search here...',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return AppStaticStrings.placeAddressRequired;
+                        return AppStaticStrings.placeAddressRequired.tr;
                       }
                       return null;
                     },
@@ -107,11 +107,11 @@ class AddPlacePage extends StatelessWidget {
                       );
                 }),
                 CustomTextField(
-                  title: AppStaticStrings.placeName,
+                  title: AppStaticStrings.placeName.tr,
                   textEditingController: SaveLocationController.to.placeName,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return AppStaticStrings.placeNameRequired;
+                      return AppStaticStrings.placeNameRequired.tr;
                     }
                     return null;
                   },
@@ -143,7 +143,7 @@ class AddPlacePage extends StatelessWidget {
                         );
                       }
                     },
-                    title: AppStaticStrings.save,
+                    title: AppStaticStrings.save.tr,
                   );
                 }),
               ],

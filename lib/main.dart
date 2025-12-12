@@ -27,7 +27,6 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(
@@ -46,7 +45,7 @@ Future<void> main() async {
     await Hive.openBox(authBox);
     await Hive.openBox("ratingData");
 
-    // IMPORTANT: Initialize and load translations BEFORE running app
+    // Initialize and load translations
     final translationController = TranslationController();
     await translationController.loadTranslations();
     Get.put(translationController);
@@ -64,24 +63,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get the already initialized controller
     final translationController = Get.find<TranslationController>();
 
-    return ScreenUtilInit(
-      designSize: const Size(375, 888),
-      minTextAdapt: true,
-      builder: (context, child) => GetMaterialApp(
-        title: 'Dudu Car',
-        theme: AppTheme.lightTheme,
-        translations: translationController,
-        locale: const Locale('en', 'US'), // Fixed: added const
-        fallbackLocale: const Locale('en', 'US'), // Fixed: added const
-        themeMode: ThemeMode.dark,
-        initialRoute: SplashPage.routeName,
-        getPages: AppRoutes.route(),
-        initialBinding: SplashBinding(),
-        debugShowCheckedModeBanner: false,
-      ),
+    return FutureBuilder<Locale>(
+      future: TranslationController.getSavedLanguage(),
+      builder: (context, snapshot) {
+        // Get saved locale or default to English
+        final savedLocale = snapshot.data ?? const Locale('en', 'US');
+
+        return ScreenUtilInit(
+          designSize: const Size(375, 888),
+          minTextAdapt: true,
+          builder: (context, child) => GetMaterialApp(
+            title: 'Dudu Car',
+            theme: AppTheme.lightTheme,
+            translations: translationController,
+            locale: savedLocale, // Use saved locale
+            fallbackLocale: const Locale('en', 'US'),
+            themeMode: ThemeMode.dark,
+            initialRoute: SplashPage.routeName,
+            getPages: AppRoutes.route(),
+            initialBinding: SplashBinding(),
+            debugShowCheckedModeBanner: false,
+          ),
+        );
+      },
     );
   }
 }

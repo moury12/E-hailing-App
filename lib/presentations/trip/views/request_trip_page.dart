@@ -39,7 +39,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
     (Get.arguments ?? {}) as Map<String, dynamic>;
 
     return Scaffold(
-      appBar: CustomAppBar(title: AppStaticStrings.requestYourTrip),
+      appBar: CustomAppBar(title: AppStaticStrings.requestYourTrip.tr),
       body: SingleChildScrollView(
         child: Padding(
           padding: padding16.copyWith(top: 0),
@@ -96,7 +96,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
                           HomeController.to.selectedPaymentMethod.value = newValue!;
                           return;
                         }else{
-                          showCustomSnackbar(title: AppStaticStrings.dCoin, message: "You don't have enough coin to purchase this trip!!");
+                          showCustomSnackbar(title: AppStaticStrings.dCoin.tr, message: "You don't have enough coin to purchase this trip!!");
                           return;
                         }
                       }
@@ -124,7 +124,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
                 borderColor: AppColors.kGreyColor,
                 fillColor: AppColors.kWhiteColor,
                 borderRadius: 24.r,
-                title: AppStaticStrings.tripDistance,
+                title: AppStaticStrings.tripDistance.tr,
                 // prefixIcon: Padding(
                 //   padding: padding14,
                 //   child: SvgPicture.asset(calenderIcon),
@@ -142,7 +142,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
                    borderRadius: 24.r,
                    isEnable: false,
                    hintText: "Select Date Time",
-                   title: AppStaticStrings.pickTime,
+                   title: AppStaticStrings.pickTime.tr,
                     prefixIcon: Padding(
                       padding: padding14,
                       child: SvgPicture.asset(calenderIcon),
@@ -162,41 +162,19 @@ class _RequestTripPageState extends State<RequestTripPage> {
                 borderColor: AppColors.kGreyColor,
                 fillColor: AppColors.kWhiteColor,
                 borderRadius: 24.r,
-                title: AppStaticStrings.tripDuration,
+                title: AppStaticStrings.tripDuration.tr,
                 // prefixIcon: Padding(
                 //   padding: padding14,
                 //   child: SvgPicture.asset(calenderIcon),
                 // ),
               ),
-              // CustomTextField(
-              //   hintText: '01/03/2025',
-              //   borderColor: AppColors.kGreyColor,
-              //   fillColor: AppColors.kWhiteColor,
-              //   borderRadius: 24.r,
-              //   title: AppStaticStrings.tripDate,
-              //   prefixIcon: Padding(
-              //     padding: padding14,
-              //     child: SvgPicture.asset(calenderIcon),
-              //   ),
-              // ),
-              // CustomTextField(
-              //   hintText: '12:35 PM',
-              //   borderColor: AppColors.kGreyColor,
-              //   fillColor: AppColors.kWhiteColor,
-              //   borderRadius: 24.r,
-              //   title: AppStaticStrings.pickTime,
-              //   prefixIcon: Padding(
-              //     padding: padding14,
-              //     child: SvgPicture.asset(calenderIcon),
-              //   ),
-              // ),
               CustomTextField(
                 // hintText: '12:35 PM',
                 textEditingController: HomeController.to.promoCode,
                 borderColor: AppColors.kGreyColor,
                 fillColor: AppColors.kWhiteColor,
                 borderRadius: 24.r,
-                title: AppStaticStrings.promoCode,
+                title: AppStaticStrings.promoCode.tr,
               ),
               CustomTextField(
                 // hintText: '12:35 PM',
@@ -204,7 +182,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
                 borderColor: AppColors.kGreyColor,
                 fillColor: AppColors.kWhiteColor,
                 borderRadius: 24.r,
-                title: AppStaticStrings.additionalNote,
+                title: AppStaticStrings.additionalNote.tr,
               ),
               space6H,
               CustomButton(
@@ -228,7 +206,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
                         type: SnackBarType.alert);
                   }
                 },
-                title: AppStaticStrings.confirm,
+                title: AppStaticStrings.confirm.tr,
               ),
             ],
           ),
