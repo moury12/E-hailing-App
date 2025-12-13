@@ -60,7 +60,7 @@ dependencies:
   socket_io_client: ^3.1.2
   get_it: ^8.0.3
   intl: 0.20.2
-
+  device_info_plus: ^12.3.0
   infinite_scroll_pagination: ^4.0.0
   flutter_widget_from_html: ^0.16.0
   firebase_messaging: ^16.0.0
@@ -82,6 +82,7 @@ dependencies:
 
 
 
+  http_parser: any
 dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_test:

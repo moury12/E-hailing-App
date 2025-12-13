@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
@@ -85,44 +86,72 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
   // ---------------------------
   Future<void> savePdf(Uint8List pdfBytes) async {
     Directory? saveDir;
+    String? successMessage;
 
     if (Platform.isAndroid) {
-      // Storage permission for Android 12 and below
-      await Permission.storage.request();
+      // Check Android version
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      final sdkInt = androidInfo.version.sdkInt;
 
-      // Public downloads folder
-      saveDir = Directory("/storage/emulated/0/Download");
-
-      if (!saveDir.existsSync()) {
+      if (sdkInt >= 29) {
+        // Android 10+ (API 29+): Use app-specific directory (NO PERMISSION NEEDED)
+        // Files are accessible via Files app → Downloads or app folder
         saveDir = await getExternalStorageDirectory();
+
+        // Alternative: Save to app's private Documents folder
+        // saveDir = await getApplicationDocumentsDirectory();
+
+        successMessage = "PDF saved to app folder";
+      } else {
+        // Android 9 and below: Need storage permission
+        final status = await Permission.storage.request();
+
+        if (status.isGranted) {
+          saveDir = Directory("/storage/emulated/0/Download");
+
+          if (!saveDir.existsSync()) {
+            saveDir = await getExternalStorageDirectory();
+          }
+
+          successMessage = "Saved to Downloads";
+        } else {
+          showSnack("Storage permission denied");
+          return;
+        }
       }
     } else if (Platform.isIOS) {
       // iOS documents folder (visible in Files app)
       saveDir = await getApplicationDocumentsDirectory();
+      successMessage = "Saved to Files → On My iPhone → Dudu Car";
     }
 
     if (saveDir == null) {
       print("Save directory is null");
+      showSnack("Failed to save PDF");
       return;
     }
 
-    final filePath =
-        "${saveDir.path}/invoice_${DateTime.now().millisecondsSinceEpoch}.pdf";
+    final fileName = "invoice_${DateTime.now().millisecondsSinceEpoch}.pdf";
+    final filePath = "${saveDir.path}/$fileName";
 
-    final file = File(filePath);
-    await file.writeAsBytes(pdfBytes);
+    try {
+      final file = File(filePath);
+      await file.writeAsBytes(pdfBytes);
 
-    // OPTIONAL: open the PDF after saving
-    await OpenFilex.open(filePath);
+      print("PDF saved at: $filePath");
 
-    // Snackbar message
-    showSnack(
-      Platform.isAndroid
-          ? "Saved to Downloads"
-          : "Saved to Files → On My iPhone → YourApp",
-    );
+      // Open the PDF after saving
+      final result = await OpenFilex.open(filePath);
 
-    print("PDF saved at: $filePath");
+      if (result.type == ResultType.done) {
+        showSnack(successMessage.toString());
+      } else {
+        showSnack("PDF saved but couldn't open: ${result.message}");
+      }
+    } catch (e) {
+      print("Error saving PDF: $e");
+      showSnack("Failed to save PDF");
+    }
   }
 
   void showSnack(String msg) {

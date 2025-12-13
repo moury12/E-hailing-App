@@ -34,8 +34,8 @@ android {
         applicationId = "com.dudu.android.app"
         minSdk = 29
         targetSdk = 36 // or flutter.targetSdkVersion
-        versionCode = 7 // or flutter.versionCode
-        versionName = "1.1.7" // or flutter.versionName
+        versionCode = 8 // or flutter.versionCode
+        versionName = "1.1.8" // or flutter.versionName
     }
 
     signingConfigs {

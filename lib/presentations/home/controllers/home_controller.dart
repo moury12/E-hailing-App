@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:e_hailing_app/core/api-client/api_endpoints.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
@@ -8,13 +7,10 @@ import 'package:e_hailing_app/core/service/location-service/location_service.dar
 import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
-import 'package:e_hailing_app/core/utils/google_map_api_key.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
-import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
-import 'package:e_hailing_app/presentations/payment/views/payment_invoice_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
@@ -22,11 +18,9 @@ import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart'
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../../core/api-client/api_service.dart';

@@ -10,7 +10,6 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
-import 'package:e_hailing_app/presentations/payment/views/payment_invoice_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:flutter/cupertino.dart';

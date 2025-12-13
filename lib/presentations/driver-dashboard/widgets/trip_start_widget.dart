@@ -6,8 +6,6 @@ import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_curren
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
 
 import '../../../core/components/custom_button.dart';
 import '../../../core/constants/fontsize_constant.dart';
