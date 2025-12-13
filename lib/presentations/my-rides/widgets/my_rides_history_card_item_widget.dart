@@ -14,7 +14,6 @@ import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_curren
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_invoice_page.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/row_call_chat_details_button.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

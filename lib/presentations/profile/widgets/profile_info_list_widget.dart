@@ -7,16 +7,6 @@ import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
-import 'package:get/get.dart';
 
 import '../widgets/profile_card_item_widget.dart';
 
