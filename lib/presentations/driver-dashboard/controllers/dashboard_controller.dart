@@ -580,7 +580,7 @@ class DashBoardController extends GetxController {
     // extraCost.clear();
 
     // Reset cancel reasons
-    for (TripCancellationModel cancel in tripCancellationList) {
+    for (TripCancellationModel cancel in CommonController.to.tripCancellationList) {
       cancel.isChecked.value = false;
     }
 

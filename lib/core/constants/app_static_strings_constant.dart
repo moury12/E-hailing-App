@@ -20,6 +20,7 @@ class AppStaticStrings {
   static String language = 'language';
   static String signUpToGetStarted = 'signUpToGetStarted';
   static String email = 'email';
+  static String cancelationText = 'cancelationText';
   static String reTypeNewPass = 'reTypeNewPass';
   static String weWillSendACode = 'weWillSendACode';
   static String orContinueWith = 'orContinueWith';

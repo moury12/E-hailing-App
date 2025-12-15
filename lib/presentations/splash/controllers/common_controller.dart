@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:e_hailing_app/core/api-client/api_service.dart';
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/location-service/location_service.dart';
@@ -15,6 +16,7 @@ import 'package:e_hailing_app/presentations/profile/controllers/account_informat
 import 'package:e_hailing_app/presentations/profile/model/review_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
 import 'package:e_hailing_app/presentations/splash/model/announcment_model.dart';
+import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -37,6 +39,42 @@ RxList<String> images =<String>[].obs;
   GoogleMapController? mapControllerRider;
   RxList<ReviewModel> reviewList = <ReviewModel>[].obs;
   Rx<AnnouncementModel> announcement = AnnouncementModel().obs;
+  List<TripCancellationModel> get tripCancellationList =>
+      CommonController.to.isDriver.value ? [
+        TripCancellationModel(
+          title: AppStaticStrings.riderNoShow.tr,
+          isChecked: false.obs,
+        ),
+        TripCancellationModel(
+          title: AppStaticStrings.wrongPickupLocation.tr,
+          isChecked: false.obs,
+        ),
+        TripCancellationModel(
+          title: AppStaticStrings.safetyConcerns.tr,
+          isChecked: false.obs,
+        ),
+        TripCancellationModel(
+          title: AppStaticStrings.vehicleIssue.tr,
+          isChecked: false.obs,
+        ),
+        TripCancellationModel(
+          title: AppStaticStrings.tripRequestError.tr,
+          isChecked: false.obs,
+        ),
+      ] : [
+        TripCancellationModel(
+          title: AppStaticStrings.waitingTimeIsLong.tr,
+          isChecked: false.obs,
+        ),
+        TripCancellationModel(
+          title: AppStaticStrings.changeOfTravelPlan.tr,
+          isChecked: false.obs,
+        ),
+        TripCancellationModel(
+          title: AppStaticStrings.tripReqError.tr,
+          isChecked: false.obs,
+        ),
+      ];
 
   RxBool isDriver = false.obs;
   RxBool isVerifingIdentity = false.obs;

@@ -127,17 +127,22 @@ class TripDetailsDestinationCard extends StatelessWidget {
       ),
       padding: padding12,
       child: Column(
-        spacing: 8.h,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 6.h,
         children: [
-          Obx(() {
-            return CustomText(
-              text:
-                  HomeController.to.driverStatus.value.isEmpty
-                      ? "Driver Status"
-                      : HomeController.to.driverStatus.value,
-              fontSize: getFontSizeSemiSmall(),
-            );
-          }),
+          Align(
+            alignment: AlignmentGeometry.center,
+            child: Obx(() {
+              return CustomText(
+                text:
+                    HomeController.to.driverStatus.value.isEmpty
+                        ? "Driver Status"
+                        : HomeController.to.driverStatus.value.toUpperCase(),
+                fontSize: getFontSizeSemiSmall(),
+                textAlign: TextAlign.center,
+              );
+            }),
+          ),
           Row(
             children: [
               Expanded(
@@ -182,6 +187,9 @@ class TripDetailsDestinationCard extends StatelessWidget {
             '${int.tryParse(tripModel?.duration.toString() ?? "0")} min',
             rating: tripModel?.driver?.rating.toString(),
           ),
+          CustomText(text: "⨠${AppStaticStrings.cancelationText.tr}",
+            style: poppinsSemiBold,
+            fontSize: getFontSizeSmall(),color: AppColors.kBlueColor,textAlign: TextAlign.left,),
           FromToTimeLine(
             showTo: true,
             pickUpAddress: tripModel?.pickUpAddress,

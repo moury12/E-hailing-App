@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -80,7 +81,7 @@ Future<dynamic> tripCancellationDialog({
       children: [
         Divider(color: AppColors.kLightBlackColor),
         ...List.generate(
-          tripCancellationList.length,
+          CommonController.to.tripCancellationList.length,
           (index) => TripCancellationReasonCardItem(index: index),
         ),
         Padding(

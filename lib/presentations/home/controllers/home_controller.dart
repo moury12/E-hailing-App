@@ -329,6 +329,7 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
 
     socket.on(TripEvents.tripAccepted, (data) {
       logger.d('✅ Trip accepted: ');
+      driverStatus.value=data["message"];
       logger.d(data);
       status.value = "Driver found! Trip accepted";
       resetAllStates();
@@ -367,6 +368,7 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
     socket.on(TripEvents.tripUpdateStatus, (data) {
       logger.d('🔄 Trip status update:');
       logger.d(data);
+      driverStatus.value ="";
       if (data['success']) {
         // showCustomSnackbar(title: "Trip Status", message: data['message']);
         tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
@@ -376,7 +378,7 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
         final status = data['data']['status'];
         if (status == DriverTripStatus.cancelled.name ||
             status == DriverTripStatus.completed.name) {
-
+          driverStatus.value="";
           if( status == DriverTripStatus.completed.name){
             // NavigationController.to.currentNavIndex.value=1;
             // MyRideController.to.currentTabIndex.value =2;
@@ -398,7 +400,7 @@ driverPosition.value=null;
             arguments: {'reconnectSocket': true},
           );
 
-          for (TripCancellationModel cancel in tripCancellationList) {
+          for (TripCancellationModel cancel in CommonController.to.tripCancellationList) {
             cancel.isChecked.value = false;
           }
           // isCancellingTrip.value = false;
@@ -451,7 +453,7 @@ driverPosition.value=null;
     //         //       tripAcceptedModel.value.driver!.assignedCar!.sId.toString(),
     //         // );
     //       }
-    //       for (TripCancellationModel cancel in tripCancellationList) {
+    //       for (TripCancellationModel cancel in CommonController.to.tripCancellationList) {
     //         cancel.isChecked.value = false;
     //       }
     //       // isCancellingTrip.value = false;
