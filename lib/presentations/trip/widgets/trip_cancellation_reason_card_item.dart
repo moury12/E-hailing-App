@@ -20,15 +20,15 @@ class TripCancellationReasonCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ButtonTapWidget(
       onTap: () {
-        tripCancellationList[index].isChecked.value =
-            !tripCancellationList[index].isChecked.value;
-        if (tripCancellationList[index].isChecked.value == true) {
+        CommonController.to.tripCancellationList[index].isChecked.value =
+            !CommonController.to.tripCancellationList[index].isChecked.value;
+        if (CommonController.to.tripCancellationList[index].isChecked.value == true) {
          if(CommonController.to.isDriver.value) {
             DashBoardController.to.cancelReason.add(
-                tripCancellationList[index].title);
+                CommonController.to.tripCancellationList[index].title);
           }   else{
            HomeController.to.cancelReason.add(
-               tripCancellationList[index].title);
+               CommonController.to.tripCancellationList[index].title);
          }
         }
         ;
@@ -40,15 +40,17 @@ class TripCancellationReasonCardItem extends StatelessWidget {
           children: [
             Obx(() {
               return CustomCheckbox(
-                isChecked: tripCancellationList[index].isChecked.value,
+                isChecked: CommonController.to.tripCancellationList[index].isChecked.value,
                 //   onChanged: (value) {
                 //
               );
             }),
-            CustomText(
-              text: tripCancellationList[index].title,
-              style: poppinsMedium,
-              fontSize: kDefaultFontSize,
+            Expanded(
+              child: CustomText(
+                text: CommonController.to.tripCancellationList[index].title,
+                style: poppinsMedium,
+                fontSize: kDefaultFontSize,
+              ),
             ),
           ],
         ),

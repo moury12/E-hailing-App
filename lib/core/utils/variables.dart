@@ -20,42 +20,6 @@ String thisWeek = "last-7-days";
 String thisMonth = "this-month";
 String preBook= "pre_book";
 String nrcVerificationField= "nrc_verification_status";
-List<TripCancellationModel> tripCancellationList =CommonController.to.isDriver.value? [
-  TripCancellationModel(
-    title: AppStaticStrings.riderNoShow.tr,
-    isChecked: false.obs,
-  ),
-  TripCancellationModel(
-    title: AppStaticStrings.wrongPickupLocation.tr,
-    isChecked: false.obs,
-  ),
-  TripCancellationModel(
-    title: AppStaticStrings.safetyConcerns.tr,
-    isChecked: false.obs,
-  ),
-  TripCancellationModel(
-    title: AppStaticStrings.vehicleIssue.tr,
-    isChecked: false.obs,
-  ),
-  TripCancellationModel(
-    title: AppStaticStrings.tripRequestError.tr,
-    isChecked: false.obs,
-  ),
-]: [
-  TripCancellationModel(
-    title: AppStaticStrings.waitingTimeIsLong.tr,
-    isChecked: false.obs,
-  ),
-  TripCancellationModel(
-    title: AppStaticStrings.changeOfTravelPlan.tr,
-    isChecked: false.obs,
-  ),
-  TripCancellationModel(
-    title: AppStaticStrings.tripReqError.tr,
-    isChecked: false.obs,
-  ),
-
-];
 class AddressModel{
   final String title;
   final LatLng latLng;
