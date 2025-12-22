@@ -197,9 +197,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                   HomeController.to.pickupLatLng.value !=
                       CommonController.to.markerPositionRider.value && !HomeController.to.setPickup.value)
                 Marker(
-                  // draggable:
-                  //     HomeController.to.mapDragable.value &&
-                  //     HomeController.to.mapDraging.value,
+
                   markerId: MarkerId("source Marker"),
                   position: HomeController.to.pickupLatLng.value!,
                   icon: sourceIcon.value!,
