@@ -354,14 +354,20 @@ Future<void> showCredentialsDialog() async {
                 spacing: 8.w,
                 children: [
                   Expanded(
-                    child: CustomButton(
-                      textColor: AppColors.kPrimaryColor,
-                      fillColor: Colors.transparent,
-                      onTap: () => Get.back(),
-                      title: AppStaticStrings.cancel.tr,
-                    ),
-                  ),
-                  Expanded(
+  child: CustomButton(
+    textColor: AppColors.kPrimaryColor,
+    fillColor: Colors.transparent,
+    title: AppStaticStrings.cancel.tr,
+    onTap: () {
+      final navigator = Navigator.of(Get.context!, rootNavigator: true);
+      if (navigator.canPop()) {
+        navigator.pop();
+      }
+    },
+  ),
+),
+
+                   Expanded(
                     child: CustomButton(
                       onTap: () {
                         AuthController.to.emailLoginController.text =

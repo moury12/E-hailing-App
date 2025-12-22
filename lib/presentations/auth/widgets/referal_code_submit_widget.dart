@@ -21,35 +21,49 @@ class _ReferalCodeSubmitWidgetState extends State<ReferalCodeSubmitWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 8,
-      children: [
-        CustomTextField(title: AppStaticStrings.referalCode.tr,
-          textEditingController: codeController,),
-        Row(spacing: 8,
-          children: [
-            Expanded(child: CustomButton(onTap: () {
-Get.back();
-            },title: AppStaticStrings.cancel.tr,)),
-            Expanded(
-              child: Obx(() {
-                return CustomButton(
-                  isLoading: AuthController.to.isLoadingApply.value,
-                  onTap: () async {
-                  bool onSuccess =  await AuthController.to.applyReferalCode(code: codeController.text);
-                  if(onSuccess){
-                    logger.d("message");
-                    Get.back();
-                  }else{
-                    Get.back();
-                  }
-                  }, title: AppStaticStrings.submit.tr,);
-              }),
-            ),
-          ],
-        ),
-      ],
+    return SizedBox(
+      width: MediaQuery.of(context).size.width*0.8,
+  
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          CustomTextField(title: AppStaticStrings.referalCode.tr,
+            textEditingController: codeController,),
+          Row(spacing: 8,
+            children: [
+              Expanded(child: CustomButton(onTap: () {
+   final navigator = Navigator.of(Get.context!, rootNavigator: true);
+      if (navigator.canPop()) {
+        navigator.pop();
+      }
+              },title: AppStaticStrings.cancel.tr,)),
+              Expanded(
+                child: Obx(() {
+                  return CustomButton(
+                    isLoading: AuthController.to.isLoadingApply.value,
+                    onTap: () async {
+                    bool onSuccess =  await AuthController.to.applyReferalCode(code: codeController.text);
+                    if(onSuccess){
+                     
+      final navigator = Navigator.of(Get.context!, rootNavigator: true);
+      if (navigator.canPop()) {
+        navigator.pop();
+      }
+    
+                    }else{
+                     final navigator = Navigator.of(Get.context!, rootNavigator: true);
+      if (navigator.canPop()) {
+        navigator.pop();
+      }
+                    }
+                    }, title: AppStaticStrings.submit.tr,);
+                }),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

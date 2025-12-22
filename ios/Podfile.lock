@@ -13,6 +13,8 @@ PODS:
     - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
+  - device_info_plus (0.0.1):
+    - Flutter
   - file_saver (0.0.1):
     - Flutter
   - Firebase/CoreOnly (12.4.0):
@@ -160,6 +162,7 @@ PODS:
 DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - file_saver (from `.symlinks/plugins/file_saver/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
@@ -211,6 +214,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audio_session/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   file_saver:
     :path: ".symlinks/plugins/file_saver/ios"
   firebase_core:
@@ -269,6 +274,7 @@ SPEC CHECKSUMS:
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   audio_session: 9bb7f6c970f21241b19f5a3658097ae459681ba0
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
+  device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   file_saver: 6cdbcddd690cb02b0c1a0c225b37cd805c2bf8b6
   Firebase: f07b15ae5a6ec0f93713e30b923d9970d144af3e
   firebase_core: f1aafb21c14f497e5498f7ffc4dc63cbb52b2594
