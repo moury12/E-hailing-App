@@ -11,10 +11,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class OtpPage extends StatelessWidget {
+class OtpPage extends StatefulWidget {
   static const String routeName = '/otp';
 
   OtpPage({super.key});
+
+  @override
+  State<OtpPage> createState() => _OtpPageState();
+}
+
+class _OtpPageState extends State<OtpPage> {
+  @override
+  void initState() {
+    AuthController.to.clearOtp();
+    super.initState();
+  }
 
   final arg = Get.arguments;
 

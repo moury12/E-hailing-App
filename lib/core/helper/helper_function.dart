@@ -30,39 +30,44 @@ import '../../presentations/payment/widgets/ratting_dialog_widget.dart';
 import '../../presentations/trip/widgets/trip_cancellation_reason_card_item.dart';
 import '../utils/google_map_api_key.dart';
 
-launchGoogleMapsApp(String startLatitude, String startLongitude, String endLatitude, String endLongitude)
-async {
-if (Platform.isIOS) {
-// iOS uses comgooglemaps scheme
-final Uri iosUri = Uri.parse(
-'comgooglemaps://?saddr=$startLatitude,$startLongitude&daddr=$endLatitude,$endLongitude&directionsmode=driving',
-);
-final Uri iosFallback = Uri.parse(
-'https://www.google.com/maps/dir/?api=1&origin=$startLatitude,$startLongitude&destination=$endLatitude,$endLongitude&travelmode=driving',
-);
+launchGoogleMapsApp(
+  String startLatitude,
+  String startLongitude,
+  String endLatitude,
+  String endLongitude,
+) async {
+  if (Platform.isIOS) {
+    // iOS uses comgooglemaps scheme
+    final Uri iosUri = Uri.parse(
+      'comgooglemaps://?saddr=$startLatitude,$startLongitude&daddr=$endLatitude,$endLongitude&directionsmode=driving',
+    );
+    final Uri iosFallback = Uri.parse(
+      'https://www.google.com/maps/dir/?api=1&origin=$startLatitude,$startLongitude&destination=$endLatitude,$endLongitude&travelmode=driving',
+    );
 
-if (await canLaunchUrl(iosUri)) {
-await launchUrl(iosUri);
-} else {
-await launchUrl(iosFallback, mode: LaunchMode.externalApplication);
-}
-} else if (Platform.isAndroid) {
-// Android uses geo intent
-final Uri androidUri = Uri.parse(
-'google.navigation:q=$endLatitude,$endLongitude&mode=d',
-);
+    if (await canLaunchUrl(iosUri)) {
+      await launchUrl(iosUri);
+    } else {
+      await launchUrl(iosFallback, mode: LaunchMode.externalApplication);
+    }
+  } else if (Platform.isAndroid) {
+    // Android uses geo intent
+    final Uri androidUri = Uri.parse(
+      'google.navigation:q=$endLatitude,$endLongitude&mode=d',
+    );
 
-if (await canLaunchUrl(androidUri)) {
-await launchUrl(androidUri, mode: LaunchMode.externalApplication);
-} else {
-// fallback to web
-final Uri fallback = Uri.parse(
-'https://www.google.com/maps/dir/?api=1&origin=$startLatitude,$startLongitude&destination=$endLatitude,$endLongitude&travelmode=driving',
-);
-await launchUrl(fallback, mode: LaunchMode.externalApplication);
+    if (await canLaunchUrl(androidUri)) {
+      await launchUrl(androidUri, mode: LaunchMode.externalApplication);
+    } else {
+      // fallback to web
+      final Uri fallback = Uri.parse(
+        'https://www.google.com/maps/dir/?api=1&origin=$startLatitude,$startLongitude&destination=$endLatitude,$endLongitude&travelmode=driving',
+      );
+      await launchUrl(fallback, mode: LaunchMode.externalApplication);
+    }
+  }
 }
-}
-}
+
 Future<dynamic> tripCancellationDialog({
   Function()? onSubmit,
   bool? isLoading,
@@ -100,6 +105,7 @@ Future<dynamic> tripCancellationDialog({
     ),
   );
 }
+
 Future<void> launchEmail(String toEmail, {String subject = ""}) async {
   final Uri emailUri = Uri(
     scheme: 'mailto',
@@ -108,13 +114,16 @@ Future<void> launchEmail(String toEmail, {String subject = ""}) async {
   );
 
   if (await canLaunchUrl(emailUri)) {
-    await launchUrl(emailUri,mode: LaunchMode.externalApplication,);
+    await launchUrl(emailUri, mode: LaunchMode.externalApplication);
   } else {
     throw 'Could not launch $emailUri';
   }
 }
+
 Future<void> launchWhatsApp(String phoneNumber, {String message = ""}) async {
-  final Uri whatsappUri = Uri.parse("https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+  final Uri whatsappUri = Uri.parse(
+    "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}",
+  );
 
   if (await canLaunchUrl(whatsappUri)) {
     await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
@@ -122,7 +131,6 @@ Future<void> launchWhatsApp(String phoneNumber, {String message = ""}) async {
     throw 'Could not launch $whatsappUri';
   }
 }
-
 
 Future<void> launchWebsite(String url) async {
   final Uri uri = Uri.parse(url);
@@ -152,19 +160,16 @@ void showLoadingDialog({required String text}) {
     ),
   );
 }
+
 void handleNotificationTap(Map<String, dynamic> data) {
   logger.d(data);
   if (data.containsKey('chatId')) {
     final chatId = data['chatId'];
-    Get.toNamed(
-      ChattingPage.routeName,
-      arguments:  chatId,
-    );
-  } else  {
+    Get.toNamed(ChattingPage.routeName, arguments: chatId);
+  } else {
     Get.toNamed(NavigationPage.routeName);
   }
 }
-
 
 // Function to dismiss the loading dialog
 void dismissLoadingDialog() {
@@ -285,7 +290,6 @@ Future<void> pickImages({
   }
 }
 
-
 Future<void> preloadImagesFromUrls(List<String> imageUrls) async {
   for (var imageUrl in imageUrls) {
     if (imageUrl.isNotEmpty) {
@@ -354,20 +358,23 @@ Future<void> showCredentialsDialog() async {
                 spacing: 8.w,
                 children: [
                   Expanded(
-  child: CustomButton(
-    textColor: AppColors.kPrimaryColor,
-    fillColor: Colors.transparent,
-    title: AppStaticStrings.cancel.tr,
-    onTap: () {
-      final navigator = Navigator.of(Get.context!, rootNavigator: true);
-      if (navigator.canPop()) {
-        navigator.pop();
-      }
-    },
-  ),
-),
+                    child: CustomButton(
+                      textColor: AppColors.kPrimaryColor,
+                      fillColor: Colors.transparent,
+                      title: AppStaticStrings.cancel.tr,
+                      onTap: () {
+                        final navigator = Navigator.of(
+                          Get.context!,
+                          rootNavigator: true,
+                        );
+                        if (navigator.canPop()) {
+                          navigator.pop();
+                        }
+                      },
+                    ),
+                  ),
 
-                   Expanded(
+                  Expanded(
                     child: CustomButton(
                       onTap: () {
                         AuthController.to.emailLoginController.text =
@@ -441,7 +448,7 @@ Future<void> saveCredentials(
   await Boxes.getAuthData().put('rememberMe', rememberMe);
 }
 
-enum SnackBarType { success, failed, alert,info}
+enum SnackBarType { success, failed, alert, info }
 
 void showCustomSnackbar({
   required String title,
@@ -469,7 +476,7 @@ void showCustomSnackbar({
       backgroundColor = Color(0xffffd9b9);
       textColor = Colors.black;
       break;
-      case SnackBarType.info:
+    case SnackBarType.info:
       backgroundColor = Color(0xffaad6ff);
       textColor = Colors.black;
       break;
@@ -556,15 +563,14 @@ void callOnPhone({required String phoneNumber}) async {
 }
 
 void showRatingDialogs({required String carId}) {
-  Get.dialog(
-    RattingDialogWidget(carID: carId,),
-    barrierDismissible: false,
-  ).then((_) {
-    // Called when the dialog is popped
-    Boxes.getRattingData().delete("rating");
-  });
-
+  Get.dialog(RattingDialogWidget(carID: carId), barrierDismissible: false).then(
+    (_) {
+      // Called when the dialog is popped
+      Boxes.getRattingData().delete("rating");
+    },
+  );
 }
+
 Future<String?> pickDateTime(BuildContext context) async {
   // Pick Date
   final DateTime? pickedDate = await showDatePicker(
@@ -595,4 +601,3 @@ Future<String?> pickDateTime(BuildContext context) async {
 
   return dateTime.toIso8601String();
 }
-

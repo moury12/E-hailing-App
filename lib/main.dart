@@ -1,4 +1,4 @@
-import 'package:e_hailing_app/core/service/translation_controller.dart';
+import 'package:e_hailing_app/core/service/translation-service/translation_controller.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/firebase_options.dart';
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
@@ -15,7 +15,6 @@ import 'core/bindings/bindings.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
 
-
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -23,8 +22,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 String? fcmToken;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
-
+    FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -82,7 +80,6 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
           );
         });
-
       },
     );
   }

@@ -9,6 +9,7 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/service/translation-service/translate_page.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/auth/controllers/auth_controller.dart';
 import 'package:e_hailing_app/presentations/auth/views/signup_page.dart';
@@ -54,6 +55,13 @@ class _LoginPageState extends State<LoginPage> {
         AuthTitleTextWidget(title: AppStaticStrings.welcomeBack.tr),
         AuthSubTextWidget(text: AppStaticStrings.logInToContinue.tr),
         space12H,
+
+        CustomButton(
+          onTap: () {
+            Get.to(TranslationTestScreen());
+          },
+          title: 'Translate',
+        ),
         Form(
           key: formKey,
           child: Column(
