@@ -99,15 +99,21 @@ class AuthController extends GetxController {
       } else {
         showCustomSnackbar(
           title: 'Failed',
-          message: response['message'],
+          message: response['message']?.toString() ?? 'Registration failed',
           type: SnackBarType.failed,
         );
       }
     } catch (e) {
       loadingProcess.value = AuthProcess.none;
       logger.e(e.toString());
+      showCustomSnackbar(
+        title: 'Error',
+        message: 'Something went wrong. Please try again.',
+        type: SnackBarType.failed,
+      );
     }
   }
+
   ///------------------------------ sign up method -------------------------///
   Future<bool> applyReferalCode({required String code}) async {
     try {
@@ -115,9 +121,7 @@ class AuthController extends GetxController {
       final response = await ApiService().request(
         endpoint: getReferralsEndpoint,
         method: 'POST',
-        body: {
-          "code": code
-        },
+        body: {"code": code},
         useAuth: true,
       );
 
@@ -340,7 +344,9 @@ class AuthController extends GetxController {
         AlertDialog(
           contentPadding: padding12,
 
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
           content: ReferalCodeSubmitWidget(),
         ),
       ).then((_) {
@@ -715,4 +721,3 @@ class AuthController extends GetxController {
     focusNodes[0].requestFocus();
   }
 }
-

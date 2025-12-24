@@ -22,16 +22,27 @@ class TripCancellationReasonCardItem extends StatelessWidget {
       onTap: () {
         CommonController.to.tripCancellationList[index].isChecked.value =
             !CommonController.to.tripCancellationList[index].isChecked.value;
-        if (CommonController.to.tripCancellationList[index].isChecked.value == true) {
-         if(CommonController.to.isDriver.value) {
+        if (CommonController.to.isDriver.value) {
+          if (CommonController.to.tripCancellationList[index].isChecked.value) {
             DashBoardController.to.cancelReason.add(
-                CommonController.to.tripCancellationList[index].title);
-          }   else{
-           HomeController.to.cancelReason.add(
-               CommonController.to.tripCancellationList[index].title);
-         }
+              CommonController.to.tripCancellationList[index].title,
+            );
+          } else {
+            DashBoardController.to.cancelReason.remove(
+              CommonController.to.tripCancellationList[index].title,
+            );
+          }
+        } else {
+          if (CommonController.to.tripCancellationList[index].isChecked.value) {
+            HomeController.to.cancelReason.add(
+              CommonController.to.tripCancellationList[index].title,
+            );
+          } else {
+            HomeController.to.cancelReason.remove(
+              CommonController.to.tripCancellationList[index].title,
+            );
+          }
         }
-        ;
       },
       child: Padding(
         padding: padding12,
@@ -40,7 +51,12 @@ class TripCancellationReasonCardItem extends StatelessWidget {
           children: [
             Obx(() {
               return CustomCheckbox(
-                isChecked: CommonController.to.tripCancellationList[index].isChecked.value,
+                isChecked:
+                    CommonController
+                        .to
+                        .tripCancellationList[index]
+                        .isChecked
+                        .value,
                 //   onChanged: (value) {
                 //
               );

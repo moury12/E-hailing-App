@@ -29,8 +29,8 @@ import '../../../core/utils/google_map_api_key.dart';
 
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
-RxList<String> images =<String>[].obs;
-  RxBool isPaid =false.obs;
+  RxList<String> images = <String>[].obs;
+  RxBool isPaid = false.obs;
 
   final locationService = LocationTrackingService();
   Rx<LatLng> markerPositionDriver = Rx<LatLng>(LatLng(0.0, 0.0));
@@ -39,42 +39,49 @@ RxList<String> images =<String>[].obs;
   GoogleMapController? mapControllerRider;
   RxList<ReviewModel> reviewList = <ReviewModel>[].obs;
   Rx<AnnouncementModel> announcement = AnnouncementModel().obs;
-  List<TripCancellationModel> get tripCancellationList =>
-      CommonController.to.isDriver.value ? [
-        TripCancellationModel(
-          title: AppStaticStrings.riderNoShow.tr,
-          isChecked: false.obs,
-        ),
-        TripCancellationModel(
-          title: AppStaticStrings.wrongPickupLocation.tr,
-          isChecked: false.obs,
-        ),
-        TripCancellationModel(
-          title: AppStaticStrings.safetyConcerns.tr,
-          isChecked: false.obs,
-        ),
-        TripCancellationModel(
-          title: AppStaticStrings.vehicleIssue.tr,
-          isChecked: false.obs,
-        ),
-        TripCancellationModel(
-          title: AppStaticStrings.tripRequestError.tr,
-          isChecked: false.obs,
-        ),
-      ] : [
-        TripCancellationModel(
-          title: AppStaticStrings.waitingTimeIsLong.tr,
-          isChecked: false.obs,
-        ),
-        TripCancellationModel(
-          title: AppStaticStrings.changeOfTravelPlan.tr,
-          isChecked: false.obs,
-        ),
-        TripCancellationModel(
-          title: AppStaticStrings.tripReqError.tr,
-          isChecked: false.obs,
-        ),
-      ];
+  RxList<TripCancellationModel> tripCancellationList =
+      <TripCancellationModel>[].obs;
+
+  void updateTripCancellationList() {
+    tripCancellationList.value =
+        isDriver.value
+            ? [
+              TripCancellationModel(
+                title: AppStaticStrings.riderNoShow.tr,
+                isChecked: false.obs,
+              ),
+              TripCancellationModel(
+                title: AppStaticStrings.wrongPickupLocation.tr,
+                isChecked: false.obs,
+              ),
+              TripCancellationModel(
+                title: AppStaticStrings.safetyConcerns.tr,
+                isChecked: false.obs,
+              ),
+              TripCancellationModel(
+                title: AppStaticStrings.vehicleIssue.tr,
+                isChecked: false.obs,
+              ),
+              TripCancellationModel(
+                title: AppStaticStrings.tripRequestError.tr,
+                isChecked: false.obs,
+              ),
+            ]
+            : [
+              TripCancellationModel(
+                title: AppStaticStrings.waitingTimeIsLong.tr,
+                isChecked: false.obs,
+              ),
+              TripCancellationModel(
+                title: AppStaticStrings.changeOfTravelPlan.tr,
+                isChecked: false.obs,
+              ),
+              TripCancellationModel(
+                title: AppStaticStrings.tripReqError.tr,
+                isChecked: false.obs,
+              ),
+            ];
+  }
 
   RxBool isDriver = false.obs;
   RxBool isVerifingIdentity = false.obs;
@@ -132,6 +139,7 @@ RxList<String> images =<String>[].obs;
       isLoadingReview.value = false;
     }
   }
+
   Future<void> getAnnouncmentRequest() async {
     isLoadingAnnouncement.value = true;
 
@@ -141,11 +149,9 @@ RxList<String> images =<String>[].obs;
         endpoint: getAnnouncmentEndpoint,
         method: 'GET',
         useAuth: true,
-
       );
-    logger.d(response);
+      logger.d(response);
       if (response['success'] == true) {
-        
         announcement.value = AnnouncementModel.fromJson(response['data']);
       } else {
         logger.e(response);
@@ -200,6 +206,8 @@ RxList<String> images =<String>[].obs;
     logger.d(
       "--check role----${Boxes.getUserRole().get(role, defaultValue: user).toString()}",
     );
+    ever(isDriver, (_) => updateTripCancellationList());
+    updateTripCancellationList();
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
       initialSetup();
@@ -260,8 +268,7 @@ RxList<String> images =<String>[].obs;
   Future<void> fetchSuggestedPlacesWithRadius(
     String input, {
     double radiusInMeters = 5000,
-  })
-  async {
+  }) async {
     isLoadingOnLocationSuggestion.value = true;
 
     try {
@@ -286,7 +293,7 @@ RxList<String> images =<String>[].obs;
 
         // Clear the previous suggestions before adding new ones
         addressSuggestion.clear();
-logger.d(response.body);
+        logger.d(response.body);
         // Loop through the predictions and fetch detailed info for each
         for (var prediction in data['predictions']) {
           if (addressSuggestion.length >= 5) {
@@ -297,7 +304,7 @@ logger.d(response.body);
           String placeName = prediction['description'];
 
           // Fetch place details using Place Details API
-          await _fetchPlaceDetails(placeId,placeName);
+          await _fetchPlaceDetails(placeId, placeName);
         }
       } else {
         debugPrint("API error: ${response.statusCode}");
@@ -308,6 +315,7 @@ logger.d(response.body);
       isLoadingOnLocationSuggestion.value = false;
     }
   }
+
   Future<void> _fetchPlaceDetails(String placeId, String placeName) async {
     final detailsUrl =
         'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=${GoogleClient.googleMapUrl}';
@@ -327,9 +335,7 @@ logger.d(response.body);
         // Check if the suggestion is inside the country boundary
         if (BoundaryController.to.contains(suggestionLatLng)) {
           // If the location is within bounds, add to the list
-          addressSuggestion.add({'lat':lat,
-          'lng':lng,
-          'name': placeName});
+          addressSuggestion.add({'lat': lat, 'lng': lng, 'name': placeName});
         }
       }
     } else {
@@ -353,50 +359,51 @@ logger.d(response.body);
       if (!hasPermission) {
         logger.d("❌ Location permission not granted, using fallback");
         locationService.fallbackToDefaultLocation();
-        final markerPosition = isDriver.value ? markerPositionDriver : markerPositionRider;
+        final markerPosition =
+            isDriver.value ? markerPositionDriver : markerPositionRider;
         await BoundaryController.to.initialize(markerPosition.value);
         return;
       }
 
-      final markerPosition = isDriver.value ? markerPositionDriver : markerPositionRider;
+      final markerPosition =
+          isDriver.value ? markerPositionDriver : markerPositionRider;
       logger.d("✅ Location service enabled, fetching current location...");
 
       // 2. Fetch location
-      await locationService.fetchCurrentLocation(markerPosition: markerPosition);
+      await locationService.fetchCurrentLocation(
+        markerPosition: markerPosition,
+      );
 
       // 3. Initialize boundary
       await BoundaryController.to.initialize(markerPosition.value);
 
       // 4. Emit driver location update if user is driver
-      if (isDriver.value && tripId!=null) {
-      SocketService().emit(
-          DriverEvent.driverLocationUpdate,
-          {
+      if (isDriver.value && tripId != null) {
+        SocketService().emit(DriverEvent.driverLocationUpdate, {
+          "tripId": tripId,
+          "lat": markerPosition.value.latitude,
+          "long": markerPosition.value.longitude,
 
-              "tripId":tripId,
-              "lat":markerPosition.value.latitude,
-              "long":markerPosition.value.longitude
-
-
-            // Add any other info you want to send
-          },
-        );
+          // Add any other info you want to send
+        });
         logger.d("📡 Emitted driver location update");
       }
-
     } catch (e) {
       logger.e("🔥 Error in fetchCurrentLocationMethod: $e");
       locationService.fallbackToDefaultLocation();
     }
   }
 
-
   ///------------------------------ Post payment method -------------------------///
 
-  Future<void> postPaymentRequest({String? tripId, String? dCoinId,bool fromDcoin= false}) async {
+  Future<void> postPaymentRequest({
+    String? tripId,
+    String? dCoinId,
+    bool fromDcoin = false,
+  }) async {
     try {
       isLoadingPayment.value = true;
-logger.i("-----------------payment hit---------------");
+      logger.i("-----------------payment hit---------------");
       final response = await ApiService().request(
         endpoint: postPaymentEndPoint,
         method: 'POST',
@@ -410,14 +417,12 @@ logger.i("-----------------payment hit---------------");
       );
       logger.d(response);
       if (response['success'] == true) {
-        if(fromDcoin){
+        if (fromDcoin) {
           showCustomSnackbar(title: 'Success', message: response['message']);
 
           // Get.back();
-          isPaid.value=true;
-
-        }
-        else{
+          isPaid.value = true;
+        } else {
           showCustomSnackbar(title: 'Success', message: response['message']);
 
           stripeUrl.value = response['data'];
