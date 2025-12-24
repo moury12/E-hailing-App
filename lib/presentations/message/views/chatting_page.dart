@@ -5,6 +5,7 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+
 import 'package:e_hailing_app/presentations/message/controllers/chatting_controller.dart';
 import 'package:e_hailing_app/presentations/message/model/chat_message_model.dart';
 import 'package:e_hailing_app/presentations/message/widgets/chat_loading.dart';
@@ -129,33 +130,21 @@ class _ChattingPageState extends State<ChattingPage> {
                     ChattingController.to.chatMetaModel.value,
                   );
 
-                  return ChattingController.to.isLoadingMessage.value
-                      ? DefaultProgressIndicator()
-                      : IconButton(
-                        onPressed: () {
-                          if (ChattingController
-                              .to
-                              .messageTextController
-                              .text
-                              .isNotEmpty) {
-                            ChattingController.to.sendMessageSocket(
-                              body: {
-                                "chatId": chatId,
-                                "receiverId": other!.sId.toString(),
-                                "message":
-                                    ChattingController
-                                        .to
-                                        .messageTextController
-                                        .text,
-                              },
-                            );
-                          }
-                        },
-                        icon: Icon(
-                          Icons.send,
-                          color: AppColors.kBrightBlueColor,
-                        ),
-                      );
+                  return IconButton(
+                    onPressed: () {
+                      if (ChattingController
+                          .to
+                          .messageTextController
+                          .text
+                          .isNotEmpty) {
+                        ChattingController.to.sendMessage(
+                          chatId: chatId,
+                          receiverId: other!.sId.toString(),
+                        );
+                      }
+                    },
+                    icon: Icon(Icons.send, color: AppColors.kBrightBlueColor),
+                  );
                 }),
               ],
             ),
