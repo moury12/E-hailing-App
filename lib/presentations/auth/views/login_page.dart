@@ -56,12 +56,6 @@ class _LoginPageState extends State<LoginPage> {
         AuthSubTextWidget(text: AppStaticStrings.logInToContinue.tr),
         space12H,
 
-        CustomButton(
-          onTap: () {
-            Get.to(TranslationTestScreen());
-          },
-          title: 'Translate',
-        ),
         Form(
           key: formKey,
           child: Column(
