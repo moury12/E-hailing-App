@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:e_hailing_app/core/service/translation-service/translation_service.dart';
+import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 
 class ChattingController extends GetxController {
   static ChattingController get to => Get.find();
@@ -19,8 +21,10 @@ class ChattingController extends GetxController {
     firstPageKey: 1,
   );
   RxBool isLoadingMessage = false.obs;
+  RxBool isLoadingSent = false.obs;
   Rx<ChatModel?> chatMetaModel = Rx<ChatModel?>(null);
 
+  final TranslationService translationService = TranslationService();
   TextEditingController messageTextController = TextEditingController();
 
   @override
@@ -65,7 +69,51 @@ class ChattingController extends GetxController {
     }
   }
 
+  Future<void> sendMessage({
+    required String chatId,
+    required String receiverId,
+  }) async {
+    final text = messageTextController.text;
+    if (text.isEmpty) return;
+
+    // Optimistic Update
+    final tempId = 'temp_${DateTime.now().millisecondsSinceEpoch}';
+    final myId = AccountInformationController.to.userModel.value.sId;
+
+    final tempMessage = Messages(
+      sId: tempId,
+      sender: myId,
+      receiver: receiverId,
+      message: text,
+      createdAt: DateTime.now().toIso8601String(),
+    );
+
+    final currentItems = messagePagingController.itemList ?? [];
+    messagePagingController.itemList = [tempMessage, ...currentItems];
+    messageTextController.clear();
+
+    try {
+      final textEn = await translationService.translate(text, 'en');
+      final textMs = await translationService.translate(text, 'ms');
+
+      socket.emit(ChatEvent.sendMessage, {
+        "chatId": chatId,
+        "receiverId": receiverId,
+        "message": text,
+        "english": textEn,
+        "malay": textMs,
+      });
+    } catch (e) {
+      logger.e("Failed to send message: $e");
+      // Optionally handle failure UI here (e.g. show retry on the temp message)
+    }
+  }
+
   Future<void> sendMessageSocket({required Map<String, dynamic> body}) async {
+    // Deprecated or keep for compatibility if used elsewhere?
+    // The view uses this currently, but we are refactoring the view.
+    // Keeping it but logic is now in sendMessage.
+    isLoadingSent.value = true;
     if (!socket.socket!.connected) {
       showCustomSnackbar(
         title: 'Connection Error',
@@ -83,16 +131,30 @@ class ChattingController extends GetxController {
   void initializeSocket() {
     if (socket.socket!.connected) {
       socket.on(ChatEvent.sendMessage, (data) {
+        isLoadingSent.value = false;
         logger.d("-------send message---------");
         logger.d(data);
         if (data["success"]) {
-          // Convert the new message from JSON
           final newMessage = Messages.fromJson(data['data']);
 
-          // Add message at the top (or bottom based on your order)
-          final oldItems = messagePagingController.itemList ?? [];
-          if (!oldItems.any((element) => element.sId == newMessage.sId)) {
-            messagePagingController.itemList = [newMessage, ...oldItems];
+          final currentItems = messagePagingController.itemList ?? [];
+          // Check if we have a temp message to replace (Optimistic UI)
+          final tempIndex = currentItems.indexWhere(
+            (element) =>
+                element.sId != null &&
+                element.sId!.startsWith('temp_') &&
+                element.message == newMessage.message,
+            // Adding message check reduces risk of wrong swap, though not perfect if duplicate text.
+            // A dedicated unique ID passed through backend would be better but requires backend changes.
+          );
+
+          if (tempIndex != -1) {
+            currentItems[tempIndex] = newMessage;
+            messagePagingController.itemList = [...currentItems];
+          } else {
+            if (!currentItems.any((element) => element.sId == newMessage.sId)) {
+              messagePagingController.itemList = [newMessage, ...currentItems];
+            }
           }
         }
       });
@@ -102,9 +164,11 @@ class ChattingController extends GetxController {
   }
 
   void socketConnection() {
-    Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(
+      Boxes.getUserData().get(tokenKey).toString(),
+    );
 
-    socket.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+    socket.connect(decodedToken['userId'], decodedToken['role'] == "DRIVER");
   }
 
   void getMessages({required String chatId}) {

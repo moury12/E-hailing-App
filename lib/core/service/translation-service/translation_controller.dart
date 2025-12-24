@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class TranslationController extends GetxController implements Translations {
-  RxMap<String, Map<String, String>> translations = <String, Map<String, String>>{}.obs;
+  RxMap<String, Map<String, String>> translations =
+      <String, Map<String, String>>{}.obs;
   RxBool isLoading = true.obs;
   Rx<Locale> appLocale = const Locale('en', 'US').obs;
 
@@ -45,8 +46,12 @@ class TranslationController extends GetxController implements Translations {
     await Boxes.getLanguage().put(_languageKey, '${languageCode}_$countryCode');
     Get.updateLocale(locale);
   }
+
   Future<void> loadSavedLocale() async {
-    final savedLanguage = Boxes.getLanguage().get(_languageKey, defaultValue: 'en_US');
+    final savedLanguage = Boxes.getLanguage().get(
+      _languageKey,
+      defaultValue: 'en_US',
+    );
     final parts = savedLanguage.split('_');
     appLocale.value = Locale(parts[0], parts[1]);
   }
@@ -54,9 +59,10 @@ class TranslationController extends GetxController implements Translations {
   // Get saved language from Hive
   static Future<Locale> getSavedLanguage() async {
     try {
-
-      final savedLanguage = Boxes.getLanguage().get(_languageKey, defaultValue: 'en_US') as String;
-logger.d('--------------------${savedLanguage}');
+      final savedLanguage =
+          Boxes.getLanguage().get(_languageKey, defaultValue: 'en_US')
+              as String;
+      logger.d('--------------------${savedLanguage}');
       final parts = savedLanguage.split('_');
       return Locale(parts[0], parts[1]);
     } catch (e) {
