@@ -1,5 +1,6 @@
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
@@ -115,7 +116,10 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                       : _pickupCenter;
               if (current == null) return;
 
+              logger.d("onCameraIdle: checking boundary for $current");
+
               if (!BoundaryController.to.contains(current)) {
+                logger.w("onCameraIdle: Boundary check failed for $current");
                 showCustomSnackbar(
                   title: "Failed",
                   message: "Outside country boundary.",
@@ -184,20 +188,20 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                   icon: customIcon.value!,
                 ),
 
-                Marker(
-                  markerId: const MarkerId("selected_location"),
-                  position: CommonController.to.markerPositionRider.value,
+              Marker(
+                markerId: const MarkerId("selected_location"),
+                position: CommonController.to.markerPositionRider.value,
 
-                  icon: currentLocationIcon.value!,
+                icon: currentLocationIcon.value!,
 
-                  // Variable to store last valid position
-                ),
+                // Variable to store last valid position
+              ),
 
               if (HomeController.to.pickupLatLng.value != null &&
                   HomeController.to.pickupLatLng.value !=
-                      CommonController.to.markerPositionRider.value && !HomeController.to.setPickup.value)
+                      CommonController.to.markerPositionRider.value &&
+                  !HomeController.to.setPickup.value)
                 Marker(
-
                   markerId: MarkerId("source Marker"),
                   position: HomeController.to.pickupLatLng.value!,
                   icon: sourceIcon.value!,
