@@ -14,6 +14,7 @@ class TripResponseModel {
   num? estimatedFare;
   num? tollFee;
   num? extraCharge;
+  num? waitingFee;
   bool? isPeakHourApplied;
   bool? isCouponApplied;
   List<String>? cancellationReason;
@@ -32,6 +33,7 @@ class TripResponseModel {
     this.dropOffCoordinates,
     this.driverCoordinates,
     this.sId,
+    this.waitingFee,
     this.user,
     this.paymentStatus,
     this.pickUpAddress,
@@ -74,6 +76,7 @@ class TripResponseModel {
     paymentType = json['paymentType'];
     dropOffAddress = json['dropOffAddress'];
     duration = json['duration'];
+    waitingFee = json['waitingFee'];
     paymentStatus = json['paymentStatus'];
     distance = json['distance'];
     estimatedFare = json['estimatedFare'];
@@ -114,6 +117,7 @@ class TripResponseModel {
     data['paymentType'] = paymentType;
     data['dropOffAddress'] = dropOffAddress;
     data['duration'] = duration;
+    data['waitingFee'] = waitingFee;
     data['distance'] = distance;
     data['pickUpDate'] = pickUpDate;
     data['estimatedFare'] = estimatedFare;

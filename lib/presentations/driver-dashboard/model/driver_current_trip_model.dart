@@ -11,6 +11,7 @@ class DriverCurrentTripModel {
   num? estimatedFare;
   num? tollFee;
   num? extraCharge;
+  num? waitingFee;
   bool? isPeakHourApplied;
   bool? isCouponApplied;
   List<String>? cancellationReason;
@@ -39,6 +40,7 @@ class DriverCurrentTripModel {
     this.paymentStatus,
     this.estimatedFare,
     this.tollFee,
+    this.waitingFee,
     this.extraCharge,
     this.isPeakHourApplied,
     this.isCouponApplied,
@@ -75,6 +77,7 @@ class DriverCurrentTripModel {
     distance = json['distance'];
     estimatedFare = json['estimatedFare'];
     tollFee = json['tollFee'];
+    waitingFee = json['waitingFee'];
     tripType = json['tripType'];
     pickUpDate = json['pickUpDate'];
     extraCharge = json['extraCharge'];
@@ -110,6 +113,7 @@ class DriverCurrentTripModel {
     }
     data['duration'] = duration;
     data['distance'] = distance;
+    data['waitingFee'] = waitingFee;
     data['paymentStatus'] = paymentStatus;
     data['estimatedFare'] = estimatedFare;
     data['tollFee'] = tollFee;

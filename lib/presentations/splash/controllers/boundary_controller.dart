@@ -17,63 +17,56 @@ class BoundaryController extends GetxController {
   // Getter to check which city was detected
   String get detectedCity => _detectedCity.value;
 
-  /// City boundary definitions (covering whole metropolitan areas)
+  /// City boundary definitions - REAL COORDINATES
   static final Map<String, CityBoundary> _cityBoundaries = {
-    'selangor': CityBoundary(
-      name: 'Selangor',
-      country: 'MY',
-      rings: [
-        // Selangor state boundary (simplified but covers full area)
-        [
-          LatLng(3.7236, 101.0742), // Northwest
-          LatLng(3.8158, 101.2561), // North
-          LatLng(3.7847, 101.4521), // Northeast
-          LatLng(3.6234, 101.6789), // East
-          LatLng(3.3456, 101.7234), // Southeast
-          LatLng(3.0123, 101.6543), // South
-          LatLng(2.7891, 101.4321), // Southwest
-          LatLng(2.6543, 101.2876), // Southwest coast
-          LatLng(2.7234, 101.0987), // West coast
-          LatLng(3.2456, 100.9876), // West
-          LatLng(3.5678, 100.9543), // Northwest coast
-        ],
-      ],
-    ),
-    'kuala_lumpur': CityBoundary(
-      name: 'Kuala Lumpur',
-      country: 'MY',
-      rings: [
-        // KL Federal Territory boundary (full area)
-        [
-          LatLng(3.2334, 101.6234), // Northwest
-          LatLng(3.2456, 101.6789), // North
-          LatLng(3.2234, 101.7456), // Northeast
-          LatLng(3.1789, 101.7623), // East
-          LatLng(3.0876, 101.7456), // Southeast
-          LatLng(3.0543, 101.7012), // South
-          LatLng(3.0678, 101.6456), // Southwest
-          LatLng(3.0987, 101.6123), // West
-          LatLng(3.1456, 101.6012), // Northwest
-        ],
-      ],
-    ),
     'dhaka': CityBoundary(
       name: 'Dhaka',
       country: 'BD',
       rings: [
-        // Dhaka metropolitan area (North & South city corporations combined)
+        // Dhaka Metropolitan Area (Greater Dhaka)
+        // Covers Dhaka North & South City Corporation + surrounding areas
         [
-          LatLng(23.9876, 90.3234), // Northwest
-          LatLng(24.0234, 90.3789), // North
-          LatLng(24.0123, 90.4567), // Northeast
-          LatLng(23.9456, 90.5234), // East
-          LatLng(23.8234, 90.5456), // Southeast
-          LatLng(23.6789, 90.5123), // South
-          LatLng(23.6234, 90.4456), // South
-          LatLng(23.6543, 90.3567), // Southwest
-          LatLng(23.7123, 90.3012), // West
-          LatLng(23.8456, 90.2987), // West
-          LatLng(23.9234, 90.3123), // Northwest
+          LatLng(24.0500, 90.2500), // Far Northwest (Savar)
+          LatLng(24.0800, 90.3500), // North (Uttara North)
+          LatLng(24.0200, 90.5000), // Northeast (Gazipur border)
+          LatLng(23.9500, 90.5200), // East (Demra area)
+          LatLng(23.8500, 90.5500), // Southeast (Narayanganj border)
+          LatLng(23.6800, 90.5000), // South (Keraniganj)
+          LatLng(23.6500, 90.4000), // South-Central
+          LatLng(23.6800, 90.3000), // Southwest
+          LatLng(23.7500, 90.2800), // West (Dhanmondi-Mohammadpur area)
+          LatLng(23.9000, 90.2700), // Northwest (Mirpur-Pallabi)
+        ],
+      ],
+    ),
+    'kl_selangor': CityBoundary(
+      name: 'KL & Selangor',
+      country: 'MY',
+      rings: [
+        // Selangor State - Simplified boundary covering full state
+        [
+          LatLng(3.8500, 101.1000), // North (Rawang)
+          LatLng(3.7500, 101.3500), // Northeast (Selayang-Gombak)
+          LatLng(3.6000, 101.5000), // East (Ampang border)
+          LatLng(3.4000, 101.6500), // Southeast (Semenyih)
+          LatLng(3.1000, 101.6000), // South (Sepang)
+          LatLng(2.8000, 101.5000), // South (KLIA area)
+          LatLng(2.6500, 101.3500), // Southwest coast
+          LatLng(2.7500, 101.1500), // West coast (Kuala Langat)
+          LatLng(3.0000, 101.0000), // Northwest coast (Kuala Selangor)
+          LatLng(3.3500, 100.9500), // Northwest (Kuala Selangor)
+          LatLng(3.6500, 100.9800), // North coast
+        ],
+        // KL Federal Territory - Actual boundaries (included in combined zone)
+        [
+          LatLng(3.2400, 101.6400), // Northwest (Segambut)
+          LatLng(3.2100, 101.7200), // Northeast (Wangsa Maju)
+          LatLng(3.1700, 101.7500), // East (Ampang border)
+          LatLng(3.0900, 101.7300), // Southeast (Cheras)
+          LatLng(3.0600, 101.6800), // South (Seputeh)
+          LatLng(3.0800, 101.6300), // Southwest (Brickfields)
+          LatLng(3.1200, 101.6200), // West (Sentul)
+          LatLng(3.1800, 101.6100), // Northwest (Kepong border)
         ],
       ],
     ),
@@ -110,12 +103,14 @@ class BoundaryController extends GetxController {
     if (cityKey == null) {
       _ready = false;
       _detectedCity.value = 'unknown';
+      logger.e("Failed to detect city for position: $userPosition");
       return;
     }
 
     _detectedCity.value = cityKey;
     _loadCityBoundary(cityKey);
     _ready = true;
+    logger.i("Successfully initialized boundary for city: $cityKey");
   }
 
   /// Detect which city user is currently in
@@ -129,7 +124,6 @@ class BoundaryController extends GetxController {
           .get(Uri.parse(gUrl))
           .timeout(const Duration(seconds: 8));
 
-      logger.d(gRes.body);
       if (gRes.statusCode == 200) {
         final results = (jsonDecode(gRes.body)['results'] as List?) ?? [];
 
@@ -142,13 +136,11 @@ class BoundaryController extends GetxController {
             logger.i("City detected via formatted address: Dhaka");
             return 'dhaka';
           }
-          if (formatted.contains('selangor')) {
-            logger.i("City detected via formatted address: Selangor");
-            return 'selangor';
-          }
-          if (formatted.contains('kuala lumpur') || formatted.contains('kl')) {
-            logger.i("City detected via formatted address: Kuala Lumpur");
-            return 'kuala_lumpur';
+          if (formatted.contains('selangor') ||
+              formatted.contains('kuala lumpur') ||
+              formatted.contains('kl')) {
+            logger.i("City detected via formatted address: KL/Selangor");
+            return 'kl_selangor';
           }
 
           // Check address components
@@ -158,9 +150,15 @@ class BoundaryController extends GetxController {
 
             if (types.contains('administrative_area_level_1') ||
                 types.contains('locality')) {
-              if (longName.contains('dhaka')) return 'dhaka';
-              if (longName.contains('selangor')) return 'selangor';
-              if (longName.contains('kuala lumpur')) return 'kuala_lumpur';
+              if (longName.contains('dhaka')) {
+                logger.i("City detected via admin_area: Dhaka");
+                return 'dhaka';
+              }
+              if (longName.contains('selangor') ||
+                  longName.contains('kuala lumpur')) {
+                logger.i("City detected via admin_area: KL/Selangor");
+                return 'kl_selangor';
+              }
             }
           }
         }
@@ -184,14 +182,17 @@ class BoundaryController extends GetxController {
       }
     }
 
-    // If no city detected, return null
+    logger.e("No city detected for position: $pos");
     return null;
   }
 
   /// Load boundary from hardcoded city data
   void _loadCityBoundary(String cityKey) {
     final cityBoundary = _cityBoundaries[cityKey];
-    if (cityBoundary == null) return;
+    if (cityBoundary == null) {
+      logger.e("No boundary data found for city: $cityKey");
+      return;
+    }
 
     _rings.clear();
     _rings.addAll(cityBoundary.rings);
@@ -213,6 +214,8 @@ class BoundaryController extends GetxController {
       southwest: LatLng(minLat - pad, minLng - pad),
       northeast: LatLng(maxLat + pad, maxLng + pad),
     );
+
+    logger.i("Loaded boundary for $cityKey: ${bounds.value}");
   }
 
   /// Allow manual city selection (if you want users to choose)
@@ -221,6 +224,7 @@ class BoundaryController extends GetxController {
       _detectedCity.value = cityKey;
       _loadCityBoundary(cityKey);
       _ready = true;
+      logger.i("Manually set city to: $cityKey");
     }
   }
 

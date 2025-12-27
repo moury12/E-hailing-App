@@ -1,7 +1,7 @@
 class AppStaticStrings {
-
   ///_______________________________
-
+  static String outsideCountryBoundary = 'Service not available in that area';
+  static String waitingFee = 'Waiting Fee';
   // –––––––––––––––––––––––––––––––
   // validation
   static String emailRequired = 'emailRequired';

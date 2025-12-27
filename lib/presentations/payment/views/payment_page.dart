@@ -34,44 +34,48 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-   late DriverCurrentTripModel driverTripResponseModel;
-   late  TripResponseModel userTripResponse;
-   late String role;
+  late DriverCurrentTripModel driverTripResponseModel;
+  late TripResponseModel userTripResponse;
+  late String role;
   @override
   void initState() {
     final arg = Get.arguments;
     driverTripResponseModel = arg['driver'] ?? DriverCurrentTripModel();
     userTripResponse = arg['user'] ?? TripResponseModel();
     role = arg['role'] ?? "";
-    CommonController.to.isPaid.value = role == driver
-        ? (driverTripResponseModel.paymentStatus == "paid")
-        : (userTripResponse.paymentStatus == "paid");
+    CommonController.to.isPaid.value =
+        role == driver
+            ? (driverTripResponseModel.paymentStatus == "paid")
+            : (userTripResponse.paymentStatus == "paid");
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-
     // String rent =
     //     "${(driverTripResponseModel.finalFare ?? 0) - (driverTripResponseModel.extraCharge ?? 0)}";
     String rent =
-    role == driver
-        ? "${driverTripResponseModel.estimatedFare ?? 0}"
-        : "${userTripResponse.estimatedFare ?? 0}";
+        role == driver
+            ? "${driverTripResponseModel.estimatedFare ?? 0}"
+            : "${userTripResponse.estimatedFare ?? 0}";
     String paymentType =
-    role == driver
-        ? "${driverTripResponseModel.paymentType ?? 0}"
-        : "${userTripResponse.paymentType ?? 0}";
+        role == driver
+            ? "${driverTripResponseModel.paymentType ?? 0}"
+            : "${userTripResponse.paymentType ?? 0}";
     String tollFee =
-    role == driver
-        ? "${driverTripResponseModel.tollFee ?? 0}"
-        : "${userTripResponse.tollFee ?? 0}";
+        role == driver
+            ? "${driverTripResponseModel.tollFee ?? 0}"
+            : "${userTripResponse.tollFee ?? 0}";
     String extraCharge =
-    role == driver
-        ? "${driverTripResponseModel.extraCharge ?? 0}"
-        : "${userTripResponse.extraCharge ?? 0}";
+        role == driver
+            ? "${driverTripResponseModel.extraCharge ?? 0}"
+            : "${userTripResponse.extraCharge ?? 0}";
+    String waitingFee =
+        role == driver
+            ? "${driverTripResponseModel.waitingFee ?? 0}"
+            : "${userTripResponse.waitingFee ?? 0}";
     String finalFee =
-        "${double.parse(rent).toInt() + int.parse(tollFee) +
-        int.parse(extraCharge)}";
+        "${double.parse(rent).toInt() + int.parse(tollFee) + int.parse(extraCharge)}";
 
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.payment.tr),
@@ -108,6 +112,10 @@ class _PaymentPageState extends State<PaymentPage> {
                   title: AppStaticStrings.extraCharge.tr,
                   value: 'RM $extraCharge',
                 ),
+                CarInformationWidget(
+                  title: AppStaticStrings.waitingFee.tr,
+                  value: 'RM $waitingFee',
+                ),
                 Divider(color: AppColors.kGreyColor, height: 2, thickness: 2),
                 CarInformationWidget(
                   title: AppStaticStrings.totalPayment.tr,
@@ -119,44 +127,48 @@ class _PaymentPageState extends State<PaymentPage> {
                   logger.i("isPaid => ${CommonController.to.isPaid.value}");
                   return CommonController.to.isPaid.value
                       ? PaymentCardItem(
-                    img: "assets/icons/toast_check_icon.svg",
-                    title: "payment succeeded",
-                    onTap: () {
-                      // handle cash tap
-                    },
-                  )
-                      : buildPaymentItem(paymentType, finalFee, userTripResponse);
+                        img: "assets/icons/toast_check_icon.svg",
+                        title: "payment succeeded",
+                        onTap: () {
+                          // handle cash tap
+                        },
+                      )
+                      : buildPaymentItem(
+                        paymentType,
+                        finalFee,
+                        userTripResponse,
+                      );
                 }),
 
                 space6H,
                 role == driver
                     ? Column(
-                  spacing: 8.h,
-                  children: [
-                    CustomButton(
-                      onTap: () {
-                        DashBoardController.to.driverTripUpdateStatus(
-                          tripId: driverTripResponseModel.sId.toString(),
+                      spacing: 8.h,
+                      children: [
+                        CustomButton(
+                          onTap: () {
+                            DashBoardController.to.driverTripUpdateStatus(
+                              tripId: driverTripResponseModel.sId.toString(),
 
-                          newStatus:
-                          DriverTripStatus.completed.name.toString(),
-                        );
-                      },
-                      title: AppStaticStrings.confirm.tr,
-                    ),
-                    CustomButton(
-                      onTap: () {
-                        Get.offAllNamed(
-                          NavigationPage.routeName,
-                          arguments: {'reconnectSocket': true},
-                        );
-                      },
-                      fillColor: Colors.transparent,
-                      textColor: AppColors.kPrimaryColor,
-                      title: AppStaticStrings.notYet.tr,
-                    ),
-                  ],
-                )
+                              newStatus:
+                                  DriverTripStatus.completed.name.toString(),
+                            );
+                          },
+                          title: AppStaticStrings.confirm.tr,
+                        ),
+                        CustomButton(
+                          onTap: () {
+                            Get.offAllNamed(
+                              NavigationPage.routeName,
+                              arguments: {'reconnectSocket': true},
+                            );
+                          },
+                          fillColor: Colors.transparent,
+                          textColor: AppColors.kPrimaryColor,
+                          title: AppStaticStrings.notYet.tr,
+                        ),
+                      ],
+                    )
                     : SizedBox.shrink(),
               ],
             ),
@@ -166,9 +178,11 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  Widget buildPaymentItem(String? paymentType,
-      String? totalFee,
-      TripResponseModel userTripResponse,) {
+  Widget buildPaymentItem(
+    String? paymentType,
+    String? totalFee,
+    TripResponseModel userTripResponse,
+  ) {
     switch (paymentType) {
       case 'cash':
         return PaymentCardItem(
@@ -185,10 +199,11 @@ class _PaymentPageState extends State<PaymentPage> {
           title: AppStaticStrings.dCoin.tr,
           onTap: () {
             if (role != driver) {
-              Get.dialog(DCoinDialogPaymentWidget(
-                tripId: userTripResponse.sId.toString(),
-                extraCost: totalFee ?? "0",)
-
+              Get.dialog(
+                DCoinDialogPaymentWidget(
+                  tripId: userTripResponse.sId.toString(),
+                  extraCost: totalFee ?? "0",
+                ),
               );
             }
           },
