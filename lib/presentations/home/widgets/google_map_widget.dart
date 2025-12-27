@@ -1,3 +1,4 @@
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
@@ -61,6 +62,11 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
   void initState() {
     super.initState();
     loadCustomMarker();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      logger.i("Boundary ready: ${BoundaryController.to.isReady}");
+      logger.i("Detected city: ${BoundaryController.to.detectedCity}");
+      logger.i("Bounds: ${BoundaryController.to.bounds.value}");
+    });
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -122,7 +128,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                 logger.w("onCameraIdle: Boundary check failed for $current");
                 showCustomSnackbar(
                   title: "Failed",
-                  message: "Outside country boundary.",
+                  message: AppStaticStrings.outsideCountryBoundary.tr,
                   type: SnackBarType.alert,
                 );
                 if (lastValidPosition != null) {
@@ -227,7 +233,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                   //   if (!BoundaryController.to.contains(value)) {
                   //     showCustomSnackbar(
                   //       title: "Failed",
-                  //       message: 'Outside country boundary.',
+                  //       message: AppStaticStrings.outsideCountryBoundary.tr,
                   //       type: SnackBarType.alert,
                   //     );
                   //     HomeController.to.mapDragable.value = false;
@@ -281,7 +287,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                   //     // Show custom snackbar if the point is outside the country's boundary
                   //     showCustomSnackbar(
                   //       title: "Failed",
-                  //       message: 'Outside country boundary.',
+                  //       message: AppStaticStrings.outsideCountryBoundary.tr,
                   //       type: SnackBarType.alert,
                   //     );
                   //     HomeController.to.mapDragable.value = false;
