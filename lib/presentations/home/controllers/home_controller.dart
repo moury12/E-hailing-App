@@ -55,9 +55,11 @@ class HomeController extends GetxController {
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
   RxString tripType = "ride".obs;
+  RxString tripClass = "REGULAR".obs;
   List<String> get tripDetailsTabs {
     return [AppStaticStrings.carInfo.tr, AppStaticStrings.driverReview.tr].obs;
   }
+
   RxBool isCancellingTrip = false.obs;
 
   RxString pickupAddressText = 'Drag pin to set your Pickup location'.obs;
@@ -108,17 +110,36 @@ class HomeController extends GetxController {
       fetchSuggestedPlaces(value, 'dropoff');
     });
   }
+
   @override
   void onInit() async {
     initializeSocket();
     await getUserCurrentTrip();
-if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dropOffCoordinates!=null){
-  pickupLatLng.value=LatLng(double.parse(tripAcceptedModel.value.pickUpCoordinates!.coordinates!.last.toString()),double.parse(tripAcceptedModel.value.pickUpCoordinates!.coordinates!.first.toString()));
-  dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinates!.coordinates!.last.toString()),double.parse(tripAcceptedModel.value.dropOffCoordinates!.coordinates!.first.toString()));
-}
+    if (tripAcceptedModel.value.pickUpCoordinates != null &&
+        tripAcceptedModel.value.dropOffCoordinates != null) {
+      pickupLatLng.value = LatLng(
+        double.parse(
+          tripAcceptedModel.value.pickUpCoordinates!.coordinates!.last
+              .toString(),
+        ),
+        double.parse(
+          tripAcceptedModel.value.pickUpCoordinates!.coordinates!.first
+              .toString(),
+        ),
+      );
+      dropoffLatLng.value = LatLng(
+        double.parse(
+          tripAcceptedModel.value.dropOffCoordinates!.coordinates!.last
+              .toString(),
+        ),
+        double.parse(
+          tripAcceptedModel.value.dropOffCoordinates!.coordinates!.first
+              .toString(),
+        ),
+      );
+    }
     super.onInit();
   }
-
 
   void polyLineShow() async {
     if (tripAcceptedModel.value.sId != null) {
@@ -150,30 +171,40 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
         mapController: CommonController.to.mapControllerRider,
         type: PolylineType.pickupToDropoff,
       );
-      final driverCoords = tripAcceptedModel.value.driverCoordinates?.coordinates;
-      final pickupCoords = tripAcceptedModel.value.pickUpCoordinates?.coordinates;
+      final driverCoords =
+          tripAcceptedModel.value.driverCoordinates?.coordinates;
+      final pickupCoords =
+          tripAcceptedModel.value.pickUpCoordinates?.coordinates;
 
-      if (driverCoords != null && driverCoords.length >= 2 && pickupCoords != null && pickupCoords.length >= 2) {
+      if (driverCoords != null &&
+          driverCoords.length >= 2 &&
+          pickupCoords != null &&
+          pickupCoords.length >= 2) {
         double distanceInMeters = Geolocator.distanceBetween(
           pickupCoords.last,
           pickupCoords.first,
           driverCoords.last,
           driverCoords.first,
         );
-        if (distanceInMeters >= 100 && (tripAcceptedModel.value.status == 'on_the_way' || tripAcceptedModel.value.status == 'accepted')) {
-
-        await locationService.drawPolylineBetweenPoints(
-          LatLng(driverCoords.last, driverCoords.first), // start
-          LatLng(pickupCoords.last, pickupCoords.first), // end
-          NavigationController.to.routePolylinesDrivers,
-          userPosition: LatLng(driverCoords.last, driverCoords.first),
-          mapController: CommonController.to.mapControllerRider,
-          type: PolylineType.driverToPickup,
-          distance: int.tryParse(distanceInMeters.toString())?.obs ?? 0.obs,
-          duration: int.tryParse(tripAcceptedModel.value.duration?.toString() ?? '0')?.obs ?? 0.obs,
-        );}
+        if (distanceInMeters >= 100 &&
+            (tripAcceptedModel.value.status == 'on_the_way' ||
+                tripAcceptedModel.value.status == 'accepted')) {
+          await locationService.drawPolylineBetweenPoints(
+            LatLng(driverCoords.last, driverCoords.first), // start
+            LatLng(pickupCoords.last, pickupCoords.first), // end
+            NavigationController.to.routePolylinesDrivers,
+            userPosition: LatLng(driverCoords.last, driverCoords.first),
+            mapController: CommonController.to.mapControllerRider,
+            type: PolylineType.driverToPickup,
+            distance: int.tryParse(distanceInMeters.toString())?.obs ?? 0.obs,
+            duration:
+                int.tryParse(
+                  tripAcceptedModel.value.duration?.toString() ?? '0',
+                )?.obs ??
+                0.obs,
+          );
+        }
       }
-
 
       /*     }*/
 
@@ -234,7 +265,6 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
 
     // Clear any existing polylines from the map
 
-
     // Clear drop off location
     dropoffLatLng.value = null;
     dropoffAddressText.value = 'Drag pin to set your DropOff location';
@@ -280,7 +310,7 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
     socket.on(TripEvents.tripRequested, (data) {
       logger.d('🚕 tripRequested: $data');
 
-      if(data['data']['tripType']=="pre_book"){
+      if (data['data']['tripType'] == "pre_book") {
         showCustomSnackbar(
           title: 'Pre Booked ride successfully!',
           message: 'Request sent to admin panel admin will assign you driver!!',
@@ -288,25 +318,20 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
         resetAllStates();
         Get.offAllNamed(
           NavigationPage.routeName,
-          arguments: {'reconnectSocket': true,/*"pre_book":true*/},
+          arguments: {'reconnectSocket': true /*"pre_book":true*/},
         );
-      }
-      else{
+      } else {
         currentTrip.value = data;
         isCancellingTrip.value = false;
       }
-
     });
     socket.on(PaymentEvent.paymentPaid, (data) {
       logger.d('payment paid: $data');
-      CommonController.to.isPaid.value=data['success'];
-      if(data['success']){
+      CommonController.to.isPaid.value = data['success'];
+      if (data['success']) {
         getUserCurrentTrip();
       }
-      showCustomSnackbar(
-        title: 'Success',
-        message: data['message'],
-      );
+      showCustomSnackbar(title: 'Success', message: data['message']);
     });
 
     socket.on(TripEvents.tripNoDriverFound, (data) {
@@ -329,7 +354,7 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
 
     socket.on(TripEvents.tripAccepted, (data) {
       logger.d('✅ Trip accepted: ');
-      driverStatus.value=data["message"];
+      driverStatus.value = data["message"];
       logger.d(data);
       status.value = "Driver found! Trip accepted";
       resetAllStates();
@@ -339,23 +364,42 @@ if(tripAcceptedModel.value.pickUpCoordinates!=null && tripAcceptedModel.value.dr
       }
       updateDriverLocation();
       tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
-     if(tripAcceptedModel.value.tripType!=preBook) {
+      if (tripAcceptedModel.value.tripType != preBook) {
         CommonController.to.getReviewListRequest(
           driverId: tripAcceptedModel.value.driver!.sId.toString(),
         );
 
         polyLineShow();
-pickupLatLng.value=LatLng(double.parse(tripAcceptedModel.value.pickUpCoordinates!.coordinates!.last.toString()),double.parse(tripAcceptedModel.value.pickUpCoordinates!.coordinates!.first.toString()));
-dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinates!.coordinates!.last.toString()),double.parse(tripAcceptedModel.value.dropOffCoordinates!.coordinates!.first.toString()));
+        pickupLatLng.value = LatLng(
+          double.parse(
+            tripAcceptedModel.value.pickUpCoordinates!.coordinates!.last
+                .toString(),
+          ),
+          double.parse(
+            tripAcceptedModel.value.pickUpCoordinates!.coordinates!.first
+                .toString(),
+          ),
+        );
+        dropoffLatLng.value = LatLng(
+          double.parse(
+            tripAcceptedModel.value.dropOffCoordinates!.coordinates!.last
+                .toString(),
+          ),
+          double.parse(
+            tripAcceptedModel.value.dropOffCoordinates!.coordinates!.first
+                .toString(),
+          ),
+        );
         Get.offAndToNamed(TripDetailsPage.routeName);
-      }else{
-       resetAllStates();
-       Get.offAllNamed(
-         NavigationPage.routeName,
-         arguments: {'reconnectSocket': true,"pre_book":true},
-       );
-       /// TODO
-     }
+      } else {
+        resetAllStates();
+        Get.offAllNamed(
+          NavigationPage.routeName,
+          arguments: {'reconnectSocket': true, "pre_book": true},
+        );
+
+        /// TODO
+      }
     });
 
     socket.on(TripEvents.tripDriverLocationUpdate, (data) {
@@ -368,7 +412,7 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
     socket.on(TripEvents.tripUpdateStatus, (data) {
       logger.d('🔄 Trip status update:');
       logger.d(data);
-      driverStatus.value ="";
+      driverStatus.value = "";
       if (data['success']) {
         // showCustomSnackbar(title: "Trip Status", message: data['message']);
         tripAcceptedModel.value = TripResponseModel.fromJson(data['data']);
@@ -378,8 +422,8 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
         final status = data['data']['status'];
         if (status == DriverTripStatus.cancelled.name ||
             status == DriverTripStatus.completed.name) {
-          driverStatus.value="";
-          if( status == DriverTripStatus.completed.name){
+          driverStatus.value = "";
+          if (status == DriverTripStatus.completed.name) {
             // NavigationController.to.currentNavIndex.value=1;
             // MyRideController.to.currentTabIndex.value =2;
             Boxes.getRattingData().put(
@@ -387,12 +431,12 @@ dropoffLatLng.value=LatLng(double.parse(tripAcceptedModel.value.dropOffCoordinat
               tripAcceptedModel.value.driver?.assignedCar?.sId.toString(),
             );
           }
-          tripAcceptedModel.value= TripResponseModel();
+          tripAcceptedModel.value = TripResponseModel();
           resetAllStates();
-dropOffLocationController.value.clear();
-dropoffLatLng.value =null;
-NavigationController.to.clearPolyline();
-driverPosition.value=null;
+          dropOffLocationController.value.clear();
+          dropoffLatLng.value = null;
+          NavigationController.to.clearPolyline();
+          driverPosition.value = null;
           showTripDetailsCard.value = false;
 
           Get.offAllNamed(
@@ -400,7 +444,8 @@ driverPosition.value=null;
             arguments: {'reconnectSocket': true},
           );
 
-          for (TripCancellationModel cancel in CommonController.to.tripCancellationList) {
+          for (TripCancellationModel cancel
+              in CommonController.to.tripCancellationList) {
             cancel.isChecked.value = false;
           }
           // isCancellingTrip.value = false;
@@ -466,6 +511,7 @@ driverPosition.value=null;
     //   }
     // });
   }
+
   void socketConnection() {
     Map<String, dynamic> decodedToken = JwtDecoder.decode(
       Boxes.getUserData().get(tokenKey).toString(),
@@ -561,7 +607,7 @@ driverPosition.value=null;
     setPickup.value = false;
     setDestination.value = false;
     selectEv.value = false;
-      }
+  }
 
   // Optional: Methods for transitioning forward through your flow
   void goToWantToGo() {
@@ -589,8 +635,7 @@ driverPosition.value=null;
   Future<void> getTripFare({
     required int duration,
     required int distance,
-  })
-  async {
+  }) async {
     try {
       isLoadingPostFair.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
@@ -618,7 +663,6 @@ driverPosition.value=null;
   }
 
   void updateDriverLocation() {
-
     final updateCoords = driverLocationUpdate.value.coordinates;
     final fallbackCoords =
         tripAcceptedModel.value.driver?.locationCoordinates?.coordinates;
@@ -683,7 +727,6 @@ driverPosition.value=null;
     }
   }
 
-
   // Future<String> getPlaceNameFromGoogle(LatLng position) async {
   //   final url = Uri.parse(
   //     'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=${GoogleClient.googleMapUrl}',
@@ -702,17 +745,16 @@ driverPosition.value=null;
   //   return "";
   // }
 
-  Future<void> getPlaceName(LatLng position, TextEditingController controller) async {
+  Future<void> getPlaceName(
+    LatLng position,
+    TextEditingController controller,
+  ) async {
     try {
       String placemarks = await LocationTrackingService().getAddressFromLatLng(
-        LatLng(position.latitude,
-            position.longitude,)
+        LatLng(position.latitude, position.longitude),
       );
       if (placemarks.isNotEmpty) {
-
-
-        String address =
-            placemarks;
+        String address = placemarks;
         logger.d("Formatted address: $address");
 
         controller.text = address;
@@ -746,7 +788,6 @@ driverPosition.value=null;
       }
     }
   }
-
 
   Future<void> requestTrip({required Map<String, dynamic> body}) async {
     if (!socket.socket!.connected) {
@@ -805,9 +846,6 @@ driverPosition.value=null;
       socketConnection();
       return;
     }
-
-
-
 
     try {
       logger.d("cancel emit");

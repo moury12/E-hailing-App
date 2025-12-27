@@ -101,10 +101,13 @@ class _HomeSetLocationWidgetState extends State<HomeSetLocationWidget> {
             if (!HomeController.to.setDestination.value) {
               HomeController.to.setDestination.value = true;
               HomeController.to.setPickup.value = false;
-              HomeController.to.dropoffLatLng.value = LocationTrackingService().offsetByDistance(CommonController.to.markerPositionRider.value,
-                  1.0, 90);
+              HomeController.to.dropoffLatLng.value = LocationTrackingService()
+                  .offsetByDistance(
+                    CommonController.to.markerPositionRider.value,
+                    1.0,
+                    90,
+                  );
             } else {
-
               HomeController.to.wantToGo.value = true;
               HomeController.to.setDestination.value = false;
             }
@@ -125,7 +128,10 @@ class HomeSelectEvWidget extends StatelessWidget {
     return Column(
       spacing: 12.h,
       children: [
-        CustomText(text: AppStaticStrings.selectYourEv.tr, style: poppinsSemiBold),
+        CustomText(
+          text: AppStaticStrings.selectYourEv.tr,
+          style: poppinsSemiBold,
+        ),
         // CarDetailsCardWidget(
         //   onTap: () {
         //     //   HomeController.to.resetAllStates();
@@ -217,6 +223,8 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                               HomeController.to.lastDropoffLatLng != dropoff;
 
                           if (needsPolylineUpdate) {
+                            // Clear old polylines before drawing new one
+                            NavigationController.to.clearPolyline();
                             // Show loading indicator
                             showCustomSnackbar(
                               title: "Please wait...",
@@ -238,7 +246,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                                           .value,
                                   mapController:
                                       CommonController.to.mapControllerRider,
-                              type: PolylineType.pickupToDropoff,
+                                  type: PolylineType.pickupToDropoff,
                                 );
 
                             if (polylineSuccess) {
@@ -256,11 +264,16 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                                 "pickUpLat": pickup.latitude,
                                 "pickUpLong": pickup.longitude,
                                 "dropOffAddress":
-                                    HomeController.to.dropOffLocationController.value.text,
+                                    HomeController
+                                        .to
+                                        .dropOffLocationController
+                                        .value
+                                        .text,
                                 "dropOffLat": dropoff.latitude,
                                 "dropOffLong": dropoff.longitude,
                                 "duration": HomeController.to.duration.value,
-                                "tripType":HomeController.to.tripType.value,
+                                "tripType": HomeController.to.tripType.value,
+                                "tripClass": HomeController.to.tripClass.value,
                                 "distance": HomeController.to.distance.value,
 
                                 // "coupon" will be added later from RequestTripPage
@@ -364,8 +377,7 @@ Widget locationSuggestionList() {
             } else {
               HomeController.to.dropoffLatLng.value = LatLng(lat, lng);
             }
-            HomeController.to.selectedAddress.value =
-            address['name'];
+            HomeController.to.selectedAddress.value = address['name'];
             // await locationService.getLatLngFromPlace(
             //   placeId,
             //   latLng:
@@ -436,7 +448,7 @@ class HomeInitialContentWidget extends StatelessWidget {
         SearchFieldButtonWidget(
           onTap: () {
             debugPrint(HomeController.to.wantToGo.value.toString());
-            HomeController.to.tripType.value="ride";
+            HomeController.to.tripType.value = "ride";
 
             HomeController.to.wantToGo.value = true;
           },
@@ -454,27 +466,31 @@ class HomeInitialContentWidget extends StatelessWidget {
                 title: AppStaticStrings.generalRide.tr,
                 img: purpleCarImage2,
                 onTap: () {
-
                   HomeController.to.wantToGo.value = true;
-                  HomeController.to.tripType.value="ride";
-
+                  HomeController.to.tripType.value = "ride";
+                  HomeController.to.tripClass.value = "REGULAR";
                 },
               ),
               ServiceWidget(
-                onTap: () {
-                  HomeController.to.wantToGo.value = true;
-                  HomeController.to.tripType.value=preBook;
-                },
+                backgroundColor: Colors.grey.shade400,
+                // onTap: () {
+                //   HomeController.to.wantToGo.value = true;
+                //   HomeController.to.tripType.value = preBook;
+                // },
                 title: AppStaticStrings.preBookRide.tr,
                 img: purpleCarImage2,
               ),
               ServiceWidget(
-                backgroundColor: Colors.grey.shade400,
+                // backgroundColor: Colors.grey.shade400,
                 onTap: () {
-                  showComingSoonDialog(context);
+                  // showComingSoonDialog(context);
+                  HomeController.to.tripType.value = "ride";
+                  HomeController.to.tripClass.value = "PREMIUM";
+                  HomeController.to.wantToGo.value = true;
+
                   // HomeController.to.setPickup.value = true;
                 },
-                title: AppStaticStrings.womanOnlyRide.tr,
+                title: AppStaticStrings.premiumRide.tr,
                 img: purpleCarImage2,
               ),
             ],
@@ -496,7 +512,8 @@ class ServiceWidget extends StatelessWidget {
     super.key,
     required this.title,
     required this.img,
-    this.onTap, this.backgroundColor,
+    this.onTap,
+    this.backgroundColor,
   });
 
   @override
@@ -506,7 +523,7 @@ class ServiceWidget extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          Image.asset(img, height:50.sp),
+          Image.asset(img, height: 50.sp),
           space6H,
           CustomText(text: title, style: poppinsSemiBold, fontSize: 10.sp),
         ],
