@@ -15,6 +15,7 @@ import 'package:e_hailing_app/core/service/socket-service/socket_events_variable
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
+import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -242,8 +243,6 @@ class LocationTrackingService {
     }
   }
 
-
-
   Future<String> getAddressFromLatLng(LatLng latLng) async {
     try {
       // Requesting the placemarks from coordinates
@@ -280,7 +279,6 @@ class LocationTrackingService {
       return "Unknown error occurred";
     }
   }
-
 
   // Future<void> getLatLngFromPlace(
   //   String placeId, {
@@ -446,8 +444,8 @@ class LocationTrackingService {
           'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
 
       final response = await http.get(Uri.parse(url));
-logger.d(url);
-// logger.d(response.body);
+      logger.d(url);
+      // logger.d(response.body);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
@@ -480,7 +478,7 @@ logger.d(url);
             distance.value = leg['distance']['value'];
             duration.value = (leg['duration']['value'] / 60).ceil();
           }
-
+          NavigationController.to.clearPolyline();
           routePolylines.add(polyline);
           routePolylines.refresh();
 

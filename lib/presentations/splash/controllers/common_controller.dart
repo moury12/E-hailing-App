@@ -293,7 +293,7 @@ class CommonController extends GetxController {
 
         // Clear the previous suggestions before adding new ones
         addressSuggestion.clear();
-        logger.d(response.body);
+        // logger.d(response.body);
         // Loop through the predictions and fetch detailed info for each
         for (var prediction in data['predictions']) {
           if (addressSuggestion.length >= 5) {
@@ -323,14 +323,14 @@ class CommonController extends GetxController {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> detailsData = jsonDecode(response.body);
-      logger.d(detailsData);
+      // logger.d(detailsData);
       if (detailsData['status'] == 'OK') {
         var location = detailsData['result']['geometry']['location'];
         double lat = location['lat'];
         double lng = location['lng'];
 
         LatLng suggestionLatLng = LatLng(lat, lng);
-        logger.d(response.body);
+        // logger.d(response.body);
 
         // Check if the suggestion is inside the country boundary
         if (BoundaryController.to.contains(suggestionLatLng)) {

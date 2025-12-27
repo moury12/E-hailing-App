@@ -2,6 +2,7 @@ class AppStaticStrings {
   ///_______________________________
   static String outsideCountryBoundary = 'Service not available in that area';
   static String waitingFee = 'Waiting Fee';
+  static String premiumRide = 'Premium Ride';
   // –––––––––––––––––––––––––––––––
   // validation
   static String emailRequired = 'emailRequired';
