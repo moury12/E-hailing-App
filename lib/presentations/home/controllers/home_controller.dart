@@ -145,6 +145,10 @@ class HomeController extends GetxController {
     if (tripAcceptedModel.value.sId != null) {
       resetAllStates();
       showTripDetailsCard.value = true;
+
+      // Clear old polylines before drawing new ones
+      NavigationController.to.clearPolyline();
+
       await locationService.drawPolylineBetweenPoints(
         LatLng(
           double.parse(

@@ -332,66 +332,63 @@ Future<void> showCredentialsDialog() async {
   final credentials = await getCredentials();
 
   if (credentials.isNotEmpty && credentials['rememberMe'] == true) {
-    Get.dialog(
-      AlertDialog(
-        content: SizedBox(
-          width: Get.width * .8,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomText(
-                textAlign: TextAlign.center,
-                text: 'Email: ${credentials['email']}',
-                color: AppColors.kExtraLightTextColor,
-                fontSize: getFontSizeSemiSmall(),
-              ),
-              CustomText(
-                textAlign: TextAlign.center,
-                text:
-                    'Password: ${'•' * (credentials['password']?.length ?? 0)}',
-                color: AppColors.kExtraLightTextColor,
-                fontSize: getFontSizeSemiSmall(),
-              ),
-              space8H,
-              Row(
-                spacing: 8.w,
-                children: [
-                  Expanded(
-                    child: CustomButton(
-                      textColor: AppColors.kPrimaryColor,
-                      fillColor: Colors.transparent,
-                      title: AppStaticStrings.cancel.tr,
-                      onTap: () {
-                        final navigator = Navigator.of(
-                          Get.context!,
-                          rootNavigator: true,
-                        );
-                        if (navigator.canPop()) {
-                          navigator.pop();
-                        }
-                      },
+    await Get.dialog(
+      Builder(
+        builder:
+            (dialogContext) => AlertDialog(
+              content: SizedBox(
+                width: Get.width * .8,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      textAlign: TextAlign.center,
+                      text: 'Email: ${credentials['email']}',
+                      color: AppColors.kExtraLightTextColor,
+                      fontSize: getFontSizeSemiSmall(),
                     ),
-                  ),
-
-                  Expanded(
-                    child: CustomButton(
-                      onTap: () {
-                        AuthController.to.emailLoginController.text =
-                            credentials['email'];
-                        AuthController.to.passLoginController.text =
-                            credentials['password'];
-
-                        Get.back();
-                      },
-                      title: AppStaticStrings.confirm.tr,
+                    CustomText(
+                      textAlign: TextAlign.center,
+                      text:
+                          'Password: ${'•' * (credentials['password']?.length ?? 0)}',
+                      color: AppColors.kExtraLightTextColor,
+                      fontSize: getFontSizeSemiSmall(),
                     ),
-                  ),
-                ],
+                    space8H,
+                    Row(
+                      spacing: 8.w,
+                      children: [
+                        Expanded(
+                          child: CustomButton(
+                            textColor: AppColors.kPrimaryColor,
+                            fillColor: Colors.transparent,
+                            title: AppStaticStrings.cancel.tr,
+                            onTap: () {
+                              Navigator.of(dialogContext).pop();
+                            },
+                          ),
+                        ),
+
+                        Expanded(
+                          child: CustomButton(
+                            onTap: () {
+                              AuthController.to.emailLoginController.text =
+                                  credentials['email'];
+                              AuthController.to.passLoginController.text =
+                                  credentials['password'];
+
+                              Navigator.of(dialogContext).pop();
+                            },
+                            title: AppStaticStrings.confirm.tr,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
+            ),
       ),
       barrierDismissible: true,
     );

@@ -298,6 +298,9 @@ class DashBoardController extends GetxController {
     final dropCoords = trip.dropOffCoordinates?.coordinates;
 
     if (trip.sId != null && coords != null && dropCoords != null) {
+      // Clear old polylines before drawing new ones
+      NavigationController.to.clearPolyline();
+
       // 🟦 Pickup → Dropoff (Blue)
       await locationService.drawPolylineBetweenPoints(
         userPosition: CommonController.to.markerPositionDriver.value,
@@ -431,10 +434,14 @@ class DashBoardController extends GetxController {
       if (data["success"]) {
         // Ensure UI updates happen on the main thread
         if (Get.isRegistered<DashBoardController>()) {
-          DashBoardController.to.availableTrip.value = DriverCurrentTripModel.fromJson(data['data']);
-          DashBoardController.to.resetRideFlow(rideType: RideFlowState.rideRequest);
+          DashBoardController
+              .to
+              .availableTrip
+              .value = DriverCurrentTripModel.fromJson(data['data']);
+          DashBoardController.to.resetRideFlow(
+            rideType: RideFlowState.rideRequest,
+          );
         }
-
       }
     });
 
@@ -497,8 +504,7 @@ class DashBoardController extends GetxController {
           data['data'],
         );
         // _showSuccess(data['message']);
-      }
-      else {
+      } else {
         // _showError(data['message']);
       }
     });
@@ -569,7 +575,7 @@ class DashBoardController extends GetxController {
   void resetController() {
     // Remove listeners
     removeSocketListeners();
-    currentTrip.value = DriverCurrentTripModel();  // clear UI
+    currentTrip.value = DriverCurrentTripModel(); // clear UI
     updateRideFlowState(null);
     // NavigationController.to.clearPolyline();
     // Reset all state
@@ -580,7 +586,8 @@ class DashBoardController extends GetxController {
     // extraCost.clear();
 
     // Reset cancel reasons
-    for (TripCancellationModel cancel in CommonController.to.tripCancellationList) {
+    for (TripCancellationModel cancel
+        in CommonController.to.tripCancellationList) {
       cancel.isChecked.value = false;
     }
 

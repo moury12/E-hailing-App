@@ -15,7 +15,6 @@ import 'package:e_hailing_app/core/service/socket-service/socket_events_variable
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
-import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -478,7 +477,7 @@ class LocationTrackingService {
             distance.value = leg['distance']['value'];
             duration.value = (leg['duration']['value'] / 60).ceil();
           }
-          NavigationController.to.clearPolyline();
+          // Don't clear all polylines here - let the caller manage clearing
           routePolylines.add(polyline);
           routePolylines.refresh();
 
