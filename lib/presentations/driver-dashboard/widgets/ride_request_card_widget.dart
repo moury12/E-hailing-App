@@ -16,6 +16,7 @@ class RideRequestCardWidget extends StatelessWidget {
   final String? userImg;
   final String? userName;
   final String? rideType;
+  final String? tripClass;
   final String? fare;
   final String? distance;
   final String? fromAddress;
@@ -31,6 +32,7 @@ class RideRequestCardWidget extends StatelessWidget {
     this.distance,
     this.fromAddress,
     this.toAddress,
+    this.tripClass,
   });
 
   @override
@@ -41,7 +43,10 @@ class RideRequestCardWidget extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: CustomText(text: "${rideType=='ride'? AppStaticStrings.ride.tr: AppStaticStrings.preBookRide.tr} Request"),
+              child: CustomText(
+                text:
+                    "${rideType == 'ride' ? "${tripClass?.toLowerCase() == "premium" ? "Premium" : ""} ${AppStaticStrings.ride.tr}" : AppStaticStrings.preBookRide.tr} Request",
+              ),
             ),
             Expanded(
               flex: 2,

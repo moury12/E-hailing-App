@@ -299,6 +299,32 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                               );
                             }
                           } else {
+                            // Polyline already exists - rebuild tripArgs with current values
+                            HomeController.to.tripArgs = {
+                              "pickUpAddress":
+                                  HomeController
+                                      .to
+                                      .pickupLocationController
+                                      .value
+                                      .text,
+                              "pickUpLat": pickup.latitude,
+                              "pickUpLong": pickup.longitude,
+                              "dropOffAddress":
+                                  HomeController
+                                      .to
+                                      .dropOffLocationController
+                                      .value
+                                      .text,
+                              "dropOffLat": dropoff.latitude,
+                              "dropOffLong": dropoff.longitude,
+                              "duration": HomeController.to.duration.value,
+                              "tripType": HomeController.to.tripType.value,
+                              "tripClass": HomeController.to.tripClass.value,
+                              "distance": HomeController.to.distance.value,
+
+                              // "coupon" will be added later from RequestTripPage
+                            };
+
                             await HomeController.to.getTripFare(
                               duration: HomeController.to.duration.value,
                               distance: HomeController.to.distance.value,
@@ -312,6 +338,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                             //   arguments: HomeController.to.tripArgs,
                             // );
                           }
+                          logger.d("Trip Args: ${HomeController.to.tripArgs}");
                         },
                 shape: const CircleBorder(),
                 child:

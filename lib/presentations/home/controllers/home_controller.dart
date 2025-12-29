@@ -643,7 +643,11 @@ class HomeController extends GetxController {
       final response = await ApiService().request(
         endpoint: getTripFareEndpoint,
         method: 'POST',
-        body: {"duration": duration, "distance": distance},
+        body: {
+          "duration": duration,
+          "distance": distance,
+          "tripClass": tripClass.value,
+        },
       );
 
       if (response['success'] == true) {

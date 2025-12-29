@@ -22,6 +22,7 @@ class DriverCurrentTripModel {
   String? tripType;
   String? paymentStatus;
   String? pickUpDate;
+  String? tripClass;
   num? iV;
   User? driver;
   String? driverTripAcceptedAt;
@@ -52,6 +53,7 @@ class DriverCurrentTripModel {
     this.pickUpDate,
     this.iV,
     this.driver,
+    this.tripClass,
     this.driverTripAcceptedAt,
   });
 
@@ -89,6 +91,7 @@ class DriverCurrentTripModel {
     status = json['status'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    tripClass = json['tripClass'];
     iV = json['__v'];
     driver = json['driver'] != null ? User.fromJson(json['driver']) : null;
     driverTripAcceptedAt = json['driverTripAcceptedAt'];
@@ -127,6 +130,7 @@ class DriverCurrentTripModel {
     data['pickUpDate'] = pickUpDate;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
+    data['tripClass'] = tripClass;
     data['__v'] = iV;
     if (driver != null) {
       data['driver'] = driver!.toJson();

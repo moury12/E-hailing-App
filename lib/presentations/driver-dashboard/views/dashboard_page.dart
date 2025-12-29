@@ -101,7 +101,6 @@ class _DashboardPageState extends State<DashboardPage>
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-
           Positioned(
             bottom: 0,
             left: 0,
@@ -120,14 +119,13 @@ class _DashboardPageState extends State<DashboardPage>
                     ),
                   ),
                   child: Stack(
-                     alignment: AlignmentGeometry.center,
+                    alignment: AlignmentGeometry.center,
                     children: [
                       Padding(
                         padding: padding12,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-
                             Container(
                               height: 4.w,
                               width: 40.w,
@@ -143,10 +141,15 @@ class _DashboardPageState extends State<DashboardPage>
                                   DashBoardController.to.currentTrip.value;
                               DriverCurrentTripModel availableTrip =
                                   DashBoardController.to.availableTrip.value;
-                              return DashBoardController.to.isLoadingCurrentTrip.value?Padding(
-                                padding: padding12,
-                                child: GradientProgressIndicator(),
-                              ): DashBoardController.to.findingRide.value
+                              return DashBoardController
+                                      .to
+                                      .isLoadingCurrentTrip
+                                      .value
+                                  ? Padding(
+                                    padding: padding12,
+                                    child: GradientProgressIndicator(),
+                                  )
+                                  : DashBoardController.to.findingRide.value
                                   ? NoNewRideReqWidget()
                                   : DashBoardController.to.rideRequest.value
                                   ? RideRequestCardWidget(
@@ -154,17 +157,22 @@ class _DashboardPageState extends State<DashboardPage>
                                     userImg:
                                         "${ApiService().baseUrl}/${availableTrip.user?.profileImage}",
 
-                                    fare: availableTrip.estimatedFare.toString(),
+                                    fare:
+                                        availableTrip.estimatedFare.toString(),
                                     dateTime: formatDateTime(
                                       availableTrip.createdAt ??
                                           AppStaticStrings.noDataFound.tr,
                                     ),
                                     distance: availableTrip.distance.toString(),
                                     fromAddress: availableTrip.pickUpAddress,
-                                    rideType:availableTrip.tripType,
+                                    rideType: availableTrip.tripType,
+                                    tripClass: availableTrip.tripClass,
                                     toAddress: availableTrip.dropOffAddress,
                                   )
-                                  : DashBoardController.to.afterAccepted.value ||
+                                  : DashBoardController
+                                          .to
+                                          .afterAccepted
+                                          .value ||
                                       DashBoardController.to.afterOnTheWay.value
                                   ? DriverAfterAcceptedWidget(
                                     driverCurrentTripModel: driverTrip,
@@ -187,12 +195,17 @@ class _DashboardPageState extends State<DashboardPage>
                                     user: driverTrip.user,
                                     duration: driverTrip.duration.toString(),
                                   )
-                                  : DashBoardController.to.afterTripStarted.value
+                                  : DashBoardController
+                                      .to
+                                      .afterTripStarted
+                                      .value
                                   ? AfterTripStartedWidget(
-                                    tripDistance: driverTrip.distance.toString(),
+                                    tripDistance:
+                                        driverTrip.distance.toString(),
                                     dropOffAddress: driverTrip.dropOffAddress,
                                     pickUpAddress: driverTrip.pickUpAddress,
-                                    estimatedTime: driverTrip.duration.toString(),
+                                    estimatedTime:
+                                        driverTrip.duration.toString(),
                                   )
                                   : DashBoardController.to.sendPaymentReq.value
                                   ? SendPaymentRequestWidget(
@@ -211,16 +224,33 @@ class _DashboardPageState extends State<DashboardPage>
                         ),
                       ),
                       Positioned(
-
                         right: 6.sp,
                         top: 6.sp,
 
-                        child: Obx(() => DashBoardController.to.currentTrip.value.pickUpCoordinates!=null&&DashBoardController.to.currentTrip.value.dropOffCoordinates!=null?
-                        FloatingActionButton.small(
-                          shape: CircleBorder(),
-                          child: Icon(Icons.directions),
-                          onPressed: DashBoardController.to.navigateToGoogleMap)
-                            :SizedBox.shrink(),),
+                        child: Obx(
+                          () =>
+                              DashBoardController
+                                              .to
+                                              .currentTrip
+                                              .value
+                                              .pickUpCoordinates !=
+                                          null &&
+                                      DashBoardController
+                                              .to
+                                              .currentTrip
+                                              .value
+                                              .dropOffCoordinates !=
+                                          null
+                                  ? FloatingActionButton.small(
+                                    shape: CircleBorder(),
+                                    child: Icon(Icons.directions),
+                                    onPressed:
+                                        DashBoardController
+                                            .to
+                                            .navigateToGoogleMap,
+                                  )
+                                  : SizedBox.shrink(),
+                        ),
                       ),
                     ],
                   ),
@@ -228,7 +258,6 @@ class _DashboardPageState extends State<DashboardPage>
               ),
             ),
           ),
-
         ],
       ),
     );
