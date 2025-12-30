@@ -64,17 +64,15 @@ class AddPlacePage extends StatelessWidget {
                                 CommonController.to.addressSuggestion[index];
                             return SearchAddress(
                               onTap: () async {
-                                var location =
-                                    address['geometry']['location'];
                                 SaveLocationController.to.lat.value =
-                                    location['lat'].toString();
+                                    address['lat'].toString();
                                 SaveLocationController.to.lng.value =
-                                    location['lng'].toString();
+                                    address['lng'].toString();
 
                                 SaveLocationController
                                     .to
                                     .selectedAddress
-                                    .value = address['formatted_address'];
+                                    .value = address['name'];
 
                                 logger.d("----------------------");
                                 logger.d(
@@ -100,7 +98,7 @@ class AddPlacePage extends StatelessWidget {
                                         .value;
                                 CommonController.to.addressSuggestion.clear();
                               },
-                              title: address['formatted_address'],
+                              title: address['name'],
                             );
                           },
                         ),
@@ -168,8 +166,16 @@ class SearchAddress extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: padding8, child: CustomText(text: title,overflow: TextOverflow.ellipsis, fontSize: getFontSizeSmall(),maxLines: 2,)),
-          Divider(height: 1,),
+          Padding(
+            padding: padding8,
+            child: CustomText(
+              text: title,
+              overflow: TextOverflow.ellipsis,
+              fontSize: getFontSizeSmall(),
+              maxLines: 2,
+            ),
+          ),
+          Divider(height: 1),
         ],
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
-import 'package:e_hailing_app/core/helper/helper_function.dart';
+
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_response_model.dart';
 import 'package:flutter/foundation.dart';
@@ -22,8 +22,8 @@ class MyRideController extends GetxController {
   final RxInt totalProductPages = 5.obs;
   final RxBool isProductLoadingMore = false.obs;
 
- List<String> get  tabLabels {
-  return  [
+  List<String> get tabLabels {
+    return [
       AppStaticStrings.ongoing.tr,
       AppStaticStrings.upcoming.tr,
       AppStaticStrings.completed.tr,
@@ -31,7 +31,7 @@ class MyRideController extends GetxController {
   }
 
   var tabContent = <Widget>[].obs;
-  RxBool isAllTripLoading = false.obs;
+  // RxBool isAllTripLoading = false.obs; // Removed global lock
 
   @override
   void onInit() {
@@ -41,13 +41,10 @@ class MyRideController extends GetxController {
 
   void initPaging() {
     pagingControllerForCompletedTrip.addPageRequestListener((pageKey) {
-      if (!isAllTripLoading.value) {
-        getAllRideRequest(pageKey: pageKey,rideStatus: "completed");
-      }
-    });pagingControllerForUpcomingTrip.addPageRequestListener((pageKey) {
-      if (!isAllTripLoading.value) {
-        getAllRideRequest(pageKey: pageKey,rideStatus: "scheduled");
-      }
+      getAllRideRequest(pageKey: pageKey, rideStatus: "completed");
+    });
+    pagingControllerForUpcomingTrip.addPageRequestListener((pageKey) {
+      getAllRideRequest(pageKey: pageKey, rideStatus: "scheduled");
     });
   }
 
@@ -58,16 +55,19 @@ class MyRideController extends GetxController {
     }
   }
 
-  final PagingController<int, TripResponseModel> pagingControllerForCompletedTrip =
-      PagingController(firstPageKey: 1);
-  final PagingController<int, TripResponseModel> pagingControllerForUpcomingTrip =
-      PagingController(firstPageKey: 1);
+  final PagingController<int, TripResponseModel>
+  pagingControllerForCompletedTrip = PagingController(firstPageKey: 1);
+  final PagingController<int, TripResponseModel>
+  pagingControllerForUpcomingTrip = PagingController(firstPageKey: 1);
 
-  Future<void> getAllRideRequest({required int pageKey, String?  rideStatus}) async {
-    if (isAllTripLoading.value) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      isAllTripLoading.value = true;
-    });
+  Future<void> getAllRideRequest({
+    required int pageKey,
+    String? rideStatus,
+  }) async {
+    // if (isAllTripLoading.value) return; // Removed lock
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   isAllTripLoading.value = true;
+    // });
 
     try {
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
@@ -78,12 +78,14 @@ class MyRideController extends GetxController {
         queryParams: {
           'page': pageKey.toString(),
           'limit': "5",
-         if(rideStatus!=null) 'status': rideStatus,
-
+          if (rideStatus != null) 'status': rideStatus,
         },
       );
-     PagingController<int, TripResponseModel> pageController=rideStatus=="completed"? pagingControllerForCompletedTrip:pagingControllerForUpcomingTrip;
-logger.d(response);
+      PagingController<int, TripResponseModel> pageController =
+          rideStatus == "completed"
+              ? pagingControllerForCompletedTrip
+              : pagingControllerForUpcomingTrip;
+      logger.d(response);
       if (response['success'] == true) {
         final newItems =
             (response['data']['trips'] as List)
@@ -103,18 +105,22 @@ logger.d(response);
 
         logger.e(response);
         if (kDebugMode) {
-          showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed,
-          );
+          // showCustomSnackbar(
+          //   title: 'Failed',
+          //   message: response['message'],
+          //   type: SnackBarType.failed,
+          // );
         }
       }
     } catch (e) {
       logger.e(e.toString());
-
+      PagingController<int, TripResponseModel> pageController =
+          rideStatus == "completed"
+              ? pagingControllerForCompletedTrip
+              : pagingControllerForUpcomingTrip;
+      pageController.error = e;
     } finally {
-      isAllTripLoading.value = false;
+      // isAllTripLoading.value = false; // Removed lock
     }
   }
 

@@ -28,6 +28,7 @@ String googleIcon = 'assets/icons/google_icon.svg';
 String gpsWhiteIcon = 'assets/icons/gps_white_icon.svg';
 String handCash1Icon = 'assets/icons/hand_cash1_icon.svg';
 String handCashIcon = 'assets/icons/hand_cash_icon.svg';
+String commissionIcon = 'assets/icons/commision_icon.svg';
 String helpIcon = 'assets/icons/help_icon.svg';
 String vehicleDetailsIcon = 'assets/icons/vehicle_details_icon.svg';
 String earningIcon = 'assets/icons/earning_icon.svg';

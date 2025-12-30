@@ -461,7 +461,14 @@ class HomeController extends GetxController {
         }
       }
     });
-
+    socket.on(PaymentEvent.paymentPaid, (data) {
+      logger.d('payment paid: $data');
+      CommonController.to.isPaid.value = data['success'];
+      // if (data['success']) {
+      //   getDriverCurrentTripRequest();
+      // }
+      showCustomSnackbar(title: 'Success', message: data['message']);
+    });
     // socket.on(TripEvents.tripUpdateStatus, (data) {
     //   logger.d('🔄 Trip status update:');
     //   logger.d(data);

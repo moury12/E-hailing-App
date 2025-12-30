@@ -299,7 +299,7 @@ class DashBoardController extends GetxController {
 
     if (trip.sId != null && coords != null && dropCoords != null) {
       // Clear old polylines before drawing new ones
-      NavigationController.to.clearPolyline();
+      // NavigationController.to.clearPolyline();
 
       // 🟦 Pickup → Dropoff (Blue)
       await locationService.drawPolylineBetweenPoints(
@@ -508,11 +508,17 @@ class DashBoardController extends GetxController {
         // _showError(data['message']);
       }
     });
+
     socketService.on(PaymentEvent.paymentReceived, (data) {
       logger.d('payment paid: $data');
       CommonController.to.isPaid.value = data['success'];
       if (data['success']) {
         getDriverCurrentTripRequest();
+
+        socketService.emit(DriverEvent.tripUpdateStatus, {
+          "tripId": currentTrip.value.sId.toString(),
+          "newStatus": "completed",
+        });
       }
       showCustomSnackbar(title: 'Success', message: data['message']);
     });
@@ -592,7 +598,7 @@ class DashBoardController extends GetxController {
     }
 
     // Clear polylines
-    NavigationController.to.clearPolyline();
+    // NavigationController.to.clearPolyline();
 
     logger.i("DashBoardController reset completed");
   }

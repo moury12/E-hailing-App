@@ -498,15 +498,16 @@ class HomeInitialContentWidget extends StatelessWidget {
                   HomeController.to.tripClass.value = "REGULAR";
                 },
               ),
-              ServiceWidget(
-                backgroundColor: Colors.grey.shade400,
-                // onTap: () {
-                //   HomeController.to.wantToGo.value = true;
-                //   HomeController.to.tripType.value = preBook;
-                // },
-                title: AppStaticStrings.preBookRide.tr,
-                img: purpleCarImage2,
-              ),
+
+              // ServiceWidget(
+              //   backgroundColor: Colors.grey.shade400,
+              //   // onTap: () {
+              //   //   HomeController.to.wantToGo.value = true;
+              //   //   HomeController.to.tripType.value = preBook;
+              //   // },
+              //   title: AppStaticStrings.preBookRide.tr,
+              //   img: purpleCarImage2,
+              // ),
               ServiceWidget(
                 // backgroundColor: Colors.grey.shade400,
                 onTap: () {

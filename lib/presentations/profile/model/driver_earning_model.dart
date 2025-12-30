@@ -37,18 +37,21 @@ class DriverEarningModel {
 class TripPaymentAnalysis {
   num? coin;
   num? cash;
+  num? online;
 
-  TripPaymentAnalysis({this.coin, this.cash});
+  TripPaymentAnalysis({this.coin, this.cash, this.online});
 
   TripPaymentAnalysis.fromJson(Map<String, dynamic> json) {
     coin = json['coin'];
     cash = json['cash'];
+    online = json['online'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['coin'] = coin;
     data['cash'] = cash;
+    data['online'] = online;
     return data;
   }
 }
