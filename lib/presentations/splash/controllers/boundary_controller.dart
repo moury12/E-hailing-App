@@ -43,30 +43,16 @@ class BoundaryController extends GetxController {
       name: 'KL & Selangor',
       country: 'MY',
       rings: [
-        // Selangor State - Simplified boundary covering full state
         [
-          LatLng(3.8500, 101.1000), // North (Rawang)
-          LatLng(3.7500, 101.3500), // Northeast (Selayang-Gombak)
-          LatLng(3.6000, 101.5000), // East (Ampang border)
-          LatLng(3.4000, 101.6500), // Southeast (Semenyih)
-          LatLng(3.1000, 101.6000), // South (Sepang)
-          LatLng(2.8000, 101.5000), // South (KLIA area)
-          LatLng(2.6500, 101.3500), // Southwest coast
-          LatLng(2.7500, 101.1500), // West coast (Kuala Langat)
-          LatLng(3.0000, 101.0000), // Northwest coast (Kuala Selangor)
-          LatLng(3.3500, 100.9500), // Northwest (Kuala Selangor)
-          LatLng(3.6500, 100.9800), // North coast
-        ],
-        // KL Federal Territory - Actual boundaries (included in combined zone)
-        [
-          LatLng(3.2400, 101.6400), // Northwest (Segambut)
-          LatLng(3.2100, 101.7200), // Northeast (Wangsa Maju)
-          LatLng(3.1700, 101.7500), // East (Ampang border)
-          LatLng(3.0900, 101.7300), // Southeast (Cheras)
-          LatLng(3.0600, 101.6800), // South (Seputeh)
-          LatLng(3.0800, 101.6300), // Southwest (Brickfields)
-          LatLng(3.1200, 101.6200), // West (Sentul)
-          LatLng(3.1800, 101.6100), // Northwest (Kepong border)
+          LatLng(2.870613, 101.879139), // Point 1
+          LatLng(2.998311, 101.899271), // Point 2
+          LatLng(3.186197, 101.843071), // Point 3
+          LatLng(3.280746, 101.727878), // Point 4
+          LatLng(3.467650, 101.549033), // Point 5
+          LatLng(3.143302, 101.318270), // Point 6
+          LatLng(2.925869, 101.360236), // Point 7
+          LatLng(2.772790, 101.466065), // Point 8
+          LatLng(2.775220, 101.823691), // Point 9
         ],
       ],
     ),

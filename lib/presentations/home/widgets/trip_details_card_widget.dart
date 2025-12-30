@@ -38,7 +38,8 @@ class DriverDetails extends StatelessWidget {
     this.value,
     this.userImg,
     this.userName,
-    this.fare, this.rating,
+    this.fare,
+    this.rating,
   });
 
   @override
@@ -64,14 +65,22 @@ class DriverDetails extends StatelessWidget {
               ),
               Row(
                 children: [
-                 if(rating!=null) Row(
-                    children: [
-                      Icon(CupertinoIcons.star_fill, color: Colors.amber,size: 10.sp,),
-                      CustomText(text: " (${rating??"0"}) | ",  fontSize: 9.sp,
+                  if (rating != null)
+                    Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.star_fill,
+                          color: Colors.amber,
+                          size: 10.sp,
+                        ),
+                        CustomText(
+                          text: " (${rating ?? "0"}) | ",
+                          fontSize: 9.sp,
 
-                        color: AppColors.kLightBlackColor,)
-                    ],
-                  ),
+                          color: AppColors.kLightBlackColor,
+                        ),
+                      ],
+                    ),
                   CustomText(
                     text: 'RM ${fare ?? 00.00}',
                     fontSize: getFontSizeSmall(),
@@ -151,10 +160,11 @@ class TripDetailsDestinationCard extends StatelessWidget {
 
                   children: [
                     CustomText(
-                      text:tripModel?.driver?.assignedCar!=null?
-                          "${tripModel?.driver?.assignedCar?.brand ??
-                              AppStaticStrings.noDataFound.tr} "
-                          "${tripModel?.driver?.assignedCar?.model} ":AppStaticStrings.noDataFound.tr,
+                      text:
+                          tripModel?.driver?.assignedCar != null
+                              ? "${tripModel?.driver?.assignedCar?.brand ?? AppStaticStrings.noDataFound.tr} "
+                                  "${tripModel?.driver?.assignedCar?.model} "
+                              : AppStaticStrings.noDataFound.tr,
                       fontSize: getFontSizeSmall(),
                     ),
                     Container(
@@ -166,15 +176,21 @@ class TripDetailsDestinationCard extends StatelessWidget {
                       child: CustomText(
                         fontSize: getFontSizeSmall(),
 
-                        text:tripModel?.driver?.assignedCar!=null?
-                            "${tripModel?.driver?.assignedCar?.carNumber}(${tripModel?.driver?.assignedCar?.color})":AppStaticStrings.noDataFound.tr,
+                        text:
+                            tripModel?.driver?.assignedCar != null
+                                ? "${tripModel?.driver?.assignedCar?.carNumber}(${tripModel?.driver?.assignedCar?.color})"
+                                : AppStaticStrings.noDataFound.tr,
                         color: AppColors.kWhiteColor,
                       ),
                     ),
                   ],
                 ),
               ),
-            CustomText(text: '${int.tryParse(tripModel?.distance.toString() ?? "0")??0 / 1000} km',fontSize: getFontSizeSmall(),)
+              CustomText(
+                text:
+                    '${((int.tryParse(tripModel?.distance.toString() ?? "0") ?? 0) / 1000).toStringAsFixed(2)} km',
+                fontSize: getFontSizeSmall(),
+              ),
             ],
           ),
           DriverDetails(
@@ -183,13 +199,16 @@ class TripDetailsDestinationCard extends StatelessWidget {
             userImg:
                 "${ApiService().baseUrl}/${tripModel?.driver?.profileImage}",
             title: AppStaticStrings.tripDuration.tr,
-            value:
-            '${int.tryParse(tripModel?.duration.toString() ?? "0")} min',
+            value: '${int.tryParse(tripModel?.duration.toString() ?? "0")} min',
             rating: tripModel?.driver?.rating.toString(),
           ),
-          CustomText(text: "⨠${AppStaticStrings.cancelationText.tr}",
+          CustomText(
+            text: "⨠${AppStaticStrings.cancelationText.tr}",
             style: poppinsSemiBold,
-            fontSize: getFontSizeSmall(),color: AppColors.kBlueColor,textAlign: TextAlign.left,),
+            fontSize: getFontSizeSmall(),
+            color: AppColors.kBlueColor,
+            textAlign: TextAlign.left,
+          ),
           FromToTimeLine(
             showTo: true,
             pickUpAddress: tripModel?.pickUpAddress,
@@ -257,24 +276,23 @@ class TripRequestLoadingWidget extends StatelessWidget {
             fontSize: getFontSizeSmall(),
             style: poppinsRegular,
           ),
-          CancelTripButtonWidget(onSubmit: () {
-            if (HomeController.to.cancelReason.isEmpty) {
-              showCustomSnackbar(
-                title: "Field Required",
-                message: "Need to select the reason",
-              );
-            } else {
-              HomeController.to.updateUserTrip(
-                tripId: HomeController.to.currentTrip.value?["data"]['_id'],
-                status:
-                DriverTripStatus.cancelled.name.toString(),
-                reason: HomeController.to.cancelReason,
-              );
-
-            }
-          },
- isLoading: HomeController.to.isCancellingTrip,
-          )
+          CancelTripButtonWidget(
+            onSubmit: () {
+              if (HomeController.to.cancelReason.isEmpty) {
+                showCustomSnackbar(
+                  title: "Field Required",
+                  message: "Need to select the reason",
+                );
+              } else {
+                HomeController.to.updateUserTrip(
+                  tripId: HomeController.to.currentTrip.value?["data"]['_id'],
+                  status: DriverTripStatus.cancelled.name.toString(),
+                  reason: HomeController.to.cancelReason,
+                );
+              }
+            },
+            isLoading: HomeController.to.isCancellingTrip,
+          ),
         ],
       ),
     );

@@ -34,9 +34,9 @@ class _MyRidePageState extends State<MyRidePage>
     return Obx(() {
       final isDriver = CommonController.to.isDriver.value;
       final rideModel =
-      isDriver
-          ? DashBoardController.to.currentTrip.value
-          : HomeController.to.tripAcceptedModel.value;
+          isDriver
+              ? DashBoardController.to.currentTrip.value
+              : HomeController.to.tripAcceptedModel.value;
 
       return HistoryListStructureWidget(
         key: const PageStorageKey('ongoing_tab'),
@@ -58,8 +58,7 @@ class _MyRidePageState extends State<MyRidePage>
         physics: const ClampingScrollPhysics(),
         builderDelegate: PagedChildBuilderDelegate<TripResponseModel>(
           itemBuilder:
-              (context, item, index) =>
-              MyRidesHistoryCardItemWidget(
+              (context, item, index) => MyRidesHistoryCardItemWidget(
                 rideModel: item,
                 isDriver: CommonController.to.isDriver.value,
               ),
@@ -84,8 +83,7 @@ class _MyRidePageState extends State<MyRidePage>
         physics: const ClampingScrollPhysics(),
         builderDelegate: PagedChildBuilderDelegate<TripResponseModel>(
           itemBuilder:
-              (context, item, index) =>
-              MyRidesHistoryCardItemWidget(
+              (context, item, index) => MyRidesHistoryCardItemWidget(
                 showInvoice: true,
                 rideModel: item,
                 isDriver: CommonController.to.isDriver.value,
@@ -106,21 +104,21 @@ class _MyRidePageState extends State<MyRidePage>
     super.build(context); // Required for AutomaticKeepAliveClientMixin
     return CustomRefreshIndicator(
       onRefresh: () async {
-       if( MyRideController.to.currentTabIndex.value==0) {
+        if (MyRideController.to.currentTabIndex.value == 0) {
           final isDriver = CommonController.to.isDriver.value;
           if (isDriver) {
             logger.i(DashBoardController.to.currentTrip.value.sId);
 
             DashBoardController.to.getDriverCurrentTripRequest();
           } else {
-
             logger.i(HomeController.to.tripAcceptedModel.value.sId);
             HomeController.to.getUserCurrentTrip();
           }
-        }else{
-         MyRideController.to.pagingControllerForCompletedTrip.refresh();
-
-       }
+        } else if (MyRideController.to.currentTabIndex.value == 1) {
+          MyRideController.to.pagingControllerForUpcomingTrip.refresh();
+        } else {
+          MyRideController.to.pagingControllerForCompletedTrip.refresh();
+        }
       },
       child: CustomScrollView(
         slivers: [
@@ -131,7 +129,7 @@ class _MyRidePageState extends State<MyRidePage>
                 return DynamicTabWidget(
                   initialIndex: MyRideController.to.currentTabIndex.value,
                   onTabChanged: (value) {
-                    MyRideController.to.currentTabIndex.value=value;
+                    MyRideController.to.currentTabIndex.value = value;
                   },
                   tabs: MyRideController.to.tabLabels,
                   tabContent: [

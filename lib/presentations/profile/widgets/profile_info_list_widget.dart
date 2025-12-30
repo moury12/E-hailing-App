@@ -20,10 +20,20 @@ class ProfileInfoListWidget extends StatelessWidget {
     return Column(
       spacing: 12.h,
       children: [
-        Container(
+        if (userModel.referredBy != null)
+          Container(
             padding: padding12,
-           decoration: BoxDecoration(color: AppColors.kPrimaryLightColor,borderRadius: BorderRadius.circular(8)),
-            child: CustomText(text: "${userModel.name} ${AppStaticStrings.referedBy.tr} ${userModel.referredBy}",style: poppinsSemiBold,color: AppColors.kPrimaryColor,)),
+            decoration: BoxDecoration(
+              color: AppColors.kPrimaryLightColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: CustomText(
+              text:
+                  "${userModel.name} ${AppStaticStrings.referedBy.tr} ${userModel.referredBy}",
+              style: poppinsSemiBold,
+              color: AppColors.kPrimaryColor,
+            ),
+          ),
         ProfileCardItemWidget(
           title: AppStaticStrings.fullName.tr,
           value: userModel.name ?? AppStaticStrings.noDataFound.tr,
@@ -39,11 +49,11 @@ class ProfileInfoListWidget extends StatelessWidget {
         ProfileCardItemWidget(
           title: AppStaticStrings.location.tr,
           value: userModel.address ?? AppStaticStrings.noDataFound.tr,
-        ), ProfileCardItemWidget(
+        ),
+        ProfileCardItemWidget(
           title: AppStaticStrings.yourReferalCode.tr,
           value: userModel.referralCode ?? AppStaticStrings.noDataFound.tr,
         ),
-
       ],
     );
   }

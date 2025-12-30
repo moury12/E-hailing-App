@@ -62,8 +62,9 @@ class EarningsPage extends StatelessWidget {
 
                                   final coin = tripAnalysis?.coin ?? 0;
                                   final cash = tripAnalysis?.cash ?? 0;
+                                  final online = tripAnalysis?.online ?? 0;
 
-                                  final totalEarnings = coin + cash;
+                                  final totalEarnings = coin + cash + online;
                                   return CustomText(
                                     text: 'RM $totalEarnings',
                                     style: poppinsBold,
@@ -86,6 +87,7 @@ class EarningsPage extends StatelessWidget {
                               .tripPaymentAnalysis;
                       final coin = tripAnalysis?.coin ?? 0;
                       final cash = tripAnalysis?.cash ?? 0;
+                      final online = tripAnalysis?.online ?? 0;
                       List<StaticModel> earningList = [
                         StaticModel(
                           img: handCash1Icon,
@@ -95,7 +97,7 @@ class EarningsPage extends StatelessWidget {
                         StaticModel(
                           img: onlineCashIcon,
                           title: AppStaticStrings.onlineCash.tr,
-                          val: 'RM 0',
+                          val: 'RM $online',
                         ),
                         StaticModel(
                           img: coinIcon,

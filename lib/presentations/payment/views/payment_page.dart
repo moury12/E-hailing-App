@@ -75,7 +75,7 @@ class _PaymentPageState extends State<PaymentPage> {
             ? "${driverTripResponseModel.waitingFee ?? 0}"
             : "${userTripResponse.waitingFee ?? 0}";
     String finalFee =
-        "${double.parse(rent).toInt() + int.parse(tollFee) + int.parse(extraCharge)}";
+        "${double.parse(rent).toInt() + int.parse(tollFee) + int.parse(extraCharge) + int.parse(waitingFee)}";
 
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.payment.tr),
@@ -141,7 +141,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 }),
 
                 space6H,
-                role == driver
+                role == driver && paymentType != "online"
                     ? Column(
                       spacing: 8.h,
                       children: [

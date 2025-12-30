@@ -109,6 +109,7 @@ class AppStaticStrings {
   static String creditDebitCards = 'creditDebitCards';
   static String handCash = 'handCash';
   static String dCoin = 'dCoin';
+  static String commission = 'commission';
 
   // Currency
   static String currencyRM = 'currencyRM';
@@ -184,9 +185,9 @@ class AppStaticStrings {
   static String licenseType = 'licenseType';
   static String licenseExpire = 'licenseExpire';
   static String psvLicense = 'psvLicense';
-  static String tripDistanceToday = 'tripDistanceToday';
+  static String tripDistance = 'tripDistance';
   static String activeHour = 'activeHour';
-  static String tripToday = 'tripToday';
+  static String trip = 'trip';
   static String onlineCash = 'onlineCash';
   static String totalEarn = 'totalEarn';
   static String preBookRide = 'preBookRide';
@@ -261,7 +262,6 @@ class AppStaticStrings {
   static String addPlace = 'addPlace';
   static String finalCost = 'finalCost';
   static String tripDuration = 'tripDuration';
-  static String tripDistance = 'tripDistance';
   static String from = 'from';
   static String to = 'to';
   static String bookingConfirmed = 'bookingConfirmed';

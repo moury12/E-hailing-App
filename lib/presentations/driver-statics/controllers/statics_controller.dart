@@ -9,21 +9,49 @@ import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/image_constant.dart';
 import '../../../core/utils/variables.dart';
 
-class StaticsController extends GetxController{
+class StaticsController extends GetxController {
   static StaticsController get to => Get.find();
   var staticList = <StaticModel>[].obs;
-  RxMap<String, List<StaticModel>> staticsCache= <String, List<StaticModel>>{}.obs;
+  RxMap<String, List<StaticModel>> staticsCache =
+      <String, List<StaticModel>>{}.obs;
+  RxInt currentTabIndex = 0.obs;
+
   void initStaticList() {
     staticList.value = [
-      StaticModel(img: totalEarnIcon, title: AppStaticStrings.totalEarn.tr, val: 'RM 0'),
-      StaticModel(img: handCash1Icon, title: AppStaticStrings.handCash.tr, val: 'RM 0'),
+      StaticModel(
+        img: totalEarnIcon,
+        title: AppStaticStrings.totalEarn.tr,
+        val: 'RM 0',
+      ),
+      StaticModel(
+        img: handCash1Icon,
+        title: AppStaticStrings.handCash.tr,
+        val: 'RM 0',
+      ),
       StaticModel(img: coinIcon, title: AppStaticStrings.dCoin.tr, val: 'RM 0'),
-      StaticModel(img: onlineCashIcon, title: AppStaticStrings.onlineCash.tr, val: 'RM 0'),
-      StaticModel(img: tripTodayIcon, title: AppStaticStrings.tripToday.tr, val: '0'),
-      StaticModel(img: activeHourIcon, title: AppStaticStrings.activeHour.tr, val: '0h'),
-      StaticModel(img: distanceTodayIcon, title: AppStaticStrings.tripDistanceToday.tr, val: '0 km'),
+      StaticModel(
+        img: onlineCashIcon,
+        title: AppStaticStrings.onlineCash.tr,
+        val: 'RM 0',
+      ),
+      StaticModel(
+        img: tripTodayIcon,
+        title: AppStaticStrings.trip.tr,
+        val: '0',
+      ),
+      StaticModel(
+        img: activeHourIcon,
+        title: AppStaticStrings.activeHour.tr,
+        val: '0h',
+      ),
+      StaticModel(
+        img: distanceTodayIcon,
+        title: AppStaticStrings.tripDistance.tr,
+        val: '0 km',
+      ),
     ];
   }
+
   RxBool isLoadingStatics = false.obs;
   Rx<StaticsValueModel> staticsVal = StaticsValueModel().obs;
 
@@ -35,39 +63,78 @@ class StaticsController extends GetxController{
 
     super.onInit();
   }
- List<String> get tabLabels  {return
-   [
-     AppStaticStrings.today.tr,
-     AppStaticStrings.thisWeek.tr,
-     AppStaticStrings.thisMonth.tr,
-   ].obs;
-}
-  Future<void> getDriverStaticsRequest({required String filter}) async {
+
+  List<String> get tabLabels {
+    return [
+      AppStaticStrings.today.tr,
+      AppStaticStrings.thisWeek.tr,
+      AppStaticStrings.thisMonth.tr,
+    ].obs;
+  }
+
+  Future<void> getDriverStaticsRequest({
+    required String filter,
+    bool isRefresh = false,
+  }) async {
     try {
-      if(staticsCache.containsKey(filter)){
-        staticList.value=staticsCache[filter]??[];
+      if (!isRefresh && staticsCache.containsKey(filter)) {
+        staticList.value = staticsCache[filter] ?? [];
         return;
       }
       isLoadingStatics.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
       final response = await ApiService().request(
-          endpoint: staticsEndpoint,
-          method: 'GET',
-          queryParams: {"filter":filter}
+        endpoint: staticsEndpoint,
+        method: 'GET',
+        queryParams: {"filter": filter},
       );
       if (response['success'] == true) {
         logger.d(response);
         staticsVal.value = StaticsValueModel.fromJson(response['data']);
 
-      final list   = [
-          StaticModel(img: totalEarnIcon, title: AppStaticStrings.totalEarn.tr, val: 'RM ${staticsVal.value.totalEarn ?? 0}'),
-          StaticModel(img: handCash1Icon, title: AppStaticStrings.handCash.tr, val: 'RM ${staticsVal.value.cash ?? 0}'),
-          StaticModel(img: coinIcon, title: AppStaticStrings.dCoin.tr, val: '${staticsVal.value.coin ?? 0}'),
-          StaticModel(img: onlineCashIcon, title: AppStaticStrings.onlineCash.tr, val: 'RM ${(staticsVal.value.totalEarn ?? 0) - (staticsVal.value.cash ?? 0)}'),
-          StaticModel(img: tripTodayIcon, title: AppStaticStrings.tripToday.tr, val: '${staticsVal.value.numberOfTrips ?? 0}'),
-          StaticModel(img: activeHourIcon, title: AppStaticStrings.activeHour.tr, val: '${(staticsVal.value.activeHours ?? 0).toStringAsFixed(1)} h'),
-          StaticModel(img: distanceTodayIcon, title: AppStaticStrings.tripDistanceToday.tr, val: '${staticsVal.value.tripDistance ?? 0} km'),
+        final list = [
+          StaticModel(
+            img: totalEarnIcon,
+            title: AppStaticStrings.totalEarn.tr,
+            val: 'RM ${staticsVal.value.totalEarn ?? 0}',
+          ),
+          StaticModel(
+            img: handCashIcon,
+            title: AppStaticStrings.handCash.tr,
+            val: 'RM ${staticsVal.value.cash ?? 0}',
+          ),
+          StaticModel(
+            img: commissionIcon,
+            title: AppStaticStrings.commission.tr,
+            val: 'RM ${staticsVal.value.commission ?? 0}',
+          ),
+          StaticModel(
+            img: coinIcon,
+            title: AppStaticStrings.dCoin.tr,
+            val: '${staticsVal.value.coin ?? 0}',
+          ),
+          StaticModel(
+            img: onlineCashIcon,
+            title: AppStaticStrings.onlineCash.tr,
+            val:
+                'RM ${(staticsVal.value.totalEarn ?? 0) - (staticsVal.value.cash ?? 0)}',
+          ),
+          StaticModel(
+            img: tripTodayIcon,
+            title: AppStaticStrings.trip.tr,
+            val: '${staticsVal.value.numberOfTrips ?? 0}',
+          ),
+          StaticModel(
+            img: activeHourIcon,
+            title: AppStaticStrings.activeHour.tr,
+            val: '${(staticsVal.value.activeHours ?? 0).toStringAsFixed(1)} h',
+          ),
+          StaticModel(
+            img: distanceTodayIcon,
+            title: AppStaticStrings.tripDistance.tr,
+            val: '${staticsVal.value.tripDistance ?? 0} km',
+          ),
         ];
         staticsCache[filter] = list;
         staticList.value = list;
@@ -84,10 +151,8 @@ class StaticsController extends GetxController{
     } catch (e) {
       logger.e(e.toString());
       isLoadingStatics.value = false;
-    }finally{
+    } finally {
       isLoadingStatics.value = false;
-
     }
   }
-
 }
