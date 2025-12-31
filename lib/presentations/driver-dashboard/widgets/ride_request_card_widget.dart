@@ -73,17 +73,21 @@ class RideRequestCardWidget extends StatelessWidget {
           userName: userName,
         ),
         FromToTimeLine(pickUpAddress: fromAddress, dropOffAddress: toAddress),
-        CustomButton(
-          onTap: () {
-            // DashBoardController.to.rideRequest.value = false;
-            DashBoardController.to.driverTripAccept(
-              tripId: DashBoardController.to.availableTrip.value.sId.toString(),
-              lat: CommonController.to.markerPositionDriver.value.latitude,
-              lng: CommonController.to.markerPositionDriver.value.longitude,
-            );
-          },
-          title: AppStaticStrings.accept.tr,
-        ),
+        Obx(() {
+          return CustomButton(
+            isLoading: DashBoardController.to.isLoadingAccept.value,
+            onTap: () {
+              // DashBoardController.to.rideRequest.value = false;
+              DashBoardController.to.driverTripAccept(
+                tripId:
+                    DashBoardController.to.availableTrip.value.sId.toString(),
+                lat: CommonController.to.markerPositionDriver.value.latitude,
+                lng: CommonController.to.markerPositionDriver.value.longitude,
+              );
+            },
+            title: AppStaticStrings.accept.tr,
+          );
+        }),
         CustomButton(
           fillColor: AppColors.kWhiteColor,
           textColor: AppColors.kPrimaryColor,

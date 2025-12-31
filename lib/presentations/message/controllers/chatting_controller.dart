@@ -77,22 +77,23 @@ class ChattingController extends GetxController {
     if (text.isEmpty) return;
 
     // Optimistic Update
-    final tempId = 'temp_${DateTime.now().millisecondsSinceEpoch}';
-    final myId = AccountInformationController.to.userModel.value.sId;
+    // final tempId = 'temp_${DateTime.now().millisecondsSinceEpoch}';
+    // final myId = AccountInformationController.to.userModel.value.sId;
 
-    final tempMessage = Messages(
-      sId: tempId,
-      sender: myId,
-      receiver: receiverId,
-      message: text,
-      createdAt: DateTime.now().toIso8601String(),
-    );
+    // final tempMessage = Messages(
+    //   sId: tempId,
+    //   sender: myId,
+    //   receiver: receiverId,
+    //   message: text,
+    //   createdAt: DateTime.now().toIso8601String(),
+    // );
 
-    final currentItems = messagePagingController.itemList ?? [];
-    messagePagingController.itemList = [tempMessage, ...currentItems];
-    messageTextController.clear();
+    // final currentItems = messagePagingController.itemList ?? [];
+    // messagePagingController.itemList = [tempMessage, ...currentItems];
+    // messageTextController.clear();
 
     try {
+      isLoadingSent.value = true;
       final textEn = await translationService.translate(text, 'en');
       final textMs = await translationService.translate(text, 'ms');
 
@@ -109,53 +110,42 @@ class ChattingController extends GetxController {
     }
   }
 
-  Future<void> sendMessageSocket({required Map<String, dynamic> body}) async {
-    // Deprecated or keep for compatibility if used elsewhere?
-    // The view uses this currently, but we are refactoring the view.
-    // Keeping it but logic is now in sendMessage.
-    isLoadingSent.value = true;
-    if (!socket.socket!.connected) {
-      showCustomSnackbar(
-        title: 'Connection Error',
-        message: 'Not connected to server. Please wait and try again.',
-        type: SnackBarType.failed,
-      );
-      socketConnection();
-      return;
-    }
-
-    socket.emit(ChatEvent.sendMessage, body);
-    messageTextController.clear();
-  }
-
   void initializeSocket() {
     if (socket.socket!.connected) {
+      // Clean up previous listeners to prevent duplicates
+      socket.off(ChatEvent.sendMessage);
+
       socket.on(ChatEvent.sendMessage, (data) {
         isLoadingSent.value = false;
         logger.d("-------send message---------");
         logger.d(data);
         if (data["success"]) {
           final newMessage = Messages.fromJson(data['data']);
+          messageTextController.clear();
 
           final currentItems = messagePagingController.itemList ?? [];
-          // Check if we have a temp message to replace (Optimistic UI)
-          final tempIndex = currentItems.indexWhere(
-            (element) =>
-                element.sId != null &&
-                element.sId!.startsWith('temp_') &&
-                element.message == newMessage.message,
-            // Adding message check reduces risk of wrong swap, though not perfect if duplicate text.
-            // A dedicated unique ID passed through backend would be better but requires backend changes.
+
+          logger.d(
+            "[Chat] Controller Hash: ${hashCode}, PagingController Hash: ${messagePagingController.hashCode}",
           );
 
-          if (tempIndex != -1) {
-            currentItems[tempIndex] = newMessage;
-            messagePagingController.itemList = [...currentItems];
-          } else {
-            if (!currentItems.any((element) => element.sId == newMessage.sId)) {
-              messagePagingController.itemList = [newMessage, ...currentItems];
-            }
+          // Prevent duplicates by checking ID
+          if (currentItems.any((element) => element.sId == newMessage.sId)) {
+            logger.w(
+              "[Chat] Duplicate message ignored (ID: ${newMessage.sId})",
+            );
+            return;
           }
+
+          // Directly add the new message to the top of the list
+          final newItems = [newMessage, ...currentItems];
+          messagePagingController.itemList = newItems;
+
+          // Force UI rebuild if needed (though itemList setter should do it)
+          // messagePagingController.notifyListeners(); // Protected method
+          logger.i(
+            "[Chat] Added new message. New list length: ${newItems.length}",
+          );
         }
       });
     } else {

@@ -46,15 +46,18 @@ class AfterPickedUpWidget extends StatelessWidget {
           value: "$duration min",
         ),
         FromToTimeLine(pickUpAddress: fromAddress, dropOffAddress: toAddress),
-        CustomButton(
-          onTap: () {
-            DashBoardController.to.driverTripUpdateStatus(
-              tripId: tripId.toString(),
-              newStatus: DriverTripStatus.started.name.toString(),
-            );
-          },
-          title: AppStaticStrings.startTrip.tr,
-        ),
+        Obx(() {
+          return CustomButton(
+            isLoading: DashBoardController.to.isLoadingTripStatus.value,
+            onTap: () {
+              DashBoardController.to.driverTripUpdateStatus(
+                tripId: tripId.toString(),
+                newStatus: DriverTripStatus.started.name.toString(),
+              );
+            },
+            title: AppStaticStrings.startTrip.tr,
+          );
+        }),
       ],
     );
   }

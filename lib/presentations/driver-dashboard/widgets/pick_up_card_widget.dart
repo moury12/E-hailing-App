@@ -97,6 +97,7 @@ class _DriverAfterAcceptedWidgetState extends State<DriverAfterAcceptedWidget> {
         Obx(() {
           return DashBoardController.to.afterOnTheWay.value
               ? CustomButton(
+                isLoading: DashBoardController.to.isLoadingTripStatus.value,
                 onTap: () {
                   if (widget.tripId != null) {
                     DashBoardController.to.driverTripUpdateStatus(
@@ -110,6 +111,7 @@ class _DriverAfterAcceptedWidgetState extends State<DriverAfterAcceptedWidget> {
                 textColor: AppColors.kWhiteColor,
               )
               : CustomButton(
+                isLoading: DashBoardController.to.isLoadingTripStatus.value,
                 onTap: () {
                   if (widget.tripId != null) {
                     DashBoardController.to.driverTripUpdateStatus(

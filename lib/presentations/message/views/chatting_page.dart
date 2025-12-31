@@ -130,21 +130,26 @@ class _ChattingPageState extends State<ChattingPage> {
                     ChattingController.to.chatMetaModel.value,
                   );
 
-                  return IconButton(
-                    onPressed: () {
-                      if (ChattingController
-                          .to
-                          .messageTextController
-                          .text
-                          .isNotEmpty) {
-                        ChattingController.to.sendMessage(
-                          chatId: chatId,
-                          receiverId: other!.sId.toString(),
-                        );
-                      }
-                    },
-                    icon: Icon(Icons.send, color: AppColors.kBrightBlueColor),
-                  );
+                  return ChattingController.to.isLoadingSent.value
+                      ? DefaultProgressIndicator()
+                      : IconButton(
+                        onPressed: () {
+                          if (ChattingController
+                              .to
+                              .messageTextController
+                              .text
+                              .isNotEmpty) {
+                            ChattingController.to.sendMessage(
+                              chatId: chatId,
+                              receiverId: other!.sId.toString(),
+                            );
+                          }
+                        },
+                        icon: Icon(
+                          Icons.send,
+                          color: AppColors.kBrightBlueColor,
+                        ),
+                      );
                 }),
               ],
             ),
