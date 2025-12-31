@@ -50,6 +50,8 @@ class DashBoardController extends GetxController {
   final socketService = SocketService();
   RxBool isLoadingCurrentTrip = false.obs;
   RxBool isLoadingUpdateTollFee = false.obs;
+  RxBool isLoadingAccept = false.obs;
+  RxBool isLoadingTripStatus = false.obs;
   RxString estimatedPickupTime = "0:00 Min".obs;
 
   @override
@@ -214,6 +216,8 @@ class DashBoardController extends GetxController {
         return;
       }
 
+      isLoadingTripStatus.value = true;
+
       if (newStatus == DriverTripStatus.cancelled.name) {
         isCancellingTrip.value = true;
       }
@@ -231,6 +235,7 @@ class DashBoardController extends GetxController {
       });
     } catch (e) {
       logger.e(e.toString());
+      isLoadingTripStatus.value = false;
     } finally {
       if (newStatus == DriverTripStatus.cancelled.name) {
         isCancellingTrip.value = false;
@@ -252,6 +257,8 @@ class DashBoardController extends GetxController {
       initializeSocket();
       return;
     }
+
+    isLoadingAccept.value = true;
 
     socketService.emit(DriverEvent.tripAcceptedStatus, {
       {"tripId": tripId, "long": lat, "lat": lng},
@@ -448,6 +455,7 @@ class DashBoardController extends GetxController {
     // ============ Trip Update Status Event ============
     socketService.on(DriverEvent.tripUpdateStatus, (data) async {
       logger.d("📩 tripUpdateStatus: $data");
+      isLoadingTripStatus.value = false;
       startTrackingUserLocationMethod(tripId: currentTrip.value.sId.toString());
       if (data['success'] != true) {
         _showError(data['message']);
@@ -470,6 +478,8 @@ class DashBoardController extends GetxController {
     // ============ Trip Accepted Status ============
     socketService.on(DriverEvent.tripAcceptedStatus, (data) async {
       logger.d("📩 tripAcceptedStatus: $data");
+
+      isLoadingAccept.value = false;
 
       if (data['success'] == true) {
         currentTrip.value = DriverCurrentTripModel.fromJson(data['data']);

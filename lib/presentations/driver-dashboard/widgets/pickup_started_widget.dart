@@ -29,18 +29,21 @@ class AfterArrivedPickupLocationWidget extends StatelessWidget {
           fontSize: getFontSizeDefault(),
         ),
         SvgPicture.asset(pickUpLocationIcon),
-        CustomButton(
-          onTap: () {
-            DashBoardController.to.driverTripUpdateStatus(
-              tripId: tripId.toString(),
-              newStatus: DriverTripStatus.picked_up.name.toString(),
-            );
+        Obx(() {
+          return CustomButton(
+            isLoading: DashBoardController.to.isLoadingTripStatus.value,
+            onTap: () {
+              DashBoardController.to.driverTripUpdateStatus(
+                tripId: tripId.toString(),
+                newStatus: DriverTripStatus.picked_up.name.toString(),
+              );
 
-            // DashBoardController.to.isArrived.value = false;
-            // DashBoardController.to.isTripStarted.value = true;
-          },
-          title: AppStaticStrings.pickup.tr,
-        ),
+              // DashBoardController.to.isArrived.value = false;
+              // DashBoardController.to.isTripStarted.value = true;
+            },
+            title: AppStaticStrings.pickup.tr,
+          );
+        }),
       ],
     );
   }
@@ -86,7 +89,9 @@ class SendPaymentRequestWidget extends StatelessWidget {
         ),
         Obx(() {
           return CustomButton(
-            isLoading: DashBoardController.to.isLoadingUpdateTollFee.value,
+            isLoading:
+                DashBoardController.to.isLoadingUpdateTollFee.value ||
+                DashBoardController.to.isLoadingTripStatus.value,
             onTap: () async {
               if (DashBoardController.to.extraCost.text.isNotEmpty) {
                 await DashBoardController.to.updateTollFeeRequest(

@@ -31,21 +31,21 @@ class AfterTripStartedWidget extends StatelessWidget {
           title: "Distance",
           text: "${(int.parse(tripDistance ?? "0") / 1000).toString()} km",
         ),
-        TitleTextWidget(
-          title: 'Estimated Time',
-          text: "$estimatedTime min",
-        ),
+        TitleTextWidget(title: 'Estimated Time', text: "$estimatedTime min"),
         FromToTimeLine(
           pickUpAddress: pickUpAddress,
           dropOffAddress: dropOffAddress,
         ),
-        CustomButton(
-          onTap: () {
-            DashBoardController.to.afterTripStarted.value = false;
-            DashBoardController.to.sendPaymentReq.value = true;
-          },
-          title: AppStaticStrings.arrived.tr,
-        ),
+        Obx(() {
+          return CustomButton(
+            isLoading: DashBoardController.to.isLoadingTripStatus.value,
+            onTap: () {
+              DashBoardController.to.afterTripStarted.value = false;
+              DashBoardController.to.sendPaymentReq.value = true;
+            },
+            title: AppStaticStrings.arrived.tr,
+          );
+        }),
       ],
     );
   }
