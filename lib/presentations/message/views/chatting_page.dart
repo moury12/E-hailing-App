@@ -12,22 +12,15 @@ import 'package:e_hailing_app/presentations/message/widgets/chat_loading.dart';
 import 'package:e_hailing_app/presentations/message/widgets/chat_message_card_item_widget.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
 import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-class ChattingPage extends StatefulWidget {
+class ChattingPage extends GetView<ChattingController> {
   static const String routeName = '/chatting';
 
   const ChattingPage({super.key});
-
-  @override
-  State<ChattingPage> createState() => _ChattingPageState();
-}
-
-class _ChattingPageState extends State<ChattingPage> {
-  final chatId = Get.arguments;
 
   Participants? getOtherUser(ChatModel? meta) {
     final myId = AccountInformationController.to.userModel.value.sId;
@@ -41,30 +34,17 @@ class _ChattingPageState extends State<ChattingPage> {
   }
 
   @override
-  void initState() {
-    ChattingController.to.getMessages(chatId: chatId);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      ChattingController.to.updateMessageSeenRequest(chatId: chatId);
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: Obx(() {
-          final other =
-              ChattingController.to.chatMetaModel.value != null
-                  ? getOtherUser(ChattingController.to.chatMetaModel.value)
-                  : Participants();
+          final meta = controller.chatMetaModel.value;
+          final other = meta != null ? getOtherUser(meta) : Participants();
+
           return CustomAppBar(
             title: other?.name ?? "User Name Loading...",
             action: [
-              /*ChattingController.to.isLoadingMessage.value
-                  ? DefaultProgressIndicator()
-                  : */
               Padding(
                 padding: EdgeInsets.only(right: 12.w),
                 child: PrimaryCircleButtonWidget(
@@ -85,26 +65,52 @@ class _ChattingPageState extends State<ChattingPage> {
       body: Column(
         children: [
           Expanded(
-            child: PagedListView<int, Messages>(
-              reverse: true,
-              pagingController: ChattingController.to.messagePagingController,
-              builderDelegate: PagedChildBuilderDelegate<Messages>(
-                itemBuilder:
-                    (context, item, index) => ChatMessageCardItemWidget(
+            child: GetBuilder<ChattingController>(
+              id: 'chat_list',
+              builder: (controller) {
+                final messages = controller.messagesList;
+                final isLoading = controller.isLoadingMessage.value;
+                final isLoadingMore = controller.isLoadingMore.value;
+                final meta = controller.chatMetaModel.value;
+
+                logger.d(
+                  "[Chat] GetBuilder Rebuild - Count: ${messages.length}, Hash: ${controller.hashCode}",
+                );
+
+                // Show loading indicator for first page
+                if (isLoading && messages.isEmpty) {
+                  return ShimmerChatList();
+                }
+
+                // Show empty state
+                if (messages.isEmpty && !isLoading) {
+                  return EmptyWidget(text: "No messages.");
+                }
+
+                // Show messages list
+                return ListView.builder(
+                  reverse: true,
+                  controller: controller.scrollController,
+                  itemCount: messages.length + (isLoadingMore ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == messages.length) {
+                      return Padding(
+                        padding: EdgeInsets.all(16.w),
+                        child: Center(child: DefaultProgressIndicator()),
+                      );
+                    }
+
+                    final item = messages[index];
+                    return ChatMessageCardItemWidget(
                       sendByMe:
                           AccountInformationController.to.userModel.value.sId ==
                           item.sender,
                       message: item,
-                      chatModel:
-                          ChattingController.to.chatMetaModel.value ??
-                          ChatModel(),
-                    ),
-                newPageProgressIndicatorBuilder:
-                    (context) => DefaultProgressIndicator(),
-                firstPageProgressIndicatorBuilder: (_) => ShimmerChatList(),
-                noItemsFoundIndicatorBuilder:
-                    (_) => EmptyWidget(text: "No messages."),
-              ),
+                      chatModel: meta ?? ChatModel(),
+                    );
+                  },
+                );
+              },
             ),
           ),
           Padding(
@@ -121,26 +127,24 @@ class _ChattingPageState extends State<ChattingPage> {
                     textInputAction: TextInputAction.newline,
                     maxLines: 4,
                     minLines: 1,
-                    textEditingController:
-                        ChattingController.to.messageTextController,
+                    textEditingController: controller.messageTextController,
                   ),
                 ),
                 Obx(() {
-                  final other = getOtherUser(
-                    ChattingController.to.chatMetaModel.value,
-                  );
+                  final meta = controller.chatMetaModel.value;
+                  final other = getOtherUser(meta);
+                  final isSending = controller.isLoadingSent.value;
 
-                  return ChattingController.to.isLoadingSent.value
+                  return isSending
                       ? DefaultProgressIndicator()
                       : IconButton(
                         onPressed: () {
-                          if (ChattingController
-                              .to
+                          if (controller
                               .messageTextController
                               .text
                               .isNotEmpty) {
-                            ChattingController.to.sendMessage(
-                              chatId: chatId,
+                            controller.sendMessage(
+                              chatId: controller.activeChatId ?? '',
                               receiverId: other!.sId.toString(),
                             );
                           }

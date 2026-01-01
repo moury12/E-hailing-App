@@ -17,20 +17,55 @@ import 'package:e_hailing_app/presentations/profile/controllers/account_informat
 class ChattingController extends GetxController {
   static ChattingController get to => Get.find();
   final SocketService socket = SocketService();
-  PagingController<int, Messages> messagePagingController = PagingController(
-    firstPageKey: 1,
-  );
+
+  // Replace PagingController with RxList and pagination variables
+  RxList<Messages> messagesList = <Messages>[].obs;
+  RxInt currentPage = 1.obs;
+  RxInt totalPages = 1.obs;
   RxBool isLoadingMessage = false.obs;
+  RxBool isLoadingMore = false.obs;
+  RxBool hasMoreData = true.obs;
   RxBool isLoadingSent = false.obs;
   Rx<ChatModel?> chatMetaModel = Rx<ChatModel?>(null);
+  String? activeChatId;
 
   final TranslationService translationService = TranslationService();
   TextEditingController messageTextController = TextEditingController();
+  ScrollController scrollController = ScrollController();
 
   @override
   void onInit() {
     initializeSocket();
+    setupScrollListener();
+
+    // Initial fetch if we have arguments
+    final args = Get.arguments;
+    if (args is String) {
+      getMessages(chatId: args);
+      updateMessageSeenRequest(chatId: args);
+    }
+
     super.onInit();
+  }
+
+  void setupScrollListener() {
+    scrollController.addListener(() {
+      if (scrollController.hasClients &&
+          !isLoadingMore.value &&
+          hasMoreData.value) {
+        final maxScroll = scrollController.position.maxScrollExtent;
+        final currentScroll = scrollController.position.pixels;
+
+        // In a reversed list, maxScroll is the TOP (oldest messages).
+        // Trigger when user scrolls up and is near the top.
+        if (maxScroll > 50 && currentScroll >= maxScroll * 0.8) {
+          logger.d(
+            "[Chat] Pagination triggered at $currentScroll / $maxScroll",
+          );
+          loadMoreMessages();
+        }
+      }
+    });
   }
 
   ///------------------------------  seen conversation method -------------------------///
@@ -76,22 +111,6 @@ class ChattingController extends GetxController {
     final text = messageTextController.text;
     if (text.isEmpty) return;
 
-    // Optimistic Update
-    // final tempId = 'temp_${DateTime.now().millisecondsSinceEpoch}';
-    // final myId = AccountInformationController.to.userModel.value.sId;
-
-    // final tempMessage = Messages(
-    //   sId: tempId,
-    //   sender: myId,
-    //   receiver: receiverId,
-    //   message: text,
-    //   createdAt: DateTime.now().toIso8601String(),
-    // );
-
-    // final currentItems = messagePagingController.itemList ?? [];
-    // messagePagingController.itemList = [tempMessage, ...currentItems];
-    // messageTextController.clear();
-
     try {
       isLoadingSent.value = true;
       final textEn = await translationService.translate(text, 'en');
@@ -106,49 +125,43 @@ class ChattingController extends GetxController {
       });
     } catch (e) {
       logger.e("Failed to send message: $e");
-      // Optionally handle failure UI here (e.g. show retry on the temp message)
+      isLoadingSent.value = false;
     }
   }
 
   void initializeSocket() {
-    if (socket.socket!.connected) {
-      // Clean up previous listeners to prevent duplicates
-      socket.off(ChatEvent.sendMessage);
+    // Clean up previous listeners to prevent duplicates
+    socket.off(ChatEvent.sendMessage);
 
-      socket.on(ChatEvent.sendMessage, (data) {
-        isLoadingSent.value = false;
-        logger.d("-------send message---------");
-        logger.d(data);
-        if (data["success"]) {
-          final newMessage = Messages.fromJson(data['data']);
-          messageTextController.clear();
+    socket.on(ChatEvent.sendMessage, (data) {
+      isLoadingSent.value = false;
+      logger.d("-------received socket message---------");
+      logger.d(data);
+      if (data["success"]) {
+        final newMessage = Messages.fromJson(data['data']);
+        messageTextController.clear();
 
-          final currentItems = messagePagingController.itemList ?? [];
+        logger.d("new message: ${newMessage.message}");
 
-          logger.d(
-            "[Chat] Controller Hash: ${hashCode}, PagingController Hash: ${messagePagingController.hashCode}",
-          );
-
-          // Prevent duplicates by checking ID
-          if (currentItems.any((element) => element.sId == newMessage.sId)) {
-            logger.w(
-              "[Chat] Duplicate message ignored (ID: ${newMessage.sId})",
-            );
-            return;
-          }
-
-          // Directly add the new message to the top of the list
-          final newItems = [newMessage, ...currentItems];
-          messagePagingController.itemList = newItems;
-
-          // Force UI rebuild if needed (though itemList setter should do it)
-          // messagePagingController.notifyListeners(); // Protected method
-          logger.i(
-            "[Chat] Added new message. New list length: ${newItems.length}",
-          );
+        // Prevent duplicates by checking ID
+        if (messagesList.any((element) => element.sId == newMessage.sId)) {
+          logger.w("[Chat] Duplicate message ignored (ID: ${newMessage.sId})");
+          return;
         }
-      });
-    } else {
+
+        // Update the list and force UI refresh
+        messagesList.insert(0, newMessage);
+        messagesList.refresh();
+        update(['chat_list']);
+
+        logger.i(
+          "[Chat] Added new message. List length: ${messagesList.length} | Hash: ${hashCode}",
+        );
+        logger.d("Latest: ${newMessage.message}");
+      }
+    });
+
+    if (!socket.socket!.connected) {
       socketConnection();
     }
   }
@@ -162,62 +175,85 @@ class ChattingController extends GetxController {
   }
 
   void getMessages({required String chatId}) {
-    // Dispose the old controller
-    messagePagingController.dispose();
+    activeChatId = chatId;
+    // Reset pagination state
+    messagesList.clear();
+    currentPage.value = 1;
+    totalPages.value = 1;
+    hasMoreData.value = true;
 
-    // Create a new controller
-    messagePagingController = PagingController<int, Messages>(firstPageKey: 1);
+    // Reset scroll position to bottom (newest)
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(0);
+    }
 
-    // Add page listener
-    messagePagingController.addPageRequestListener((pageKey) {
-      fetchMessagesPage(chatId, pageKey);
-    });
+    // Fetch first page
+    fetchMessagesPage(chatId, 1);
+  }
 
-    // Navigate after setup
+  void loadMoreMessages() {
+    if (currentPage.value < totalPages.value && activeChatId != null) {
+      fetchMessagesPage(activeChatId!, currentPage.value + 1);
+    }
   }
 
   ///------------------------------ get message list method -------------------------///
 
   Future<void> fetchMessagesPage(String chatId, int pageKey) async {
     try {
-      isLoadingMessage.value = true;
+      if (pageKey == 1) {
+        isLoadingMessage.value = true;
+      } else {
+        isLoadingMore.value = true;
+      }
 
       final response = await ApiService().request(
         endpoint: getChatMessagesEndpoint,
         method: 'GET',
         queryParams: {'chatId': chatId, 'page': pageKey.toString()},
       );
+
       logger.d(response);
+
       if (response['success'] == true) {
         final data = response['data'];
+
         if (pageKey == 1) {
           chatMetaModel.value = ChatModel.fromJson(data);
         }
+
         final List<Messages> messages =
             (data['messages'] as List)
                 .map((e) => Messages.fromJson(e))
                 .toList();
-        final totalPages = data['meta']['totalPage'] ?? 1;
-        final isLastPage = pageKey >= totalPages;
-        if (isLastPage) {
-          messagePagingController.appendLastPage(messages);
-        } else {
-          final nextPageKey = pageKey + 1;
-          messagePagingController.appendPage(messages, nextPageKey);
-        }
+
+        totalPages.value = data['meta']['totalPage'] ?? 1;
+        currentPage.value = pageKey;
+
+        // Add messages to the list
+        messagesList.addAll(messages);
+
+        // Check if there's more data
+        hasMoreData.value = pageKey < totalPages.value;
+
+        logger.i(
+          "[Chat] Loaded page $pageKey. Total messages: ${messagesList.length}",
+        );
       } else {
-        messagePagingController.error = response['message'];
+        logger.e(response['message']);
       }
     } catch (e) {
-      messagePagingController.error = e;
+      logger.e("Error fetching messages: $e");
     } finally {
       isLoadingMessage.value = false;
+      isLoadingMore.value = false;
     }
   }
 
   @override
   void onClose() {
-    messagePagingController.dispose();
+    scrollController.dispose();
+    messagesList.clear();
     socket.off(ChatEvent.sendMessage);
     super.onClose();
   }
