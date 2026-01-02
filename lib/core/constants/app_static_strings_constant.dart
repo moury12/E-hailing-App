@@ -319,4 +319,7 @@ class AppStaticStrings {
   static String tripCompleted = 'tripCompleted';
   static String rateYourRide = 'rateYourRide';
   static String leaveAReview = 'leaveAReview';
+  static String freeCancellationWithin5Minutes =
+      'freeCancellationWithin5Minutes';
+  static String arriveToAvoidWaitingFees = 'arriveToAvoidWaitingFees';
 }
