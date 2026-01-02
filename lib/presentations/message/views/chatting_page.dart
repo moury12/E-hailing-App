@@ -5,6 +5,7 @@ import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/service/translation-service/translation_service.dart';
 import 'package:e_hailing_app/presentations/message/controllers/chatting_controller.dart';
 import 'package:e_hailing_app/presentations/message/model/chat_message_model.dart';
 import 'package:e_hailing_app/presentations/message/widgets/chat_loading.dart';
@@ -47,6 +48,8 @@ class _ChattingPageState extends State<ChattingPage> {
     });
     super.initState();
   }
+
+  final TranslationService translationService = TranslationService();
 
   @override
   Widget build(BuildContext context) {
@@ -132,12 +135,21 @@ class _ChattingPageState extends State<ChattingPage> {
                   return ChattingController.to.isLoadingMessage.value
                       ? DefaultProgressIndicator()
                       : IconButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (ChattingController
                               .to
                               .messageTextController
                               .text
                               .isNotEmpty) {
+                            ChattingController.to.isLoadingMessage.value = true;
+                            final textEn = await translationService.translate(
+                              ChattingController.to.messageTextController.text,
+                              'en',
+                            );
+                            final textMs = await translationService.translate(
+                              ChattingController.to.messageTextController.text,
+                              'ms',
+                            );
                             ChattingController.to.sendMessageSocket(
                               body: {
                                 "chatId": chatId,
@@ -147,6 +159,8 @@ class _ChattingPageState extends State<ChattingPage> {
                                         .to
                                         .messageTextController
                                         .text,
+                                "english": textEn,
+                                "malay": textMs,
                               },
                             );
                           }
