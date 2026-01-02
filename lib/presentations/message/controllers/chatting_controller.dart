@@ -85,6 +85,7 @@ class ChattingController extends GetxController {
       socket.on(ChatEvent.sendMessage, (data) {
         logger.d("-------send message---------");
         logger.d(data);
+        isLoadingMessage.value = false;
         if (data["success"]) {
           // Convert the new message from JSON
           final newMessage = Messages.fromJson(data['data']);
@@ -102,9 +103,11 @@ class ChattingController extends GetxController {
   }
 
   void socketConnection() {
-    Map<String, dynamic> decodedToken = JwtDecoder.decode(Boxes.getUserData().get(tokenKey).toString());
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(
+      Boxes.getUserData().get(tokenKey).toString(),
+    );
 
-    socket.connect(decodedToken['userId'],decodedToken['role']=="DRIVER");
+    socket.connect(decodedToken['userId'], decodedToken['role'] == "DRIVER");
   }
 
   void getMessages({required String chatId}) {
