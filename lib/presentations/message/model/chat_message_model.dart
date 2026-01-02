@@ -86,8 +86,6 @@ class Messages {
   String? sender;
   String? receiver;
   String? message;
-  String? english;
-  String? malay;
   bool? isRead;
   String? createdAt;
   String? updatedAt;
@@ -98,8 +96,6 @@ class Messages {
     this.sender,
     this.receiver,
     this.message,
-    this.english,
-    this.malay,
     this.isRead,
     this.createdAt,
     this.updatedAt,
@@ -109,8 +105,6 @@ class Messages {
   Messages.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     sender = json['sender'];
-    english = json['english'];
-    malay = json['malay'];
     receiver = json['receiver'];
     message = json['message'];
     isRead = json['isRead'];
@@ -124,8 +118,6 @@ class Messages {
     data['_id'] = sId;
     data['sender'] = sender;
     data['receiver'] = receiver;
-    data['english'] = english;
-    data['malay'] = malay;
     data['message'] = message;
     data['isRead'] = isRead;
     data['createdAt'] = createdAt;
