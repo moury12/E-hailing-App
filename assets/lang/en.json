@@ -267,5 +267,7 @@
   "arrivingAtPickup": "Arriving at pickup location",
   "tripCompleted": "Trip Completed",
   "rateYourRide": "Rate Your Ride",
-  "leaveAReview": "Leave a Review"
+  "leaveAReview": "Leave a Review",
+  "freeCancellationWithin5Minutes": "Free Cancellation Within 5 Minutes of Booking",
+  "arriveToAvoidWaitingFees": "Please Arrive Within 5 Minutes to Avoid Waiting Fees"
 }
