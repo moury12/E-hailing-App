@@ -54,10 +54,10 @@ class TripDetailsPage extends StatelessWidget {
                 spacing: 12.h,
                 children: [
                   CarDetailsCardWidget(
-
-                    fare: double
-                        .parse((trip.estimatedFare ?? 0).toString())
-                        .toInt(),
+                    fare:
+                        double.parse(
+                          (trip.estimatedFare ?? 0).toString(),
+                        ).toInt(),
                   ),
 
                   Container(
@@ -89,8 +89,7 @@ class TripDetailsPage extends StatelessWidget {
                                 children: [
                                   CustomNetworkImage(
                                     imageUrl:
-                                    "${ApiService().baseUrl}/${trip.driver
-                                        ?.profileImage}",
+                                        "${ApiService().baseUrl}/${trip.driver?.profileImage}",
                                     height: 42,
                                     width: 42,
                                     boxShape: BoxShape.circle,
@@ -104,22 +103,21 @@ class TripDetailsPage extends StatelessWidget {
                                 children: [
                                   CustomText(
                                     text:
-                                    trip.driver?.name ??
+                                        trip.driver?.name ??
                                         AppStaticStrings.noDataFound.tr,
                                     style: poppinsBold,
                                     fontSize: getFontSizeDefault(),
                                   ),
                                   CustomText(
                                     text:
-                                    trip.driver?.email ??
+                                        trip.driver?.email ??
                                         AppStaticStrings.noDataFound.tr,
                                     style: poppinsRegular,
                                     fontSize: getFontSizeSmall(),
                                   ),
                                   CustomText(
                                     text:
-                                    'Phone : ${trip.driver?.phoneNumber ??
-                                        AppStaticStrings.noDataFound.tr}',
+                                        'Phone : ${trip.driver?.phoneNumber ?? AppStaticStrings.noDataFound.tr}',
                                     style: poppinsRegular,
                                     fontSize: getFontSizeSmall(),
                                     color: AppColors.kLightBlackColor,
@@ -141,106 +139,159 @@ class TripDetailsPage extends StatelessWidget {
                             spacing: 6.h,
                             children: [
                               DynamicTabWidget(
-                                  tabs: HomeController.to.tripDetailsTabs,
-                                  tabContent: [
-                                    Column(
-                                      children: [
-                                        CarInformationWidget(
-                                          title: AppStaticStrings.carType.tr,
-                                          value:
-                                          trip.driver?.assignedCar?.type ??
-                                              AppStaticStrings.noDataFound.tr,
-                                        ),
-                                        CarInformationWidget(
-                                          title: AppStaticStrings.carColor.tr,
-                                          value:
-                                          trip.driver?.assignedCar?.color ??
-                                              AppStaticStrings.noDataFound.tr,
-                                        ),
-                                        CarInformationWidget(
-                                          title: AppStaticStrings.carNumber.tr,
-                                          value:
-                                          trip.driver?.assignedCar?.carNumber ??
-                                              AppStaticStrings.noDataFound.tr,
-                                        ),
-                                        CarInformationWidget(
-                                          title: AppStaticStrings.carSeat.tr,
-                                          value: '4 Seats',
-                                        ),
-                                        CarInformationWidget(
-                                          title: AppStaticStrings.evpNumber.tr,
-                                          value:
-                                          trip.driver?.assignedCar?.evpNumber ??
-                                              AppStaticStrings.noDataFound.tr,
-                                        ),
-                                        CarInformationWidget(
-                                          title: AppStaticStrings.evpValidityPeriod.tr,
-                                          value:
-                                          trip.driver?.assignedCar?.evpExpiry ??
-                                              AppStaticStrings.noDataFound.tr,
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Container(
-
-                                          decoration: BoxDecoration(boxShadow: [
+                                tabs: HomeController.to.tripDetailsTabs,
+                                tabContent: [
+                                  Column(
+                                    children: [
+                                      CarInformationWidget(
+                                        title: AppStaticStrings.carType.tr,
+                                        value:
+                                            trip.driver?.assignedCar?.type ??
+                                            AppStaticStrings.noDataFound.tr,
+                                      ),
+                                      CarInformationWidget(
+                                        title: AppStaticStrings.carColor.tr,
+                                        value:
+                                            trip.driver?.assignedCar?.color ??
+                                            AppStaticStrings.noDataFound.tr,
+                                      ),
+                                      CarInformationWidget(
+                                        title: AppStaticStrings.carNumber.tr,
+                                        value:
+                                            trip
+                                                .driver
+                                                ?.assignedCar
+                                                ?.carNumber ??
+                                            AppStaticStrings.noDataFound.tr,
+                                      ),
+                                      CarInformationWidget(
+                                        title: AppStaticStrings.carSeat.tr,
+                                        value: '4 Seats',
+                                      ),
+                                      CarInformationWidget(
+                                        title: AppStaticStrings.evpNumber.tr,
+                                        value:
+                                            trip
+                                                .driver
+                                                ?.assignedCar
+                                                ?.evpNumber ??
+                                            AppStaticStrings.noDataFound.tr,
+                                      ),
+                                      CarInformationWidget(
+                                        title:
+                                            AppStaticStrings
+                                                .evpValidityPeriod
+                                                .tr,
+                                        value:
+                                            trip
+                                                .driver
+                                                ?.assignedCar
+                                                ?.evpExpiry ??
+                                            AppStaticStrings.noDataFound.tr,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          boxShadow: [
                                             BoxShadow(
                                               color: AppColors.kPrimaryColor
-                                                  .withValues(
-                                                alpha: .2,
-                                              ),
+                                                  .withValues(alpha: .2),
                                               blurRadius: 8.r,
                                             ),
-                                          ], color: AppColors.kWhiteColor,
-                                            borderRadius: BorderRadius.circular(
-                                                8.r),),
-                                          width: double.infinity,
-                                          padding: padding12,
-                                          child:trip.driver!=null? Column(children: [
+                                          ],
+                                          color: AppColors.kWhiteColor,
+                                          borderRadius: BorderRadius.circular(
+                                            8.r,
+                                          ),
+                                        ),
+                                        width: double.infinity,
+                                        padding: padding12,
+                                        child:
+                                            trip.driver != null
+                                                ? Column(
+                                                  children: [
+                                                    CustomText(
+                                                      text:
+                                                          "${AppStaticStrings.avgRating.tr} (${trip.driver!.rating ?? 0})",
+                                                      style: poppinsBold,
+                                                    ),
+                                                    RatingBarIndicator(
+                                                      rating:
+                                                          (trip
+                                                                      .driver!
+                                                                      .rating ??
+                                                                  0)
+                                                              .toDouble(),
+                                                      // pass your rating value here (e.g. 3.5)
+                                                      itemBuilder:
+                                                          (
+                                                            context,
+                                                            index,
+                                                          ) => const Icon(
+                                                            Icons
+                                                                .star_rate_rounded,
+                                                            color: Colors.amber,
+                                                          ),
+                                                      itemCount: 5,
+                                                      // total stars
+                                                      itemSize: 30.0,
+                                                      // star size
+                                                      direction:
+                                                          Axis.horizontal,
+                                                    ),
+                                                    Obx(() {
+                                                      return SingleChildScrollView(
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        child: Row(
+                                                          children: List.generate(
+                                                            CommonController
+                                                                .to
+                                                                .reviewList
+                                                                .length,
+                                                            (index) => SizedBox(
+                                                              width:
+                                                                  ScreenUtil()
+                                                                      .screenWidth /
+                                                                  1.5,
+                                                              child: ReviewCardWidget(
+                                                                reviewModel:
+                                                                    CommonController
+                                                                        .to
+                                                                        .reviewList[index],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }),
+                                                  ],
+                                                )
+                                                : SizedBox.shrink(),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
 
-                                            CustomText(
-                                              text: "${AppStaticStrings
-                                                  .avgRating.tr} (${trip.driver!
-                                                  .rating ?? 0})",
-                                              style: poppinsBold,),
-                                            RatingBarIndicator(
-                                              rating: (trip.driver!.rating ?? 0)
-                                                  .toDouble(),
-                                              // pass your rating value here (e.g. 3.5)
-                                              itemBuilder: (context, index) =>
-                                              const Icon(
-                                                Icons.star_rate_rounded,
-                                                color: Colors.amber,
-                                              ),
-                                              itemCount: 5,
-                                              // total stars
-                                              itemSize: 30.0,
-                                              // star size
-                                              direction: Axis.horizontal,
-                                            ),
-                                            Obx(() {
-                                              return SingleChildScrollView(
-                                               scrollDirection: Axis.horizontal,
-                                                child: Row(
-                                                  children: List.generate(
-                                                    CommonController.to.reviewList
-                                                        .length, (index) =>
-                                                      SizedBox( width: ScreenUtil().screenWidth / 1.5,
-                                                        child: ReviewCardWidget(
-                                                          reviewModel: CommonController
-                                                              .to
-                                                              .reviewList[index],),
-                                                      ),),),
-                                              );
-                                            })
-                                          ],):SizedBox.shrink(),
-                                        )
-                                      ],
-                                    )
-                                  ]),
-
+                              if (trip.status != null &&
+                                  (trip.status!.toLowerCase() ==
+                                          DriverTripStatus.accepted.name ||
+                                      trip.status!.toLowerCase() ==
+                                          DriverTripStatus.on_the_way.name ||
+                                      trip.status!.toLowerCase() ==
+                                          DriverTripStatus.arrived.name))
+                                CustomText(
+                                  text:
+                                      "⨠${trip.status!.toLowerCase() == DriverTripStatus.arrived.name ? AppStaticStrings.arriveToAvoidWaitingFees.tr : AppStaticStrings.freeCancellationWithin5Minutes.tr}",
+                                  style: poppinsSemiBold,
+                                  fontSize: getFontSizeSmall(),
+                                  color: AppColors.kBlueColor,
+                                  textAlign: TextAlign.left,
+                                ),
                               space6H,
                               CustomTimeline(
                                 padding: EdgeInsets.zero,
@@ -270,40 +321,39 @@ class TripDetailsPage extends StatelessWidget {
                   ),
                   trip.driver != null
                       ? RowCallChatDetailsButton(
-                    phoneNumber: trip.driver?.phoneNumber,
-                    userId: trip.driver!.sId.toString(),
-                  )
+                        phoneNumber: trip.driver?.phoneNumber,
+                        userId: trip.driver!.sId.toString(),
+                      )
                       : SizedBox.shrink(),
                   trip.status == DriverTripStatus.destination_reached.name
                       ? CustomButton(
-                    onTap: () {
-                      Get.toNamed(
-                        PaymentPage.routeName,
-                        arguments: {"user": trip, "role": user},
-                      );
-                    },
-                    title: AppStaticStrings.payment.tr,
-                  )
-                      :
-                  CancelTripButtonWidget(
-                      isLoading: HomeController.to.isCancellingTrip,
-                      onSubmit: () {
-                        if (HomeController.to.cancelReason.isEmpty) {
-                          showCustomSnackbar(
-                            title: "Field Required",
-                            message: "Need to select the reason",
+                        onTap: () {
+                          Get.toNamed(
+                            PaymentPage.routeName,
+                            arguments: {"user": trip, "role": user},
                           );
-                        } else {
-                          HomeController.to.updateUserTrip(
-                            tripId: trip.sId.toString(),
-                            status:
-                            DriverTripStatus.cancelled.name.toString(),
-                            reason: HomeController.to.cancelReason,
-                          );
-                          Get.back();
-                        }
-                      },
-                    )
+                        },
+                        title: AppStaticStrings.payment.tr,
+                      )
+                      : CancelTripButtonWidget(
+                        isLoading: HomeController.to.isCancellingTrip,
+                        onSubmit: () {
+                          if (HomeController.to.cancelReason.isEmpty) {
+                            showCustomSnackbar(
+                              title: "Field Required",
+                              message: "Need to select the reason",
+                            );
+                          } else {
+                            HomeController.to.updateUserTrip(
+                              tripId: trip.sId.toString(),
+                              status:
+                                  DriverTripStatus.cancelled.name.toString(),
+                              reason: HomeController.to.cancelReason,
+                            );
+                            Get.back();
+                          }
+                        },
+                      ),
                 ],
               );
             }),
@@ -313,4 +363,3 @@ class TripDetailsPage extends StatelessWidget {
     );
   }
 }
-
