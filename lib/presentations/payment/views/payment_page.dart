@@ -145,17 +145,24 @@ class _PaymentPageState extends State<PaymentPage> {
                     ? Column(
                       spacing: 8.h,
                       children: [
-                        CustomButton(
-                          onTap: () {
-                            DashBoardController.to.driverTripUpdateStatus(
-                              tripId: driverTripResponseModel.sId.toString(),
+                        Obx(() {
+                          return CustomButton(
+                            isLoading:
+                                DashBoardController
+                                    .to
+                                    .isLoadingTripStatus
+                                    .value,
+                            onTap: () {
+                              DashBoardController.to.driverTripUpdateStatus(
+                                tripId: driverTripResponseModel.sId.toString(),
 
-                              newStatus:
-                                  DriverTripStatus.completed.name.toString(),
-                            );
-                          },
-                          title: AppStaticStrings.confirm.tr,
-                        ),
+                                newStatus:
+                                    DriverTripStatus.completed.name.toString(),
+                              );
+                            },
+                            title: AppStaticStrings.confirm.tr,
+                          );
+                        }),
                         CustomButton(
                           onTap: () {
                             Get.offAllNamed(

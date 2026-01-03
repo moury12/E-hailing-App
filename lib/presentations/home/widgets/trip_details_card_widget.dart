@@ -202,13 +202,23 @@ class TripDetailsDestinationCard extends StatelessWidget {
             value: '${int.tryParse(tripModel?.duration.toString() ?? "0")} min',
             rating: tripModel?.driver?.rating.toString(),
           ),
-          CustomText(
-            text: "⨠${AppStaticStrings.cancelationText.tr}",
-            style: poppinsSemiBold,
-            fontSize: getFontSizeSmall(),
-            color: AppColors.kBlueColor,
-            textAlign: TextAlign.left,
-          ),
+          Obx(() {
+            final status = HomeController.to.tripAcceptedModel.value.status;
+            if (status != null &&
+                (status.toLowerCase() == DriverTripStatus.accepted.name ||
+                    status.toLowerCase() == DriverTripStatus.on_the_way.name ||
+                    status.toLowerCase() == DriverTripStatus.arrived.name)) {
+              return CustomText(
+                text:
+                    "⨠${status.toLowerCase() == DriverTripStatus.arrived.name ? AppStaticStrings.arriveToAvoidWaitingFees.tr : AppStaticStrings.freeCancellationWithin5Minutes.tr}",
+                style: poppinsSemiBold,
+                fontSize: getFontSizeSmall(),
+                color: AppColors.kBlueColor,
+                textAlign: TextAlign.left,
+              );
+            }
+            return const SizedBox.shrink();
+          }),
           FromToTimeLine(
             showTo: true,
             pickUpAddress: tripModel?.pickUpAddress,
