@@ -533,7 +533,7 @@ class AuthController extends GetxController {
               AppleIDAuthorizationScopes.fullName,
             ],
           );
-
+logger.d(credential);
       final initialResponse = await ApiService().request(
         endpoint: appleLoginEndPoint,
         method: 'POST',
@@ -543,6 +543,7 @@ class AuthController extends GetxController {
           "token": fcmToken ?? "xzxz",
           "appleToken": credential.identityToken,
           "role": "USER",
+          "fullName": AppleIDAuthorizationScopes.fullName.name
         },
         useAuth: false,
       );
@@ -603,6 +604,7 @@ class AuthController extends GetxController {
             "appleToken": credential.identityToken,
             "role": "USER",
             "phoneNumber": phoneNumber,
+            "fullName": AppleIDAuthorizationScopes.fullName.name
           },
           useAuth: false,
         );
