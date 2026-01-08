@@ -19,7 +19,7 @@ plugins {
 android {
     namespace = "com.dudu.android.app"
     compileSdk = 36
-    ndkVersion = "29.0.14033849"
+//    ndkVersion = "26.1.10909125"
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
@@ -32,10 +32,12 @@ android {
 
     defaultConfig {
         applicationId = "com.dudu.android.app"
-        minSdk = 29
+        minSdk = 24
         targetSdk = 36 // or flutter.targetSdkVersion
         versionCode = 10 // or flutter.versionCode
         versionName = "1.2.1" // or flutter.versionName
+        multiDexEnabled = true  // Add this
+
     }
 
     signingConfigs {
