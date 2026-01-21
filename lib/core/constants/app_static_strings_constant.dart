@@ -322,4 +322,5 @@ class AppStaticStrings {
   static String freeCancellationWithin5Minutes =
       'freeCancellationWithin5Minutes';
   static String arriveToAvoidWaitingFees = 'arriveToAvoidWaitingFees';
+  static String translate = 'translate';
 }

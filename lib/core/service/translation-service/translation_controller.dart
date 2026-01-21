@@ -25,10 +25,12 @@ class TranslationController extends GetxController implements Translations {
     try {
       final enJson = await rootBundle.loadString('assets/lang/en.json');
       final msJson = await rootBundle.loadString('assets/lang/ms.json');
+      final zhJson = await rootBundle.loadString('assets/lang/zh.json');
 
       translations.value = {
         'en_US': Map<String, String>.from(json.decode(enJson)),
         'ms_MY': Map<String, String>.from(json.decode(msJson)),
+        'zh_CN': Map<String, String>.from(json.decode(zhJson)),
       };
 
       isLoading.value = false;
