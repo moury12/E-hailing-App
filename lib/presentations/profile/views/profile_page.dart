@@ -218,6 +218,19 @@ class ProfilePage extends StatelessWidget {
                                     Get.back();
                                   },
                                 ),
+                                languageChangeCardWidget(
+                                  name: "Chinese",
+                                  language: "zh",
+                                  onTap: () async {
+                                    final controller =
+                                        Get.find<TranslationController>();
+                                    await controller.changeLanguage(
+                                      'zh',
+                                      'CN',
+                                    ); // Saves automatically
+                                    Get.back();
+                                  },
+                                ),
                               ],
                             ),
                           ),

@@ -2,6 +2,8 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
+import 'package:e_hailing_app/core/components/custom_text_button.dart';
+import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
@@ -207,25 +209,18 @@ class _ChatMessageCardItemWidgetState extends State<ChatMessageCardItemWidget> {
             ),
           ),
           if (!widget.sendByMe)
-            ButtonTapWidget(
-              onTap: _handleTranslation,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child:
-                    isTranslating
-                        ? SizedBox(
-                          width: 15,
-                          height: 15,
-                          child: DefaultProgressIndicator(),
-                        )
-                        : Icon(
-                          Icons
-                              .language_rounded, // Changed from language for better semantic
-                          size: 15,
-                          color: isTranslated ? Colors.blue : null,
-                        ),
-              ),
-            ),
+            isTranslating
+                ? SizedBox(
+                  width: 15,
+                  height: 15,
+                  child: DefaultProgressIndicator(),
+                )
+                : CustomTextButton(
+                  title: AppStaticStrings.translate.tr,
+                  textColor: isTranslated ? Colors.blue : null,
+                  onPressed: _handleTranslation,
+                  // color: isTranslated ? Colors.blue : null,
+                ),
           // User avatar (only for user messages)
         ],
       ),
