@@ -1,6 +1,4 @@
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
-import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:logger/logger.dart';

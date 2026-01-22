@@ -660,7 +660,7 @@ class HomeController extends GetxController {
         body: {
           "duration": duration,
           "distance": distance,
-          "tripClass": tripClass.value,
+          // "tripClass": tripClass.value,
         },
       );
 
