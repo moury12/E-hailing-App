@@ -15,7 +15,8 @@ class SelectCarITemWidget extends StatelessWidget {
   final Function()? onTap;
   final Color? fillColor;
   final Color? borderColor;
-  final int fare;
+  final double fare;
+  final String? carClass;
 
   const SelectCarITemWidget({
     super.key,
@@ -23,6 +24,7 @@ class SelectCarITemWidget extends StatelessWidget {
     this.fillColor,
     this.borderColor,
     required this.fare,
+    this.carClass,
   });
 
   @override
@@ -46,12 +48,16 @@ class SelectCarITemWidget extends StatelessWidget {
             children: [
               Image.asset(purpleCarImage2, height: 45.w),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomText(text: 'Sedan', style: poppinsSemiBold),
+                  CustomText(
+                    text: carClass?.toUpperCase() ?? 'Dudu Car',
+                    style: poppinsSemiBold,
+                  ),
                   CustomText(text: '4 seat', style: poppinsRegular),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               CustomText(text: 'RM $fare'),
             ],
           ),
@@ -63,9 +69,10 @@ class SelectCarITemWidget extends StatelessWidget {
 
 class CarDetailsCardWidget extends StatelessWidget {
   final Function()? onTap;
-  final int? fare;
+  final double? fare;
+  final String? carClass;
 
-  const CarDetailsCardWidget({super.key, this.onTap, this.fare});
+  const CarDetailsCardWidget({super.key, this.onTap, this.fare, this.carClass});
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +85,7 @@ class CarDetailsCardWidget extends StatelessWidget {
             Get.toNamed(RequestTripPage.routeName);
           },
       fare: fare ?? 12,
+      carClass: carClass,
     );
   }
 }

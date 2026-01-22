@@ -36,7 +36,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> args =
-    (Get.arguments ?? {}) as Map<String, dynamic>;
+        (Get.arguments ?? {}) as Map<String, dynamic>;
 
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.requestYourTrip.tr),
@@ -50,7 +50,8 @@ class _RequestTripPageState extends State<RequestTripPage> {
               Obx(() {
                 return CarDetailsCardWidget(
                   onTap: () {},
-                  fare: HomeController.to.estimatedFare.value,
+                  fare: HomeController.to.selectedFare.value?.finalFare,
+                  carClass: HomeController.to.selectedFare.value?.carClass,
                 );
               }),
               PickupDropLocationWidget(isDisable: true),
@@ -63,7 +64,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
                       fontSize: getFontSizeSemiSmall(),
                     ),
                   ),
-                  CustomText(text: " *", color: Colors.red,)
+                  CustomText(text: " *", color: Colors.red),
                 ],
               ),
               Container(
@@ -91,24 +92,37 @@ class _RequestTripPageState extends State<RequestTripPage> {
                     ),
                     onChanged: (String? newValue) {
                       if (newValue == "coin") {
-                        if((AccountInformationController.to.userModel.value.coins??0).toInt()
-                            >= HomeController.to.estimatedFare.value){
-                          HomeController.to.selectedPaymentMethod.value = newValue!;
+                        if ((AccountInformationController
+                                        .to
+                                        .userModel
+                                        .value
+                                        .coins ??
+                                    0)
+                                .toInt() >=
+                            HomeController.to.estimatedFare.value) {
+                          HomeController.to.selectedPaymentMethod.value =
+                              newValue!;
                           return;
-                        }else{
-                          showCustomSnackbar(title: AppStaticStrings.dCoin.tr, message: "You don't have enough coin to purchase this trip!!");
+                        } else {
+                          showCustomSnackbar(
+                            title: AppStaticStrings.dCoin.tr,
+                            message:
+                                "You don't have enough coin to purchase this trip!!",
+                          );
                           return;
                         }
                       }
                       HomeController.to.selectedPaymentMethod.value = newValue!;
                     },
                     items:
-                    paymentMethodList.map<DropdownMenuItem<String>>((method) {
-                      return DropdownMenuItem<String>(
-                        value: method["value"], // 👈 internal value
-                        child: Text(method["label"]!), // 👈 visible label
-                      );
-                    }).toList(),
+                        paymentMethodList.map<DropdownMenuItem<String>>((
+                          method,
+                        ) {
+                          return DropdownMenuItem<String>(
+                            value: method["value"], // 👈 internal value
+                            child: Text(method["label"]!), // 👈 visible label
+                          );
+                        }).toList(),
                   );
                 }),
               ),
@@ -116,9 +130,9 @@ class _RequestTripPageState extends State<RequestTripPage> {
                 isRequired: true,
                 textEditingController: TextEditingController(
                   text:
-                  args.isNotEmpty
-                      ? (args["distance"] / 1000).toString()
-                      : "",
+                      args.isNotEmpty
+                          ? (args["distance"] / 1000).toString()
+                          : "",
                 ),
                 isEnable: false,
                 borderColor: AppColors.kGreyColor,
@@ -130,34 +144,38 @@ class _RequestTripPageState extends State<RequestTripPage> {
                 //   child: SvgPicture.asset(calenderIcon),
                 // ),
               ),
-             Obx(() {
-               return    HomeController.to.tripType.value == preBook?  ButtonTapWidget(
-                 onTap: () async{
-              String? time= await pickDateTime(context);
-              dateTimeController.text=time??"";
-                 },
-                 child: CustomTextField(borderColor: AppColors.kGreyColor,isRequired: true,
-                   textEditingController: dateTimeController,
-                   fillColor: AppColors.kWhiteColor,
-                   borderRadius: 24.r,
-                   isEnable: false,
-                   hintText: "Select Date Time",
-                   title: AppStaticStrings.pickTime.tr,
-                    prefixIcon: Padding(
-                      padding: padding14,
-                      child: SvgPicture.asset(calenderIcon),
-                    ),
-                  ),
-               ):SizedBox.shrink();
+              Obx(() {
+                return HomeController.to.tripType.value == preBook
+                    ? ButtonTapWidget(
+                      onTap: () async {
+                        String? time = await pickDateTime(context);
+                        dateTimeController.text = time ?? "";
+                      },
+                      child: CustomTextField(
+                        borderColor: AppColors.kGreyColor,
+                        isRequired: true,
+                        textEditingController: dateTimeController,
+                        fillColor: AppColors.kWhiteColor,
+                        borderRadius: 24.r,
+                        isEnable: false,
+                        hintText: "Select Date Time",
+                        title: AppStaticStrings.pickTime.tr,
+                        prefixIcon: Padding(
+                          padding: padding14,
+                          child: SvgPicture.asset(calenderIcon),
+                        ),
+                      ),
+                    )
+                    : SizedBox.shrink();
               }),
               CustomTextField(
                 isEnable: false,
                 isRequired: true,
                 textEditingController: TextEditingController(
                   text:
-                  args.isNotEmpty
-                      ? "${args["duration"].toString()} min"
-                      : "",
+                      args.isNotEmpty
+                          ? "${args["duration"].toString()} min"
+                          : "",
                 ),
                 borderColor: AppColors.kGreyColor,
                 fillColor: AppColors.kWhiteColor,
@@ -188,22 +206,25 @@ class _RequestTripPageState extends State<RequestTripPage> {
               CustomButton(
                 onTap: () {
                   HomeController.to.tripArgs.addAll({
-                    "paymentType": HomeController.to.selectedPaymentMethod
-                        .value,
+                    "paymentType":
+                        HomeController.to.selectedPaymentMethod.value,
                     "coupon": HomeController.to.promoCode.text,
-                    if( HomeController.to.tripType.value == preBook)
-                      "pickUpDate":dateTimeController.text
+                    if (HomeController.to.tripType.value == preBook)
+                      "pickUpDate": dateTimeController.text,
                   });
 
                   // logger.d(args);
                   if (args.isNotEmpty &&
-                      HomeController.to.selectedPaymentMethod.value != null &&(HomeController.to.tripType.value != preBook ||
-                      dateTimeController.text.isNotEmpty)) {
+                      HomeController.to.selectedPaymentMethod.value != null &&
+                      (HomeController.to.tripType.value != preBook ||
+                          dateTimeController.text.isNotEmpty)) {
                     HomeController.to.requestTrip(body: args);
                   } else {
-                    showCustomSnackbar(title: "Alert",
-                        message: "This field are required",
-                        type: SnackBarType.alert);
+                    showCustomSnackbar(
+                      title: "Alert",
+                      message: "This field are required",
+                      type: SnackBarType.alert,
+                    );
                   }
                 },
                 title: AppStaticStrings.confirm.tr,

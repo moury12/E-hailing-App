@@ -200,28 +200,50 @@ class _ChatMessageCardItemWidgetState extends State<ChatMessageCardItemWidget> {
                     left: widget.sendByMe ? 0 : 8,
                     right: widget.sendByMe ? 8 : 0,
                   ),
-                  child: Text(
-                    createdDate,
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  ),
+                  child:
+                      !widget.sendByMe
+                          ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                createdDate,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+
+                              isTranslating
+                                  ? SizedBox(
+                                    width: 15,
+                                    height: 15,
+                                    child: DefaultProgressIndicator(),
+                                  )
+                                  : CustomTextButton(
+                                    fontSize: 12,
+                                    title: AppStaticStrings.translate.tr,
+                                    textColor:
+                                        isTranslated
+                                            ? Colors.grey
+                                            : AppColors.kPrimaryColor,
+                                    onPressed: _handleTranslation,
+                                    // color: isTranslated ? Colors.blue : null,
+                                  ),
+
+                              // User avatar (only for user messages)
+                            ],
+                          )
+                          : Text(
+                            createdDate,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
                 ),
               ],
             ),
           ),
-          if (!widget.sendByMe)
-            isTranslating
-                ? SizedBox(
-                  width: 15,
-                  height: 15,
-                  child: DefaultProgressIndicator(),
-                )
-                : CustomTextButton(
-                  title: AppStaticStrings.translate.tr,
-                  textColor: isTranslated ? Colors.blue : null,
-                  onPressed: _handleTranslation,
-                  // color: isTranslated ? Colors.blue : null,
-                ),
-          // User avatar (only for user messages)
         ],
       ),
     );

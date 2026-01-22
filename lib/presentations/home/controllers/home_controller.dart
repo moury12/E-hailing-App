@@ -26,6 +26,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import '../../../core/api-client/api_service.dart';
 import '../../../core/constants/hive_boxes.dart';
 import '../../navigation/controllers/navigation_controller.dart';
+import '../model/trip_fare_model.dart';
 
 class HomeController extends GetxController {
   static HomeController get to => Get.find();
@@ -43,6 +44,8 @@ class HomeController extends GetxController {
   RxBool mapDragable = false.obs;
   RxBool mapDraging = false.obs;
   RxBool isLoadingPostFair = false.obs;
+  RxList<TripFareModel> estimatedFares = <TripFareModel>[].obs;
+  Rx<TripFareModel?> selectedFare = Rx<TripFareModel?>(null);
   RxInt estimatedFare = 0.obs;
   LatLng? lastPickupLatLng;
   LatLng? lastDropoffLatLng;
@@ -55,7 +58,7 @@ class HomeController extends GetxController {
   RxInt distance = 0.obs;
   RxInt duration = 0.obs;
   RxString tripType = "ride".obs;
-  RxString tripClass = "REGULAR".obs;
+  RxString tripClass = "DUDU".obs;
   List<String> get tripDetailsTabs {
     return [AppStaticStrings.carInfo.tr, AppStaticStrings.driverReview.tr].obs;
   }
@@ -662,7 +665,14 @@ class HomeController extends GetxController {
       );
 
       if (response['success'] == true) {
-        estimatedFare.value = response['data']['estimatedFare'].toInt();
+        estimatedFares.value =
+            (response['data']['estimatedFare'] as List)
+                .map((e) => TripFareModel.fromJson(e))
+                .toList();
+        if (estimatedFares.isNotEmpty) {
+          selectedFare.value = estimatedFares.first;
+          estimatedFare.value = selectedFare.value!.finalFare.toInt();
+        }
         goToSelectEv();
         logger.d(response);
       } else {

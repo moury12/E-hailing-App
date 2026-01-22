@@ -54,10 +54,8 @@ class TripDetailsPage extends StatelessWidget {
                 spacing: 12.h,
                 children: [
                   CarDetailsCardWidget(
-                    fare:
-                        double.parse(
-                          (trip.estimatedFare ?? 0).toString(),
-                        ).toInt(),
+                    fare: (trip.estimatedFare ?? 0).toDouble(),
+                    carClass: trip.driver?.assignedCar?.type,
                   ),
 
                   Container(

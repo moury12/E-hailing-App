@@ -91,7 +91,6 @@ class _HomePageState extends State<HomePage>
     return Stack(
       clipBehavior: Clip.none,
       children: [
-
         Positioned(
           bottom: 0,
           left: 0,
@@ -102,9 +101,10 @@ class _HomePageState extends State<HomePage>
             child: SlideTransition(
               position: offset,
               child: Obx(() {
-                return HomeController.to.tripAcceptedModel.value.sId!=null &&(HomeController.to.previousRoute.value ==
-                            TripDetailsPage.routeName ||
-                        HomeController.to.showTripDetailsCard.value)
+                return HomeController.to.tripAcceptedModel.value.sId != null &&
+                        (HomeController.to.previousRoute.value ==
+                                TripDetailsPage.routeName ||
+                            HomeController.to.showTripDetailsCard.value)
                     ? TripDetailsDestinationCard(
                       tripModel: HomeController.to.tripAcceptedModel.value,
                     )
@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage>
                                   child: GradientProgressIndicator(),
                                 );
                               } else {
-                                return HomeInitialContentWidget();
+                                return HomeWantToGoContentWidget();
                               }
                             }),
 
