@@ -435,25 +435,39 @@ class LocationTrackingService {
     RxInt? duration,
     required LatLng userPosition,
     GoogleMapController? mapController,
-    required PolylineType type, // 👈 Add this
+    required PolylineType type,
   }) async {
     try {
       final apiKey = GoogleClient.googleMapUrl;
+
       final url =
-          'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
+          'https://maps.googleapis.com/maps/api/directions/json?'
+          'origin=${start.latitude},${start.longitude}'
+          '&destination=${end.latitude},${end.longitude}'
+          '&departure_time=now' // Critical for traffic
+          '&traffic_model=best_guess'
+          '&alternatives=true' // Get multiple route options
+          '&mode=driving' // Ensure driving mode
+          '&key=$apiKey';
 
       final response = await http.get(Uri.parse(url));
-      logger.d(url);
-      // logger.d(response.body);
+      logger.d('🔗 URL: $url');
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+
+        // 🟢 Log the full response to see what we're getting
+        logger.d('📦 Full API Response: ${jsonEncode(data)}');
 
         if (data['routes'] != null && data['routes'].isNotEmpty) {
           final points = data['routes'][0]['overview_polyline']['points'];
           List<LatLng> polylinePoints = decodePolyline(points);
           final leg = data['routes'][0]['legs'][0];
 
-          // 🟢 Use color based on route type
+          // 🟢 Log all duration fields
+          logger.d('⏱️ Duration: ${leg['duration']}');
+          logger.d('🚦 Duration in Traffic: ${leg['duration_in_traffic']}');
+
           Color polylineColor;
           switch (type) {
             case PolylineType.driverToPickup:
@@ -475,9 +489,29 @@ class LocationTrackingService {
 
           if (distance != null && duration != null) {
             distance.value = leg['distance']['value'];
-            duration.value = (leg['duration']['value'] / 60).ceil();
+
+            // 🟢 Priority: duration_in_traffic > duration
+            int durationInSeconds;
+            if (leg['duration_in_traffic'] != null) {
+              durationInSeconds = leg['duration_in_traffic']['value'];
+              logger.d(
+                '✅ Using duration_in_traffic: $durationInSeconds seconds',
+              );
+            } else {
+              durationInSeconds = leg['duration']['value'];
+              logger.d(
+                '⚠️ Using regular duration (no traffic): $durationInSeconds seconds',
+              );
+            }
+
+            duration.value = (durationInSeconds / 60).ceil();
+
+            logger.d('🐛 Final Result: {');
+            logger.d('🐛   "duration": ${duration.value},');
+            logger.d('🐛   "distance": ${distance.value}');
+            logger.d('🐛 }');
           }
-          // Don't clear all polylines here - let the caller manage clearing
+
           routePolylines.add(polyline);
           routePolylines.refresh();
 
@@ -496,6 +530,7 @@ class LocationTrackingService {
           return false;
         }
       } else {
+        logger.e('❌ API Error: ${response.statusCode} - ${response.body}');
         showCustomSnackbar(
           title: "Error!!",
           message: "Failed to get route. Please try again.",
@@ -511,7 +546,6 @@ class LocationTrackingService {
       return false;
     }
   }
-
   // Future<bool> drawPolylineBetweenPoints(
   //   LatLng start,
   //   LatLng end,

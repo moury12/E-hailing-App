@@ -293,7 +293,13 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                                 "dropOffLong": dropoff.longitude,
                                 "duration": HomeController.to.duration.value,
                                 "tripType": HomeController.to.tripType.value,
-                                "tripClass": HomeController.to.tripClass.value,
+                                "tripClass":
+                                    HomeController
+                                        .to
+                                        .selectedFare
+                                        .value
+                                        ?.carClass ??
+                                    "DUDU".toUpperCase(),
                                 "distance": HomeController.to.distance.value,
 
                                 // "coupon" will be added later from RequestTripPage

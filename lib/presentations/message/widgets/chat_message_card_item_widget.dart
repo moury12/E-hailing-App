@@ -1,6 +1,5 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_button.dart';
-import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/components/custom_text_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
