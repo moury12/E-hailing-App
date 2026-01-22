@@ -17,6 +17,7 @@ import 'package:e_hailing_app/presentations/auth/views/verify_email_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../core/components/custom_checkbox_widget.dart';
@@ -151,6 +152,13 @@ class _LoginPageState extends State<LoginPage> {
         }),
         space12H,
         SocialMediaAuthWidget(),
+
+        // CustomButton(
+        //   onTap: () {
+        //     Fluttertoast.showToast(msg: "msg",);
+        //   },
+        //   title: 'Go to Home',
+        // ),
       ],
     );
   }

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -479,24 +481,16 @@ void showCustomSnackbar({
       break;
     // TODO: Handle this case.
   }
-  Get.snackbar(
-    title,
-    message,
-
+  // Use Fluttertoast for better reliability on iOS
+  Fluttertoast.showToast(
+    msg: "$title: $message",
+    toastLength: Toast.LENGTH_LONG,
+    // fontAsset: purpleCarImage2,
+    gravity: ToastGravity.BOTTOM,
+    // timeInSecForIosWeb: 3,
     backgroundColor: backgroundColor,
-    padding: const EdgeInsets.all(12),
-    margin: const EdgeInsets.all(12),
-    colorText: textColor,
-    dismissDirection: DismissDirection.horizontal,
-    snackPosition: position,
-    duration: const Duration(seconds: 3),
-    mainButton:
-        noInternet == true
-            ? TextButton(
-              onPressed: retryTap ?? () {},
-              child: CustomText(text: 'Retry', color: AppColors.kWhiteColor),
-            )
-            : null,
+    textColor: textColor,
+    fontSize: 14.sp,
   );
 }
 

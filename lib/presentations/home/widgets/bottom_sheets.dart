@@ -145,16 +145,36 @@ class HomeSelectEvWidget extends StatelessWidget {
         //   },
         // ),
         Obx(() {
-          return SelectCarITemWidget(
-            fare: HomeController.to.estimatedFare.value,
-            onTap: () async {
-              // HomeController.to.resetAllStates();
-              // await Future.delayed(const Duration(seconds: 3));
-              Get.toNamed(
-                RequestTripPage.routeName,
-                arguments: HomeController.to.tripArgs,
-              );
-            },
+          return Column(
+            spacing: 8.h,
+            children:
+                HomeController.to.estimatedFares.map((fareItem) {
+                  return SelectCarITemWidget(
+                    fare: fareItem.finalFare,
+                    carClass: fareItem.carClass,
+                    fillColor:
+                        HomeController.to.selectedFare.value == fareItem
+                            ? AppColors.kPrimaryColor.withValues(alpha: .2)
+                            : AppColors.kWhiteColor,
+                    borderColor:
+                        HomeController.to.selectedFare.value == fareItem
+                            ? AppColors.kPrimaryColor
+                            : AppColors.kWhiteColor,
+                    onTap: () async {
+                      HomeController.to.selectedFare.value = fareItem;
+                      HomeController.to.estimatedFare.value =
+                          fareItem.finalFare.toInt();
+                      HomeController.to.tripClass.value = fareItem.carClass;
+                      HomeController.to.tripArgs['tripClass'] =
+                          fareItem.carClass;
+
+                      Get.toNamed(
+                        RequestTripPage.routeName,
+                        arguments: HomeController.to.tripArgs,
+                      );
+                    },
+                  );
+                }).toList(),
           );
         }),
         space12H,
@@ -495,7 +515,7 @@ class HomeInitialContentWidget extends StatelessWidget {
                 onTap: () {
                   HomeController.to.wantToGo.value = true;
                   HomeController.to.tripType.value = "ride";
-                  HomeController.to.tripClass.value = "REGULAR";
+                  HomeController.to.tripClass.value = "DUDU";
                 },
               ),
 
@@ -513,7 +533,7 @@ class HomeInitialContentWidget extends StatelessWidget {
                 onTap: () {
                   // showComingSoonDialog(context);
                   HomeController.to.tripType.value = "ride";
-                  HomeController.to.tripClass.value = "PREMIUM";
+                  HomeController.to.tripClass.value = "RICH";
                   HomeController.to.wantToGo.value = true;
 
                   // HomeController.to.setPickup.value = true;

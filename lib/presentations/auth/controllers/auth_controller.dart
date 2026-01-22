@@ -326,7 +326,9 @@ class AuthController extends GetxController {
 
         showCustomSnackbar(
           title: 'Failed',
-          message: response['message'],
+          message:
+              response['message']?.toString() ??
+              'Login failed. Please try again.',
           type: SnackBarType.failed,
         );
       }
@@ -533,7 +535,7 @@ class AuthController extends GetxController {
               AppleIDAuthorizationScopes.fullName,
             ],
           );
-logger.d(credential);
+      logger.d(credential);
       final initialResponse = await ApiService().request(
         endpoint: appleLoginEndPoint,
         method: 'POST',
@@ -543,7 +545,7 @@ logger.d(credential);
           "token": fcmToken ?? "xzxz",
           "appleToken": credential.identityToken,
           "role": "USER",
-          "fullName": AppleIDAuthorizationScopes.fullName.name
+          "fullName": AppleIDAuthorizationScopes.fullName.name,
         },
         useAuth: false,
       );
@@ -604,7 +606,7 @@ logger.d(credential);
             "appleToken": credential.identityToken,
             "role": "USER",
             "phoneNumber": phoneNumber,
-            "fullName": AppleIDAuthorizationScopes.fullName.name
+            "fullName": AppleIDAuthorizationScopes.fullName.name,
           },
           useAuth: false,
         );
