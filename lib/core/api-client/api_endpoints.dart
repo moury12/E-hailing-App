@@ -42,3 +42,4 @@ String getChatMessagesEndpoint = 'chat/get-chat-messages';
 String getReferralsEndpoint = 'referrals';
 String getUserCurrentTripEndpoint = 'trip/get-user-current-trip';
 String getCurrentDriverTripEndpoint = 'trip/get-driver-current-trip';
+String payoutRequestEndpoint = 'payout/request';

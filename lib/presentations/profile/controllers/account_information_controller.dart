@@ -28,29 +28,28 @@ class AccountInformationController extends GetxController {
   RxBool isLoadingLogout = false.obs;
   RxBool isLoadingHelpSupport = false.obs;
   RxBool isLoadingDeleteAcc = false.obs;
-
+  RxBool isLoadingCashOut = false.obs;
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
-RxString contactEmail="".obs;
-RxString contactNumber="".obs;
+  RxString contactEmail = "".obs;
+  RxString contactNumber = "".obs;
 
   List<String> get tabs {
-    return
-      [
-        AppStaticStrings.general.tr,
-        AppStaticStrings.driving.tr,
-        AppStaticStrings.document.tr,
-      ].obs;  }
+    return [
+      AppStaticStrings.general.tr,
+      AppStaticStrings.driving.tr,
+      AppStaticStrings.document.tr,
+    ].obs;
+  }
 
   List<String> get tabsForUser {
-    return
-      [
-        AppStaticStrings.general.tr,
-        AppStaticStrings.document.tr,
-      ].obs;}
+    return [AppStaticStrings.general.tr, AppStaticStrings.document.tr].obs;
+  }
+
   var tabContent = <Widget>[].obs;
   RxString profileImgPath = "".obs;
   RxBool isLoadingChangePass = false.obs;
   RxnString pdfError = RxnString();
+
   ///=====================add dynmic name ====================///
   Rx<TextEditingController> nameController = TextEditingController().obs;
 
@@ -62,32 +61,38 @@ RxString contactNumber="".obs;
       TextEditingController().obs;
 
   @override
-  void onInit() async{
+  void onInit() async {
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   getUserProfileRequest(needReinitilaize: true);
     // });
     await Future.wait([
-    getUserProfileRequest(needReinitilaize: true),
+      getUserProfileRequest(needReinitilaize: true),
 
-      getContactSupportRequest()
+      getContactSupportRequest(),
     ]);
-    if(CommonController.to.isDriver.value){
+    if (CommonController.to.isDriver.value) {
       loadPdf();
-      CommonController.to.getReviewListRequest(driverId: userModel.value.sId.toString());
+      CommonController.to.getReviewListRequest(
+        driverId: userModel.value.sId.toString(),
+      );
     }
     super.onInit();
   }
-   PdfControllerPinch? pdfController;
-RxBool pdfLoading =false.obs;
+
+  PdfControllerPinch? pdfController;
+  RxBool pdfLoading = false.obs;
   Future<void> loadPdf() async {
     try {
-      pdfLoading.value=true;
-      final url = "${ApiService().baseUrl}/${userModel.value.assignedCar?.eHailingVehiclePermitPdf}";
+      pdfLoading.value = true;
+      final url =
+          "${ApiService().baseUrl}/${userModel.value.assignedCar?.eHailingVehiclePermitPdf}";
       logger.d("📄 PDF URL: $url");
-if(userModel.value.assignedCar==null||userModel.value.assignedCar?.eHailingVehiclePermitPdf==null||userModel.value.assignedCar!.eHailingVehiclePermitPdf!.isEmpty){
-  pdfError.value = "Failed to load PDF. Please try again.";
-return;
-}
+      if (userModel.value.assignedCar == null ||
+          userModel.value.assignedCar?.eHailingVehiclePermitPdf == null ||
+          userModel.value.assignedCar!.eHailingVehiclePermitPdf!.isEmpty) {
+        pdfError.value = "Failed to load PDF. Please try again.";
+        return;
+      }
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
@@ -96,10 +101,8 @@ return;
         pdfController = PdfControllerPinch(
           document: PdfDocument.openData(bytes),
         );
-
-
       } else {
-        pdfController=null;
+        pdfController = null;
         print("Failed to load PDF: ${response.statusCode}");
         // Get.snackbar("Error", "Failed to load PDF");
       }
@@ -107,10 +110,11 @@ return;
       pdfError.value = "Failed to load PDF. Please try again.";
       print("PDF Load Error: $e");
       // Get.snackbar("Error", "Failed to load PDF");
-    }finally{
-      pdfLoading.value=false;
+    } finally {
+      pdfLoading.value = false;
     }
   }
+
   Future<void> getUserProfileRequest({bool needReinitilaize = false}) async {
     try {
       isLoadingProfile.value = true;
@@ -135,34 +139,37 @@ return;
         if (needReinitilaize) {
           reinitializeProfileControllers();
         }
-        if(userModel.value.role=="USER"&&(userModel.value.nrcStatus==NrcVerificationStatus.unverified.name||userModel.value.nrcStatus==NrcVerificationStatus.rejected.name)){
+        if (userModel.value.role == "USER" &&
+            (userModel.value.nrcStatus ==
+                    NrcVerificationStatus.unverified.name ||
+                userModel.value.nrcStatus ==
+                    NrcVerificationStatus.rejected.name)) {
           Get.to(VerifyIdentityPage());
         }
       } else {
         logger.e(response);
-
       }
     } catch (e) {
       logger.e(e.toString());
-    }finally{
+    } finally {
       isLoadingProfile.value = false;
-
     }
   }
+
   reinitializeProfileControllers() {
-   nameController.value.text =
+    nameController.value.text =
         userModel.value.name ?? AppStaticStrings.noDataFound.tr;
 
     ///=====================add dynmic email ====================///
-   placeController.value.text =
+    placeController.value.text =
         userModel.value.address ?? AppStaticStrings.noDataFound.tr;
 
     ///=====================add dynmic contactNumber ====================///
-   contactNumberController.value.text =
+    contactNumberController.value.text =
         userModel.value.phoneNumber ?? AppStaticStrings.noDataFound.tr;
   }
-  ///------------------------------ get contact method -------------------------///
 
+  ///------------------------------ get contact method -------------------------///
 
   Future<void> getContactSupportRequest() async {
     try {
@@ -175,18 +182,15 @@ return;
       );
       logger.d(response);
       if (response['success'] == true) {
-        contactEmail.value=response['data']['email'];
-        contactNumber.value=response['data']['number'];
-
+        contactEmail.value = response['data']['email'];
+        contactNumber.value = response['data']['number'];
       } else {
         logger.e(response);
-
       }
     } catch (e) {
       logger.e(e.toString());
-    }finally{
+    } finally {
       isLoadingHelpSupport.value = false;
-
     }
   }
 
@@ -200,7 +204,7 @@ return;
         endpoint: deleteProfileEndPoint,
         method: 'DELETE',
         useAuth: true,
-        body: {"email":userModel.value.email,"password": password},
+        body: {"email": userModel.value.email, "password": password},
       );
 
       isLoadingDeleteAcc.value = false;
@@ -212,7 +216,9 @@ return;
         Boxes.getUserRole().delete(role);
         SocketService().disconnect();
 
-        Get.offAllNamed(LoginPage.routeName);         // Get.toNamed(LoginPage.routeName);
+        Get.offAllNamed(
+          LoginPage.routeName,
+        ); // Get.toNamed(LoginPage.routeName);
         showCustomSnackbar(title: 'Success', message: response['message']);
       } else {
         logger.e(response);
@@ -222,7 +228,6 @@ return;
           message: response['message'],
           type: SnackBarType.failed,
         );
-
       }
     } catch (e) {
       isLoadingDeleteAcc.value = false;
@@ -314,6 +319,40 @@ return;
       logger.e(e.toString());
     }
   }
+
+  ///------------------------------  cash out method -------------------------///
+
+  Future<bool> cashOutRequest({required String amount}) async {
+    try {
+      isLoadingCashOut.value = true;
+      final response = await ApiService().request(
+        endpoint: payoutRequestEndpoint,
+        method: 'POST',
+        body: {"amount": amount},
+      );
+      logger.d(response);
+      isLoadingCashOut.value = false;
+      if (response['success'] == true) {
+        showCustomSnackbar(title: 'Success', message: response['message']);
+        return true;
+
+        // Get.back();
+      } else {
+        showCustomSnackbar(
+          title: 'Failed',
+          message: response['message'],
+          type: SnackBarType.failed,
+        );
+        return false;
+      }
+    } catch (e) {
+      isLoadingCashOut.value = false;
+
+      logger.e(e.toString());
+      return false;
+    }
+  }
+
   void onLogout() {
     if (Get.isRegistered<HomeController>()) {
       Get.delete<HomeController>();
@@ -341,11 +380,11 @@ return;
         Boxes.getUserData().delete(roleKey);
         Boxes.getUserRole().delete(role);
         SocketService().disconnect();
-onLogout();
+        onLogout();
         Get.offAllNamed(LoginPage.routeName);
       } else {
         logger.e(response);
-        if(kDebugMode){
+        if (kDebugMode) {
           showCustomSnackbar(
             title: 'Failed',
             message: response['message'],
@@ -357,6 +396,7 @@ onLogout();
       logger.e(e.toString());
     }
   }
+
   //
   // ///------------------------------ delete profile method -------------------------///
   //

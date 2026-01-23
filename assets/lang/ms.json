@@ -269,5 +269,8 @@
   "leaveAReview": "Tinggalkan Ulasan",
   "freeCancellationWithin5Minutes": "Pembatalan Percuma Dalam Masa 5 Minit Tempahan",
   "arriveToAvoidWaitingFees": "Sila Tiba Dalam Masa 5 Minit Untuk Mengelakkan Yuran Menunggu",
-  "translate": "Terjemah"
+  "translate": "Terjemah",
+  "balance": "Baki",
+  "lastPayoutRequest": "Permintaan Pembayaran Terakhir",
+  "cashPayout": "Pembayaran Tunai"
 }

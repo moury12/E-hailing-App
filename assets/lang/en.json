@@ -270,5 +270,8 @@
   "leaveAReview": "Leave a Review",
   "freeCancellationWithin5Minutes": "Free Cancellation Within 5 Minutes of Booking",
   "arriveToAvoidWaitingFees": "Please Arrive Within 5 Minutes to Avoid Waiting Fees",
-  "translate": "Translate"
+  "translate": "Translate",
+  "balance": "Balance",
+  "lastPayoutRequest": "Last Payout Request",
+  "cashPayout": "Cash Payout"
 }

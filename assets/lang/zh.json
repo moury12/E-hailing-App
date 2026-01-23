@@ -270,5 +270,8 @@
     "leaveAReview": "留下评论",
     "freeCancellationWithin5Minutes": "预订后5分钟内免费取消",
     "arriveToAvoidWaitingFees": "请在5分钟内到达以免收取等待费",
-    "translate": "翻译"
+    "translate": "翻译",
+    "balance": "余额",
+    "lastPayoutRequest": "上次付款请求",
+    "cashPayout": "现金付款"
 }

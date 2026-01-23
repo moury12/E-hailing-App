@@ -84,7 +84,8 @@ class AppStaticStrings {
   static String duduCoinWallet = 'duduCoinWallet';
   static String notification = 'notification';
   static String savedLocation = 'savedLocation';
-
+  static String balance = 'balance';
+  static String lastPayoutRequest = 'lastPayoutRequest';
   // More
   static String more = 'more';
   static String avgRating = 'avgRating';
@@ -110,6 +111,7 @@ class AppStaticStrings {
   static String handCash = 'handCash';
   static String dCoin = 'dCoin';
   static String commission = 'commission';
+  static String cashPayout = 'cashPayout';
 
   // Currency
   static String currencyRM = 'currencyRM';
