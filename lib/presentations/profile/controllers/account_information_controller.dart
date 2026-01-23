@@ -11,6 +11,7 @@ import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
+import 'package:e_hailing_app/presentations/profile/model/payout_history_model.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,7 +30,9 @@ class AccountInformationController extends GetxController {
   RxBool isLoadingHelpSupport = false.obs;
   RxBool isLoadingDeleteAcc = false.obs;
   RxBool isLoadingCashOut = false.obs;
+  RxBool isLoadingCashOutHistory = false.obs;
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
+  RxList<PayoutHistoryModel> payoutHistoryList = <PayoutHistoryModel>[].obs;
   RxString contactEmail = "".obs;
   RxString contactNumber = "".obs;
 
@@ -334,6 +337,8 @@ class AccountInformationController extends GetxController {
       isLoadingCashOut.value = false;
       if (response['success'] == true) {
         showCustomSnackbar(title: 'Success', message: response['message']);
+        getPayoutHistoryRequest(); // Refresh history
+        getUserProfileRequest(); // Refresh balance if needed, though mostly separate
         return true;
 
         // Get.back();
@@ -350,6 +355,31 @@ class AccountInformationController extends GetxController {
 
       logger.e(e.toString());
       return false;
+    }
+  }
+
+  ///------------------------------  cash out history method -------------------------///
+
+  Future<void> getPayoutHistoryRequest() async {
+    try {
+      isLoadingCashOutHistory.value = true;
+      final response = await ApiService().request(
+        endpoint: payoutHistoryEndpoint,
+        method: 'GET',
+      );
+      logger.d(response);
+      if (response['success'] == true) {
+        List<dynamic> data = response['data']['result'];
+        payoutHistoryList.assignAll(
+          data.map((e) => PayoutHistoryModel.fromJson(e)).toList(),
+        );
+      } else {
+        logger.e(response);
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    } finally {
+      isLoadingCashOutHistory.value = false;
     }
   }
 

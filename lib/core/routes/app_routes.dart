@@ -22,6 +22,7 @@ import 'package:e_hailing_app/presentations/save-location/views/add_place_page.d
 import 'package:e_hailing_app/presentations/splash/views/splash_page.dart';
 import 'package:e_hailing_app/presentations/trip/views/request_trip_page.dart';
 import 'package:e_hailing_app/presentations/trip/views/trip_details_page.dart';
+import 'package:e_hailing_app/presentations/profile/views/cash_payout_page.dart';
 import 'package:get/get.dart';
 
 import '../../presentations/save-location/views/saved_location_page.dart';
@@ -104,7 +105,8 @@ class AppRoutes {
       name: AccountInformationPage.routeName,
       page: () => AccountInformationPage(),
       binding: AccountInformationBinding(),
-    ),GetPage(
+    ),
+    GetPage(
       name: FeedbackPage.routeName,
       page: () => FeedbackPage(),
       binding: AccountInformationBinding(),
@@ -148,6 +150,11 @@ class AppRoutes {
       name: AddPlacePage.routeName,
       page: () => AddPlacePage(),
       binding: SaveLocationBinding(),
+    ),
+    GetPage(
+      name: CashPayoutPage.routeName,
+      page: () => CashPayoutPage(),
+      binding: AccountInformationBinding(),
     ),
   ];
 }
