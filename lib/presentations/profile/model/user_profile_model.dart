@@ -1,4 +1,3 @@
-
 class UserProfileModel {
   String? sId;
   AuthId? authId;
@@ -29,6 +28,9 @@ class UserProfileModel {
   List<dynamic>? nrcImages;
 
   num? coins;
+  num? commission;
+  num? balance;
+  String? lastPayoutRequest;
   int? iV;
   int? outstandingFee;
   bool? isAvailable;
@@ -65,6 +67,9 @@ class UserProfileModel {
     this.updatedAt,
     this.assignedCar,
     this.iV,
+    this.commission,
+    this.balance,
+    this.lastPayoutRequest,
     this.outstandingFee,
     this.isAvailable,
   });
@@ -73,10 +78,10 @@ class UserProfileModel {
     sId = json['_id'];
     authId = json['authId'] != null ? AuthId.fromJson(json['authId']) : null;
     name = json['name'];
-    referredBy= json['referredBy'];
-    referredCode= json['referredCode'];
-    referralCode= json['referralCode'];
-    completedReferralCount= json['completedReferralCount'];
+    referredBy = json['referredBy'];
+    referredCode = json['referredCode'];
+    referralCode = json['referralCode'];
+    completedReferralCount = json['completedReferralCount'];
     email = json['email'];
     role = json['role'];
     img = json['profile_image'];
@@ -84,12 +89,13 @@ class UserProfileModel {
     address = json['address'];
     isOnline = json['isOnline'];
     identificationNum = json['identification_number'];
-    nrcImages = json['nrc_images']??<String>[];
+    nrcImages = json['nrc_images'] ?? <String>[];
     isOnline = json['isOnline'];
     nrcStatus = json['nrc_verification_status'];
-    assignedCar = json['assignedCar'] != null
-        ? AssignedCar.fromJson(json['assignedCar'])
-        : null;
+    assignedCar =
+        json['assignedCar'] != null
+            ? AssignedCar.fromJson(json['assignedCar'])
+            : null;
     locationCoordinates =
         json['locationCoordinates'] != null
             ? LocationCoordinates.fromJson(json['locationCoordinates'])
@@ -104,6 +110,9 @@ class UserProfileModel {
     userAccountStatus = json['userAccountStatus'];
     createdAt = json['createdAt'];
     coins = json['coins'];
+    commission = json['commission'];
+    balance = json['balance'];
+    lastPayoutRequest = json['lastPayoutRequest'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
     outstandingFee = json['outstandingFee'];
@@ -139,6 +148,9 @@ class UserProfileModel {
     }
     data['drivingLicenseNo'] = drivingLicenseNo;
     data['licenseType'] = licenseType;
+    data['commission'] = commission;
+    data['balance'] = balance;
+    data['lastPayoutRequest'] = lastPayoutRequest;
     data['licenseExpiry'] = licenseExpiry;
     data['id_or_passport_image'] = idOrPassportImage;
     data['psv_license_image'] = psvLicenseImage;
@@ -153,6 +165,7 @@ class UserProfileModel {
     return data;
   }
 }
+
 class AssignedCar {
   String? sId;
   String? brand;
@@ -177,29 +190,30 @@ class AssignedCar {
   String? assignedDriver;
   String? eHailingVehiclePermitPdf;
 
-  AssignedCar(
-      {this.sId,
-        this.brand,
-        this.model,
-        this.type,
-        this.seats,
-        this.evpNumber,
-        this.evpExpiry,
-        this.carNumber,
-        this.color,
-        this.carLicensePlate,
-        this.vin,
-        this.insuranceStatus,
-        this.registrationDate,
-        this.carImage,
-        this.carGrantImage,
-        this.carInsuranceImage,
-        this.isAssigned,
-        this.createdAt,
-        this.updatedAt,
-        this.iV,
-        this.assignedDriver,
-        this.eHailingVehiclePermitPdf});
+  AssignedCar({
+    this.sId,
+    this.brand,
+    this.model,
+    this.type,
+    this.seats,
+    this.evpNumber,
+    this.evpExpiry,
+    this.carNumber,
+    this.color,
+    this.carLicensePlate,
+    this.vin,
+    this.insuranceStatus,
+    this.registrationDate,
+    this.carImage,
+    this.carGrantImage,
+    this.carInsuranceImage,
+    this.isAssigned,
+    this.createdAt,
+    this.updatedAt,
+    this.iV,
+    this.assignedDriver,
+    this.eHailingVehiclePermitPdf,
+  });
 
   AssignedCar.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -253,6 +267,7 @@ class AssignedCar {
     return data;
   }
 }
+
 class AuthId {
   String? sId;
   String? name;

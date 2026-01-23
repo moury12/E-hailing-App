@@ -69,6 +69,7 @@ String totalEarnIcon = 'assets/icons/total_earn_icon.svg';
 String tripTodayIcon = 'assets/icons/trip_today_icon.svg';
 String uploadIcon = 'assets/icons/upload_icon.svg';
 String arrowCircleIcon = 'assets/icons/arrow_circle_icon.svg';
+String cashPaymentIcon = 'assets/icons/cash_payment_icon.svg';
 
 // Images
 String carImage = 'assets/images/car_img.svg';

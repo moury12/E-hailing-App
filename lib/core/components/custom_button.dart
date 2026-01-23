@@ -27,6 +27,7 @@ class CustomButton extends StatelessWidget {
     this.radius,
     this.isLoading = false,
     this.padding,
+    this.isExpanded = false,
   });
 
   final double? height;
@@ -35,6 +36,7 @@ class CustomButton extends StatelessWidget {
   final Color? fillColor;
   final Color borderColor;
   final bool? isLoading;
+  final bool isExpanded;
 
   final Color textColor;
 
@@ -67,7 +69,7 @@ class CustomButton extends StatelessWidget {
         alignment: Alignment.center,
         height: height,
         padding: padding ?? padding12,
-        width: width,
+        width: isExpanded ? width : null,
         decoration: BoxDecoration(
           border: Border.all(color: borderColor),
           borderRadius: BorderRadius.circular(radius ?? 24.r),
