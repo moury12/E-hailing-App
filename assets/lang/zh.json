@@ -273,5 +273,13 @@
     "translate": "翻译",
     "balance": "余额",
     "lastPayoutRequest": "上次付款请求",
-    "cashPayout": "现金付款"
+    "cashPayout": "现金付款",
+    "requestPayout": "请求付款",
+    "payoutHistory": "付款历史",
+    "status": "状态",
+    "amount": "金额",
+    "date": "日期",
+    "enterAmount": "输入金额",
+    "paymentMethod": "付款方式",
+    "cashOut": "提现"
 }

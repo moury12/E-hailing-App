@@ -62,21 +62,21 @@ class RowCallChatDetailsButton extends StatelessWidget {
         ),
         showLastButton == true
             ? Expanded(
-          child: CustomButton(
-            padding: padding8,
+              child: CustomButton(
+                padding: padding8,
 
-            onTap:
-            onTap ??
+                onTap:
+                    onTap ??
                     () {
-                  HomeController.to.updatePreviousRoute(Get.currentRoute);
-                  Get.toNamed(
-                    NavigationPage.routeName,
-                    arguments: pickupDestination,
-                  );
-                },
-            title: lastItemName ?? AppStaticStrings.track.tr,
-          ),
-        )
+                      HomeController.to.updatePreviousRoute(Get.currentRoute);
+                      Get.toNamed(
+                        NavigationPage.routeName,
+                        arguments: pickupDestination,
+                      );
+                    },
+                title: lastItemName ?? AppStaticStrings.track.tr,
+              ),
+            )
             : SizedBox.shrink(),
       ],
     );
@@ -87,31 +87,29 @@ class CancelTripButtonWidget extends StatelessWidget {
   final Function()? onSubmit;
   final RxBool? isLoading;
 
-  const CancelTripButtonWidget(
-      {super.key, this.onSubmit,  this.isLoading});
+  const CancelTripButtonWidget({super.key, this.onSubmit, this.isLoading});
 
   @override
   Widget build(BuildContext context) {
-
-
-      if (isLoading == null) {
-        return CustomButton(
-          onTap: () => tripCancellationDialog(onSubmit: onSubmit),
-          title: AppStaticStrings.cancelTrip.tr,
-        );
-      }
-
-      return Obx(() {
-        final loading = isLoading!.value;
-        return CustomButton(
-          onTap: loading ? () {} : () => tripCancellationDialog(onSubmit: onSubmit),
-          title: loading
-              ? AppStaticStrings.tripLoading.tr
-              : AppStaticStrings.cancelTrip.tr,
-        );
-      });
+    if (isLoading == null) {
+      return CustomButton(
+        onTap: () => tripCancellationDialog(context, onSubmit: onSubmit),
+        title: AppStaticStrings.cancelTrip.tr,
+      );
     }
 
-
+    return Obx(() {
+      final loading = isLoading!.value;
+      return CustomButton(
+        onTap:
+            loading
+                ? () {}
+                : () => tripCancellationDialog(context, onSubmit: onSubmit),
+        title:
+            loading
+                ? AppStaticStrings.tripLoading.tr
+                : AppStaticStrings.cancelTrip.tr,
+      );
+    });
   }
-
+}

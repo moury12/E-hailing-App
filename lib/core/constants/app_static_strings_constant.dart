@@ -112,6 +112,13 @@ class AppStaticStrings {
   static String dCoin = 'dCoin';
   static String commission = 'commission';
   static String cashPayout = 'cashPayout';
+  static String requestPayout = 'requestPayout';
+  static String payoutHistory = 'payoutHistory';
+  static String status = 'status';
+  static String amount = 'amount';
+  static String date = 'date';
+  static String enterAmount = 'enterAmount';
+  static String cashOut = 'cashOut';
 
   // Currency
   static String currencyRM = 'currencyRM';

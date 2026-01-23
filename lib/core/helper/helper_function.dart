@@ -69,41 +69,52 @@ launchGoogleMapsApp(
   }
 }
 
-Future<dynamic> tripCancellationDialog({
+Future<dynamic> tripCancellationDialog(
+  BuildContext context, {
   Function()? onSubmit,
   bool? isLoading,
 }) {
-  return Get.defaultDialog(
-    backgroundColor: AppColors.kWhiteColor,
-    radius: 8.r,
-    title: AppStaticStrings.tripCancellationTitle.tr,
-    titleStyle: poppinsSemiBold.copyWith(
-      color: AppColors.kTextDarkBlueColor,
-      fontSize: getFontSizeExtraLarge(),
-    ),
-    titlePadding: padding12.copyWith(bottom: 0),
-    contentPadding: EdgeInsets.zero,
-    content: Column(
-      children: [
-        Divider(color: AppColors.kLightBlackColor),
-        ...List.generate(
-          CommonController.to.tripCancellationList.length,
-          (index) => TripCancellationReasonCardItem(index: index),
-        ),
-        Padding(
-          padding: padding12,
-          child: CustomButton(
-            isLoading: isLoading,
-            onTap:
-                onSubmit ??
-                () {
-                  Get.back();
-                },
-            title: AppStaticStrings.submit.tr,
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        backgroundColor: AppColors.kWhiteColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+        title: CustomText(
+          text: AppStaticStrings.tripCancellationTitle.tr,
+          style: poppinsSemiBold.copyWith(
+            color: AppColors.kTextDarkBlueColor,
+            fontSize: getFontSizeExtraLarge(),
           ),
         ),
-      ],
-    ),
+        titlePadding: padding12.copyWith(bottom: 0),
+        contentPadding: EdgeInsets.zero,
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Divider(color: AppColors.kLightBlackColor),
+              ...List.generate(
+                CommonController.to.tripCancellationList.length,
+                (index) => TripCancellationReasonCardItem(index: index),
+              ),
+              Padding(
+                padding: padding12,
+                child: CustomButton(
+                  isLoading: isLoading,
+                  onTap:
+                      onSubmit ??
+                      () {
+                        Navigator.pop(context);
+                      },
+                  title: AppStaticStrings.submit.tr,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
   );
 }
 

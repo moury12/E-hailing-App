@@ -1,8 +1,6 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
-import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
 import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
-import 'package:e_hailing_app/core/components/custom_textfield.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
@@ -28,6 +26,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/components/custom_button_tap.dart';
+import 'package:e_hailing_app/presentations/profile/views/cash_payout_page.dart';
 import '../../../core/constants/image_constant.dart';
 import '../widgets/profile_action_item_widget.dart';
 
@@ -41,7 +40,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  TextEditingController amountController = TextEditingController(text: '10');
   @override
   Widget build(BuildContext context) {
     return CustomRefreshIndicator(
@@ -170,74 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         img: cashPaymentIcon,
                         title: AppStaticStrings.cashPayout.tr,
                         onTap: () {
-                          showDialog(
-                            context: context,
-                            builder:
-                                (context) => AlertDialog(
-                                  content: Column(
-                                    spacing: 8,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      CustomText(
-                                        text: 'Cash Payout',
-                                        fontSize: getFontSizeDefault(),
-                                        color: AppColors.kTextDarkBlueColor,
-                                      ),
-                                      CustomTextField(
-                                        textEditingController: amountController,
-                                        hintText: 'Enter amount',
-                                        keyboardType: TextInputType.number,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          CustomButton(
-                                            radius: 8,
-                                            padding: padding8,
-                                            onTap: () => Navigator.pop(context),
-                                            title: 'Cancel',
-                                            isExpanded: false,
-                                            fontSize: 12.sp,
-                                            fillColor: Colors.transparent,
-                                            borderColor:
-                                                AppColors.kPrimaryColor,
-                                            textColor: AppColors.kPrimaryColor,
-                                          ),
-
-                                          Obx(
-                                            () => CustomButton(
-                                              radius: 8,
-                                              padding: padding8,
-                                              isLoading:
-                                                  AccountInformationController
-                                                      .to
-                                                      .isLoadingCashOut
-                                                      .value,
-                                              onTap: () async {
-                                                bool isSuccess =
-                                                    await AccountInformationController
-                                                        .to
-                                                        .cashOutRequest(
-                                                          amount:
-                                                              amountController
-                                                                  .text,
-                                                        );
-                                                if (isSuccess) {
-                                                  Navigator.pop(context);
-                                                }
-                                              },
-                                              fontSize: 12.sp,
-                                              title: 'Cash Out',
-                                              isExpanded: false,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                          );
+                          Get.toNamed(CashPayoutPage.routeName);
                           // Get.toNamed(EarningsPage.routeName);
                         },
                       ),

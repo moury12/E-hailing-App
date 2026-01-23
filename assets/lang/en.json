@@ -273,5 +273,13 @@
   "translate": "Translate",
   "balance": "Balance",
   "lastPayoutRequest": "Last Payout Request",
-  "cashPayout": "Cash Payout"
+  "cashPayout": "Cash Payout",
+  "requestPayout": "Request Payout",
+  "payoutHistory": "Payout History",
+  "status": "Status",
+  "amount": "Amount",
+  "date": "Date",
+  "enterAmount": "Enter amount",
+  "paymentMethod": "Payment Method",
+  "cashOut": "Cash Out"
 }

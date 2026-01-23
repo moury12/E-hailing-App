@@ -272,5 +272,13 @@
   "translate": "Terjemah",
   "balance": "Baki",
   "lastPayoutRequest": "Permintaan Pembayaran Terakhir",
-  "cashPayout": "Pembayaran Tunai"
+  "cashPayout": "Pembayaran Tunai",
+  "requestPayout": "Minta Pembayaran",
+  "payoutHistory": "Sejarah Pembayaran",
+  "status": "Status",
+  "amount": "Jumlah",
+  "date": "Tarikh",
+  "enterAmount": "Masukkan jumlah",
+  "paymentMethod": "Kaedah Pembayaran",
+  "cashOut": "Tunai Keluar"
 }
