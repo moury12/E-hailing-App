@@ -438,13 +438,7 @@ class HomeController extends GetxController {
               tripAcceptedModel.value.driver?.assignedCar?.sId.toString(),
             );
           }
-          tripAcceptedModel.value = TripResponseModel();
-          resetAllStates();
-          dropOffLocationController.value.clear();
-          dropoffLatLng.value = null;
-          NavigationController.to.clearPolyline();
-          driverPosition.value = null;
-          showTripDetailsCard.value = false;
+          _clearTripData();
 
           Get.offAllNamed(
             NavigationPage.routeName,
@@ -737,19 +731,28 @@ class HomeController extends GetxController {
           driverId: tripAcceptedModel.value.driver!.sId.toString(),
         );
       } else {
-        isLoadingUserCurrentTrip.value = false;
-
-        // logger.e(response);
+        _clearTripData();
         if (kDebugMode) {
           showCustomSnackbar(title: 'Failed', message: response['message']);
         }
       }
     } catch (e) {
-      isLoadingUserCurrentTrip.value = false;
+      _clearTripData();
       logger.e(e.toString());
     } finally {
       isLoadingUserCurrentTrip.value = false;
     }
+  }
+
+  void _clearTripData() {
+    tripAcceptedModel.value = TripResponseModel();
+    driverStatus.value = "";
+    resetAllStates();
+    dropOffLocationController.value.clear();
+    dropoffLatLng.value = null;
+    NavigationController.to.clearPolyline();
+    driverPosition.value = null;
+    showTripDetailsCard.value = false;
   }
 
   // Future<String> getPlaceNameFromGoogle(LatLng position) async {

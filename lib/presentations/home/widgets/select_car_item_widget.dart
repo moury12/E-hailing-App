@@ -47,17 +47,21 @@ class SelectCarITemWidget extends StatelessWidget {
             spacing: 12.w,
             children: [
               Image.asset(purpleCarImage2, height: 45.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    text: carClass?.toUpperCase() ?? 'Dudu Car',
-                    style: poppinsSemiBold,
-                  ),
-                  CustomText(text: '4 seat', style: poppinsRegular),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      text: carClass?.toUpperCase() ?? 'Dudu Car',
+                      style: poppinsSemiBold,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    CustomText(text: '4 seat', style: poppinsRegular),
+                  ],
+                ),
               ),
-              const Spacer(),
+              // const Spacer(),
               CustomText(text: 'RM $fare'),
             ],
           ),

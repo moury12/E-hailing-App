@@ -52,26 +52,28 @@ class CustomNetworkImage extends StatelessWidget {
               ? () {
                 Get.dialog(
                   Dialog(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(
-                              CupertinoIcons.multiply_circle_fill,
-                              color: AppColors.kPrimaryColor,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(
+                                CupertinoIcons.multiply_circle_fill,
+                                color: AppColors.kPrimaryColor,
+                              ),
                             ),
                           ),
-                        ),
-                        CachedNetworkImage(
-                          imageUrl: imageUrl,
-                          fit: BoxFit.fitWidth,
-                        ),
-                      ],
+                          CachedNetworkImage(
+                            imageUrl: imageUrl,
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -138,13 +140,20 @@ class CustomNetworkImage extends StatelessWidget {
     );
   }
 }
+
 class ListOfImages extends StatelessWidget {
   final RxList<String> images;
-  final bool isNetworkImage ;
+  final bool isNetworkImage;
   final double? size;
   final bool? isShowCross;
 
-  const ListOfImages({super.key, required this.images,  this.isNetworkImage =true, this.size, this.isShowCross =true});
+  const ListOfImages({
+    super.key,
+    required this.images,
+    this.isNetworkImage = true,
+    this.size,
+    this.isShowCross = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -154,47 +163,49 @@ class ListOfImages extends StatelessWidget {
         return images.isEmpty
             ? SizedBox.shrink()
             : Wrap(
-          spacing: 8.w,
-          runSpacing: 8.w,
-          children: List.generate(images.length, (index) {
-            final img = images[index];
-            return Stack(
-              children: [
-                isNetworkImage
-                    ? CustomNetworkImage(
-                  imageUrl: "${ApiService().baseUrl}/$img",
-                  height:size?? 90.w,
-                  width:size?? 90.w,
-                )
-                    : Image.file(
-                  File(img),
-                  height:size?? 90.w,
-                  width:size?? 90.w,
-                  fit: BoxFit.cover,
-                ),
-                isShowCross==true?     Positioned(
-                  top: -10,
-                  right: -10,
+              spacing: 8.w,
+              runSpacing: 8.w,
+              children: List.generate(images.length, (index) {
+                final img = images[index];
+                return Stack(
+                  children: [
+                    isNetworkImage
+                        ? CustomNetworkImage(
+                          imageUrl: "${ApiService().baseUrl}/$img",
+                          height: size ?? 90.w,
+                          width: size ?? 90.w,
+                        )
+                        : Image.file(
+                          File(img),
+                          height: size ?? 90.w,
+                          width: size ?? 90.w,
+                          fit: BoxFit.cover,
+                        ),
+                    isShowCross == true
+                        ? Positioned(
+                          top: -10,
+                          right: -10,
 
-                  child: IconButton(
-                    onPressed: () {
-                      removeImage(uploadImages: images, imagePath: img);
-                      // if (isNetworkImage) {
-                      //   SellController.to.removeImgList.add(img);
-                      //   logger.d( SellController.to.removeImgList.length);
-                      // }
-                    },
-                    icon: Icon(
-                      CupertinoIcons.multiply_circle_fill,
-                      size: 20,
-                      color: AppColors.kPrimaryColor,
-                    ),
-                  ),
-                ):SizedBox.shrink(),
-              ],
+                          child: IconButton(
+                            onPressed: () {
+                              removeImage(uploadImages: images, imagePath: img);
+                              // if (isNetworkImage) {
+                              //   SellController.to.removeImgList.add(img);
+                              //   logger.d( SellController.to.removeImgList.length);
+                              // }
+                            },
+                            icon: Icon(
+                              CupertinoIcons.multiply_circle_fill,
+                              size: 20,
+                              color: AppColors.kPrimaryColor,
+                            ),
+                          ),
+                        )
+                        : SizedBox.shrink(),
+                  ],
+                );
+              }),
             );
-          }),
-        );
       }),
     );
   }

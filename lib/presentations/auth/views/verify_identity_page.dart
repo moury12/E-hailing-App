@@ -52,15 +52,14 @@ class _VerifyIdentityPageState extends State<VerifyIdentityPage> {
           style: poppinsMedium,
           fontSize: getFontSizeSemiSmall(),
         ),
-        ListOfImages(
-          images: CommonController.to.images,
-          isNetworkImage: false,
-        ),
+        ListOfImages(images: CommonController.to.images, isNetworkImage: false),
         CustomButton(
           onTap: () {
-            pickImages(allowMultiple: true,
-                uploadImages: CommonController.to.images,
-                imageQuality: 23);
+            pickImages(
+              allowMultiple: true,
+              uploadImages: CommonController.to.images,
+              imageQuality: 23,
+            );
           },
           radius: 4.r,
           fillColor: AppColors.kLightBlueColor,
@@ -79,18 +78,23 @@ class _VerifyIdentityPageState extends State<VerifyIdentityPage> {
             isLoading: CommonController.to.isVerifingIdentity.value,
             onTap: () async {
               NrcVerificationStatus status = await CommonController.to
-                  .verifyUserIdentity(id: passportController.text,
-                  images: CommonController.to.images,
-                  token:token!=null?token: Boxes.getUserData().get(tokenKey));
+                  .verifyUserIdentity(
+                    id: passportController.text,
+                    images: CommonController.to.images,
+                    token:
+                        token != null
+                            ? token
+                            : Boxes.getUserData().get(tokenKey),
+                  );
               if (status == NrcVerificationStatus.submitted ||
                   status == NrcVerificationStatus.accepted) {
-               if(token==null) {
+                CommonController.to.images.clear();
+                if (token == null) {
                   Get.offAndToNamed(NavigationPage.routeName);
-                }else{
-                 Get.offAllNamed(LoginPage.routeName);
-               }
+                } else {
+                  Get.offAllNamed(LoginPage.routeName);
+                }
               }
-
             },
             title: AppStaticStrings.confirm.tr,
           );

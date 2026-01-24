@@ -195,7 +195,7 @@ class _ChatMessageCardItemWidgetState extends State<ChatMessageCardItemWidget> {
                 // Timestamp
                 Padding(
                   padding: EdgeInsets.only(
-                    top: 4,
+                    top: widget.sendByMe ? 4 : 0,
                     left: widget.sendByMe ? 0 : 8,
                     right: widget.sendByMe ? 8 : 0,
                   ),
@@ -218,15 +218,19 @@ class _ChatMessageCardItemWidgetState extends State<ChatMessageCardItemWidget> {
                                     height: 15,
                                     child: DefaultProgressIndicator(),
                                   )
-                                  : CustomTextButton(
-                                    fontSize: 12,
-                                    title: AppStaticStrings.translate.tr,
-                                    textColor:
-                                        isTranslated
-                                            ? Colors.grey
-                                            : AppColors.kPrimaryColor,
-                                    onPressed: _handleTranslation,
-                                    // color: isTranslated ? Colors.blue : null,
+                                  : SizedBox(
+                                    height: 30.h,
+                                    child: CustomTextButton(
+                                      padding: padding6,
+                                      fontSize: 12,
+                                      title: AppStaticStrings.translate.tr,
+                                      textColor:
+                                          isTranslated
+                                              ? Colors.grey
+                                              : AppColors.kPrimaryColor,
+                                      onPressed: _handleTranslation,
+                                      // color: isTranslated ? Colors.blue : null,
+                                    ),
                                   ),
 
                               // User avatar (only for user messages)

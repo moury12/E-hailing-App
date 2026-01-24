@@ -18,13 +18,17 @@ import 'package:e_hailing_app/presentations/splash/controllers/boundary_controll
 import 'package:e_hailing_app/presentations/splash/model/announcment_model.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter/material.dart';
 
 import '../../../core/api-client/api_endpoints.dart';
+import '../../../core/components/custom_button.dart';
+import '../../../core/constants/custom_text.dart';
 import '../../../core/utils/google_map_api_key.dart';
 
 class CommonController extends GetxController {
@@ -41,6 +45,7 @@ class CommonController extends GetxController {
   Rx<AnnouncementModel> announcement = AnnouncementModel().obs;
   RxList<TripCancellationModel> tripCancellationList =
       <TripCancellationModel>[].obs;
+  RxBool hasShownAnnouncement = false.obs;
 
   void updateTripCancellationList() {
     tripCancellationList.value =
@@ -153,6 +158,7 @@ class CommonController extends GetxController {
       logger.d(response);
       if (response['success'] == true) {
         announcement.value = AnnouncementModel.fromJson(response['data']);
+        _showAnnouncementDialog();
       } else {
         logger.e(response);
         if (kDebugMode) {
@@ -167,6 +173,22 @@ class CommonController extends GetxController {
       logger.e(e.toString());
     } finally {
       isLoadingAnnouncement.value = false;
+    }
+  }
+
+  void _showAnnouncementDialog() {
+    if (announcement.value.isActive == true && !hasShownAnnouncement.value) {
+      hasShownAnnouncement.value = true;
+      Get.dialog(
+        AlertDialog(
+          title: CustomText(text: announcement.value.title ?? ""),
+          content: Obx(() {
+            return isLoadingAnnouncement.value
+                ? DefaultProgressIndicator()
+                : HtmlWidget('''${announcement.value.description}''');
+          }),
+        ),
+      );
     }
   }
 

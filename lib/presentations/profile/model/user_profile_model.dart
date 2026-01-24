@@ -229,7 +229,10 @@ class AssignedCar {
     vin = json['vin'];
     insuranceStatus = json['insuranceStatus'];
     registrationDate = json['registrationDate'];
-    carImage = json['car_image'].cast<String>();
+    carImage =
+        json['car_image'] != null
+            ? json['car_image'].cast<String>()
+            : <String>[];
     carGrantImage = json['car_grant_image'];
     carInsuranceImage = json['car_insurance_image'];
     isAssigned = json['isAssigned'];
@@ -330,7 +333,10 @@ class LocationCoordinates {
 
   LocationCoordinates.fromJson(Map<String, dynamic> json) {
     type = json['type'];
-    coordinates = json['coordinates'].cast<double>();
+    coordinates =
+        json['coordinates'] != null
+            ? json['coordinates'].cast<double>()
+            : <double>[];
   }
 
   Map<String, dynamic> toJson() {

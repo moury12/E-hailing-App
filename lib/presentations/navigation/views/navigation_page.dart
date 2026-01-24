@@ -1,6 +1,4 @@
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
-import 'package:e_hailing_app/core/components/custom_button.dart';
-import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
@@ -10,7 +8,6 @@ import 'package:e_hailing_app/presentations/notification/views/notification_page
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 
 import '../../../core/components/custom_button_tap.dart';
@@ -31,7 +28,7 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage>
-    /*with AutomaticKeepAliveClientMixin*/ {
+/*with AutomaticKeepAliveClientMixin*/ {
   late Widget _persistentMapWidget;
 
   @override
@@ -40,112 +37,86 @@ class _NavigationPageState extends State<NavigationPage>
 
     CommonController.to.fetchCurrentLocationMethod();
 
-    _persistentMapWidget = CommonController.to.isDriver.value
-        ? GoogleMapWidgetForDriver()
-        : GoogleMapWidgetForUser();
+    _persistentMapWidget =
+        CommonController.to.isDriver.value
+            ? GoogleMapWidgetForDriver()
+            : GoogleMapWidgetForUser();
 
     // 🌟 Move dialog logic to onReady to ensure widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _setupAnnouncementDialog();
       _setupRatingDialog();
     });
-  }
-
-  void _setupAnnouncementDialog() {
-    // Reactive listener — triggers when announcement changes
-    ever(CommonController.to.announcement, (announcement) {
-      if (announcement.isActive == true) {
-        Get.dialog(
-          AlertDialog(
-            title: CustomText(text: announcement.title ?? ""),
-            content: Obx(() {
-              return CommonController.to.isLoadingAnnouncement.value
-                  ? DefaultProgressIndicator()
-                  : HtmlWidget('''${announcement.description}''');
-            }),
-          ),
-        );
-      }
-    });
-
-    // In case it's already active at startup
-    if (CommonController.to.announcement.value.isActive == true) {
-      Get.dialog(
-        AlertDialog(
-          title: CustomText(
-            text: CommonController.to.announcement.value.title ?? "",
-          ),
-          content: Obx(() {
-            return CommonController.to.isLoadingAnnouncement.value
-                ? DefaultProgressIndicator()
-                : HtmlWidget(
-              '''${CommonController.to.announcement.value.description}''',
-            );
-          }),
-        ),
-      );
-    }
   }
 
   void _setupRatingDialog() {
     if (!CommonController.to.isDriver.value &&
         Boxes.getRattingData().get("rating") != null) {
-      showRatingDialogs(
-        carId: Boxes.getRattingData().get("rating"),
-      );
+      showRatingDialogs(carId: Boxes.getRattingData().get("rating"));
     }
   }
 
   PreferredSizeWidget? getAppBar(int currentIndex) {
-    if (currentIndex == 1) return CustomAppBar(title: AppStaticStrings.myRides.tr);
+    if (currentIndex == 1)
+      return CustomAppBar(title: AppStaticStrings.myRides.tr);
 
     if (CommonController.to.isDriver.value) {
       switch (currentIndex) {
-        case 0: return CustomAppBarForHome(
-            isDriver : true,onTap: () => Get.toNamed(NotificationPage.routeName));
-        case 2: return CustomAppBar(title: AppStaticStrings.statics.tr);
-        case 3: return CustomAppBar(title: AppStaticStrings.messages.tr);
-        case 4: return CustomAppBar(title: AppStaticStrings.profile.tr, backgroundColor: AppColors.kWhiteColor,);
+        case 0:
+          return CustomAppBarForHome(
+            isDriver: true,
+            onTap: () => Get.toNamed(NotificationPage.routeName),
+          );
+        case 2:
+          return CustomAppBar(title: AppStaticStrings.statics.tr);
+        case 3:
+          return CustomAppBar(title: AppStaticStrings.messages.tr);
+        case 4:
+          return CustomAppBar(
+            title: AppStaticStrings.profile.tr,
+            backgroundColor: AppColors.kWhiteColor,
+          );
       }
-    }
-    else if (currentIndex == 0) {
-      return   CustomAppBarForHome(
-          onBack: () {
-            HomeController.to.handleBackNavigation();
-          },
-          onTap: () async {
-            if (HomeController.to.wantToGo.value ||
-                HomeController.to.setPickup.value ||
-                HomeController.to.setDestination.value ||
-                HomeController.to.selectEv.value) {
-              await CommonController.to.fetchCurrentLocationMethod();
-              HomeController.to.setCurrentLocationOnPickUp();
-            } else {
-              Get.toNamed(NotificationPage.routeName);
-            }
-          },
-          isBack:
-          HomeController.to.wantToGo.value ||
+    } else if (currentIndex == 0) {
+      return CustomAppBarForHome(
+        onBack: () {
+          HomeController.to.handleBackNavigation();
+        },
+        onTap: () async {
+          if (HomeController.to.wantToGo.value ||
               HomeController.to.setPickup.value ||
               HomeController.to.setDestination.value ||
-              HomeController.to.selectEv.value,
-          actionIcon:
-          HomeController.to.wantToGo.value ||
-              HomeController.to.setPickup.value ||
-              HomeController.to.setDestination.value ||
-              HomeController.to.selectEv.value
-              ? gpsWhiteIcon
-              : notificationIcon,
-        );
-    }else if (currentIndex == 2) {
+              HomeController.to.selectEv.value) {
+            await CommonController.to.fetchCurrentLocationMethod();
+            HomeController.to.setCurrentLocationOnPickUp();
+          } else {
+            Get.toNamed(NotificationPage.routeName);
+          }
+        },
+        isBack:
+            HomeController.to.wantToGo.value ||
+            HomeController.to.setPickup.value ||
+            HomeController.to.setDestination.value ||
+            HomeController.to.selectEv.value,
+        actionIcon:
+            HomeController.to.wantToGo.value ||
+                    HomeController.to.setPickup.value ||
+                    HomeController.to.setDestination.value ||
+                    HomeController.to.selectEv.value
+                ? gpsWhiteIcon
+                : notificationIcon,
+      );
+    } else if (currentIndex == 2) {
       return CustomAppBar(title: AppStaticStrings.messages.tr);
-    }else if (currentIndex == 3) {
-      return CustomAppBar(title: AppStaticStrings.profile.tr,backgroundColor: AppColors.kWhiteColor,);
+    } else if (currentIndex == 3) {
+      return CustomAppBar(
+        title: AppStaticStrings.profile.tr,
+        backgroundColor: AppColors.kWhiteColor,
+      );
     }
     return null;
   }
 
-// Usage:
+  // Usage:
 
   @override
   Widget build(BuildContext context) {
@@ -203,29 +174,34 @@ class _NavigationPageState extends State<NavigationPage>
                   ),
                 );
               }),
-            currentIndex==0?  Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: FloatingActionButton.small(onPressed: () {
-                  if(CommonController.to.isDriver==true){
-                    CommonController.to.fetchCurrentLocationMethod();
-                    DashBoardController.to.getDriverCurrentTripRequest();
-                    if(DashBoardController.to.currentTrip.value.sId==null){
-                      NavigationController.to.clearPolyline();
-
-                    }
-                  }else{
-                    HomeController.to.getUserCurrentTrip();
-                    if(HomeController.to.tripAcceptedModel.value.sId==null){
-                      NavigationController.to.clearPolyline();
-                      HomeController.to.pickupLatLng.value=null;
-                      HomeController.to.dropoffLatLng.value=null;
-                      HomeController.to.resetAllStates();
-                    }
-                  }
-                },
-                    shape: CircleBorder(),
-                    child: Icon(Icons.refresh_rounded)),
-              ):SizedBox.shrink(),
+              currentIndex == 0
+                  ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FloatingActionButton.small(
+                      onPressed: () {
+                        if (CommonController.to.isDriver == true) {
+                          CommonController.to.fetchCurrentLocationMethod();
+                          DashBoardController.to.getDriverCurrentTripRequest();
+                          if (DashBoardController.to.currentTrip.value.sId ==
+                              null) {
+                            NavigationController.to.clearPolyline();
+                          }
+                        } else {
+                          HomeController.to.getUserCurrentTrip();
+                          if (HomeController.to.tripAcceptedModel.value.sId ==
+                              null) {
+                            NavigationController.to.clearPolyline();
+                            HomeController.to.pickupLatLng.value = null;
+                            HomeController.to.dropoffLatLng.value = null;
+                            HomeController.to.resetAllStates();
+                          }
+                        }
+                      },
+                      shape: CircleBorder(),
+                      child: Icon(Icons.refresh_rounded),
+                    ),
+                  )
+                  : SizedBox.shrink(),
             ],
           ),
           bottomNavigationBar: Stack(

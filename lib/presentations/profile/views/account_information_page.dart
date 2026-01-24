@@ -2,6 +2,7 @@ import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/components/custom_network_image.dart';
+import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/components/tab-bar/dynamic_tab_widget.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
@@ -49,335 +50,305 @@ class AccountInformationPage extends StatelessWidget {
         ],
       ),
 
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: padding14,
-              child: Center(
-                child: Column(
-                  spacing: 12.h,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Obx(() {
-                      return CustomNetworkImage(
-                        imageUrl:
-                            "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.img}",
-                        height: 100.w,
-                        width: 100.w,
-                        boxShape: BoxShape.circle,
-                      );
-                    }),
-                    Obx(() {
-                      bool isVerified =
-                          AccountInformationController
-                                  .to
-                                  .userModel
-                                  .value
-                                  .nrcStatus !=
-                              null &&
-                          AccountInformationController
-                                  .to
-                                  .userModel
-                                  .value
-                                  .nrcStatus ==
-                              NrcVerificationStatus.accepted.name;
-                      return Row(
-                        spacing: 6,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomText(
-                            text:
-                                AccountInformationController
+      body: CustomRefreshIndicator(
+        onRefresh: () async {
+          AccountInformationController.to.getUserProfileRequest();
+          await AccountInformationController.to.loadPdf();
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: padding14,
+                child: Center(
+                  child: Column(
+                    spacing: 12.h,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Obx(() {
+                        return CustomNetworkImage(
+                          imageUrl:
+                              "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.img}",
+                          height: 100.w,
+                          width: 100.w,
+                          boxShape: BoxShape.circle,
+                        );
+                      }),
+                      Obx(() {
+                        bool isVerified =
+                            AccountInformationController
                                     .to
                                     .userModel
                                     .value
-                                    .name ??
-                                AppStaticStrings.noDataFound.tr,
-                            style: poppinsSemiBold,
-                            fontSize: getFontSizeExtraLarge(),
-                          ),
-                          isVerified
-                              ? Icon(
-                                Icons.verified,
-                                color: AppColors.kPrimaryColor,
-                                size: 15.sp,
-                              )
-                              : SizedBox.shrink(),
-                        ],
-                      );
-                    }),
-                    CommonController.to.isDriver.value
-                        ? Row(
+                                    .nrcStatus !=
+                                null &&
+                            AccountInformationController
+                                    .to
+                                    .userModel
+                                    .value
+                                    .nrcStatus ==
+                                NrcVerificationStatus.accepted.name;
+                        return Row(
+                          spacing: 6,
                           mainAxisAlignment: MainAxisAlignment.center,
-                          // spacing: 6.w,
                           children: [
-                            Obx(() {
-                              return RatingBarIndicator(
-                                itemSize: 20.sp,
-                                itemBuilder:
-                                    (context, index) => Icon(
-                                      Icons.star_rate_rounded,
-                                      color: Colors.amber,
-                                    ),
-                                rating: CommonController.to.driverRating.value,
-                              );
-                            }),
-                            Obx(() {
-                              return CustomText(
-                                text:
-                                    CommonController.to.driverRating.value
-                                        .toString(),
-                                style: poppinsSemiBold,
-                                fontSize: getFontSizeSmall(),
-                              );
-                            }),
-                            ButtonTapWidget(
-                              onTap: () {
-                                Get.to(DriverReviewListPage());
-                              },
-                              child: Padding(
-                                padding: padding8,
-                                child: Obx(() {
-                                  return CustomText(
-                                    text:
-                                        '(${CommonController.to.reviewList.length} reviews)',
-                                    style: poppinsRegular,
-                                    fontSize: getFontSizeSmall(),
-                                    color: AppColors.kExtraLightTextColor,
-                                  );
-                                }),
-                              ),
+                            CustomText(
+                              text:
+                                  AccountInformationController
+                                      .to
+                                      .userModel
+                                      .value
+                                      .name ??
+                                  AppStaticStrings.noDataFound.tr,
+                              style: poppinsSemiBold,
+                              fontSize: getFontSizeExtraLarge(),
                             ),
+                            isVerified
+                                ? Icon(
+                                  Icons.verified,
+                                  color: AppColors.kPrimaryColor,
+                                  size: 15.sp,
+                                )
+                                : SizedBox.shrink(),
                           ],
-                        )
-                        : SizedBox.shrink(),
-                    CommonController.to.isDriver.value
-                        ? DynamicTabWidget(
-                          tabs: AccountInformationController.to.tabs,
-                          tabContent: [
-                            Obx(() {
-                              return ProfileInfoListWidget(
-                                userModel:
-                                    AccountInformationController
-                                        .to
-                                        .userModel
-                                        .value,
-                              );
-                            }),
-                            Obx(() {
-                              return Column(
-                                spacing: 12.h,
-                                children: [
-                                  ProfileCardItemWidget(
-                                    title:
-                                        AppStaticStrings.nationalIdPassport.tr,
-                                    value:
-                                        AccountInformationController
-                                            .to
-                                            .userModel
-                                            .value
-                                            .idOrPassportNo ??
-                                        AppStaticStrings.noDataFound.tr,
-                                  ),
-                                  ProfileCardItemWidget(
-                                    title: AppStaticStrings.drivingLicense.tr,
-                                    value:
-                                        AccountInformationController
-                                            .to
-                                            .userModel
-                                            .value
-                                            .drivingLicenseNo ??
-                                        AppStaticStrings.noDataFound.tr,
-                                  ),
-                                  ProfileCardItemWidget(
-                                    title: AppStaticStrings.licenseType.tr,
-                                    value:
-                                        AccountInformationController
-                                            .to
-                                            .userModel
-                                            .value
-                                            .licenseType ??
-                                        AppStaticStrings.noDataFound.tr,
-                                  ),
-                                  ProfileCardItemWidget(
-                                    title: AppStaticStrings.licenseExpire.tr,
-                                    value:
-                                        AccountInformationController
-                                            .to
-                                            .userModel
-                                            .value
-                                            .licenseExpiry ??
-                                        AppStaticStrings.noDataFound.tr,
-                                  ),
-                                  ProfileCardItemWidget(
-                                    title: AppStaticStrings.balance.tr,
-                                    value:
-                                        (AccountInformationController
-                                                    .to
-                                                    .userModel
-                                                    .value
-                                                    .balance ??
-                                                AppStaticStrings.noDataFound.tr)
-                                            .toString(),
-                                  ),
-                                  ProfileCardItemWidget(
-                                    title: AppStaticStrings.commission.tr,
-                                    value:
-                                        (AccountInformationController
-                                                    .to
-                                                    .userModel
-                                                    .value
-                                                    .commission ??
-                                                AppStaticStrings.noDataFound.tr)
-                                            .toString(),
-                                  ),
-                                  ProfileCardItemWidget(
-                                    title:
-                                        AppStaticStrings.lastPayoutRequest.tr,
-                                    value:
-                                        AccountInformationController
-                                                    .to
-                                                    .userModel
-                                                    .value
-                                                    .lastPayoutRequest !=
-                                                null
-                                            ? formatDateTime(
-                                              AccountInformationController
-                                                  .to
-                                                  .userModel
-                                                  .value
-                                                  .lastPayoutRequest
-                                                  .toString(),
-                                            )
-                                            : AppStaticStrings.noDataFound.tr,
-                                  ),
-                                ],
-                              );
-                            }),
-                            SizedBox(
-                              width: ScreenUtil().screenWidth,
-                              child: Obx(() {
-                                return Column(
-                                  spacing: 8.h,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CustomText(
-                                      text: AppStaticStrings.drivingLicense.tr,
-                                    ),
-                                    CustomNetworkImage(
-                                      isImagePreview: true,
-                                      imageUrl:
-                                          "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.drivingLicenseImage}",
-                                      width: 150.w,
-                                      height: 150.w,
-                                    ),
-                                    CustomText(
+                        );
+                      }),
+                      CommonController.to.isDriver.value
+                          ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            // spacing: 6.w,
+                            children: [
+                              Obx(() {
+                                return RatingBarIndicator(
+                                  itemSize: 20.sp,
+                                  itemBuilder:
+                                      (context, index) => Icon(
+                                        Icons.star_rate_rounded,
+                                        color: Colors.amber,
+                                      ),
+                                  rating:
+                                      CommonController.to.driverRating.value,
+                                );
+                              }),
+                              Obx(() {
+                                return CustomText(
+                                  text:
+                                      CommonController.to.driverRating.value
+                                          .toString(),
+                                  style: poppinsSemiBold,
+                                  fontSize: getFontSizeSmall(),
+                                );
+                              }),
+                              ButtonTapWidget(
+                                onTap: () {
+                                  Get.to(DriverReviewListPage());
+                                },
+                                child: Padding(
+                                  padding: padding8,
+                                  child: Obx(() {
+                                    return CustomText(
                                       text:
+                                          '(${CommonController.to.reviewList.length} reviews)',
+                                      style: poppinsRegular,
+                                      fontSize: getFontSizeSmall(),
+                                      color: AppColors.kExtraLightTextColor,
+                                    );
+                                  }),
+                                ),
+                              ),
+                            ],
+                          )
+                          : SizedBox.shrink(),
+                      CommonController.to.isDriver.value
+                          ? DynamicTabWidget(
+                            tabs: AccountInformationController.to.tabs,
+                            tabContent: [
+                              Obx(() {
+                                return ProfileInfoListWidget(
+                                  userModel:
+                                      AccountInformationController
+                                          .to
+                                          .userModel
+                                          .value,
+                                );
+                              }),
+                              Obx(() {
+                                return Column(
+                                  spacing: 12.h,
+                                  children: [
+                                    ProfileCardItemWidget(
+                                      title:
                                           AppStaticStrings
                                               .nationalIdPassport
                                               .tr,
-                                    ),
-                                    CustomNetworkImage(
-                                      isImagePreview: true,
-                                      imageUrl:
-                                          "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.idOrPassportImage}",
-                                      width: 150.w,
-                                      height: 150.w,
-                                    ),
-                                    CustomText(
-                                      text:
-                                          AppStaticStrings
-                                              .eHailingVehiclePermit
-                                              .tr,
-                                    ),
-                                    // ${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.assignedCar?.eHailingVehiclePermitPdf}
-                                    GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => PdfViewerPage());
-                                      },
-                                      child: Image.asset(
-                                        "assets/icons/pdf_placeholder.png",
-                                        width: 150.w,
-                                        height: 150.w,
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }),
-                            ),
-                          ],
-                        )
-                        : DynamicTabWidget(
-                          tabs: AccountInformationController.to.tabsForUser,
-                          tabContent: [
-                            Obx(() {
-                              return ProfileInfoListWidget(
-                                userModel:
-                                    AccountInformationController
-                                        .to
-                                        .userModel
-                                        .value,
-                              );
-                            }),
-                            SizedBox(
-                              width: ScreenUtil().screenWidth,
-                              child: Obx(() {
-                                return Column(
-                                  spacing: 8.h,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ProfileCardItemWidget(
-                                      title: AppStaticStrings.nricPassport.tr,
                                       value:
                                           AccountInformationController
                                               .to
                                               .userModel
                                               .value
-                                              .identificationNum ??
+                                              .idOrPassportNo ??
                                           AppStaticStrings.noDataFound.tr,
                                     ),
-                                    // CustomText(
-                                    //     text: AppStaticStrings.nricPassport.tr),
-                                    if (AccountInformationController
-                                            .to
-                                            .userModel
-                                            .value
-                                            .nrcImages !=
-                                        null)
-                                      Wrap(
-                                        children: List.generate(
+                                    ProfileCardItemWidget(
+                                      title: AppStaticStrings.drivingLicense.tr,
+                                      value:
                                           AccountInformationController
                                               .to
                                               .userModel
                                               .value
-                                              .nrcImages!
-                                              .length,
-                                          (index) {
-                                            return CustomNetworkImage(
-                                              isImagePreview: true,
-                                              imageUrl:
-                                                  "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.nrcImages![index]}",
-                                              width: 150.w,
-                                              height: 150.w,
-                                            );
-                                          },
-                                        ),
-                                        spacing: 8.h,
-                                        runSpacing: 8.h,
-                                      ),
+                                              .drivingLicenseNo ??
+                                          AppStaticStrings.noDataFound.tr,
+                                    ),
+                                    ProfileCardItemWidget(
+                                      title: AppStaticStrings.licenseType.tr,
+                                      value:
+                                          AccountInformationController
+                                              .to
+                                              .userModel
+                                              .value
+                                              .licenseType ??
+                                          AppStaticStrings.noDataFound.tr,
+                                    ),
+                                    ProfileCardItemWidget(
+                                      title: AppStaticStrings.licenseExpire.tr,
+                                      value:
+                                          AccountInformationController
+                                              .to
+                                              .userModel
+                                              .value
+                                              .licenseExpiry ??
+                                          AppStaticStrings.noDataFound.tr,
+                                    ),
                                   ],
                                 );
                               }),
-                            ),
-                          ],
-                        ),
-                  ],
+                              SizedBox(
+                                width: ScreenUtil().screenWidth,
+                                child: Obx(() {
+                                  return Column(
+                                    spacing: 8.h,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CustomText(
+                                        text:
+                                            AppStaticStrings.drivingLicense.tr,
+                                      ),
+                                      CustomNetworkImage(
+                                        isImagePreview: true,
+                                        imageUrl:
+                                            "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.drivingLicenseImage}",
+                                        width: 150.w,
+                                        height: 150.w,
+                                      ),
+                                      CustomText(
+                                        text:
+                                            AppStaticStrings
+                                                .nationalIdPassport
+                                                .tr,
+                                      ),
+                                      CustomNetworkImage(
+                                        isImagePreview: true,
+                                        imageUrl:
+                                            "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.idOrPassportImage}",
+                                        width: 150.w,
+                                        height: 150.w,
+                                      ),
+                                      CustomText(
+                                        text:
+                                            AppStaticStrings
+                                                .eHailingVehiclePermit
+                                                .tr,
+                                      ),
+                                      // ${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.assignedCar?.eHailingVehiclePermitPdf}
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.to(() => PdfViewerPage());
+                                        },
+                                        child: Image.asset(
+                                          "assets/icons/pdf_placeholder.png",
+                                          width: 150.w,
+                                          height: 150.w,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }),
+                              ),
+                            ],
+                          )
+                          : DynamicTabWidget(
+                            tabs: AccountInformationController.to.tabsForUser,
+                            tabContent: [
+                              Obx(() {
+                                return ProfileInfoListWidget(
+                                  userModel:
+                                      AccountInformationController
+                                          .to
+                                          .userModel
+                                          .value,
+                                );
+                              }),
+                              SizedBox(
+                                width: ScreenUtil().screenWidth,
+                                child: Obx(() {
+                                  return Column(
+                                    spacing: 8.h,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      ProfileCardItemWidget(
+                                        title: AppStaticStrings.nricPassport.tr,
+                                        value:
+                                            AccountInformationController
+                                                .to
+                                                .userModel
+                                                .value
+                                                .identificationNum ??
+                                            AppStaticStrings.noDataFound.tr,
+                                      ),
+                                      // CustomText(
+                                      //     text: AppStaticStrings.nricPassport.tr),
+                                      if (AccountInformationController
+                                              .to
+                                              .userModel
+                                              .value
+                                              .nrcImages !=
+                                          null)
+                                        Wrap(
+                                          children: List.generate(
+                                            AccountInformationController
+                                                .to
+                                                .userModel
+                                                .value
+                                                .nrcImages!
+                                                .length,
+                                            (index) {
+                                              return CustomNetworkImage(
+                                                isImagePreview: true,
+                                                imageUrl:
+                                                    "${ApiService().baseUrl}/${AccountInformationController.to.userModel.value.nrcImages![index]}",
+                                                width: 150.w,
+                                                height: 150.w,
+                                              );
+                                            },
+                                          ),
+                                          spacing: 8.h,
+                                          runSpacing: 8.h,
+                                        ),
+                                    ],
+                                  );
+                                }),
+                              ),
+                            ],
+                          ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
