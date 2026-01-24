@@ -8,10 +8,15 @@ import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/presentations/profile/controllers/account_information_controller.dart';
+import 'package:e_hailing_app/presentations/save-location/widgets/empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+
+import '../model/payout_history_model.dart';
 
 class CashPayoutPage extends StatefulWidget {
   static const String routeName = '/cash-payout';
@@ -22,37 +27,154 @@ class CashPayoutPage extends StatefulWidget {
 }
 
 class _CashPayoutPageState extends State<CashPayoutPage> {
-  final TextEditingController amountController = TextEditingController();
+  final TextEditingController amountController = TextEditingController(
+    text: '100',
+  );
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      AccountInformationController.to.getPayoutHistoryRequest();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.cashPayout.tr),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: padding14,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildRequestSection(),
-              SizedBox(height: 20.h),
-              CustomText(
-                text: AppStaticStrings.payoutHistory.tr,
-                style: poppinsSemiBold,
-                fontSize: getFontSizeLarge(),
+      body: CustomRefreshIndicator(
+        onRefresh: () async {
+          AccountInformationController.to.payoutPagingController.refresh();
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: padding14,
+                child: Column(
+                  spacing: 8,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      spacing: 8,
+                      children: [
+                        gridWidget(
+                          AppStaticStrings.balance.tr,
+                          (AccountInformationController
+                                      .to
+                                      .userModel
+                                      .value
+                                      .balance ??
+                                  AppStaticStrings.noDataFound.tr)
+                              .toString(),
+                        ),
+                        gridWidget(
+                          AppStaticStrings.commission.tr,
+                          (AccountInformationController
+                                      .to
+                                      .userModel
+                                      .value
+                                      .commission ??
+                                  AppStaticStrings.noDataFound.tr)
+                              .toString(),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        gridWidget(
+                          AppStaticStrings.lastPayoutRequest.tr,
+                          AccountInformationController
+                                      .to
+                                      .userModel
+                                      .value
+                                      .lastPayoutRequest !=
+                                  null
+                              ? formatDateTime(
+                                AccountInformationController
+                                    .to
+                                    .userModel
+                                    .value
+                                    .lastPayoutRequest
+                                    .toString(),
+                              )
+                              : AppStaticStrings.noDataFound.tr,
+                        ),
+                      ],
+                    ),
+
+                    _buildRequestSection(),
+
+                    CustomText(
+                      text: AppStaticStrings.payoutHistory.tr,
+                      style: poppinsSemiBold,
+                      fontSize: getFontSizeLarge(),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 10.h),
-              _buildHistoryList(),
-            ],
-          ),
+            ),
+            PagedSliverList<int, PayoutHistoryModel>(
+              // padding: padding1,
+              pagingController:
+                  AccountInformationController.to.payoutPagingController,
+              builderDelegate: PagedChildBuilderDelegate<PayoutHistoryModel>(
+                itemBuilder: (context, item, index) {
+                  return Padding(
+                    padding: padding12H,
+                    child: _buildHistoryItem(item),
+                  );
+                },
+                firstPageProgressIndicatorBuilder:
+                    (_) => DefaultProgressIndicator(),
+                newPageProgressIndicatorBuilder:
+                    (_) => DefaultProgressIndicator(),
+                noItemsFoundIndicatorBuilder:
+                    (_) =>
+                        Center(child: EmptyWidget(text: "No history found.")),
+                firstPageErrorIndicatorBuilder:
+                    (_) => Center(
+                      child: EmptyWidget(text: "Failed to load history."),
+                    ),
+                newPageErrorIndicatorBuilder:
+                    (_) => Center(
+                      child: EmptyWidget(
+                        text: "Failed to load more. Pull to retry.",
+                      ),
+                    ),
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 20.h)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Expanded gridWidget(String title, String value) {
+    return Expanded(
+      child: Container(
+        padding: padding12,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          spacing: 8,
+          children: [
+            CustomText(
+              text: title,
+              style: poppinsBold,
+              fontSize: getFontSizeDefault(),
+              color: AppColors.kPrimaryColor,
+            ),
+            CustomText(text: value),
+          ],
         ),
       ),
     );
@@ -107,91 +229,67 @@ class _CashPayoutPageState extends State<CashPayoutPage> {
     );
   }
 
-  Widget _buildHistoryList() {
-    return Obx(() {
-      if (AccountInformationController.to.isLoadingCashOutHistory.value) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
-      if (AccountInformationController.to.payoutHistoryList.isEmpty) {
-        return Center(
-          child: Padding(
-            padding: EdgeInsets.only(top: 20.h),
-            child: CustomText(
-              text: AppStaticStrings.noDataFound.tr,
-              color: AppColors.kLightTextColor,
-            ),
+  Widget _buildHistoryItem(PayoutHistoryModel item) {
+    return Container(
+      padding: padding12,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-        );
-      }
-
-      return ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: AccountInformationController.to.payoutHistoryList.length,
-        separatorBuilder: (context, index) => SizedBox(height: 10.h),
-        itemBuilder: (context, index) {
-          final item = AccountInformationController.to.payoutHistoryList[index];
-          return Container(
-            padding: padding12,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: AppColors.kBorderColor),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(
-                      text: "${AppStaticStrings.amount.tr}: ${item.amount}",
-                      style: poppinsSemiBold,
-                    ),
-                    SizedBox(height: 4.h),
-                    CustomText(
-                      text:
-                          item.createdAt != null
-                              ? formatDateTime(item.createdAt!)
-                              : "",
-                      fontSize: getFontSizeSmall(),
-                      color: AppColors.kLightTextColor,
-                    ),
-                  ],
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(
+                text: "${AppStaticStrings.amount.tr}: ${item.amount}",
+                style: poppinsSemiBold,
+              ),
+              SizedBox(height: 4.h),
+              CustomText(
+                text:
+                    item.createdAt != null
+                        ? formatDateTime(item.createdAt!)
+                        : "",
+                fontSize: getFontSizeSmall(),
+                color: AppColors.kLightBlackColor,
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: _getStatusColor(item.status),
+                  borderRadius: BorderRadius.circular(4.r),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 4.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _getStatusColor(item.status),
-                        borderRadius: BorderRadius.circular(4.r),
-                      ),
-                      child: CustomText(
-                        text: item.status?.toUpperCase() ?? "",
-                        color: Colors.white,
-                        fontSize: 10.sp,
-                      ),
-                    ),
-                    SizedBox(height: 4.h),
-                    CustomText(
-                      text: item.paymentMethod ?? "",
-                      fontSize: getFontSizeSmall(),
-                      color: AppColors.kLightTextColor,
-                    ),
-                  ],
+                child: CustomText(
+                  text: item.status?.toUpperCase() ?? "",
+                  color: Colors.white,
+                  fontSize: 10.sp,
                 ),
-              ],
-            ),
-          );
-        },
-      );
-    });
+              ),
+              SizedBox(height: 4.h),
+              CustomText(
+                text: item.paymentMethod ?? "",
+                fontSize: getFontSizeSmall(),
+                color: AppColors.kLightBlackColor,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Color _getStatusColor(String? status) {

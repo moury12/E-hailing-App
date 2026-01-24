@@ -483,7 +483,7 @@ class LocationTrackingService {
               'route_${DateTime.now().millisecondsSinceEpoch}',
             ),
             color: polylineColor,
-            width: 3.w.toInt(),
+            width: 5.w.toInt(),
             points: polylinePoints,
           );
 

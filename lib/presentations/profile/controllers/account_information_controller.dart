@@ -18,6 +18,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pdfx/pdfx.dart';
 
 import '../../../core/service/socket-service/socket_service.dart';
@@ -32,9 +33,12 @@ class AccountInformationController extends GetxController {
   RxBool isLoadingCashOut = false.obs;
   RxBool isLoadingCashOutHistory = false.obs;
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
-  RxList<PayoutHistoryModel> payoutHistoryList = <PayoutHistoryModel>[].obs;
   RxString contactEmail = "".obs;
   RxString contactNumber = "".obs;
+
+  final PagingController<int, PayoutHistoryModel> payoutPagingController =
+      PagingController(firstPageKey: 1);
+  final RxInt itemsPerPage = 10.obs;
 
   List<String> get tabs {
     return [
@@ -79,6 +83,9 @@ class AccountInformationController extends GetxController {
         driverId: userModel.value.sId.toString(),
       );
     }
+    payoutPagingController.addPageRequestListener((pageKey) {
+      getPayoutHistoryRequest(pageKey: pageKey);
+    });
     super.onInit();
   }
 
@@ -337,7 +344,7 @@ class AccountInformationController extends GetxController {
       isLoadingCashOut.value = false;
       if (response['success'] == true) {
         showCustomSnackbar(title: 'Success', message: response['message']);
-        getPayoutHistoryRequest(); // Refresh history
+        payoutPagingController.refresh(); // Refresh history
         getUserProfileRequest(); // Refresh balance if needed, though mostly separate
         return true;
 
@@ -360,26 +367,38 @@ class AccountInformationController extends GetxController {
 
   ///------------------------------  cash out history method -------------------------///
 
-  Future<void> getPayoutHistoryRequest() async {
+  Future<void> getPayoutHistoryRequest({required int pageKey}) async {
     try {
-      isLoadingCashOutHistory.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
       final response = await ApiService().request(
         endpoint: payoutHistoryEndpoint,
         method: 'GET',
+        queryParams: {
+          'page': pageKey.toString(),
+          'limit': itemsPerPage.value.toString(),
+        },
       );
       logger.d(response);
       if (response['success'] == true) {
-        List<dynamic> data = response['data']['result'];
-        payoutHistoryList.assignAll(
-          data.map((e) => PayoutHistoryModel.fromJson(e)).toList(),
-        );
+        final newItems =
+            (response['data']['result'] as List)
+                .map((e) => PayoutHistoryModel.fromJson(e))
+                .toList();
+
+        final isLastPage = newItems.length < itemsPerPage.value;
+        if (isLastPage) {
+          payoutPagingController.appendLastPage(newItems);
+        } else {
+          final nextPageKey = pageKey + 1;
+          payoutPagingController.appendPage(newItems, nextPageKey);
+        }
       } else {
-        logger.e(response);
+        payoutPagingController.error =
+            response['message'] ?? 'Something went wrong';
       }
     } catch (e) {
-      logger.e(e.toString());
-    } finally {
-      isLoadingCashOutHistory.value = false;
+      payoutPagingController.error = e.toString();
     }
   }
 
