@@ -76,13 +76,13 @@ class TripResponseModel {
     paymentType = json['paymentType'];
     dropOffAddress = json['dropOffAddress'];
     duration = json['duration'];
-    waitingFee = json['waitingFee'];
+    waitingFee = json['waitingFee']?.toDouble();
     paymentStatus = json['paymentStatus'];
     distance = json['distance'];
-    estimatedFare = json['estimatedFare'];
-    tollFee = json['tollFee'];
+    estimatedFare = json['estimatedFare']?.toDouble().roundToDouble();
+    tollFee = json['tollFee']?.toDouble();
     pickUpDate = json['pickUpDate'];
-    extraCharge = json['extraCharge'];
+    extraCharge = json['extraCharge']?.toDouble();
     isPeakHourApplied = json['isPeakHourApplied'];
     isCouponApplied = json['isCouponApplied'];
     cancellationReason =

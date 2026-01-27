@@ -93,19 +93,31 @@ class DriverCarInfoWidget extends StatelessWidget {
           space8H,
           ProfileCardItemWidget(
             title: AppStaticStrings.licensePlate.tr,
-            value: isLoading ? "Loading..." : car.carLicensePlate??AppStaticStrings.noDataFound.tr,
+            value:
+                isLoading
+                    ? "Loading..."
+                    : car.carLicensePlate ?? AppStaticStrings.noDataFound.tr,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.vin.tr,
-            value: isLoading ? "Loading..." : car.vin??AppStaticStrings.noDataFound.tr,
+            value:
+                isLoading
+                    ? "Loading..."
+                    : car.vin ?? AppStaticStrings.noDataFound.tr,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.registrationDate.tr,
-            value: isLoading ? "Loading..." : car.registrationDate??AppStaticStrings.noDataFound.tr,
+            value:
+                isLoading
+                    ? "Loading..."
+                    : car.registrationDate ?? AppStaticStrings.noDataFound.tr,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.insuranceStatus.tr,
-            value: isLoading ? "Loading..." : car.insuranceStatus??AppStaticStrings.noDataFound.tr,
+            value:
+                isLoading
+                    ? "Loading..."
+                    : car.insuranceStatus ?? AppStaticStrings.noDataFound.tr,
           ),
         ],
       );
@@ -127,19 +139,38 @@ class DriverPersonalDetails extends StatelessWidget {
           space8H,
           ProfileCardItemWidget(
             title: AppStaticStrings.carBrand.tr,
-            value: isLoading ? "Loading..." : car.brand??AppStaticStrings.noDataFound.tr,
+            value:
+                isLoading
+                    ? "Loading..."
+                    : car.brand ?? AppStaticStrings.noDataFound.tr,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.carModel.tr,
-            value: isLoading ? "Loading..." : car.model??AppStaticStrings.noDataFound.tr,
+            value:
+                isLoading
+                    ? "Loading..."
+                    : car.model ?? AppStaticStrings.noDataFound.tr,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.carType.tr,
-            value: isLoading ? "Loading..." : car.type??AppStaticStrings.noDataFound.tr,
+            value:
+                isLoading
+                    ? "Loading..."
+                    : car.type ?? AppStaticStrings.noDataFound.tr,
+          ),
+          ProfileCardItemWidget(
+            title: AppStaticStrings.carClass.tr,
+            value:
+                isLoading
+                    ? "Loading..."
+                    : car.type ?? AppStaticStrings.noDataFound.tr,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.carColor.tr,
-            value: isLoading ? "Loading..." : car.color??AppStaticStrings.noDataFound.tr,
+            value:
+                isLoading
+                    ? "Loading..."
+                    : car.color ?? AppStaticStrings.noDataFound.tr,
           ),
         ],
       );

@@ -43,6 +43,7 @@ class _CashPayoutPageState extends State<CashPayoutPage> {
       body: CustomRefreshIndicator(
         onRefresh: () async {
           AccountInformationController.to.payoutPagingController.refresh();
+          AccountInformationController.to.getUserProfileRequest();
         },
         child: CustomScrollView(
           slivers: [
@@ -56,48 +57,54 @@ class _CashPayoutPageState extends State<CashPayoutPage> {
                     Row(
                       spacing: 8,
                       children: [
-                        gridWidget(
-                          AppStaticStrings.balance.tr,
-                          (AccountInformationController
-                                      .to
-                                      .userModel
-                                      .value
-                                      .balance ??
-                                  AppStaticStrings.noDataFound.tr)
-                              .toString(),
-                        ),
-                        gridWidget(
-                          AppStaticStrings.commission.tr,
-                          (AccountInformationController
-                                      .to
-                                      .userModel
-                                      .value
-                                      .commission ??
-                                  AppStaticStrings.noDataFound.tr)
-                              .toString(),
-                        ),
+                        Obx(() {
+                          return gridWidget(
+                            AppStaticStrings.balance.tr,
+                            (AccountInformationController
+                                        .to
+                                        .userModel
+                                        .value
+                                        .balance ??
+                                    AppStaticStrings.noDataFound.tr)
+                                .toString(),
+                          );
+                        }),
+                        Obx(() {
+                          return gridWidget(
+                            AppStaticStrings.commission.tr,
+                            (AccountInformationController
+                                        .to
+                                        .userModel
+                                        .value
+                                        .commission ??
+                                    AppStaticStrings.noDataFound.tr)
+                                .toString(),
+                          );
+                        }),
                       ],
                     ),
                     Row(
                       children: [
-                        gridWidget(
-                          AppStaticStrings.lastPayoutRequest.tr,
-                          AccountInformationController
+                        Obx(() {
+                          return gridWidget(
+                            AppStaticStrings.lastPayoutRequest.tr,
+                            AccountInformationController
+                                        .to
+                                        .userModel
+                                        .value
+                                        .lastPayoutRequest !=
+                                    null
+                                ? formatDateTime(
+                                  AccountInformationController
                                       .to
                                       .userModel
                                       .value
-                                      .lastPayoutRequest !=
-                                  null
-                              ? formatDateTime(
-                                AccountInformationController
-                                    .to
-                                    .userModel
-                                    .value
-                                    .lastPayoutRequest
-                                    .toString(),
-                              )
-                              : AppStaticStrings.noDataFound.tr,
-                        ),
+                                      .lastPayoutRequest
+                                      .toString(),
+                                )
+                                : AppStaticStrings.noDataFound.tr,
+                          );
+                        }),
                       ],
                     ),
 
@@ -119,7 +126,7 @@ class _CashPayoutPageState extends State<CashPayoutPage> {
               builderDelegate: PagedChildBuilderDelegate<PayoutHistoryModel>(
                 itemBuilder: (context, item, index) {
                   return Padding(
-                    padding: padding12H,
+                    padding: paddingH12V4,
                     child: _buildHistoryItem(item),
                   );
                 },

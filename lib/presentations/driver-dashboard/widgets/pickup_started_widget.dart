@@ -85,7 +85,7 @@ class SendPaymentRequestWidget extends StatelessWidget {
           borderRadius: 24.r,
           textEditingController: DashBoardController.to.extraCost,
           keyboardType: TextInputType.number,
-          title: "${AppStaticStrings.extraCharge.tr}(optional)",
+          title: "${AppStaticStrings.tollFee.tr}(optional)",
         ),
         Obx(() {
           return CustomButton(

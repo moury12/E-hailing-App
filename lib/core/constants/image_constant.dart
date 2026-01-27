@@ -71,6 +71,9 @@ String uploadIcon = 'assets/icons/upload_icon.svg';
 String arrowCircleIcon = 'assets/icons/arrow_circle_icon.svg';
 String cashPaymentIcon = 'assets/icons/cash_payment_icon.svg';
 
+String richPurpleCarImage = 'assets/images/rich_purple_car.png';
+String superRichPurpleCarImage = 'assets/images/siper_rich_purple_car.png';
+
 // Images
 String carImage = 'assets/images/car_img.svg';
 String emptyLottie = 'assets/lottie/empty_list.json';

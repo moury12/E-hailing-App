@@ -593,6 +593,7 @@ class DashBoardController extends GetxController {
     removeSocketListeners();
     currentTrip.value = DriverCurrentTripModel(); // clear UI
     updateRideFlowState(null);
+    extraCost.clear();
     // NavigationController.to.clearPolyline();
     // Reset all state
     // resetRideFlow(rideType: RideFlowState.findingRide);

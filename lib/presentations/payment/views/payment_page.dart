@@ -54,28 +54,45 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     // String rent =
     //     "${(driverTripResponseModel.finalFare ?? 0) - (driverTripResponseModel.extraCharge ?? 0)}";
-    String rent =
+    double rentValue =
         role == driver
-            ? "${driverTripResponseModel.estimatedFare ?? 0}"
-            : "${userTripResponse.estimatedFare ?? 0}";
+            ? (driverTripResponseModel.estimatedFare?.toDouble() ?? 0)
+            : (userTripResponse.estimatedFare?.toDouble() ?? 0);
+    double tollValue =
+        role == driver
+            ? (driverTripResponseModel.tollFee?.toDouble() ?? 0)
+            : (userTripResponse.tollFee?.toDouble() ?? 0);
+    double extraValue =
+        role == driver
+            ? (driverTripResponseModel.extraCharge?.toDouble() ?? 0)
+            : (userTripResponse.extraCharge?.toDouble() ?? 0);
+    double waitingValue =
+        role == driver
+            ? (driverTripResponseModel.waitingFee?.toDouble() ?? 0)
+            : (userTripResponse.waitingFee?.toDouble() ?? 0);
+
     String paymentType =
         role == driver
-            ? "${driverTripResponseModel.paymentType ?? 0}"
-            : "${userTripResponse.paymentType ?? 0}";
+            ? "${driverTripResponseModel.paymentType ?? "cash"}"
+            : "${userTripResponse.paymentType ?? "cash"}";
+
+    String rent = "${rentValue.round()}";
     String tollFee =
-        role == driver
-            ? "${driverTripResponseModel.tollFee ?? 0}"
-            : "${userTripResponse.tollFee ?? 0}";
+        tollValue % 1 == 0
+            ? tollValue.toInt().toString()
+            : tollValue.toStringAsFixed(2);
+    // ignore: unused_local_variable
     String extraCharge =
-        role == driver
-            ? "${driverTripResponseModel.extraCharge ?? 0}"
-            : "${userTripResponse.extraCharge ?? 0}";
+        extraValue % 1 == 0
+            ? extraValue.toInt().toString()
+            : extraValue.toStringAsFixed(2);
     String waitingFee =
-        role == driver
-            ? "${driverTripResponseModel.waitingFee ?? 0}"
-            : "${userTripResponse.waitingFee ?? 0}";
+        waitingValue % 1 == 0
+            ? waitingValue.toInt().toString()
+            : waitingValue.toStringAsFixed(2);
+
     String finalFee =
-        "${double.parse(rent).toInt() + int.parse(tollFee) + int.parse(extraCharge) + int.parse(waitingFee)}";
+        "${(rentValue + tollValue + extraValue + waitingValue).round()}";
 
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.payment.tr),
@@ -108,10 +125,10 @@ class _PaymentPageState extends State<PaymentPage> {
                   title: AppStaticStrings.tollFee.tr,
                   value: 'RM $tollFee',
                 ),
-                CarInformationWidget(
-                  title: AppStaticStrings.extraCharge.tr,
-                  value: 'RM $extraCharge',
-                ),
+                // CarInformationWidget(
+                //   title: AppStaticStrings.extraCharge.tr,
+                //   value: 'RM $extraCharge',
+                // ),
                 CarInformationWidget(
                   title: AppStaticStrings.waitingFee.tr,
                   value: 'RM $waitingFee',

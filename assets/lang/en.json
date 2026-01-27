@@ -280,6 +280,9 @@
   "amount": "Amount",
   "date": "Date",
   "enterAmount": "Enter amount",
-  "paymentMethod": "Payment Method",
-  "cashOut": "Cash Out"
+  "cashOut": "Cash Out",
+  "outsideCountryBoundary": "Service not available in that area",
+  "waitingFee": "Waiting Fee",
+  "premiumRide": "Premium Ride",
+  "carClass": "Car Class"
 }
