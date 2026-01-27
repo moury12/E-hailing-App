@@ -46,7 +46,14 @@ class SelectCarITemWidget extends StatelessWidget {
           child: Row(
             spacing: 12.w,
             children: [
-              Image.asset(purpleCarImage2, height: 45.w),
+              Image.asset(
+                carClass?.toLowerCase() == "rich"
+                    ? richPurpleCarImage
+                    : carClass?.toLowerCase() == "super-rich"
+                    ? superRichPurpleCarImage
+                    : purpleCarImage2,
+                height: carClass?.toLowerCase() == "dudu" ? 45.w : 50.w,
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +69,7 @@ class SelectCarITemWidget extends StatelessWidget {
                 ),
               ),
               // const Spacer(),
-              CustomText(text: 'RM $fare'),
+              CustomText(text: 'RM ${fare.toInt()}'),
             ],
           ),
         ),

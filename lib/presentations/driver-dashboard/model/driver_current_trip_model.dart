@@ -77,12 +77,12 @@ class DriverCurrentTripModel {
     duration = json['duration'];
     paymentStatus = json['paymentStatus'];
     distance = json['distance'];
-    estimatedFare = json['estimatedFare'];
-    tollFee = json['tollFee'];
-    waitingFee = json['waitingFee'];
+    estimatedFare = json['estimatedFare']?.toDouble().roundToDouble();
+    tollFee = json['tollFee']?.toDouble();
+    waitingFee = json['waitingFee']?.toDouble();
     tripType = json['tripType'];
     pickUpDate = json['pickUpDate'];
-    extraCharge = json['extraCharge'];
+    extraCharge = json['extraCharge']?.toDouble();
     isPeakHourApplied = json['isPeakHourApplied'];
     isCouponApplied = json['isCouponApplied'];
     cancellationReason =

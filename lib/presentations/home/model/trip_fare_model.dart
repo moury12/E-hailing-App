@@ -6,7 +6,7 @@ class TripFareModel {
 
   factory TripFareModel.fromJson(Map<String, dynamic> json) {
     return TripFareModel(
-      finalFare: (json['finalFare'] ?? 0).toDouble(),
+      finalFare: (json['finalFare'] ?? 0).toDouble().roundToDouble(),
       carClass: json['class'] ?? '',
     );
   }

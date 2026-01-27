@@ -280,6 +280,9 @@
     "amount": "金额",
     "date": "日期",
     "enterAmount": "输入金额",
-    "paymentMethod": "付款方式",
-    "cashOut": "提现"
+    "cashOut": "提现",
+    "outsideCountryBoundary": "该地区暂不支持此服务",
+    "waitingFee": "等候费",
+    "premiumRide": "豪华乘车",
+    "carClass": "车型级别"
 }

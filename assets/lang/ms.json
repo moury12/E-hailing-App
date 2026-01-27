@@ -279,6 +279,9 @@
   "amount": "Jumlah",
   "date": "Tarikh",
   "enterAmount": "Masukkan jumlah",
-  "paymentMethod": "Kaedah Pembayaran",
-  "cashOut": "Tunai Keluar"
+  "cashOut": "Tunai Keluar",
+  "outsideCountryBoundary": "Perkhidmatan tidak tersedia di kawasan tersebut",
+  "waitingFee": "Yuran Menunggu",
+  "premiumRide": "Perjalanan Premium",
+  "carClass": "Kelas Kereta"
 }

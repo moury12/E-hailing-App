@@ -32,7 +32,8 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
     super.key,
     required this.rideModel,
     required this.isDriver,
-    this.isOngoin = false,this.showInvoice = false,
+    this.isOngoin = false,
+    this.showInvoice = false,
   });
 
   @override
@@ -52,32 +53,38 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
       // rating=isDriver?model.driver!.rating.toString():"0.0";
       driverName = model.user?.name ?? driverName;
       driverImage =
-      model.user?.profileImage != null
-          ? "${ApiService().baseUrl}/${model.user!.profileImage}"
-          : driverImage;
+          model.user?.profileImage != null
+              ? "${ApiService().baseUrl}/${model.user!.profileImage}"
+              : driverImage;
       cost = 'RM ${model.estimatedFare?.toStringAsFixed(2) ?? "0"}';
-      distance = '${((model.distance??0) /1000).toStringAsFixed(1)} km';
-      dateTime = formatDateTime(model.pickUpDate!=null?model.pickUpDate.toString():model.createdAt.toString());
+      distance = '${((model.distance ?? 0) / 1000).toStringAsFixed(1)} km';
+      dateTime = formatDateTime(
+        model.pickUpDate != null
+            ? model.pickUpDate.toString()
+            : model.createdAt.toString(),
+      );
       pickup = model.pickUpAddress;
       dropOff = model.dropOffAddress; // define this method below
-    }
-    else if (rideModel is TripResponseModel) {
+    } else if (rideModel is TripResponseModel) {
       final model = rideModel as TripResponseModel;
 
       driverName =
           (isDriver
               ? model.user?.name.toString()
               : model.driver?.name.toString()) ??
-              AppStaticStrings.noDataFound.tr;
-      rating=!isDriver?model.driver!.rating.toString():"0.0";
+          AppStaticStrings.noDataFound.tr;
+      rating = !isDriver ? model.driver!.rating.toString() : "0.0";
       driverImage =
-      model.driver?.profileImage != null
-          ? "${ApiService().baseUrl}/${(isDriver ? model.user?.profileImage
-          .toString() : model.driver?.profileImage.toString())}"
-          : driverImage;
+          model.driver?.profileImage != null
+              ? "${ApiService().baseUrl}/${(isDriver ? model.user?.profileImage.toString() : model.driver?.profileImage.toString())}"
+              : driverImage;
       cost = 'RM ${model.estimatedFare?.toStringAsFixed(2) ?? "0"}';
-      distance = '${((model.distance??0) /1000).toStringAsFixed(1)} km';
-      dateTime = formatDateTime(model.pickUpDate!=null?model.pickUpDate.toString():model.createdAt.toString());
+      distance = '${((model.distance ?? 0) / 1000).toStringAsFixed(1)} km';
+      dateTime = formatDateTime(
+        model.pickUpDate != null
+            ? model.pickUpDate.toString()
+            : model.createdAt.toString(),
+      );
       pickup = model.pickUpAddress;
       dropOff = model.dropOffAddress;
     }
@@ -93,7 +100,6 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
         spacing: 6.h,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           ///============================dynamic date==============================///
           Row(
             children: [
@@ -104,16 +110,26 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
                   fontSize: getFontSizeExtraLarge(),
                 ),
               ),
-              if(showInvoice)
-                IconButton(onPressed: () {
-                  Get.to(PaymentInvoicePage(rideModel: rideModel,isDriver: isDriver));
-                }, icon: Icon(Icons.receipt_long,color: AppColors.kPrimaryColor,))
+              if (showInvoice)
+                IconButton(
+                  onPressed: () {
+                    Get.to(
+                      PaymentInvoicePage(
+                        rideModel: rideModel,
+                        isDriver: isDriver,
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.receipt_long,
+                    color: AppColors.kPrimaryColor,
+                  ),
+                ),
             ],
           ),
           Row(
             spacing: 6.w,
             children: [
-
               ///============================dynamic driver image==============================///
               CustomNetworkImage(
                 imageUrl: driverImage,
@@ -125,7 +141,6 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     ///============================dynamic driver name rating ==============================///
                     CustomText(
                       text: driverName,
@@ -146,7 +161,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
               Expanded(
                 child: MyRidesHistoryTripInfoWidget(
                   title: AppStaticStrings.tripDistance.tr,
-                  text: distance, 
+                  text: distance,
                 ),
               ),
             ],
@@ -157,24 +172,24 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
           FromToTimeLine(pickUpAddress: pickup, dropOffAddress: dropOff),
           if (isDriver && isOngoin)
             CancelTripButtonWidget(
-                // isLoading: DashBoardController.to.isCancellingTrip.value,
-                onSubmit: () {
-                  if (DashBoardController.to.cancelReason.isEmpty) {
-                    showCustomSnackbar(
-                      title: "Field Required",
-                      message: "Need to select the reason",
-                    );
-                  } else {
-                    DashBoardController.to.driverTripUpdateStatus(
-                      tripId: rideModel.sId.toString(),
+              // isLoading: DashBoardController.to.isCancellingTrip.value,
+              onSubmit: () {
+                if (DashBoardController.to.cancelReason.isEmpty) {
+                  showCustomSnackbar(
+                    title: "Field Required",
+                    message: "Need to select the reason",
+                  );
+                } else {
+                  DashBoardController.to.driverTripUpdateStatus(
+                    tripId: rideModel.sId.toString(),
 
-                      reason: DashBoardController.to.cancelReason,
-                      newStatus: DriverTripStatus.cancelled.name.toString(),
-                    );
-                    Get.back();
-                  }
-                },
-              )
+                    reason: DashBoardController.to.cancelReason,
+                    newStatus: DriverTripStatus.cancelled.name.toString(),
+                  );
+                  Get.back();
+                }
+              },
+            ),
         ],
       ),
     );
