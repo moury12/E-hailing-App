@@ -20,6 +20,7 @@ class DriverSettingsController extends GetxController {
   Rx<AssignedCarModel> assignCarModel = AssignedCarModel().obs;
   Rx<DriverEarningModel> driverEarningModel = DriverEarningModel().obs;
   RxBool isLoadingCar = false.obs;
+  RxBool isLoadingEarnings = false.obs;
   var selectedYear = Rx<String?>(null).obs;
   var selectedType = Rx<String?>(null).obs;
 
@@ -46,7 +47,6 @@ class DriverSettingsController extends GetxController {
                   .toString(),
         },
       );
-      isLoadingCar.value = false;
       if (response['success'] == true) {
         logger.d(response);
         assignCarModel.value = AssignedCarModel.fromJson(response['data']);
@@ -75,7 +75,7 @@ class DriverSettingsController extends GetxController {
 
   Future<void> getDriverEarningReport({String? year, String? type}) async {
     try {
-      isLoadingCar.value = true;
+      isLoadingEarnings.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
       final response = await ApiService().request(
@@ -104,7 +104,7 @@ class DriverSettingsController extends GetxController {
     } catch (e) {
       logger.e(e.toString());
     } finally {
-      isLoadingCar.value = false;
+      isLoadingEarnings.value = false;
     }
   }
 }

@@ -3,6 +3,7 @@ class AssignedCarModel {
   String? brand;
   String? model;
   String? type;
+  String? carClass;
   int? seats;
   String? evpNumber;
   String? evpExpiry;
@@ -28,6 +29,7 @@ class AssignedCarModel {
     this.model,
     this.type,
     this.seats,
+    this.carClass,
     this.evpNumber,
     this.evpExpiry,
     this.carNumber,
@@ -52,6 +54,7 @@ class AssignedCarModel {
     brand = json['brand'];
     model = json['model'];
     type = json['type'];
+    carClass = json['class'];
     seats = json['seats'];
     evpNumber = json['evpNumber'];
     evpExpiry = json['evpExpiry'];
@@ -61,7 +64,8 @@ class AssignedCarModel {
     vin = json['vin'];
     insuranceStatus = json['insuranceStatus'];
     registrationDate = json['registrationDate'];
-    carImage = json['car_image'].cast<String>();
+    carImage =
+        json['car_image'] != null ? json['car_image'].cast<String>() : null;
     carGrantImage = json['car_grant_image'];
     carInsuranceImage = json['car_insurance_image'];
     eHailingCarPermitImage = json['e_hailing_car_permit_image'];
@@ -81,6 +85,7 @@ class AssignedCarModel {
     data['brand'] = brand;
     data['model'] = model;
     data['type'] = type;
+    data['class'] = carClass;
     data['seats'] = seats;
     data['evpNumber'] = evpNumber;
     data['evpExpiry'] = evpExpiry;
@@ -214,7 +219,8 @@ class LocationCoordinates {
   LocationCoordinates({this.coordinates});
 
   LocationCoordinates.fromJson(Map<String, dynamic> json) {
-    coordinates = json['coordinates'].cast<double>();
+    coordinates =
+        json['coordinates'] != null ? json['coordinates'].cast<double>() : null;
   }
 
   Map<String, dynamic> toJson() {
