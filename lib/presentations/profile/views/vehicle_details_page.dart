@@ -42,7 +42,7 @@ class VehicleDetailsPage extends StatelessWidget {
 
                       return DriverSettingsController.to.isLoadingCar.value
                           ? buildVehicelImageShimmerRow()
-                          : car.carImage == null
+                          : (car.carImage == null || car.carImage!.isEmpty)
                           ? EmptyWidget(text: "No Car Image Found")
                           : SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
@@ -163,7 +163,7 @@ class DriverPersonalDetails extends StatelessWidget {
             value:
                 isLoading
                     ? "Loading..."
-                    : car.type ?? AppStaticStrings.noDataFound.tr,
+                    : car.carClass ?? AppStaticStrings.noDataFound.tr,
           ),
           ProfileCardItemWidget(
             title: AppStaticStrings.carColor.tr,

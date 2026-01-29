@@ -25,7 +25,8 @@ class ConversationModel {
         participants!.add(Participants.fromJson(v));
       });
     }
-    messages = json['messages'].cast<String>();
+    messages =
+        json['messages'] != null ? json['messages'].cast<String>() : null;
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
@@ -165,7 +166,8 @@ class LocationCoordinates {
   LocationCoordinates({this.coordinates, this.type});
 
   LocationCoordinates.fromJson(Map<String, dynamic> json) {
-    coordinates = json['coordinates'].cast<double>();
+    coordinates =
+        json['coordinates'] != null ? json['coordinates'].cast<double>() : null;
     type = json['type'];
   }
 

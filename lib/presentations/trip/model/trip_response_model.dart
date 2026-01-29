@@ -366,7 +366,8 @@ class AssignedCar {
     vin = json['vin'];
     insuranceStatus = json['insuranceStatus'];
     registrationDate = json['registrationDate'];
-    carImage = json['car_image'].cast<String>();
+    carImage =
+        json['car_image'] != null ? json['car_image'].cast<String>() : null;
     carGrantImage = json['car_grant_image'];
     carInsuranceImage = json['car_insurance_image'];
     eHailingCarPermitImage = json['e_hailing_car_permit_image'];

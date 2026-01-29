@@ -9,6 +9,7 @@ import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/color_constants.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
+import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/constants/text_style_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
@@ -24,6 +25,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../utils/google_map_api_key.dart';
 
@@ -65,13 +67,34 @@ class LocationTrackingService {
       ).listen((Position position) {
         final newPosition = LatLng(position.latitude, position.longitude);
         markerPosition.value = newPosition;
+        if (Boxes.getUserData().get(tokenKey) != null &&
+            Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
+          Map<String, dynamic> decodedToken = JwtDecoder.decode(
+            Boxes.getUserData().get(tokenKey).toString(),
+          );
+          if (decodedToken['role'] == "DRIVER" &&
+              emitToSocket &&
+              tripId != null) {
+            socketService.socket?.emit(TripEvents.tripDriverLocationUpdate, {
+              "tripId": tripId,
+              "lat": position.latitude,
+              "long": position.longitude,
+            });
+          }
 
-        if (emitToSocket && tripId != null) {
-          socketService.socket?.emit(TripEvents.tripDriverLocationUpdate, {
-            "tripId": tripId,
-            "lat": position.latitude,
-            "long": position.longitude,
-          });
+          if (decodedToken['role'] == "DRIVER") {
+            if (socketService.socket != null &&
+                socketService.socket!.connected) {
+              // logger.d("🚀 Emitting updateLocation: ${decodedToken['userId']}");
+              socketService.socket?.emit(DriverEvent.updateLocation, {
+                "lat": position.latitude,
+                "long": position.longitude,
+                "userId": decodedToken['userId'],
+              });
+            } else {
+              logger.w("⚠️ Socket not connected, cannot emit updateLocation");
+            }
+          }
         }
 
         mapController?.animateCamera(CameraUpdate.newLatLng(newPosition));
@@ -279,47 +302,6 @@ class LocationTrackingService {
     }
   }
 
-  // Future<void> getLatLngFromPlace(
-  //   String placeId, {
-  //   RxString? lat,
-  //   RxString? lng,
-  //   Rx<LatLng?>? latLng,
-  //   required RxString selectedAddress,
-  // })
-  // async {
-  //   final String url =
-  //       'https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeId&key=${GoogleClient.googleMapUrl}';
-  //
-  //   try {
-  //     final response = await http.get(Uri.parse(url));
-  //     // logger.d(response.body);
-  //     if (response.statusCode == 200) {
-  //       // Parse response
-  //       final Map<String, dynamic> data = json.decode(response.body);
-  //
-  //       if (data['results'].isNotEmpty) {
-  //         final location = data['results'][0]['geometry']['location'];
-  //
-  //         // Update RxString values
-  //         selectedAddress.value = data['results'][0]['formatted_address'];
-  //         if (lat != null && lng != null) {
-  //           lat.value = location['lat'].toString();
-  //           lng.value = location['lng'].toString();
-  //         } else if (latLng != null) {
-  //           latLng.value = LatLng(location['lat'], location['lng']);
-  //         }
-  //       } else {
-  //         debugPrint("No results found for the provided placeId.");
-  //       }
-  //     } else {
-  //       debugPrint(
-  //         "HTTP Error: ${response.statusCode} - ${response.reasonPhrase}",
-  //       );
-  //     }
-  //   } catch (e) {
-  //     debugPrint(e.toString());
-  //   }
-  // }
   LatLng offsetByDistance(
     LatLng start,
     double distanceInKm,
@@ -346,86 +328,6 @@ class LocationTrackingService {
 
     return LatLng(lat2 * 180 / pi, lon2 * 180 / pi);
   }
-
-  // Future<bool> drawPolylineBetweenPoints(
-  //     LatLng start,
-  //     LatLng end,
-  //     RxSet<Polyline> routePolylines, {
-  //       RxInt? distance,
-  //       RxInt? duration,
-  //       required LatLng userPosition,
-  //       GoogleMapController? mapController,
-  //     })
-  // async  {
-  //   try {
-  //     final apiKey = GoogleClient.googleMapUrl;
-  //     final url =
-  //         'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
-  //
-  //     final response = await http.get(Uri.parse(url));
-  //
-  //     if (response.statusCode == 200) {
-  //       final data = jsonDecode(response.body);
-  //
-  //       if (data['routes'] != null && data['routes'].isNotEmpty) {
-  //         final points = data['routes'][0]['overview_polyline']['points'];
-  //         List<LatLng> polylinePoints = decodePolyline(points);
-  //         final leg = data['routes'][0]['legs'][0];
-  //
-  //         // 🆕 Give each polyline a unique ID
-  //         final polylineId = PolylineId(
-  //           'route_${DateTime.now().millisecondsSinceEpoch}',
-  //         );
-  //
-  //         final polyline = Polyline(
-  //           polylineId: polylineId,
-  //           color: routePolylines == NavigationController.to.routePolylines
-  //               ? Colors.blue // pickup → dropoff
-  //               : Colors.green, // driver → pickup
-  //           width: 5,
-  //           points: polylinePoints,
-  //         );
-  //
-  //         if (distance != null && duration != null) {
-  //           distance.value = leg['distance']['value'];
-  //           duration.value = (leg['duration']['value'] / 60).ceil();
-  //         }
-  //
-  //         // ✅ Don't clear previous polylines — just add new
-  //         routePolylines.add(polyline);
-  //         routePolylines.refresh(); // important to update UI
-  //
-  //         // ✅ Animate camera to fit both routes
-  //         await _animateCameraToRoute(
-  //           polylinePoints,
-  //           userPosition: userPosition,
-  //           mapController: mapController,
-  //         );
-  //
-  //         return true;
-  //       } else {
-  //         showCustomSnackbar(
-  //           title: "Sorry!!",
-  //           message: "No route found between selected locations.",
-  //         );
-  //         return false;
-  //       }
-  //     } else {
-  //       showCustomSnackbar(
-  //         title: "Error!!",
-  //         message: "Failed to get route. Please try again.",
-  //       );
-  //       return false;
-  //     }
-  //   } catch (e) {
-  //     debugPrint("Error in drawPolylineBetweenPoints: $e");
-  //     showCustomSnackbar(
-  //       title: "Error!!",
-  //       message: "Something went wrong. Please try again.",
-  //     );
-  //     return false;
-  //   }
-  // }
 
   Future<bool> drawPolylineBetweenPoints(
     LatLng start,
@@ -546,93 +448,6 @@ class LocationTrackingService {
       return false;
     }
   }
-  // Future<bool> drawPolylineBetweenPoints(
-  //   LatLng start,
-  //   LatLng end,
-  //   RxSet routePolylines, {
-  //   RxInt? distance,
-  //   RxInt? duration,
-  //   required LatLng userPosition,
-  //   GoogleMapController? mapController,
-  // })
-  // async {
-  //   try {
-  //     final apiKey = GoogleClient.googleMapUrl;
-  //     final url =
-  //         'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&key=$apiKey';
-  //
-  //     final response = await http.get(Uri.parse(url));
-  //     // logger.d("------------------------------");
-  //     // logger.d(response.body);
-  //     // logger.d(response.statusCode.toString());
-  //
-  //     if (response.statusCode == 200) {
-  //       final data = jsonDecode(response.body);
-  //
-  //       if (data['routes'] != null && data['routes'].isNotEmpty) {
-  //         final points = data['routes'][0]['overview_polyline']['points'];
-  //         List<LatLng> polylinePoints = decodePolyline(points);
-  //         final leg = data['routes'][0]['legs'][0];
-  //
-  //         final polyline = Polyline(
-  //           polylineId: const PolylineId('route_line'),
-  //           color: AppColors.kPrimaryColor,
-  //           width: 4,
-  //           // startCap: Cap.customCapFromBitmap(
-  //           //   await BitmapDescriptor.asset(
-  //           //     ImageConfiguration(size: Size(48, 48)),
-  //           //     "assets/icons/circle_icon.png",
-  //           //   ),
-  //           // ),
-  //           // endCap: Cap.customCapFromBitmap(
-  //           //   await BitmapDescriptor.asset(
-  //           //     ImageConfiguration(size: Size(48, 48)),
-  //           //     "assets/icons/circle_icon.png",
-  //           //   ),
-  //           // ),
-  //           points: polylinePoints,
-  //         );
-  //         if (distance != null && duration != null) {
-  //           distance.value = leg['distance']['value']; // e.g., 4690
-  //
-  //           // ✅ Duration in seconds
-  //           duration.value = (leg['duration']['value'] / 60).ceil();
-  //         }
-  //         // Alternative if you still have issues:
-  //         Set<Polyline> newPolylines = <Polyline>{};
-  //         newPolylines.add(polyline);
-  //         routePolylines.value = newPolylines;
-  //         // Animate camera to show the route
-  //         await _animateCameraToRoute(
-  //           polylinePoints,
-  //           userPosition: userPosition,
-  //           mapController: mapController,
-  //         );
-  //
-  //         return true; // Successfully drew polyline
-  //       } else {
-  //         showCustomSnackbar(
-  //           title: "Sorry!!",
-  //           message: "No route found between selected locations.",
-  //         );
-  //         return false;
-  //       }
-  //     } else {
-  //       showCustomSnackbar(
-  //         title: "Error!!",
-  //         message: "Failed to get route. Please try again.",
-  //       );
-  //       return false;
-  //     }
-  //   } catch (e) {
-  //     debugPrint("Error in drawPolylineBetweenPoints: $e");
-  //     showCustomSnackbar(
-  //       title: "Error!!",
-  //       message: "Something went wrong. Please try again.",
-  //     );
-  //     return false;
-  //   }
-  // }
 
   Future<void> _animateCameraToRoute(
     List<LatLng> polylinePoints, {

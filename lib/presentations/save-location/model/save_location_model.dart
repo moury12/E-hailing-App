@@ -3,7 +3,7 @@ class SaveLocationModel {
   String? user;
   String? locationName;
   String? locationAddress;
-  Location? location; 
+  Location? location;
   String? createdAt;
   String? updatedAt;
 
@@ -51,7 +51,8 @@ class Location {
 
   Location.fromJson(Map<String, dynamic> json) {
     type = json['type'];
-    coordinates = json['coordinates'].cast<double>();
+    coordinates =
+        json['coordinates'] != null ? json['coordinates'].cast<double>() : null;
   }
 
   Map<String, dynamic> toJson() {

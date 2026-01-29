@@ -451,6 +451,10 @@ class DashBoardController extends GetxController {
         }
       }
     });
+    socketService.on('driver_location_updated', (data) {
+      logger.d("📩 updateLocation: ");
+      logger.d(data);
+    });
 
     // ============ Trip Update Status Event ============
     socketService.on(DriverEvent.tripUpdateStatus, (data) async {

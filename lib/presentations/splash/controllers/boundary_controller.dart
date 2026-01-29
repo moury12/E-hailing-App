@@ -142,7 +142,7 @@ class BoundaryController extends GetxController {
           // Check address components
           for (final c in (r['address_components'] as List)) {
             final longName = (c['long_name'] as String).toLowerCase();
-            final types = (c['types'] as List).cast<String>();
+            final types = (c['types'] as List?)?.cast<String>() ?? [];
 
             if (types.contains('administrative_area_level_1') ||
                 types.contains('locality')) {
