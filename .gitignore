@@ -32,7 +32,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-google_map_api_key.dart
+# google_map_api_key.dart
 app/src/main/res/values/secrets.xml
 
 # Symbolication related
