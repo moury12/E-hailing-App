@@ -25,7 +25,7 @@
 	<key>CFBundleVersion</key>
 	<string>13</string>
 	<key>IOGoogleMapsAPIKey</key>
-	<string>AIzaSyC_qKHmzl-HHB9hr8-fWGmhETSVR2H0894</string>
+	<string>$(MAPS_API_KEY)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>sms</string>

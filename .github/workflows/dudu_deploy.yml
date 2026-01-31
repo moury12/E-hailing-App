@@ -43,18 +43,21 @@ jobs:
           echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=upload-keystore.jks" >> android/key.properties
+          echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" >> android/key.properties
 
       - name: Build Android App Bundle (AAB)
         if: github.event_name == 'push'
         run: |
           flutter build appbundle --release \
-            --build-number=${{ github.run_number }}
+            --build-number=${{ github.run_number }} \
+            --dart-define=MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}
 
       - name: Build Android APK
         if: github.event_name == 'push'
         run: |
           flutter build apk --release \
-            --build-number=${{ github.run_number }}
+            --build-number=${{ github.run_number }} \
+            --dart-define=MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}
 
       # --- iOS Build & Sign (Requires Secrets) ---
       # Note: This will build without codesign if secrets aren't available,
@@ -63,7 +66,8 @@ jobs:
       - name: Build iOS IPA
         run: |
           flutter build ipa --release --no-codesign \
-            --build-number=${{ github.run_number }}
+            --build-number=${{ github.run_number }} \
+            --dart-define=MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}
 
       # --- Artifact Upload ---
       - name: Upload Android AAB
