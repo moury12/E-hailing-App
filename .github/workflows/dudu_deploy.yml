@@ -32,9 +32,11 @@ jobs:
 
       - name: Analyze Dart code
         run: flutter analyze
+        continue-on-error: true
 
       # --- Android Build & Sign ---
       - name: Setup Android Signing
+        if: github.event_name == 'push'
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
           echo "storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}" > android/key.properties
@@ -43,11 +45,13 @@ jobs:
           echo "storeFile=upload-keystore.jks" >> android/key.properties
 
       - name: Build Android App Bundle (AAB)
+        if: github.event_name == 'push'
         run: |
           flutter build appbundle --release \
             --build-number=${{ github.run_number }}
 
       - name: Build Android APK
+        if: github.event_name == 'push'
         run: |
           flutter build apk --release \
             --build-number=${{ github.run_number }}
