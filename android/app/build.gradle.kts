@@ -38,6 +38,7 @@ android {
         versionName = "1.1.3" // or flutter.versionName
         multiDexEnabled = true  // Add this
 
+        manifestPlaceholders["MAPS_API_KEY"] = keystoreProperties.getProperty("MAPS_API_KEY") ?: ""
     }
 
     signingConfigs {
