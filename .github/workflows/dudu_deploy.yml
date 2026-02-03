@@ -2,9 +2,9 @@ name: Dudu Car Deploy
 
 on:
   push:
-    branches: [ moury ]
+    branches: [ main ]
   pull_request:
-    branches: [ moury ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -87,6 +87,17 @@ jobs:
         with:
           name: ios-ipa
           path: build/ios/ipa/*.ipa
+
+      # --- Deploy to Google Play Store ---
+      - name: Deploy to Play Store
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_SERVICE_ACCOUNT_JSON }}
+          packageName: com.dudu.android.app
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: production
+          status: completed
 
       # --- Cleanup ---
       - name: Remove Signing Files
