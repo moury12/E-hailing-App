@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class ApiService {
-  final String baseUrl = 'http://18.211.171.8:8002';
+  final String baseUrl = 'https://api.duducaradmin.com';
 
   // final String baseUrl = 'https://fttfmf0j-8002.inc1.devtunnels.ms';
 

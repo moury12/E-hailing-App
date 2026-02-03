@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class TranslationService {
-  final String apiKey =
-      'REMOVED'; // Add your API Key here
+  final String apiKey = String.fromEnvironment(
+    'MAPS_API_KEY',
+  ); // Add your API Key here
 
   // Function to translate text using Google Translate API
 
