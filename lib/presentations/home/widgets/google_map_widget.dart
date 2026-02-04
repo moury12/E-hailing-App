@@ -191,14 +191,15 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                 Marker(
                   markerId: const MarkerId("driver_marker"),
                   position: HomeController.to.driverPosition.value!,
-                  icon: customIcon.value!,
+                  icon: customIcon.value ?? BitmapDescriptor.defaultMarker,
                 ),
 
               Marker(
                 markerId: const MarkerId("selected_location"),
                 position: CommonController.to.markerPositionRider.value,
 
-                icon: currentLocationIcon.value!,
+                icon:
+                    currentLocationIcon.value ?? BitmapDescriptor.defaultMarker,
 
                 // Variable to store last valid position
               ),
@@ -210,7 +211,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                 Marker(
                   markerId: MarkerId("source Marker"),
                   position: HomeController.to.pickupLatLng.value!,
-                  icon: sourceIcon.value!,
+                  icon: sourceIcon.value ?? BitmapDescriptor.defaultMarker,
                   // onTap: () {
                   //   if (HomeController.to.mapDraging.value) {
                   //     HomeController.to.mapDragable.value = true;
@@ -264,7 +265,7 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                   //     HomeController.to.mapDraging.value,
                   markerId: MarkerId("destination Marker"),
                   position: HomeController.to.dropoffLatLng.value!,
-                  icon: destinationIcon.value!,
+                  icon: destinationIcon.value ?? BitmapDescriptor.defaultMarker,
                   // onTap: () {
                   //   if (HomeController.to.mapDraging.value) {
                   //     HomeController.to.mapDragable.value = true;
@@ -425,7 +426,7 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
             Marker(
               markerId: MarkerId("source Marker"),
               position: LatLng(coords.last.toDouble(), coords.first.toDouble()),
-              icon: sourceIcon.value!,
+              icon: sourceIcon.value ?? BitmapDescriptor.defaultMarker,
             ),
           if (dropCoords != null)
             Marker(
@@ -434,7 +435,7 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
                 dropCoords.last.toDouble(),
                 dropCoords.first.toDouble(),
               ),
-              icon: destinationIcon.value!,
+              icon: destinationIcon.value ?? BitmapDescriptor.defaultMarker,
             ),
         },
       );

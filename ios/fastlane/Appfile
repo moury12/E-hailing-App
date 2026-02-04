@@ -1,0 +1,8 @@
+app_identifier("com.dudu.ios.app") # The bundle identifier of your app
+apple_id("leeczeyik@duducar.co") # Your Apple Developer Portal username
+
+itc_team_id("127943531") # App Store Connect Team ID
+team_id("UCXSRD53J2") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
