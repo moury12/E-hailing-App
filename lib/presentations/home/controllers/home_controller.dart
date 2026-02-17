@@ -7,7 +7,6 @@ import 'package:e_hailing_app/core/service/location-service/location_service.dar
 import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
 import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
-import 'package:e_hailing_app/core/utils/google_map_api_key.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_location_update_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
@@ -117,8 +116,6 @@ class HomeController extends GetxController {
 
   @override
   void onInit() async {
-    print('MAP KEY: ${GoogleClient.googleMapUrl}');
-
     initializeSocket();
     await getUserCurrentTrip();
     if (tripAcceptedModel.value.pickUpCoordinates != null &&

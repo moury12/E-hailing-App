@@ -307,25 +307,23 @@ class CommonController extends GetxController {
       }
 
       final response = await http.get(Uri.parse(url));
-      debugPrint(url);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
 
         // Clear the previous suggestions before adding new ones
         addressSuggestion.clear();
-        // logger.d(response.body);
-        // Loop through the predictions and fetch detailed info for each
+
+        // Store placeId + name only — NO Place Details call here (saves 5x API costs)
         for (var prediction in data['predictions']) {
           if (addressSuggestion.length >= 5) {
             break; // Stop once we have 5 results
           }
 
-          String placeId = prediction['place_id'];
-          String placeName = prediction['description'];
-
-          // Fetch place details using Place Details API
-          await _fetchPlaceDetails(placeId, placeName);
+          addressSuggestion.add({
+            'placeId': prediction['place_id'],
+            'name': prediction['description'],
+          });
         }
       } else {
         debugPrint("API error: ${response.statusCode}");
@@ -337,31 +335,39 @@ class CommonController extends GetxController {
     }
   }
 
-  Future<void> _fetchPlaceDetails(String placeId, String placeName) async {
-    final detailsUrl =
-        'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=${GoogleClient.googleMapUrl}';
-    final response = await http.get(Uri.parse(detailsUrl));
+  /// Fetch Place Details for a SINGLE place when the user selects it.
+  /// Only requests geometry to minimize cost (falls under Essentials SKU).
+  /// Returns a LatLng if successful, or null if the place is outside boundaries.
+  Future<LatLng?> fetchPlaceDetailOnSelect(String placeId) async {
+    try {
+      final detailsUrl =
+          'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=geometry&key=${GoogleClient.googleMapUrl}';
+      final response = await http.get(Uri.parse(detailsUrl));
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> detailsData = jsonDecode(response.body);
-      // logger.d(detailsData);
-      if (detailsData['status'] == 'OK') {
-        var location = detailsData['result']['geometry']['location'];
-        double lat = location['lat'];
-        double lng = location['lng'];
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> detailsData = jsonDecode(response.body);
+        if (detailsData['status'] == 'OK') {
+          var location = detailsData['result']['geometry']['location'];
+          double lat = location['lat'];
+          double lng = location['lng'];
 
-        LatLng suggestionLatLng = LatLng(lat, lng);
-        // logger.d(response.body);
+          LatLng suggestionLatLng = LatLng(lat, lng);
 
-        // Check if the suggestion is inside the country boundary
-        if (BoundaryController.to.contains(suggestionLatLng)) {
-          // If the location is within bounds, add to the list
-          addressSuggestion.add({'lat': lat, 'lng': lng, 'name': placeName});
+          // Check if the suggestion is inside the country boundary
+          if (BoundaryController.to.contains(suggestionLatLng)) {
+            return suggestionLatLng;
+          } else {
+            debugPrint("Selected place is outside the service boundary.");
+            return null;
+          }
         }
+      } else {
+        debugPrint("Failed to fetch place details for placeId: $placeId");
       }
-    } else {
-      debugPrint("Failed to fetch place details for placeId: $placeId");
+    } catch (e) {
+      debugPrint("Error fetching place details: $e");
     }
+    return null;
   }
 
   void initialSetup() {

@@ -3,12 +3,10 @@ import 'package:e_hailing_app/core/components/custom_button.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
-import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
-import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/row_call_chat_details_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,25 +44,9 @@ class DriverAfterAcceptedWidget extends StatefulWidget {
 class _DriverAfterAcceptedWidgetState extends State<DriverAfterAcceptedWidget> {
   @override
   void initState() {
-    if (!DashBoardController.to.afterOnTheWay.value) {
-      getInitialEstimatedTime();
-    }
     super.initState();
-  }
-
-  void getInitialEstimatedTime() async {
-    DashBoardController.to.estimatedPickupTime.value = await getEstimatedTime(
-      pickupLat:
-          CommonController.to.markerPositionDriver.value.latitude.toDouble(),
-      pickupLng:
-          CommonController.to.markerPositionDriver.value.longitude.toDouble(),
-      dropOffLat:
-          widget.driverCurrentTripModel.pickUpCoordinates!.coordinates!.last
-              .toDouble(),
-      dropOffLng:
-          widget.driverCurrentTripModel.pickUpCoordinates!.coordinates!.first
-              .toDouble(),
-    );
+    // Estimated pickup time is now set by DashBoardController.drawPolylineMethod()
+    // using the Directions API result — no separate Distance Matrix call needed.
   }
 
   @override
