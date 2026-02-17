@@ -235,7 +235,6 @@ class CommonController extends GetxController {
       initialSetup();
     }
     getAnnouncmentRequest();
-    // Only setup socket if we have a valid user ID
 
     super.onInit();
   }
@@ -245,7 +244,7 @@ class CommonController extends GetxController {
   WebViewController? webController;
   void initializeWebViewController() {
     if (webController != null) {
-      return; // Avoid re-initialization
+      return;
     }
     webController =
         WebViewController()
