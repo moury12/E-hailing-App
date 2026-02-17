@@ -18,13 +18,12 @@ migrate_working_dir/
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
-#.vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/
+temp_auto_push.bat
 **/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
@@ -32,7 +31,13 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-# google_map_api_key.dart
+# Google Maps API secrets
+ios/Flutter/Secrets.xcconfig
+google_map_api_key.dart
+Secrets.xcconfig
+
+
+# lib/core/utils/google_map_api_key.dart
 app/src/main/res/values/secrets.xml
 
 # Symbolication related
@@ -45,3 +50,5 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+.gitignore
+branch_structure.json
