@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/constants/app_static_strings_constant.dart';
 import '../../../core/constants/color_constants.dart';
@@ -422,32 +421,31 @@ Widget locationSuggestionList() {
         return SearchAddress(
           title: address['name'],
           onTap: () async {
-            // final locationService = LocationTrackingService();
-            double lat = address['lat'];
-            double lng = address['lng'];
-            if (isPickup) {
-              HomeController.to.pickupLatLng.value = LatLng(lat, lng);
+            final String placeId = address['placeId'];
+            final String name = address['name'];
+
+            // Fetch geometry only for the selected suggestion (1 API call instead of 5)
+            final latLng = await CommonController.to.fetchPlaceDetailOnSelect(
+              placeId,
+            );
+
+            if (latLng != null) {
+              if (isPickup) {
+                HomeController.to.pickupLatLng.value = latLng;
+              } else {
+                HomeController.to.dropoffLatLng.value = latLng;
+              }
+              HomeController.to.selectedAddress.value = name;
+              controllerToUpdate.value.text = name;
             } else {
-              HomeController.to.dropoffLatLng.value = LatLng(lat, lng);
+              showCustomSnackbar(
+                title: "Warning!!",
+                message: "This location is outside the service area.",
+              );
             }
-            HomeController.to.selectedAddress.value = address['name'];
-            // await locationService.getLatLngFromPlace(
-            //   placeId,
-            //   latLng:
-            //   isPickup
-            //       ? HomeController.to.pickupLatLng
-            //       : HomeController.to.dropoffLatLng,
-            //
-            //   selectedAddress: HomeController.to.selectedAddress,
-            // );
 
-            controllerToUpdate.value.text =
-                HomeController.to.selectedAddress.value;
             CommonController.to.addressSuggestion.clear();
-
-            HomeController.to.activeField.value = ''; // Reset
-            // HomeController.to.dropOffFocusNode.unfocus();
-            // HomeController.to.pickupFocusNode.unfocus();
+            HomeController.to.activeField.value = '';
           },
         );
       }),

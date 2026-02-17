@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/components/custom_button_tap.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/custom_text.dart';
 import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/save-location/controllers/save_location_controller.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +18,33 @@ import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/custom_space.dart';
 import '../../splash/controllers/common_controller.dart';
 
-class AddPlacePage extends StatelessWidget {
+class AddPlacePage extends StatefulWidget {
   static const String routeName = '/add-place';
 
-  AddPlacePage({super.key});
+  const AddPlacePage({super.key});
 
+  @override
+  State<AddPlacePage> createState() => _AddPlacePageState();
+}
+
+class _AddPlacePageState extends State<AddPlacePage> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (value.isNotEmpty) {
+        CommonController.to.fetchSuggestedPlacesWithRadius(value);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +63,7 @@ class AddPlacePage extends StatelessWidget {
                     title: AppStaticStrings.placeAddress.tr,
                     textEditingController:
                         SaveLocationController.to.searchFieldController.value,
-                    onChanged: (val) {
-                      CommonController.to.fetchSuggestedPlacesWithRadius(val);
-                    },
+                    onChanged: _onSearchChanged,
                     hintText: 'search here...',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -64,38 +86,35 @@ class AddPlacePage extends StatelessWidget {
                                 CommonController.to.addressSuggestion[index];
                             return SearchAddress(
                               onTap: () async {
-                                SaveLocationController.to.lat.value =
-                                    address['lat'].toString();
-                                SaveLocationController.to.lng.value =
-                                    address['lng'].toString();
+                                final String placeId = address['placeId'];
+                                final String name = address['name'];
 
-                                SaveLocationController
-                                    .to
-                                    .selectedAddress
-                                    .value = address['name'];
+                                // Fetch geometry only for the selected place
+                                final latLng = await CommonController.to
+                                    .fetchPlaceDetailOnSelect(placeId);
 
-                                logger.d("----------------------");
-                                logger.d(
+                                if (latLng != null) {
+                                  SaveLocationController.to.lat.value =
+                                      latLng.latitude.toString();
+                                  SaveLocationController.to.lng.value =
+                                      latLng.longitude.toString();
                                   SaveLocationController
                                       .to
                                       .selectedAddress
-                                      .value,
-                                );
-                                logger.d(
+                                      .value = name;
                                   SaveLocationController
                                       .to
                                       .searchFieldController
                                       .value
-                                      .text,
-                                );
-                                SaveLocationController
-                                    .to
-                                    .searchFieldController
-                                    .value
-                                    .text = SaveLocationController
-                                        .to
-                                        .selectedAddress
-                                        .value;
+                                      .text = name;
+                                } else {
+                                  showCustomSnackbar(
+                                    title: "Warning!!",
+                                    message:
+                                        "This location is outside the service area.",
+                                  );
+                                }
+
                                 CommonController.to.addressSuggestion.clear();
                               },
                               title: address['name'],

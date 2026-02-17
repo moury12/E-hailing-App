@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,13 +22,11 @@ import 'package:e_hailing_app/presentations/message/views/chatting_page.dart';
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../presentations/payment/widgets/ratting_dialog_widget.dart';
 import '../../presentations/trip/widgets/trip_cancellation_reason_card_item.dart';
-import '../utils/google_map_api_key.dart';
 
 launchGoogleMapsApp(
   String startLatitude,
@@ -187,41 +184,6 @@ void handleNotificationTap(Map<String, dynamic> data) {
 void dismissLoadingDialog() {
   if (Get.isDialogOpen ?? false) {
     Get.back();
-  }
-}
-
-Future<String> getEstimatedTime({
-  required double pickupLat,
-  required double pickupLng,
-  required double dropOffLat,
-  required double dropOffLng,
-}) async {
-  final url =
-      'https://maps.googleapis.com/maps/api/distancematrix/json?origins=$pickupLat,$pickupLng&destinations=$dropOffLat,$dropOffLng&key=${GoogleClient.googleMapUrl}';
-
-  logger.d(url);
-  try {
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-
-      if (data['rows'] != null &&
-          data['rows'].isNotEmpty &&
-          data['rows'][0]['elements'] != null &&
-          data['rows'][0]['elements'].isNotEmpty &&
-          data['rows'][0]['elements'][0]['status'] == 'OK') {
-        final duration = data['rows'][0]['elements'][0]['duration']['text'];
-        return duration;
-      } else {
-        throw Exception("No duration found or invalid coordinates");
-      }
-    } else {
-      throw Exception(
-        "Failed: ${response.statusCode} ${response.reasonPhrase}",
-      );
-    }
-  } catch (e) {
-    throw Exception("Error getting estimated time: $e");
   }
 }
 

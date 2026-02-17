@@ -53,6 +53,7 @@ class DashBoardController extends GetxController {
   RxBool isLoadingAccept = false.obs;
   RxBool isLoadingTripStatus = false.obs;
   RxString estimatedPickupTime = "0:00 Min".obs;
+  RxInt driverToPickupDuration = 0.obs;
 
   @override
   void onInit() async {
@@ -343,8 +344,10 @@ class DashBoardController extends GetxController {
           NavigationController.to.routePolylinesDrivers,
           type: PolylineType.driverToPickup,
           distance: int.tryParse(distanceInMeters.toString())?.obs ?? 0.obs,
-          duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
+          duration: driverToPickupDuration,
         );
+        // Update estimated pickup time from Directions API result (no separate Distance Matrix call needed)
+        estimatedPickupTime.value = '${driverToPickupDuration.value} min';
       }
     }
   }
