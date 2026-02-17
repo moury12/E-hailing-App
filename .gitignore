@@ -32,7 +32,13 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-# google_map_api_key.dart
+# Google Maps API secrets
+ios/Flutter/Secrets.xcconfig
+google_map_api_key.dart
+Secrets.xcconfig
+
+
+# lib/core/utils/google_map_api_key.dart
 app/src/main/res/values/secrets.xml
 
 # Symbolication related
