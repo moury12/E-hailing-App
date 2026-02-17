@@ -38,7 +38,7 @@ google_map_api_key.dart
 Secrets.xcconfig
 
 
-# lib/core/utils/google_map_api_key.dart
+lib/core/utils/google_map_api_key.dart
 app/src/main/res/values/secrets.xml
 
 # Symbolication related
