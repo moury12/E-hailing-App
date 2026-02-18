@@ -518,10 +518,16 @@ String formatDate(String input) {
 
 void callOnPhone({required String phoneNumber}) async {
   final url = Uri.parse('tel:$phoneNumber');
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url);
-  } else {
-    throw 'Could not launch $url';
+  try {
+    // Attempt to launch directly as sometimes canLaunchUrl fails on certain environments
+    final launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+    if (!launched) {
+      throw 'Could not launch $url';
+    }
+  } catch (e) {
+    debugPrint('Error launching phone call: $e');
+    // Fallback or better error message
+    throw 'Failed to initiate call to $phoneNumber. Make sure a phone app is available.';
   }
 }
 

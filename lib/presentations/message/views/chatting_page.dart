@@ -6,6 +6,7 @@ import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/constants/padding_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/core/service/translation-service/translation_service.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/message/controllers/chatting_controller.dart';
 import 'package:e_hailing_app/presentations/message/model/chat_message_model.dart';
 import 'package:e_hailing_app/presentations/message/widgets/chat_loading.dart';
@@ -73,6 +74,7 @@ class _ChattingPageState extends State<ChattingPage> {
                   actionIcon: callIcon,
                   onTap: () {
                     if (other != null) {
+                      logger.i(other.phoneNumber);
                       callOnPhone(
                         phoneNumber: other.phoneNumber ?? '00000000000',
                       );

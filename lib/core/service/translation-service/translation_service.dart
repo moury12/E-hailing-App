@@ -1,11 +1,10 @@
 import 'dart:convert';
 
+import 'package:e_hailing_app/core/utils/google_map_api_key.dart';
 import 'package:http/http.dart' as http;
 
 class TranslationService {
-  final String apiKey = String.fromEnvironment(
-    'MAPS_API_KEY',
-  ); // Add your API Key here
+  final String apiKey = GoogleClient.googleMapUrl; // Add your API Key here
 
   // Function to translate text using Google Translate API
 
