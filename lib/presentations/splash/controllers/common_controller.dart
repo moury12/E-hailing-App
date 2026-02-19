@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:uuid/uuid.dart';
+
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
@@ -46,6 +48,10 @@ class CommonController extends GetxController {
   RxList<TripCancellationModel> tripCancellationList =
       <TripCancellationModel>[].obs;
   RxBool hasShownAnnouncement = false.obs;
+
+  // Session token for Places API — groups Autocomplete + Place Details into one billing session
+  final _uuid = const Uuid();
+  String _sessionToken = const Uuid().v4();
 
   void updateTripCancellationList() {
     tripCancellationList.value =
@@ -286,6 +292,12 @@ class CommonController extends GetxController {
           ..loadRequest(Uri.parse(stripeUrl.value));
   }
 
+  /// Reset session token — call when starting a new search session
+  void _resetSessionToken() {
+    _sessionToken = _uuid.v4();
+    logger.d('🔄 Places API session token reset: $_sessionToken');
+  }
+
   Future<void> fetchSuggestedPlacesWithRadius(
     String input, {
     double radiusInMeters = 5000,
@@ -296,8 +308,9 @@ class CommonController extends GetxController {
       Rx<LatLng> markerPosition =
           isDriver.value ? markerPositionDriver : markerPositionRider;
 
+      // Include session token — groups autocomplete + place details into one billing session
       String url =
-          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=${GoogleClient.googleMapUrl}';
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=${GoogleClient.googleMapUrl}&sessiontoken=$_sessionToken';
 
       if (markerPosition.value.latitude != 0.0 &&
           markerPosition.value.longitude != 0.0) {
@@ -337,12 +350,17 @@ class CommonController extends GetxController {
 
   /// Fetch Place Details for a SINGLE place when the user selects it.
   /// Only requests geometry to minimize cost (falls under Essentials SKU).
+  /// Uses session token so Autocomplete + Details = 1 billed request.
   /// Returns a LatLng if successful, or null if the place is outside boundaries.
   Future<LatLng?> fetchPlaceDetailOnSelect(String placeId) async {
     try {
+      // Include the same session token used during autocomplete
       final detailsUrl =
-          'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=geometry&key=${GoogleClient.googleMapUrl}';
+          'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=geometry&key=${GoogleClient.googleMapUrl}&sessiontoken=$_sessionToken';
       final response = await http.get(Uri.parse(detailsUrl));
+
+      // Reset session token after place selection (session is now complete)
+      _resetSessionToken();
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> detailsData = jsonDecode(response.body);

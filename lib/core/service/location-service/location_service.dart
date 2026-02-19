@@ -339,114 +339,92 @@ class LocationTrackingService {
     GoogleMapController? mapController,
     required PolylineType type,
   }) async {
-    try {
-      final apiKey = GoogleClient.googleMapUrl;
+    final apiKey = GoogleClient.googleMapUrl;
+    final needsTraffic = distance != null && duration != null;
 
-      final url =
-          'https://maps.googleapis.com/maps/api/directions/json?'
-          'origin=${start.latitude},${start.longitude}'
-          '&destination=${end.latitude},${end.longitude}'
-          '&departure_time=now' // Critical for traffic
-          '&traffic_model=best_guess'
-          '&alternatives=true' // Get multiple route options
-          '&mode=driving' // Ensure driving mode
-          '&key=$apiKey';
+    // ✅ Routes API — Essentials plan-এ covered!
+    final url = 'https://routes.googleapis.com/directions/v2:computeRoutes';
 
-      final response = await http.get(Uri.parse(url));
-      logger.d('🔗 URL: $url');
+    final body = {
+      "origin": {
+        "location": {
+          "latLng": {"latitude": start.latitude, "longitude": start.longitude},
+        },
+      },
+      "destination": {
+        "location": {
+          "latLng": {"latitude": end.latitude, "longitude": end.longitude},
+        },
+      },
+      "travelMode": "DRIVE",
+      "routingPreference": needsTraffic ? "TRAFFIC_AWARE" : "TRAFFIC_UNAWARE",
+      "computeAlternativeRoutes": false, // false = 1 route only = less cost
+    };
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey,
+        // Only request fields you need — reduces cost
+        'X-Goog-FieldMask':
+            needsTraffic
+                ? 'routes.polyline,routes.legs.distanceMeters,routes.legs.duration,routes.legs.staticDuration'
+                : 'routes.polyline',
+      },
+      body: jsonEncode(body),
+    );
 
-        // 🟢 Log the full response to see what we're getting
-        logger.d('📦 Full API Response: ${jsonEncode(data)}');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final route = data['routes'][0];
 
-        if (data['routes'] != null && data['routes'].isNotEmpty) {
-          final points = data['routes'][0]['overview_polyline']['points'];
-          List<LatLng> polylinePoints = decodePolyline(points);
-          final leg = data['routes'][0]['legs'][0];
+      // Decode polyline
+      final points = decodePolyline(route['polyline']['encodedPolyline']);
 
-          // 🟢 Log all duration fields
-          logger.d('⏱️ Duration: ${leg['duration']}');
-          logger.d('🚦 Duration in Traffic: ${leg['duration_in_traffic']}');
+      if (distance != null && duration != null) {
+        final leg = route['legs'][0];
+        distance.value = leg['distanceMeters'];
 
-          Color polylineColor;
-          switch (type) {
-            case PolylineType.driverToPickup:
-              polylineColor = AppColors.kBlueColor;
-              break;
-            case PolylineType.pickupToDropoff:
-              polylineColor = AppColors.kPrimaryColor;
-              break;
-          }
-
-          final polyline = Polyline(
-            polylineId: PolylineId(
-              'route_${DateTime.now().millisecondsSinceEpoch}',
-            ),
-            color: polylineColor,
-            width: 5.w.toInt(),
-            points: polylinePoints,
-          );
-
-          if (distance != null && duration != null) {
-            distance.value = leg['distance']['value'];
-
-            // 🟢 Priority: duration_in_traffic > duration
-            int durationInSeconds;
-            if (leg['duration_in_traffic'] != null) {
-              durationInSeconds = leg['duration_in_traffic']['value'];
-              logger.d(
-                '✅ Using duration_in_traffic: $durationInSeconds seconds',
-              );
-            } else {
-              durationInSeconds = leg['duration']['value'];
-              logger.d(
-                '⚠️ Using regular duration (no traffic): $durationInSeconds seconds',
-              );
-            }
-
-            duration.value = (durationInSeconds / 60).ceil();
-
-            logger.d('🐛 Final Result: {');
-            logger.d('🐛   "duration": ${duration.value},');
-            logger.d('🐛   "distance": ${distance.value}');
-            logger.d('🐛 }');
-          }
-
-          routePolylines.add(polyline);
-          routePolylines.refresh();
-
-          await _animateCameraToRoute(
-            polylinePoints,
-            userPosition: userPosition,
-            mapController: mapController,
-          );
-
-          return true;
-        } else {
-          showCustomSnackbar(
-            title: "Sorry!!",
-            message: "No route found between selected locations.",
-          );
-          return false;
-        }
-      } else {
-        logger.e('❌ API Error: ${response.statusCode} - ${response.body}');
-        showCustomSnackbar(
-          title: "Error!!",
-          message: "Failed to get route. Please try again.",
-        );
-        return false;
+        // duration = traffic-aware, staticDuration = no traffic
+        final durationStr = leg['duration'] ?? leg['staticDuration'];
+        // Format: "123s" → remove 's' → parse int
+        final seconds = int.parse(durationStr.replaceAll('s', ''));
+        duration.value = (seconds / 60).ceil();
       }
-    } catch (e) {
-      debugPrint("Error in drawPolylineBetweenPoints: $e");
-      showCustomSnackbar(
-        title: "Error!!",
-        message: "Something went wrong. Please try again.",
+
+      // Add polyline to map (same as before)
+      Color polylineColor;
+      switch (type) {
+        case PolylineType.driverToPickup:
+          polylineColor = AppColors.kBlueColor;
+          break;
+        case PolylineType.pickupToDropoff:
+          polylineColor = AppColors.kPrimaryColor;
+          break;
+      }
+
+      routePolylines.add(
+        Polyline(
+          polylineId: PolylineId(
+            'route_${DateTime.now().millisecondsSinceEpoch}',
+          ),
+          color: polylineColor,
+          width: 5.w.toInt(),
+          points: points,
+        ),
       );
-      return false;
+      routePolylines.refresh();
+
+      await _animateCameraToRoute(
+        points,
+        userPosition: userPosition,
+        mapController: mapController,
+      );
+
+      return true;
     }
+    return false;
   }
 
   Future<void> _animateCameraToRoute(

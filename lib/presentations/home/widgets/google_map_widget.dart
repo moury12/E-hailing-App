@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
@@ -26,6 +28,9 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
   final Rx<BitmapDescriptor?> sourceIcon = Rx<BitmapDescriptor?>(null);
   final Rx<BitmapDescriptor?> destinationIcon = Rx<BitmapDescriptor?>(null);
   final Rx<BitmapDescriptor?> currentLocationIcon = Rx<BitmapDescriptor?>(null);
+
+  // Debounce timer for onCameraIdle — prevents rapid getPlaceName() calls
+  Timer? _cameraIdleDebounce;
 
   Future<void> loadCustomMarker() async {
     try {
@@ -114,47 +119,58 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
               HomeController.to.mapDraging.value = true;
             },
 
-            onCameraIdle: () async {
+            onCameraIdle: () {
               HomeController.to.mapDraging.value = false;
-              final LatLng? current =
-                  HomeController.to.setDestination.value
-                      ? _dropoffCenter
-                      : _pickupCenter;
-              if (current == null) return;
 
-              logger.d("onCameraIdle: checking boundary for $current");
+              // Debounce: wait 500ms after last camera movement before calling getPlaceName()
+              // This prevents rapid Reverse Geocoding API calls during map dragging
+              _cameraIdleDebounce?.cancel();
+              _cameraIdleDebounce = Timer(
+                const Duration(milliseconds: 500),
+                () async {
+                  final LatLng? current =
+                      HomeController.to.setDestination.value
+                          ? _dropoffCenter
+                          : _pickupCenter;
+                  if (current == null) return;
 
-              if (!BoundaryController.to.contains(current)) {
-                logger.w("onCameraIdle: Boundary check failed for $current");
-                showCustomSnackbar(
-                  title: "Failed",
-                  message: AppStaticStrings.outsideCountryBoundary.tr,
-                  type: SnackBarType.alert,
-                );
-                if (lastValidPosition != null) {
-                  CommonController.to.mapControllerRider?.animateCamera(
-                    CameraUpdate.newLatLng(lastValidPosition!),
+                  logger.d("onCameraIdle: checking boundary for $current");
+
+                  if (!BoundaryController.to.contains(current)) {
+                    logger.w(
+                      "onCameraIdle: Boundary check failed for $current",
+                    );
+                    showCustomSnackbar(
+                      title: "Failed",
+                      message: AppStaticStrings.outsideCountryBoundary.tr,
+                      type: SnackBarType.alert,
+                    );
+                    if (lastValidPosition != null) {
+                      CommonController.to.mapControllerRider?.animateCamera(
+                        CameraUpdate.newLatLng(lastValidPosition!),
+                      );
+                    }
+                    return;
+                  }
+
+                  lastValidPosition = current;
+
+                  if (HomeController.to.setDestination.value) {
+                    HomeController.to.dropoffLatLng.value = current;
+                  } else {
+                    HomeController.to.pickupLatLng.value = current;
+                  }
+
+                  await HomeController.to.getPlaceName(
+                    current,
+                    HomeController.to.setDestination.value
+                        ? HomeController.to.dropOffLocationController.value
+                        : HomeController.to.pickupLocationController.value,
                   );
-                }
-                return;
-              }
 
-              lastValidPosition = current;
-
-              if (HomeController.to.setDestination.value) {
-                HomeController.to.dropoffLatLng.value = current;
-              } else {
-                HomeController.to.pickupLatLng.value = current;
-              }
-
-              await HomeController.to.getPlaceName(
-                current,
-                HomeController.to.setDestination.value
-                    ? HomeController.to.dropOffLocationController.value
-                    : HomeController.to.pickupLocationController.value,
+                  HomeController.to.mapDragable.value = false;
+                },
               );
-
-              HomeController.to.mapDragable.value = false;
             },
 
             // cameraTargetBounds:
@@ -328,6 +344,12 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
         ],
       );
     });
+  }
+
+  @override
+  void dispose() {
+    _cameraIdleDebounce?.cancel();
+    super.dispose();
   }
 
   @override

@@ -92,7 +92,18 @@ class BoundaryController extends GetxController {
   }
 
   /// PUBLIC: initialize with user GPS position
+  /// Uses cached result if city was already detected (saves Geocoding API calls)
   Future<void> initialize(LatLng userPosition) async {
+    // Skip if already initialized — cached result (FREE)
+    if (_ready &&
+        _detectedCity.value.isNotEmpty &&
+        _detectedCity.value != 'unknown') {
+      logger.i(
+        "City already cached: ${_detectedCity.value} — skipping detection",
+      );
+      return;
+    }
+
     // Detect which city the user is in
     final cityKey = await _detectCity(userPosition);
 
@@ -111,8 +122,18 @@ class BoundaryController extends GetxController {
 
   /// Detect which city user is currently in
   Future<String?> _detectCity(LatLng pos) async {
+    // 1️⃣ Try FREE polygon check first (no API cost)
+    for (final entry in _cityBoundaries.entries) {
+      for (final ring in entry.value.rings) {
+        if (_pointInRing(pos, ring)) {
+          logger.i("City detected via polygon (FREE): ${entry.key}");
+          return entry.key;
+        }
+      }
+    }
+
+    // 2️⃣ Fallback: Google Geocoding API (only if polygon check failed)
     try {
-      // Try Google Geocoding first
       final gUrl =
           'https://maps.googleapis.com/maps/api/geocode/json?'
           'latlng=${pos.latitude},${pos.longitude}&key=${GoogleClient.googleMapUrl}';
@@ -127,19 +148,17 @@ class BoundaryController extends GetxController {
           final formatted = (r['formatted_address'] as String).toLowerCase();
           logger.d("Checking address: $formatted");
 
-          // Check for city matches
           if (formatted.contains('dhaka')) {
-            logger.i("City detected via formatted address: Dhaka");
+            logger.i("City detected via Geocoding API: Dhaka");
             return 'dhaka';
           }
           if (formatted.contains('selangor') ||
               formatted.contains('kuala lumpur') ||
               formatted.contains('kl')) {
-            logger.i("City detected via formatted address: KL/Selangor");
+            logger.i("City detected via Geocoding API: KL/Selangor");
             return 'kl_selangor';
           }
 
-          // Check address components
           for (final c in (r['address_components'] as List)) {
             final longName = (c['long_name'] as String).toLowerCase();
             final types = (c['types'] as List?)?.cast<String>() ?? [];
@@ -165,17 +184,6 @@ class BoundaryController extends GetxController {
         error: e,
         stackTrace: stack,
       );
-    }
-
-    // Fallback: Check if point is within any city boundary
-    logger.d("Falling back to polygon check for city detection");
-    for (final entry in _cityBoundaries.entries) {
-      for (final ring in entry.value.rings) {
-        if (_pointInRing(pos, ring)) {
-          logger.i("City detected via polygon: ${entry.key}");
-          return entry.key;
-        }
-      }
     }
 
     logger.e("No city detected for position: $pos");
