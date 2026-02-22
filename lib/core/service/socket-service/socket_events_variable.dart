@@ -20,6 +20,8 @@ class DriverEvent {
   static const String tripAvailableStatus = 'trip_available';
   static const String tripAcceptedStatus = 'trip_accepted';
   static const String tripUpdateStatus = 'trip_update_status';
+  static const String pendingTripRequestAccepted =
+      'pending_trip_request_accepted';
 }
 
 class ChatEvent {

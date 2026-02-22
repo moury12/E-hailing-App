@@ -44,7 +44,8 @@ class DashBoardController extends GetxController {
   Rx<DriverCurrentTripModel> currentTrip = DriverCurrentTripModel().obs;
   Rx<DriverLocationUpdateModel> driverUpdatedLocation =
       DriverLocationUpdateModel().obs;
-  Rx<DriverCurrentTripModel> availableTrip = DriverCurrentTripModel().obs;
+  RxList<DriverCurrentTripModel> availableTrips =
+      <DriverCurrentTripModel>[].obs;
 
   TextEditingController extraCost = TextEditingController();
   final socketService = SocketService();
@@ -131,10 +132,18 @@ class DashBoardController extends GetxController {
     }
   }
 
-  void showAvailableTrip() {
+  void showAvailableTrips() {
     // rideRequest.value = true;
-    logger.d(availableTrip.value.sId);
-    resetRideFlow(rideType: RideFlowState.rideRequest);
+    if (availableTrips.isNotEmpty) {
+      resetRideFlow(rideType: RideFlowState.rideRequest);
+    }
+  }
+
+  void ignoreTrip(String tripId) {
+    availableTrips.removeWhere((trip) => trip.sId == tripId);
+    if (availableTrips.isEmpty) {
+      resetRideFlow(rideType: RideFlowState.findingRide);
+    }
   }
 
   void initializeSocket() {
@@ -262,7 +271,9 @@ class DashBoardController extends GetxController {
     isLoadingAccept.value = true;
 
     socketService.emit(DriverEvent.tripAcceptedStatus, {
-      {"tripId": tripId, "long": lat, "lat": lng},
+      "tripId": tripId,
+      "long": lat,
+      "lat": lng,
     });
   }
 
@@ -426,6 +437,7 @@ class DashBoardController extends GetxController {
     socketService.off(DriverEvent.tripUpdateStatus);
     socketService.off(DriverEvent.tripAcceptedStatus);
     socketService.off(DriverEvent.driverLocationUpdate);
+    socketService.off(DriverEvent.pendingTripRequestAccepted);
     // ... add all relevant events
   }
 
@@ -444,14 +456,26 @@ class DashBoardController extends GetxController {
       if (data["success"]) {
         // Ensure UI updates happen on the main thread
         if (Get.isRegistered<DashBoardController>()) {
-          DashBoardController
-              .to
-              .availableTrip
-              .value = DriverCurrentTripModel.fromJson(data['data']);
+          final newTrip = DriverCurrentTripModel.fromJson(data['data']);
+
+          // Check if trip already exists in the list to avoid duplicates
+          if (!DashBoardController.to.availableTrips.any(
+            (trip) => trip.sId == newTrip.sId,
+          )) {
+            DashBoardController.to.availableTrips.add(newTrip);
+          }
+
           DashBoardController.to.resetRideFlow(
             rideType: RideFlowState.rideRequest,
           );
         }
+      }
+    });
+
+    socketService.on(DriverEvent.pendingTripRequestAccepted, (data) {
+      logger.d("📩 pendingTripRequestAccepted: $data");
+      if (data["tripId"] != null) {
+        DashBoardController.to.ignoreTrip(data["tripId"].toString());
       }
     });
     socketService.on('driver_location_updated', (data) {
@@ -604,8 +628,8 @@ class DashBoardController extends GetxController {
     // NavigationController.to.clearPolyline();
     // Reset all state
     // resetRideFlow(rideType: RideFlowState.findingRide);
-    // // currentTrip.value = DriverCurrentTripModel();
-    // availableTrip.value = DriverCurrentTripModel();
+    // currentTrip.value = DriverCurrentTripModel();
+    availableTrips.clear();
     // driverUpdatedLocation.value = DriverLocationUpdateModel();
     // extraCost.clear();
 
