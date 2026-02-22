@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
-
-import '../../../core/utils/google_map_api_key.dart';
+import 'package:geocoding/geocoding.dart';
 
 class BoundaryController extends GetxController {
   static BoundaryController get to => Get.find<BoundaryController>();
@@ -132,55 +129,46 @@ class BoundaryController extends GetxController {
       }
     }
 
-    // 2️⃣ Fallback: Google Geocoding API (only if polygon check failed)
+    // 2️⃣ Fallback: Native Geocoding (FREE)
     try {
-      final gUrl =
-          'https://maps.googleapis.com/maps/api/geocode/json?'
-          'latlng=${pos.latitude},${pos.longitude}&key=${GoogleClient.googleMapUrl}';
-      final gRes = await http
-          .get(Uri.parse(gUrl))
-          .timeout(const Duration(seconds: 8));
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        pos.latitude,
+        pos.longitude,
+      );
 
-      if (gRes.statusCode == 200) {
-        final results = (jsonDecode(gRes.body)['results'] as List?) ?? [];
+      for (final p in placemarks) {
+        final String? locality = p.locality?.toLowerCase();
+        final String? administrativeArea = p.administrativeArea?.toLowerCase();
+        final String? subAdministrativeArea =
+            p.subAdministrativeArea?.toLowerCase();
+        final String? name = p.name?.toLowerCase();
 
-        for (final r in results) {
-          final formatted = (r['formatted_address'] as String).toLowerCase();
-          logger.d("Checking address: $formatted");
+        logger.d(
+          "Checking placemark: $locality, $administrativeArea, $subAdministrativeArea, $name",
+        );
 
-          if (formatted.contains('dhaka')) {
-            logger.i("City detected via Geocoding API: Dhaka");
-            return 'dhaka';
-          }
-          if (formatted.contains('selangor') ||
-              formatted.contains('kuala lumpur') ||
-              formatted.contains('kl')) {
-            logger.i("City detected via Geocoding API: KL/Selangor");
-            return 'kl_selangor';
-          }
+        // Check for Dhaka
+        if ((locality?.contains('dhaka') ?? false) ||
+            (administrativeArea?.contains('dhaka') ?? false) ||
+            (name?.contains('dhaka') ?? false)) {
+          logger.i("City detected via Native Geocoding: Dhaka");
+          return 'dhaka';
+        }
 
-          for (final c in (r['address_components'] as List)) {
-            final longName = (c['long_name'] as String).toLowerCase();
-            final types = (c['types'] as List?)?.cast<String>() ?? [];
-
-            if (types.contains('administrative_area_level_1') ||
-                types.contains('locality')) {
-              if (longName.contains('dhaka')) {
-                logger.i("City detected via admin_area: Dhaka");
-                return 'dhaka';
-              }
-              if (longName.contains('selangor') ||
-                  longName.contains('kuala lumpur')) {
-                logger.i("City detected via admin_area: KL/Selangor");
-                return 'kl_selangor';
-              }
-            }
-          }
+        // Check for KL/Selangor
+        if ((locality?.contains('selangor') ?? false) ||
+            (administrativeArea?.contains('selangor') ?? false) ||
+            (locality?.contains('kuala lumpur') ?? false) ||
+            (administrativeArea?.contains('kuala lumpur') ?? false) ||
+            (locality?.contains('kl') ?? false) ||
+            (administrativeArea?.contains('kl') ?? false)) {
+          logger.i("City detected via Native Geocoding: KL/Selangor");
+          return 'kl_selangor';
         }
       }
     } catch (e, stack) {
       logger.e(
-        "Error in _detectCity API call: $e",
+        "Error in _detectCity Native Geocoding: $e",
         error: e,
         stackTrace: stack,
       );
