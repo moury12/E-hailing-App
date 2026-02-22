@@ -21,6 +21,7 @@ class RideRequestCardWidget extends StatelessWidget {
   final String? distance;
   final String? fromAddress;
   final String? toAddress;
+  final String? tripId;
 
   const RideRequestCardWidget({
     super.key,
@@ -33,71 +34,85 @@ class RideRequestCardWidget extends StatelessWidget {
     this.fromAddress,
     this.toAddress,
     this.tripClass,
+    this.tripId,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      spacing: 12.h,
-      children: [
-        Row(
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          spacing: 12.h,
           children: [
-            Expanded(
-              child: CustomText(
-                text:
-                    "${rideType == 'ride' ? "${tripClass?.toLowerCase() == "premium" ? "Premium" : ""} ${AppStaticStrings.ride.tr}" : AppStaticStrings.preBookRide.tr} Request",
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomText(
+                    text:
+                        "${rideType == 'ride' ? "${tripClass?.toLowerCase() == "premium" ? "Premium" : ""} ${AppStaticStrings.ride.tr}" : AppStaticStrings.preBookRide.tr} Request",
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AppColors.kPrimaryColor,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    padding: padding6,
+                    child: CustomText(
+                      text: dateTime ?? '00 00 0000 at 00:00 PM',
+                      color: AppColors.kWhiteColor,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              flex: 2,
-              child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.kPrimaryColor,
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                padding: padding6,
-                child: CustomText(
-                  text: dateTime ?? '00 00 0000 at 00:00 PM',
-                  color: AppColors.kWhiteColor,
-                ),
-              ),
+            DriverDetails(
+              title: AppStaticStrings.tripDistance.tr,
+              value: "${(int.parse(distance ?? "0") / 1000).toString()} km",
+              fare: fare,
+              userImg: userImg,
+              userName: userName,
+            ),
+            FromToTimeLine(
+              pickUpAddress: fromAddress,
+              dropOffAddress: toAddress,
+            ),
+            Obx(() {
+              return CustomButton(
+                isLoading: DashBoardController.to.isLoadingAccept.value,
+                onTap: () {
+                  // DashBoardController.to.rideRequest.value = false;
+                  DashBoardController.to.driverTripAccept(
+                    tripId: tripId ?? "",
+                    lat:
+                        CommonController.to.markerPositionDriver.value.latitude,
+                    lng:
+                        CommonController
+                            .to
+                            .markerPositionDriver
+                            .value
+                            .longitude,
+                  );
+                },
+                title: AppStaticStrings.accept.tr,
+              );
+            }),
+            CustomButton(
+              fillColor: AppColors.kWhiteColor,
+              textColor: AppColors.kPrimaryColor,
+              onTap: () {
+                DashBoardController.to.ignoreTrip(tripId ?? "");
+              },
+              title: AppStaticStrings.findAnother.tr,
             ),
           ],
         ),
-        DriverDetails(
-          title: AppStaticStrings.tripDistance.tr,
-          value: "${(int.parse(distance ?? "0") / 1000).toString()} km",
-          fare: fare,
-          userImg: userImg,
-          userName: userName,
-        ),
-        FromToTimeLine(pickUpAddress: fromAddress, dropOffAddress: toAddress),
-        Obx(() {
-          return CustomButton(
-            isLoading: DashBoardController.to.isLoadingAccept.value,
-            onTap: () {
-              // DashBoardController.to.rideRequest.value = false;
-              DashBoardController.to.driverTripAccept(
-                tripId:
-                    DashBoardController.to.availableTrip.value.sId.toString(),
-                lat: CommonController.to.markerPositionDriver.value.latitude,
-                lng: CommonController.to.markerPositionDriver.value.longitude,
-              );
-            },
-            title: AppStaticStrings.accept.tr,
-          );
-        }),
-        CustomButton(
-          fillColor: AppColors.kWhiteColor,
-          textColor: AppColors.kPrimaryColor,
-          onTap: () {
-            DashBoardController.to.rideRequest.value = false;
-            DashBoardController.to.findingRide.value = true;
-          },
-          title: AppStaticStrings.findAnother.tr,
-        ),
-      ],
+      ),
     );
   }
 }

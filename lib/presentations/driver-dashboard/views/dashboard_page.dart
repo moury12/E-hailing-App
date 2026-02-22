@@ -139,8 +139,6 @@ class _DashboardPageState extends State<DashboardPage>
                             Obx(() {
                               DriverCurrentTripModel driverTrip =
                                   DashBoardController.to.currentTrip.value;
-                              DriverCurrentTripModel availableTrip =
-                                  DashBoardController.to.availableTrip.value;
                               return DashBoardController
                                       .to
                                       .isLoadingCurrentTrip
@@ -152,22 +150,51 @@ class _DashboardPageState extends State<DashboardPage>
                                   : DashBoardController.to.findingRide.value
                                   ? NoNewRideReqWidget()
                                   : DashBoardController.to.rideRequest.value
-                                  ? RideRequestCardWidget(
-                                    userName: availableTrip.user?.name,
-                                    userImg:
-                                        "${ApiService().baseUrl}/${availableTrip.user?.profileImage}",
-
-                                    fare:
-                                        availableTrip.estimatedFare.toString(),
-                                    dateTime: formatDateTime(
-                                      availableTrip.createdAt ??
-                                          AppStaticStrings.noDataFound.tr,
+                                  ? SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      spacing: 8.w,
+                                      children:
+                                          DashBoardController.to.availableTrips
+                                              .map((availableTrip) {
+                                                return SizedBox(
+                                                  width: 0.9.sw,
+                                                  child: RideRequestCardWidget(
+                                                    tripId: availableTrip.sId,
+                                                    userName:
+                                                        availableTrip
+                                                            .user
+                                                            ?.name,
+                                                    userImg:
+                                                        "${ApiService().baseUrl}/${availableTrip.user?.profileImage}",
+                                                    fare:
+                                                        availableTrip
+                                                            .estimatedFare
+                                                            .toString(),
+                                                    dateTime: formatDateTime(
+                                                      availableTrip.createdAt ??
+                                                          AppStaticStrings
+                                                              .noDataFound
+                                                              .tr,
+                                                    ),
+                                                    distance:
+                                                        availableTrip.distance
+                                                            .toString(),
+                                                    fromAddress:
+                                                        availableTrip
+                                                            .pickUpAddress,
+                                                    rideType:
+                                                        availableTrip.tripType,
+                                                    tripClass:
+                                                        availableTrip.tripClass,
+                                                    toAddress:
+                                                        availableTrip
+                                                            .dropOffAddress,
+                                                  ),
+                                                );
+                                              })
+                                              .toList(),
                                     ),
-                                    distance: availableTrip.distance.toString(),
-                                    fromAddress: availableTrip.pickUpAddress,
-                                    rideType: availableTrip.tripType,
-                                    tripClass: availableTrip.tripClass,
-                                    toAddress: availableTrip.dropOffAddress,
                                   )
                                   : DashBoardController
                                           .to

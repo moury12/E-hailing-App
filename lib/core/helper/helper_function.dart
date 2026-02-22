@@ -457,9 +457,8 @@ void showCustomSnackbar({
   Fluttertoast.showToast(
     msg: "$title: $message",
     toastLength: Toast.LENGTH_LONG,
-    // fontAsset: purpleCarImage2,
     gravity: ToastGravity.BOTTOM,
-    // timeInSecForIosWeb: 3,
+    timeInSecForIosWeb: 5,
     backgroundColor: backgroundColor,
     textColor: textColor,
     fontSize: 14.sp,
