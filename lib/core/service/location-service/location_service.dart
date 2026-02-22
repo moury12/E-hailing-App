@@ -357,7 +357,7 @@ class LocationTrackingService {
         },
       },
       "travelMode": "DRIVE",
-      "routingPreference": needsTraffic ? "TRAFFIC_AWARE" : "TRAFFIC_UNAWARE",
+      "routingPreference": needsTraffic ? "TRAFFIC_UNAWARE" : "TRAFFIC_UNAWARE",
       "computeAlternativeRoutes": false, // false = 1 route only = less cost
     };
 
