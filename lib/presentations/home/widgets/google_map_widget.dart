@@ -228,109 +228,15 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                   markerId: MarkerId("source Marker"),
                   position: HomeController.to.pickupLatLng.value!,
                   icon: sourceIcon.value ?? BitmapDescriptor.defaultMarker,
-                  // onTap: () {
-                  //   if (HomeController.to.mapDraging.value) {
-                  //     HomeController.to.mapDragable.value = true;
-                  //   }
-                  //   logger.d(
-                  //     "---------------------onTap"
-                  //     "",
-                  //   );
-                  // },
-                  // onDragStart: (value) {
-                  //   if (HomeController.to.mapDraging.value &&
-                  //       !HomeController.to.setDestination.value) {
-                  //     HomeController.to.mapDragable.value = true;
-                  //   }
-                  //   logger.d("---------------------onDragStart $value");
-                  // },
-                  // onDragEnd: (value) async {
-                  //   logger.d("---------------------onDragEnd $value");
-                  //   logger.d(BoundaryController.to.contains(value));
-                  //   if (!BoundaryController.to.contains(value)) {
-                  //     showCustomSnackbar(
-                  //       title: "Failed",
-                  //       message: AppStaticStrings.outsideCountryBoundary.tr,
-                  //       type: SnackBarType.alert,
-                  //     );
-                  //     HomeController.to.mapDragable.value = false;
-                  //     // Snap back to last valid location
-                  //     if (lastValidPosition != null) {
-                  //       CommonController.to.markerPositionRider.value =
-                  //           lastValidPosition!;
-                  //     }
-                  //     return;
-                  //   }
-                  //   lastValidPosition = value;
-                  //   HomeController.to.pickupLatLng.value = value;
-                  //   await HomeController.to.getPlaceName(
-                  //     value,
-                  //     HomeController.to.setDestination.value
-                  //         ? HomeController.to.dropOffLocationController.value
-                  //         : HomeController.to.pickupLocationController.value,
-                  //   );
-                  //
-                  //   HomeController.to.mapDragable.value = false;
-                  // },
+        
                 ),
               if (HomeController.to.dropoffLatLng.value != null &&
                   !HomeController.to.setDestination.value)
                 Marker(
-                  // draggable:
-                  //     HomeController.to.mapDragable.value &&
-                  //     HomeController.to.mapDraging.value,
-                  markerId: MarkerId("destination Marker"),
+                    markerId: MarkerId("destination Marker"),
                   position: HomeController.to.dropoffLatLng.value!,
                   icon: destinationIcon.value ?? BitmapDescriptor.defaultMarker,
-                  // onTap: () {
-                  //   if (HomeController.to.mapDraging.value) {
-                  //     HomeController.to.mapDragable.value = true;
-                  //   }
-                  //   logger.d(
-                  //     "---------------------onTap"
-                  //     "",
-                  //   );
-                  // },
-                  // onDragStart: (value) {
-                  //   if (HomeController.to.mapDraging.value &&
-                  //       HomeController.to.setDestination.value) {
-                  //     HomeController.to.mapDragable.value = true;
-                  //   }
-                  //   logger.d("---------------------onDragStart $value");
-                  // },
-                  // onDragEnd: (value) async {
-                  //   logger.d("---------------------onDragEnd $value");
-                  //   if (!BoundaryController.to.contains(value)) {
-                  //     // Show custom snackbar if the point is outside the country's boundary
-                  //     showCustomSnackbar(
-                  //       title: "Failed",
-                  //       message: AppStaticStrings.outsideCountryBoundary.tr,
-                  //       type: SnackBarType.alert,
-                  //     );
-                  //     HomeController.to.mapDragable.value = false;
-                  //     // Snap back to last valid location
-                  //     if (lastValidPosition != null) {
-                  //       CommonController.to.markerPositionRider.value =
-                  //           lastValidPosition!;
-                  //     }
-                  //     return;
-                  //   }
-                  //
-                  //   // Update the last valid position
-                  //   lastValidPosition = value;
-                  //
-                  //   HomeController.to.dropoffLatLng.value = value;
-                  //
-                  //   await HomeController.to.getPlaceName(
-                  //     value,
-                  //     HomeController.to.setDestination.value
-                  //         ? HomeController.to.dropOffLocationController.value
-                  //         : HomeController.to.pickupLocationController.value,
-                  //   );
-                  //
-                  //   HomeController.to.mapDragable.value = false;
-                  // },
-                ),
+                   ),
             },
           ),
           if (HomeController.to.setPickup.value)
