@@ -360,22 +360,36 @@ class LocationTrackingService {
       "routingPreference": needsTraffic ? "TRAFFIC_AWARE" : "TRAFFIC_UNAWARE",
       "computeAlternativeRoutes": false, // false = 1 route only = less cost
       if (needsTraffic)
-        "departureTime": DateTime.now().toUtc().toIso8601String(),
+        "departureTime":
+            DateTime.now()
+                .toUtc()
+                .add(const Duration(minutes: 1))
+                .toIso8601String(),
     };
 
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': apiKey,
-        // Only request fields you need — reduces cost
-        'X-Goog-FieldMask':
-            needsTraffic
-                ? 'routes.polyline,routes.legs.distanceMeters,routes.legs.duration,routes.legs.staticDuration'
-                : 'routes.polyline',
-      },
-      body: jsonEncode(body),
+    logger.d(
+      "🚀 Routes API Request: $url\nHeaders: ${{'Content-Type': 'application/json', 'X-Goog-Api-Key': apiKey, 'X-Goog-FieldMask': needsTraffic ? 'routes.polyline,routes.legs.distanceMeters,routes.legs.duration,routes.legs.staticDuration' : 'routes.polyline'}}\nBody: ${jsonEncode(body)}",
     );
+
+    http.Response response;
+    try {
+      response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': apiKey,
+          // Only request fields you need — reduces cost
+          'X-Goog-FieldMask':
+              needsTraffic
+                  ? 'routes.polyline,routes.legs.distanceMeters,routes.legs.duration,routes.legs.staticDuration'
+                  : 'routes.polyline',
+        },
+        body: jsonEncode(body),
+      );
+    } catch (e) {
+      logger.e("❌ Routes API Network Error: $e");
+      return false;
+    }
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -427,6 +441,10 @@ class LocationTrackingService {
       );
 
       return true;
+    } else {
+      logger.e(
+        "❌ Routes API Error: Status ${response.statusCode}\nBody: ${response.body}",
+      );
     }
     return false;
   }
