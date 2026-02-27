@@ -359,6 +359,8 @@ class LocationTrackingService {
       "travelMode": "DRIVE",
       "routingPreference": needsTraffic ? "TRAFFIC_AWARE" : "TRAFFIC_UNAWARE",
       "computeAlternativeRoutes": false, // false = 1 route only = less cost
+      if (needsTraffic)
+        "departureTime": DateTime.now().toUtc().toIso8601String(),
     };
 
     final response = await http.post(
@@ -389,7 +391,9 @@ class LocationTrackingService {
         // duration = traffic-aware, staticDuration = no traffic
         final durationStr = leg['duration'] ?? leg['staticDuration'];
         // Format: "123s" → remove 's' → parse int
-        final seconds = int.parse(durationStr.replaceAll('s', ''));
+        final seconds = int.parse(
+          durationStr.toString().replaceAll('s', ''), // 👈 .toString() নতুন
+        );
         duration.value = (seconds / 60).ceil();
       }
 
