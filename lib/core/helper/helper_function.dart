@@ -66,6 +66,80 @@ launchGoogleMapsApp(
   }
 }
 
+Future<void> launchWazeApp(
+  String startLatitude,
+  String startLongitude,
+  String endLatitude,
+  String endLongitude,
+) async {
+  // Waze navigation always uses current GPS as start point,
+  // so we only use the destination coordinates for the link.
+  final Uri wazeUri = Uri.parse(
+    'waze://?ll=$endLatitude,$endLongitude&navigate=yes',
+  );
+  final Uri wazeFallback = Uri.parse(
+    'https://waze.com/ul?ll=$endLatitude,$endLongitude&navigate=yes',
+  );
+
+  if (await canLaunchUrl(wazeUri)) {
+    await launchUrl(wazeUri, mode: LaunchMode.externalApplication);
+  } else {
+    await launchUrl(wazeFallback, mode: LaunchMode.externalApplication);
+  }
+}
+
+void showNavigationSelectionDialog({
+  required String startLat,
+  required String startLng,
+  required String endLat,
+  required String endLng,
+}) {
+  Get.bottomSheet(
+    Container(
+      padding: padding16,
+      decoration: BoxDecoration(
+        color: AppColors.kWhiteColor,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomText(
+            text: "Select Navigation App",
+            style: poppinsSemiBold,
+            fontSize: getFontSizeLarge(),
+          ),
+          space16H,
+          ListTile(
+            leading: Icon(Icons.map, color: AppColors.kPrimaryColor),
+            title: CustomText(text: "Google Maps", style: poppinsMedium),
+            onTap: () {
+              Get.back();
+              launchGoogleMapsApp(startLat, startLng, endLat, endLng);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.navigation, color: Colors.blue),
+            title: CustomText(text: "Waze", style: poppinsMedium),
+            onTap: () {
+              Get.back();
+              launchWazeApp(startLat, startLng, endLat, endLng);
+            },
+          ),
+          space16H,
+          CustomButton(
+            title: AppStaticStrings.cancel.tr,
+            fillColor: AppColors.kLightBlackColor.withOpacity(0.1),
+            textColor: AppColors.kTextColor,
+            onTap: () => Get.back(),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 Future<dynamic> tripCancellationDialog(
   BuildContext context, {
   Function()? onSubmit,

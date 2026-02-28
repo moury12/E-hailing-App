@@ -367,10 +367,6 @@ class LocationTrackingService {
                 .toIso8601String(),
     };
 
-    logger.d(
-      "🚀 Routes API Request: $url\nHeaders: ${{'Content-Type': 'application/json', 'X-Goog-Api-Key': apiKey, 'X-Goog-FieldMask': needsTraffic ? 'routes.polyline,routes.legs.distanceMeters,routes.legs.duration,routes.legs.staticDuration' : 'routes.polyline'}}\nBody: ${jsonEncode(body)}",
-    );
-
     http.Response response;
     try {
       response = await http.post(
@@ -381,7 +377,7 @@ class LocationTrackingService {
           // Only request fields you need — reduces cost
           'X-Goog-FieldMask':
               needsTraffic
-                  ? 'routes.polyline,routes.legs.distanceMeters,routes.legs.duration,routes.legs.staticDuration'
+                  ? 'routes.polyline,routes.legs.distanceMeters,routes.legs.duration'
                   : 'routes.polyline',
         },
         body: jsonEncode(body),
@@ -402,13 +398,17 @@ class LocationTrackingService {
         final leg = route['legs'][0];
         distance.value = leg['distanceMeters'];
 
-        // duration = traffic-aware, staticDuration = no traffic
-        final durationStr = leg['duration'] ?? leg['staticDuration'];
-        // Format: "123s" → remove 's' → parse int
-        final seconds = int.parse(
-          durationStr.toString().replaceAll('s', ''), // 👈 .toString() নতুন
-        );
-        duration.value = (seconds / 60).ceil();
+        // 'duration' is the real-time traffic-aware duration (requires TRAFFIC_AWARE + departureTime)
+        final durationStr = leg['duration'];
+        if (durationStr == null) {
+          logger.w(
+            '⚠️ duration field missing in API response — traffic-aware data may not be available for this plan.',
+          );
+        } else {
+          // Format: "123s" → remove 's' → parse int
+          final seconds = int.parse(durationStr.toString().replaceAll('s', ''));
+          duration.value = (seconds / 60).ceil();
+        }
       }
 
       // Add polyline to map (same as before)

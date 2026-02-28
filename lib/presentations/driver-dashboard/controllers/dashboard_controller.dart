@@ -415,18 +415,22 @@ class DashBoardController extends GetxController {
 
       if (distanceInMeters >= 100 &&
           (trip.status == 'on_the_way' || trip.status == 'accepted')) {
-        launchGoogleMapsApp(
-          CommonController.to.markerPositionDriver.value.latitude.toString(),
-          CommonController.to.markerPositionDriver.value.longitude.toString(),
-          coords.last.toString(),
-          coords.first.toString(),
+        showNavigationSelectionDialog(
+          startLat:
+              CommonController.to.markerPositionDriver.value.latitude
+                  .toString(),
+          startLng:
+              CommonController.to.markerPositionDriver.value.longitude
+                  .toString(),
+          endLat: coords.last.toString(),
+          endLng: coords.first.toString(),
         );
       } else {
-        launchGoogleMapsApp(
-          trip.pickUpCoordinates!.coordinates!.last.toString(),
-          trip.pickUpCoordinates!.coordinates!.first.toString(),
-          trip.dropOffCoordinates!.coordinates!.last.toString(),
-          trip.dropOffCoordinates!.coordinates!.first.toString(),
+        showNavigationSelectionDialog(
+          startLat: trip.pickUpCoordinates!.coordinates!.last.toString(),
+          startLng: trip.pickUpCoordinates!.coordinates!.first.toString(),
+          endLat: trip.dropOffCoordinates!.coordinates!.last.toString(),
+          endLng: trip.dropOffCoordinates!.coordinates!.first.toString(),
         );
       }
     }
