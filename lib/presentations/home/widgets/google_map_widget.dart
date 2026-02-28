@@ -178,8 +178,8 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
             //         ? CameraTargetBounds(BoundaryController.to.bounds.value)
             //         : CameraTargetBounds.unbounded,
             polylines: {
-              ...NavigationController.to.routePolylines.value,
-              ...NavigationController.to.routePolylinesDrivers.value,
+              ...NavigationController.to.routePolylines,
+              ...NavigationController.to.routePolylinesDrivers,
             },
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(target: position, zoom: 13),
@@ -228,15 +228,14 @@ class _GoogleMapWidgetForUserState extends State<GoogleMapWidgetForUser>
                   markerId: MarkerId("source Marker"),
                   position: HomeController.to.pickupLatLng.value!,
                   icon: sourceIcon.value ?? BitmapDescriptor.defaultMarker,
-        
                 ),
               if (HomeController.to.dropoffLatLng.value != null &&
                   !HomeController.to.setDestination.value)
                 Marker(
-                    markerId: MarkerId("destination Marker"),
+                  markerId: MarkerId("destination Marker"),
                   position: HomeController.to.dropoffLatLng.value!,
                   icon: destinationIcon.value ?? BitmapDescriptor.defaultMarker,
-                   ),
+                ),
             },
           ),
           if (HomeController.to.setPickup.value)

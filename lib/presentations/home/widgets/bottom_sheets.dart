@@ -346,7 +346,7 @@ class HomeWantToGoContentWidget extends StatelessWidget {
                               "tripType": HomeController.to.tripType.value,
                               "tripClass": HomeController.to.tripClass.value,
                               "distance": HomeController.to.distance.value,
-
+                              // needsTraffic: HomeController.to.needsTraffic.value,
                               // "coupon" will be added later from RequestTripPage
                             };
 

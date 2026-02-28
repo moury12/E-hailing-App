@@ -64,7 +64,7 @@ class _SignupPageState extends State<SignupPage> {
                 isRequired: true,
 
                 textEditingController:
-                AuthController.to.emailSignUpController.value,
+                    AuthController.to.emailSignUpController.value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppStaticStrings.emailRequired.tr;
@@ -79,9 +79,7 @@ class _SignupPageState extends State<SignupPage> {
                 keyboardType: TextInputType.number,
                 textEditingController: AuthController.to.phoneSignUpController,
                 isRequired: true,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppStaticStrings.phoneRequired.tr;
@@ -111,7 +109,7 @@ class _SignupPageState extends State<SignupPage> {
                 title: AppStaticStrings.confirmPassword.tr,
                 isPassword: true,
                 textEditingController:
-                AuthController.to.confirmPassSignUpController,
+                    AuthController.to.confirmPassSignUpController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppStaticStrings.passRequired.tr;
@@ -137,12 +135,12 @@ class _SignupPageState extends State<SignupPage> {
             Expanded(
               child: ButtonTapWidget(
                 onTap: () {
-                  launchWebsite("https://duducar.co/privacy-policy");
+                  launchWebsite("https://duducar.co/terms-of-service");
                 },
                 child: CustomText(
                   text: AppStaticStrings.duduPrivacyPolicy.tr,
                   color: AppColors.kPrimaryColor,
-decoration: TextDecoration.underline,
+                  decoration: TextDecoration.underline,
                   // fontSize: getFontSizeSmall(),
                 ),
               ),
@@ -171,14 +169,19 @@ decoration: TextDecoration.underline,
         Obx(() {
           return CustomButton(
             isLoading:
-            AuthController.to.loadingProcess.value == AuthProcess.signUp,
+                AuthController.to.loadingProcess.value == AuthProcess.signUp,
             onTap: () {
               if (formKey.currentState!.validate()) {
-              if(AuthController.to.isPrivacyPolicyChecked.value){
-                AuthController.to.signUpRequest();
-              }else{
-                showCustomSnackbar(title: "Failed", message: "Please agree to DUDU Terms and Conditions and Policy.",type: SnackBarType.alert);
-              }
+                if (AuthController.to.isPrivacyPolicyChecked.value) {
+                  AuthController.to.signUpRequest();
+                } else {
+                  showCustomSnackbar(
+                    title: "Failed",
+                    message:
+                        "Please agree to DUDU Terms and Conditions and Policy.",
+                    type: SnackBarType.alert,
+                  );
+                }
               }
               // Get.toNamed(VerifyEmailPage.routeName);
             },
