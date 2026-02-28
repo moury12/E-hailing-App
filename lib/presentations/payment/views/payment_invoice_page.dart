@@ -250,7 +250,7 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
       userPic =
           model.user?.profileImage ??
           "Unknown User"; // define this method below
-// define this method below
+      // define this method below
       title = "User Info: ";
     } else if (rideModel is TripResponseModel) {
       final model = rideModel;
@@ -364,7 +364,8 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
           ),
 
           space8H,
-          Row(spacing: 12.w,
+          Row(
+            spacing: 12.w,
             children: [
               CustomNetworkImage(
                 imageUrl: "${ApiService().baseUrl}/${userPic}",
@@ -372,13 +373,15 @@ class _PaymentInvoicePageState extends State<PaymentInvoicePage> {
                 width: 50,
                 boxShape: BoxShape.circle,
               ),
-              Expanded(child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(text: userName!),
-                  // CustomText(text: email!)
-                ],
-              ))
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(text: userName!),
+                    // CustomText(text: email!)
+                  ],
+                ),
+              ),
             ],
           ),
           // Center(child: Text("Got an issue? We've got your back.")),

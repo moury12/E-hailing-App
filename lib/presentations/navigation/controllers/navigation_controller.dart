@@ -32,8 +32,8 @@ class NavigationController extends GetxController {
     CommonController.to.fetchCurrentLocationMethod();
 
     CommonController.to.isDriver.value
-        ? Get.put(DashBoardController(),permanent: true)
-        : Get.put(HomeController(),permanent: true);
+        ? Get.put(DashBoardController(), permanent: true)
+        : Get.put(HomeController(), permanent: true);
     Get.put(MessageController());
     Get.put(AccountInformationController());
     Get.put(MyRideController());
@@ -41,22 +41,21 @@ class NavigationController extends GetxController {
       Get.put(StaticsController());
     }
 
-
     super.onInit();
   }
 
   void changeIndex(int index) {
     currentNavIndex.value = index;
   }
-  void clearPolyline(){
+
+  void clearPolyline() {
     routePolylines.clear();
     routePolylines.refresh();
-    routePolylines.value={};
+    routePolylines.value = {};
     update();
     logger.d("Polyline cleared: ${routePolylines.value}");
-
-
   }
+
   List<Widget> getPages() {
     return [
       CommonController.to.isDriver.value ? DashboardPage() : HomePage(),
@@ -71,15 +70,15 @@ class NavigationController extends GetxController {
     return [
       CommonController.to.isDriver.value
           ? NavigationModel(
-        title: AppStaticStrings.dashboard.tr,
-        img: dashboardIcon,
-        index: 0,
-      )
+            title: AppStaticStrings.dashboard.tr,
+            img: dashboardIcon,
+            index: 0,
+          )
           : NavigationModel(
-        title: AppStaticStrings.home.tr,
-        img: homeIcon,
-        index: 0,
-      ),
+            title: AppStaticStrings.home.tr,
+            img: homeIcon,
+            index: 0,
+          ),
       NavigationModel(
         title: AppStaticStrings.myRides.tr,
         img: rideIcon,
