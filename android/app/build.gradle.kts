@@ -34,8 +34,8 @@ android {
         applicationId = "com.dudu.android.app"
         minSdk = 24
         targetSdk = 36 // or flutter.targetSdkVersion
-        versionCode = 14 // or flutter.versionCode
-        versionName = "1.1.5" // or flutter.versionName
+        versionCode = 15 // or flutter.versionCode
+        versionName = "1.1.6" // or flutter.versionName
         multiDexEnabled = true  // Add this
 
         manifestPlaceholders["MAPS_API_KEY"] = keystoreProperties.getProperty("MAPS_API_KEY") ?: ""
