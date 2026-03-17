@@ -14,6 +14,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'core/bindings/bindings.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
+import 'package:upgrader/upgrader.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -68,16 +69,24 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       builder: (context, child) {
         return Obx(() {
-          return GetMaterialApp(
-            title: 'Dudu Car',
-            theme: AppTheme.lightTheme,
-            translations: translationController,
-            locale: translationController.appLocale.value, // ✅ FIXED
-            themeMode: ThemeMode.dark,
-            initialRoute: SplashPage.routeName,
-            getPages: AppRoutes.route(),
-            initialBinding: SplashBinding(),
-            debugShowCheckedModeBanner: false,
+          return UpgradeAlert(
+            upgrader: Upgrader(
+              durationUntilAlertAgain: const Duration(seconds: 0),
+            ),
+            showIgnore: false,
+            showLater: false,
+            barrierDismissible: false,
+            child: GetMaterialApp(
+              title: 'Dudu Car',
+              theme: AppTheme.lightTheme,
+              translations: translationController,
+              locale: translationController.appLocale.value,
+              themeMode: ThemeMode.dark,
+              initialRoute: SplashPage.routeName,
+              getPages: AppRoutes.route(),
+              initialBinding: SplashBinding(),
+              debugShowCheckedModeBanner: false,
+            ),
           );
         });
       },
