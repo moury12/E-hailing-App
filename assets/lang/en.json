@@ -86,6 +86,7 @@
   "mailUs": "Mail Us",
   "contactUs": "Contact Us",
   "rent": "Rent",
+  "fare": "Fare",
   "tollFee": "Toll fee",
   "extraCharge": "Extra Charge",
   "totalPayment": "Total payment",
@@ -284,5 +285,9 @@
   "outsideCountryBoundary": "Service not available in that area",
   "waitingFee": "Waiting Fee",
   "premiumRide": "Premium Ride",
-  "carClass": "Car Class"
+  "carClass": "Car Class",
+  "selectPosition": "Select Position",
+  "whereSetLocation": "Where would you like to set this location?",
+  "lateCancellationFee": "Late Cancellation Fee",
+  "noShowFee": "No-Show Fee"
 }

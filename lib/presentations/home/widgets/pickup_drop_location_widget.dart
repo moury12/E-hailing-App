@@ -15,7 +15,7 @@ import '../../../core/constants/padding_constant.dart';
 
 class PickupDropLocationWidget extends StatefulWidget {
   final bool? isDisable;
-  const PickupDropLocationWidget({super.key, this.isDisable= false});
+  const PickupDropLocationWidget({super.key, this.isDisable = false});
 
   @override
   State<PickupDropLocationWidget> createState() =>
@@ -44,44 +44,52 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
       children: <Widget>[
         Obx(() {
           return CustomTextField(
-            isEnable: widget.isDisable==true? false: true,
+            isEnable: widget.isDisable == true ? false : true,
             borderRadius: 24.r,
             hintText: AppStaticStrings.pickupLocation.tr,
             fillColor: AppColors.kWhiteColor,
             borderColor: AppColors.kGreyColor,
-            // height: 45.h,
 
+            // height: 45.h,
             onTap: () {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 HomeController.to.activeField.value = "pickup";
               });
             },
-              onChanged: (v) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  HomeController.to.activeField.value = "pickup";
-                  HomeController.to.debouncePickupLocation(v);
-                });},
+            onChanged: (v) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                HomeController.to.activeField.value = "pickup";
+                HomeController.to.debouncePickupLocation(v);
+              });
+            },
 
             textEditingController:
                 HomeController.to.pickupLocationController.value,
-            suffixIcon:widget.isDisable==false? ButtonTapWidget(
-              onTap: () {
-                HomeController.to.pickupLocationController.value.clear();
-                HomeController.to.pickupLatLng.value = null;
-                CommonController.to.isLoadingOnLocationSuggestion.value=false;
-                CommonController.to.addressSuggestion.clear();
-              },
-              child: Padding(
-                padding: padding12,
-                child: SvgPicture.asset(crossCircleIcon,height: 10,),
-              ),
-            ):SizedBox.shrink(),
+            suffixIcon:
+                widget.isDisable == false
+                    ? ButtonTapWidget(
+                      onTap: () {
+                        HomeController.to.pickupLocationController.value
+                            .clear();
+                        HomeController.to.pickupLatLng.value = null;
+                        CommonController
+                            .to
+                            .isLoadingOnLocationSuggestion
+                            .value = false;
+                        CommonController.to.addressSuggestion.clear();
+                      },
+                      child: Padding(
+                        padding: padding12,
+                        child: SvgPicture.asset(crossCircleIcon, height: 10),
+                      ),
+                    )
+                    : SizedBox.shrink(),
           );
         }),
 
         Obx(() {
           return CustomTextField(
-            isEnable: widget.isDisable==true? false: true,
+            isEnable: widget.isDisable == true ? false : true,
             borderRadius: 24.r,
             onTap: () {
               // FocusScope.of(context).unfocus();
@@ -102,18 +110,25 @@ class _PickupDropLocationWidgetState extends State<PickupDropLocationWidget> {
               HomeController.to.activeField.value = "dropoff";
               HomeController.to.debounceDropoffLocation(v);
             },
-            suffixIcon:widget.isDisable==false? ButtonTapWidget(
-              onTap: () {
-                HomeController.to.dropOffLocationController.value.clear();
-                HomeController.to.dropoffLatLng.value = null;
-                CommonController.to.isLoadingOnLocationSuggestion.value=false;
-                CommonController.to.addressSuggestion.clear();
-              },
-              child: Padding(
-                padding: padding12,
-                child: SvgPicture.asset(crossCircleIcon,height: 10,),
-              ),
-            ):SizedBox.shrink(),
+            suffixIcon:
+                widget.isDisable == false
+                    ? ButtonTapWidget(
+                      onTap: () {
+                        HomeController.to.dropOffLocationController.value
+                            .clear();
+                        HomeController.to.dropoffLatLng.value = null;
+                        CommonController
+                            .to
+                            .isLoadingOnLocationSuggestion
+                            .value = false;
+                        CommonController.to.addressSuggestion.clear();
+                      },
+                      child: Padding(
+                        padding: padding12,
+                        child: SvgPicture.asset(crossCircleIcon, height: 10),
+                      ),
+                    )
+                    : SizedBox.shrink(),
           );
         }),
       ],

@@ -103,6 +103,7 @@ class AppStaticStrings {
 
   // Payment Details
   static String rent = 'rent';
+  static String fare = 'fare';
   static String tollFee = 'tollFee';
   static String extraCharge = 'extraCharge';
   static String totalPayment = 'totalPayment';
@@ -333,4 +334,8 @@ class AppStaticStrings {
       'freeCancellationWithin5Minutes';
   static String arriveToAvoidWaitingFees = 'arriveToAvoidWaitingFees';
   static String translate = 'translate';
+  static String selectPosition = 'selectPosition';
+  static String whereSetLocation = 'whereSetLocation';
+  static String lateCancellationFee = 'lateCancellationFee';
+  static String noShowFee = 'noShowFee';
 }

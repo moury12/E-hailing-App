@@ -174,10 +174,10 @@ class AuthController extends GetxController {
         showCustomSnackbar(title: 'Success', message: response['message']);
 
         if (isAccVerify) {
-          Get.to(
-            VerifyIdentityPage(),
-            arguments: response['data']['accessToken'],
-          );
+          // Get.to(
+          //   VerifyIdentityPage(),
+          //   arguments: response['data']['accessToken'],
+          // );
           nameSignUpController.clear();
           passSignUpController.clear();
           confirmPassSignUpController.clear();
@@ -365,7 +365,7 @@ class AuthController extends GetxController {
     if (status != null &&
         (status == NrcVerificationStatus.unverified.name ||
             status == NrcVerificationStatus.rejected.name)) {
-      Get.to(VerifyIdentityPage());
+      // Get.to(VerifyIdentityPage());
     } else {
       Get.offAllNamed(
         NavigationPage.routeName,

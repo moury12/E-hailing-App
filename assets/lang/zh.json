@@ -86,6 +86,7 @@
     "mailUs": "邮件联系我们",
     "contactUs": "联系我们",
     "rent": "租金",
+    "fare": "票价",
     "tollFee": "通行费",
     "extraCharge": "额外费用",
     "totalPayment": "总付款",
@@ -284,5 +285,9 @@
     "outsideCountryBoundary": "该地区暂不支持此服务",
     "waitingFee": "等候费",
     "premiumRide": "豪华乘车",
-    "carClass": "车型级别"
+    "carClass": "车型级别",
+    "selectPosition": "选择位置",
+    "whereSetLocation": "您想将此位置设置在哪里？",
+    "lateCancellationFee": "逾期取消费",
+    "noShowFee": "未出现费"
 }

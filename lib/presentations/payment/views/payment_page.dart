@@ -70,6 +70,14 @@ class _PaymentPageState extends State<PaymentPage> {
         role == driver
             ? (driverTripResponseModel.waitingFee?.toDouble() ?? 0)
             : (userTripResponse.waitingFee?.toDouble() ?? 0);
+    double lateCancellationValue =
+        role == driver
+            ? (driverTripResponseModel.lateCancellationFee?.toDouble() ?? 0)
+            : (userTripResponse.lateCancellationFee?.toDouble() ?? 0);
+    double noShowValue =
+        role == driver
+            ? (driverTripResponseModel.noShowFee?.toDouble() ?? 0)
+            : (userTripResponse.noShowFee?.toDouble() ?? 0);
 
     String paymentType =
         role == driver
@@ -90,10 +98,18 @@ class _PaymentPageState extends State<PaymentPage> {
         waitingValue % 1 == 0
             ? waitingValue.toInt().toString()
             : waitingValue.toStringAsFixed(2);
+    String lateCancellationFeeStr =
+        lateCancellationValue % 1 == 0
+            ? lateCancellationValue.toInt().toString()
+            : lateCancellationValue.toStringAsFixed(2);
+    String noShowFeeStr =
+        noShowValue % 1 == 0
+            ? noShowValue.toInt().toString()
+            : noShowValue.toStringAsFixed(2);
 
     String finalFee =
         "${(rentValue + tollValue + extraValue + waitingValue).round()}";
-
+    // String finalFee = "${(rentValue + tollValue + waitingValue).round()}";
     return Scaffold(
       appBar: CustomAppBar(title: AppStaticStrings.payment.tr),
       body: SingleChildScrollView(
@@ -118,21 +134,33 @@ class _PaymentPageState extends State<PaymentPage> {
                   fontSize: getFontSizeExtraLarge(),
                 ),
                 CarInformationWidget(
-                  title: AppStaticStrings.rent.tr,
+                  title: AppStaticStrings.fare.tr,
                   value: 'RM $rent',
                 ),
                 CarInformationWidget(
                   title: AppStaticStrings.tollFee.tr,
                   value: 'RM $tollFee',
                 ),
-                // CarInformationWidget(
-                //   title: AppStaticStrings.extraCharge.tr,
-                //   value: 'RM $extraCharge',
-                // ),
-                CarInformationWidget(
-                  title: AppStaticStrings.waitingFee.tr,
-                  value: 'RM $waitingFee',
-                ),
+                if (extraValue > 0)
+                  CarInformationWidget(
+                    title: AppStaticStrings.extraCharge.tr,
+                    value: 'RM $extraCharge',
+                  ),
+                if (waitingValue > 0)
+                  CarInformationWidget(
+                    title: AppStaticStrings.waitingFee.tr,
+                    value: 'RM $waitingFee',
+                  ),
+                if (lateCancellationValue > 0)
+                  CarInformationWidget(
+                    title: AppStaticStrings.lateCancellationFee.tr,
+                    value: 'RM $lateCancellationFeeStr',
+                  ),
+                if (noShowValue > 0)
+                  CarInformationWidget(
+                    title: AppStaticStrings.noShowFee.tr,
+                    value: 'RM $noShowFeeStr',
+                  ),
                 Divider(color: AppColors.kGreyColor, height: 2, thickness: 2),
                 CarInformationWidget(
                   title: AppStaticStrings.totalPayment.tr,

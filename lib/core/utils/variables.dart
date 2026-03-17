@@ -16,18 +16,23 @@ String fromHome = "Home";
 String today = "today";
 String thisWeek = "last-7-days";
 String thisMonth = "this-month";
-String preBook= "pre_book";
-String nrcVerificationField= "nrc_verification_status";
-class AddressModel{
+String preBook = "pre_book";
+String nrcVerificationField = "nrc_verification_status";
+
+class AddressModel {
   final String title;
   final LatLng latLng;
   final double latitude;
   final double longitutde;
 
-  AddressModel({required this.title, required this.latLng, required this.latitude, required this.longitutde});
-
-
+  AddressModel({
+    required this.title,
+    required this.latLng,
+    required this.latitude,
+    required this.longitutde,
+  });
 }
+
 String pickupDestination = 'Pickup destination';
 String userRole = 'User Role';
 String role = 'role';
@@ -35,9 +40,7 @@ String driver = 'driver';
 String user = 'user';
 
 final List<Map<String, String>> paymentMethodList = [
-   {"value": "online", "label":AppStaticStrings.creditDebitCards.tr},
-  {"value": "cash", "label":AppStaticStrings.handCash.tr},
-  {"value": "coin", "label":AppStaticStrings.dCoin.tr},
+  //  {"value": "online", "label":AppStaticStrings.creditDebitCards.tr},
+  {"value": "cash", "label": AppStaticStrings.handCash.tr},
+  {"value": "coin", "label": AppStaticStrings.dCoin.tr},
 ];
-
-

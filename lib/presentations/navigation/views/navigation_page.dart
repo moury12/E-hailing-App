@@ -181,20 +181,22 @@ class _NavigationPageState extends State<NavigationPage>
                       onPressed: () {
                         if (CommonController.to.isDriver == true) {
                           CommonController.to.fetchCurrentLocationMethod();
+                          CommonController.to.startTrackingLocationMethod();
                           DashBoardController.to.getDriverCurrentTripRequest();
                           if (DashBoardController.to.currentTrip.value.sId ==
                               null) {
                             NavigationController.to.clearPolyline();
                           }
                         } else {
+                          CommonController.to.fetchCurrentLocationMethod();
                           HomeController.to.getUserCurrentTrip();
-                          if (HomeController.to.tripAcceptedModel.value.sId ==
-                              null) {
-                            NavigationController.to.clearPolyline();
-                            HomeController.to.pickupLatLng.value = null;
-                            HomeController.to.dropoffLatLng.value = null;
-                            HomeController.to.resetAllStates();
-                          }
+                          // if (HomeController.to.tripAcceptedModel.value.sId ==
+                          //     null) {
+                          //   NavigationController.to.clearPolyline();
+                          //   HomeController.to.pickupLatLng.value = null;
+                          //   HomeController.to.dropoffLatLng.value = null;
+                          //   HomeController.to.resetAllStates();
+                          // }
                         }
                       },
                       shape: CircleBorder(),

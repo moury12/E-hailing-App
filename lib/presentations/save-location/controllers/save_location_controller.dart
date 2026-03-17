@@ -11,13 +11,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../core/components/custom_button.dart';
+import '../../../core/components/custom_text_button.dart';
+import '../../../core/constants/custom_text.dart';
+import '../../../core/constants/padding_constant.dart';
+import '../../../core/constants/text_style_constant.dart';
 
 class SaveLocationController extends GetxController {
   @override
   void onInit() {
     saveLocationPagingController.addPageRequestListener((pageKey) {
       getSaveLocationListRequest(pageKey: pageKey);
-    });    super.onInit();
+    });
+    super.onInit();
   }
 
   static SaveLocationController get to => Get.find();
@@ -41,7 +49,8 @@ class SaveLocationController extends GetxController {
 
   final RxList<SaveLocationModel> saveLocationList = <SaveLocationModel>[].obs;
   final PagingController<int, SaveLocationModel> saveLocationPagingController =
-  PagingController(firstPageKey: 1);
+      PagingController(firstPageKey: 1);
+
   ///------------------------------  save place method -------------------------///
 
   Future<void> savePlaceRequest({
@@ -49,8 +58,7 @@ class SaveLocationController extends GetxController {
     required String locationAddress,
     required double lat,
     required double lng,
-  })
-  async {
+  }) async {
     try {
       isLoadingSaveLocation.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
@@ -76,7 +84,6 @@ class SaveLocationController extends GetxController {
         if (!oldItems.any((element) => element.sId == newLocation.sId)) {
           saveLocationPagingController.itemList = [newLocation, ...oldItems];
         }
-
       } else {
         logger.e(response);
         showCustomSnackbar(title: 'Failed', message: response['message']);
@@ -84,12 +91,10 @@ class SaveLocationController extends GetxController {
     } catch (e) {
       isLoadingSaveLocation.value = false;
       logger.e(e.toString());
-    }finally{
+    } finally {
       isLoadingSaveLocation.value = false;
-
     }
   }
-
 
   Future<void> getSaveLocationListRequest({required int pageKey}) async {
     try {
@@ -104,16 +109,17 @@ class SaveLocationController extends GetxController {
           'sort': 'updatedAt',
         },
       );
-logger.d(response);
+      logger.d(response);
       if (response['success'] == true) {
         final meta = response['data']['meta'];
         final totalPages = meta?['totalPage'] ?? 1;
         final currentPage = meta?['page'] ?? 1;
         itemsPerPage.value = meta?['limit'] ?? 10;
 
-        final newItems = (response['data']["result"] as List)
-            .map((e) => SaveLocationModel.fromJson(e))
-            .toList();
+        final newItems =
+            (response['data']["result"] as List)
+                .map((e) => SaveLocationModel.fromJson(e))
+                .toList();
 
         final isLastPage = currentPage >= totalPages;
 
@@ -130,7 +136,6 @@ logger.d(response);
       saveLocationPagingController.error = e.toString();
     }
   }
-
 
   ///------------------------------  delete place method -------------------------///
 
@@ -161,7 +166,7 @@ logger.d(response);
     } catch (e) {
       isLoadingDeleteLocation.value = false;
       logger.e(e.toString());
-    }finally{
+    } finally {
       isLoadingDeleteLocation.value = false;
     }
   }
@@ -201,58 +206,99 @@ logger.d(response);
   }
 
   Future<void> selectLatlngFromSaveLocation({required String id}) async {
-    showLoadingDialog(text: "Set saved location...");
+    showLoadingDialog(text: "Fetching location details...");
 
     try {
       await getSpecificSavedLocationRequest(id: id);
+      dismissLoadingDialog();
 
-      // After the data is fetched successfully, update the UI controllers
-      HomeController.to.dropOffLocationController.value.text =
-          savedSpecificLocation.value.locationAddress ??
-          AppStaticStrings.noDataFound; // Using null-aware operator for safety
-
-      // Ensure coordinates are not null before accessing
-      if (savedSpecificLocation.value.location?.coordinates != null &&
-          savedSpecificLocation.value.location!.coordinates!.length >= 2) {
-        HomeController.to.dropoffLatLng.value = LatLng(
-          // LatLng constructor is (latitude, longitude)
-          // Ensure you're mapping coordinates correctly:
-          // savedSpecificLocation.value.location!.coordinates!.last is latitude
-          // savedSpecificLocation.value.location!.coordinates!.first is longitude
-          savedSpecificLocation.value.location!.coordinates!.last, // latitude
-          savedSpecificLocation.value.location!.coordinates!.first, // longitude
-        );
-      } else {
+      // Ensure coordinates are not null before proceeding
+      if (savedSpecificLocation.value.location?.coordinates == null ||
+          savedSpecificLocation.value.location!.coordinates!.length < 2) {
         showCustomSnackbar(
           title: "Error",
           message: "Saved location coordinates are invalid.",
           type: SnackBarType.failed,
         );
-        logger.e("Error: Saved location coordinates are null or malformed.");
+        return;
       }
 
-      // 3. Navigate back after operations are complete (and dialog is dismissed)
-      // The Get.back() here is to pop the screen/sheet that contained the saved locations list.
-      // The dismissLoadingDialog() is to pop the loading dialog itself.
-      // Ensure dismissLoadingDialog() is called before Get.back() for the screen,
-      // or you can call Get.back() twice if the dialog is on top of the list screen.
-      // Generally, call dismissLoadingDialog() first.
+      await Get.dialog(
+        barrierDismissible: false,
+        AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          title: CustomText(
+            text: AppStaticStrings.selectPosition.tr,
+            style: poppinsSemiBold,
+            textAlign: TextAlign.center,
+          ),
+          content: CustomText(
+            text: AppStaticStrings.whereSetLocation.tr,
+            textAlign: TextAlign.center,
+          ),
+          contentPadding: padding16,
+          actionsPadding: padding12.copyWith(top: 0),
+          actions: [
+            Column(
+              spacing: 8.h,
+              children: [
+                CustomButton(
+                  title: AppStaticStrings.pickup.tr,
+                  onTap: () {
+                    Get.back(); // close dialog
+                    _updateHomeControllerLocation(isPickup: true);
+                  },
+                ),
+                CustomButton(
+                  title: AppStaticStrings.dropLocation.tr,
+                  onTap: () {
+                    Get.back(); // close dialog
+                    _updateHomeControllerLocation(isPickup: false);
+                  },
+                ),
+                CustomTextButton(
+                  title: AppStaticStrings.cancel.tr,
+                  onPressed: () => Get.back(),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
     } catch (e) {
-      // Handle any errors that occur during the request
       logger.e("Error in selectLatlngFromSaveLocation: $e");
       showCustomSnackbar(
         title: "Error",
         message: "Failed to load saved location: ${e.toString()}",
         type: SnackBarType.failed,
       );
-    } finally {
-      // 2. Dismiss the loading dialog, regardless of success or failure
       dismissLoadingDialog();
-      // This Get.back() is likely intended to close the current screen/sheet
-      // where the user selected a saved location.
-      Get.back(); // This closes the current screen (e.g., location selection screen)
     }
   }
+
+  void _updateHomeControllerLocation({required bool isPickup}) {
+    final address =
+        savedSpecificLocation.value.locationAddress ??
+        AppStaticStrings.noDataFound;
+    final latLng = LatLng(
+      savedSpecificLocation.value.location!.coordinates!.last, // latitude
+      savedSpecificLocation.value.location!.coordinates!.first, // longitude
+    );
+
+    if (isPickup) {
+      HomeController.to.pickupLocationController.value.text = address;
+      HomeController.to.pickupLatLng.value = latLng;
+    } else {
+      HomeController.to.dropOffLocationController.value.text = address;
+      HomeController.to.dropoffLatLng.value = latLng;
+    }
+
+    // Close the saved locations list screen
+    Get.back();
+  }
+
   @override
   void onClose() {
     saveLocationPagingController.dispose();

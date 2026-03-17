@@ -15,6 +15,8 @@ class TripResponseModel {
   num? tollFee;
   num? extraCharge;
   num? waitingFee;
+  num? lateCancellationFee;
+  num? noShowFee;
   bool? isPeakHourApplied;
   bool? isCouponApplied;
   List<String>? cancellationReason;
@@ -43,6 +45,8 @@ class TripResponseModel {
     this.estimatedFare,
     this.tollFee,
     this.extraCharge,
+    this.lateCancellationFee,
+    this.noShowFee,
     this.isPeakHourApplied,
     this.isCouponApplied,
     this.cancellationReason,
@@ -83,6 +87,8 @@ class TripResponseModel {
     tollFee = json['tollFee']?.toDouble();
     pickUpDate = json['pickUpDate'];
     extraCharge = json['extraCharge']?.toDouble();
+    lateCancellationFee = json['lateCancellationFee']?.toDouble();
+    noShowFee = json['noShowFee']?.toDouble();
     isPeakHourApplied = json['isPeakHourApplied'];
     isCouponApplied = json['isCouponApplied'];
     cancellationReason =
@@ -124,6 +130,8 @@ class TripResponseModel {
     data['tollFee'] = tollFee;
 
     data['extraCharge'] = extraCharge;
+    data['lateCancellationFee'] = lateCancellationFee;
+    data['noShowFee'] = noShowFee;
     data['isPeakHourApplied'] = isPeakHourApplied;
     data['isCouponApplied'] = isCouponApplied;
     data['cancellationReason'] = cancellationReason;

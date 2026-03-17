@@ -103,7 +103,7 @@ class _DriverAfterAcceptedWidgetState extends State<DriverAfterAcceptedWidget> {
                   }
                 },
                 title:
-                    "${AppStaticStrings.pickUpWithin.tr}${DashBoardController.to.estimatedPickupTime.value}",
+                    "${AppStaticStrings.pickUpWithin.tr} ${DashBoardController.to.estimatedPickupTime.value}",
                 fillColor: AppColors.kWhiteColor,
                 textColor: AppColors.kPrimaryColor,
               );

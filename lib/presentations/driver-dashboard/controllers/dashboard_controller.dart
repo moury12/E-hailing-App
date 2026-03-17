@@ -295,6 +295,7 @@ class DashBoardController extends GetxController {
         drawPolylineMethod();
       } else {
         logger.e(response);
+        resetController();
         if (kDebugMode) {
           // showCustomSnackbar(
           //   title: 'Failed',
@@ -644,7 +645,7 @@ class DashBoardController extends GetxController {
     }
 
     // Clear polylines
-    // NavigationController.to.clearPolyline();
+    NavigationController.to.clearPolyline();
 
     logger.i("DashBoardController reset completed");
   }

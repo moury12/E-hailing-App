@@ -86,6 +86,7 @@
   "mailUs": "E-mel Kami",
   "contactUs": "Hubungi Kami",
   "rent": "Sewa",
+  "fare": "Tambang",
   "tollFee": "Yuran Tol",
   "extraCharge": "Caj Tambahan",
   "totalPayment": "Jumlah Bayaran",
@@ -283,5 +284,9 @@
   "outsideCountryBoundary": "Perkhidmatan tidak tersedia di kawasan tersebut",
   "waitingFee": "Yuran Menunggu",
   "premiumRide": "Perjalanan Premium",
-  "carClass": "Kelas Kereta"
+  "carClass": "Kelas Kereta",
+  "selectPosition": "Pilih Posisi",
+  "whereSetLocation": "Di mana anda ingin menetapkan lokasi ini?",
+  "lateCancellationFee": "Yuran Pembatalan Lewat",
+  "noShowFee": "Yuran Tidak Hadir"
 }

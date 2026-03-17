@@ -329,7 +329,7 @@ class CommonController extends GetxController {
 
         // Store placeId + name only — NO Place Details call here (saves 5x API costs)
         for (var prediction in data['predictions']) {
-          if (addressSuggestion.length >= 5) {
+          if (addressSuggestion.length >= 3) {
             break; // Stop once we have 5 results
           }
 

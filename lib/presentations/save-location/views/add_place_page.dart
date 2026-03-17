@@ -186,7 +186,7 @@ class SearchAddress extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: padding8,
+            padding: padding6,
             child: CustomText(
               text: title,
               overflow: TextOverflow.ellipsis,

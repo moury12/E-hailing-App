@@ -748,8 +748,9 @@ class HomeController extends GetxController {
     tripAcceptedModel.value = TripResponseModel();
     driverStatus.value = "";
     resetAllStates();
-    dropOffLocationController.value.clear();
-    dropoffLatLng.value = null;
+    setCurrentLocationOnPickUp(); // Set pickup to current location instead of null
+    // dropOffLocationController.value.clear();
+    // dropoffLatLng.value = null;
     NavigationController.to.clearPolyline();
     driverPosition.value = null;
     showTripDetailsCard.value = false;

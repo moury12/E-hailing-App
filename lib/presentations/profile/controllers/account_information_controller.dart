@@ -149,13 +149,13 @@ class AccountInformationController extends GetxController {
         if (needReinitilaize) {
           reinitializeProfileControllers();
         }
-        if (userModel.value.role == "USER" &&
-            (userModel.value.nrcStatus ==
-                    NrcVerificationStatus.unverified.name ||
-                userModel.value.nrcStatus ==
-                    NrcVerificationStatus.rejected.name)) {
-          Get.to(VerifyIdentityPage());
-        }
+        // if (userModel.value.role == "USER" &&
+        //     (userModel.value.nrcStatus ==
+        //             NrcVerificationStatus.unverified.name ||
+        //         userModel.value.nrcStatus ==
+        //             NrcVerificationStatus.rejected.name)) {
+        //   Get.to(VerifyIdentityPage());
+        // }
       } else {
         logger.e(response);
       }

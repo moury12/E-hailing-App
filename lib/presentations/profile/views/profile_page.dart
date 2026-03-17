@@ -156,13 +156,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             Get.toNamed(CoinPage.routeName);
                           },
                         ),
-                    ProfileActionItemWidget(
-                      img: notificationProfileIcon,
-                      title: AppStaticStrings.notification.tr,
-                      onTap: () {
-                        Get.toNamed(NotificationPage.routeName);
-                      },
-                    ),
+                    if (CommonController.to.isDriver.value)
+                      ProfileActionItemWidget(
+                        img: notificationProfileIcon,
+                        title: AppStaticStrings.notification.tr,
+                        onTap: () {
+                          Get.toNamed(NotificationPage.routeName);
+                        },
+                      ),
                     if (CommonController.to.isDriver.value)
                       ProfileActionItemWidget(
                         img: cashPaymentIcon,
