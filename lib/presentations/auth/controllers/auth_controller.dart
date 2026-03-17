@@ -366,6 +366,10 @@ class AuthController extends GetxController {
         (status == NrcVerificationStatus.unverified.name ||
             status == NrcVerificationStatus.rejected.name)) {
       // Get.to(VerifyIdentityPage());
+      Get.offAllNamed(
+        NavigationPage.routeName,
+        arguments: {'reconnectSocket': true},
+      );
     } else {
       Get.offAllNamed(
         NavigationPage.routeName,
