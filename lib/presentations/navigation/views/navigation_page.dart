@@ -2,6 +2,9 @@ import 'package:e_hailing_app/core/components/custom_appbar.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
 import 'package:e_hailing_app/core/constants/image_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
+import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/notification/views/notification_page.dart';
@@ -9,6 +12,7 @@ import 'package:e_hailing_app/presentations/splash/controllers/common_controller
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../../core/components/custom_button_tap.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
@@ -178,15 +182,25 @@ class _NavigationPageState extends State<NavigationPage>
                   ? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: FloatingActionButton.small(
-                      onPressed: () {
+                      onPressed: () async {
                         if (CommonController.to.isDriver == true) {
-                          CommonController.to.fetchCurrentLocationMethod();
-                          CommonController.to.startTrackingLocationMethod();
-                          DashBoardController.to.getDriverCurrentTripRequest();
+ Map<String, dynamic> decodedToken = JwtDecoder.decode(
+      Boxes.getUserData().get(tokenKey).toString(),
+    );
+                          await CommonController.to.fetchCurrentLocationMethod();
+                          await CommonController.to.startTrackingLocationMethod();
+                          await DashBoardController.to.getDriverCurrentTripRequest();
                           if (DashBoardController.to.currentTrip.value.sId ==
                               null) {
                             NavigationController.to.clearPolyline();
-                          }
+                          } 
+                            // Emit driver location update
+                            SocketService().emit(DriverEvent.driverLocationUpdate, {
+                              "userId":decodedToken['userId'],
+                              "lat": CommonController.to.markerPositionDriver.value.latitude,
+                              "long": CommonController.to.markerPositionDriver.value.longitude,
+                            });
+                         
                         } else {
                           CommonController.to.fetchCurrentLocationMethod();
                           HomeController.to.getUserCurrentTrip();

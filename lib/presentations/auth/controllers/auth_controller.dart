@@ -174,10 +174,7 @@ class AuthController extends GetxController {
         showCustomSnackbar(title: 'Success', message: response['message']);
 
         if (isAccVerify) {
-          // Get.to(
-          //   VerifyIdentityPage(),
-          //   arguments: response['data']['accessToken'],
-          // );
+          Get.toNamed(LoginPage.routeName);
           nameSignUpController.clear();
           passSignUpController.clear();
           confirmPassSignUpController.clear();
