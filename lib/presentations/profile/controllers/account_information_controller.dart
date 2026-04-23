@@ -11,6 +11,7 @@ import 'package:e_hailing_app/presentations/auth/views/login_page.dart';
 import 'package:e_hailing_app/presentations/auth/views/verify_identity_page.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
+import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:e_hailing_app/presentations/profile/model/payout_history_model.dart';
 import 'package:e_hailing_app/presentations/profile/model/user_profile_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
@@ -225,7 +226,7 @@ class AccountInformationController extends GetxController {
         Boxes.getUserData().delete(roleKey);
         Boxes.getUserRole().delete(role);
         SocketService().disconnect();
-
+        onLogout();
         Get.offAllNamed(
           LoginPage.routeName,
         ); // Get.toNamed(LoginPage.routeName);
@@ -408,7 +409,10 @@ class AccountInformationController extends GetxController {
     }
 
     if (Get.isRegistered<DashBoardController>()) {
-      Get.delete<DashBoardController>();
+      Get.delete<DashBoardController>(force: true);
+    }
+    if (Get.isRegistered<NavigationController>()) {
+      Get.delete<NavigationController>(force: true);
     }
   }
 

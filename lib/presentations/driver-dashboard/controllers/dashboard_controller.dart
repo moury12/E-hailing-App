@@ -57,11 +57,14 @@ class DashBoardController extends GetxController {
   RxInt driverToPickupDuration = 0.obs;
 
   @override
-  void onInit() async {
-    initializeSocket();
-    await Future.wait([getDriverCurrentTripRequest()]);
-
+  void onInit() {
     super.onInit();
+    _initializeDashboard();
+  }
+
+  Future<void> _initializeDashboard() async {
+    await emitDriverLocationUpdate();
+    initializeSocket();
   }
 
   void resetRideFlow({required RideFlowState rideType}) {
@@ -147,6 +150,7 @@ class DashBoardController extends GetxController {
   }
 
   void initializeSocket() {
+    logger.i("Initializing Socket for DashBoardController");
     if (socketService.socket == null || !socketService.socket!.connected) {
       Map<String, dynamic> decodedToken = JwtDecoder.decode(
         Boxes.getUserData().get(tokenKey).toString(),
@@ -158,9 +162,11 @@ class DashBoardController extends GetxController {
       );
       // async
       socketService.onConnected = () {
+        logger.i("Socket Connected callback triggered in DashBoardController");
         registerSocketListeners(); // Register events **after** connection
       };
     } else {
+      logger.i("Socket already connected, registering listeners");
       registerSocketListeners(); // Already connected
     }
   }
@@ -454,13 +460,15 @@ class DashBoardController extends GetxController {
 
   void registerSocketListeners() {
     removeSocketListeners();
-    logger.i("Listening socket event for driver");
+    logger.i("🚀 Registering socket listeners for driver");
     // ============ Trip Available Event ============
     socketService.on(DriverEvent.tripAvailableStatus, (data) {
-      logger.d("📩 tripAvailableStatus: $data");
-      if (data["success"]) {
+      logger.d("📩 received tripAvailableStatus event");
+      logger.d("📦 Data: $data");
+      if (data["success"] == true || data["success"] == "true") {
         // Ensure UI updates happen on the main thread
         if (Get.isRegistered<DashBoardController>()) {
+          logger.i("Processing available trip...");
           final newTrip = DriverCurrentTripModel.fromJson(data['data']);
 
           // Check if trip already exists in the list to avoid duplicates
@@ -468,12 +476,19 @@ class DashBoardController extends GetxController {
             (trip) => trip.sId == newTrip.sId,
           )) {
             DashBoardController.to.availableTrips.add(newTrip);
+            logger.i("New trip added to availableTrips");
           }
 
           DashBoardController.to.resetRideFlow(
             rideType: RideFlowState.rideRequest,
           );
+        } else {
+          logger.w("DashBoardController is not registered in GetX!");
         }
+      } else {
+        logger.w(
+          "Trip available event received but success is false: ${data['message']}",
+        );
       }
     });
 
@@ -485,6 +500,10 @@ class DashBoardController extends GetxController {
     });
     socketService.on('driver_location_updated', (data) {
       logger.d("📩 updateLocation: ");
+      if (data["success"] == true) {
+        registerSocketListeners();
+        // driverUpdatedLocation.value = DriverLocationUpdateModel.fromJson(data);
+      }
       logger.d(data);
     });
 
@@ -664,6 +683,61 @@ class DashBoardController extends GetxController {
       message: message,
       type: SnackBarType.failed,
     );
+  }
+
+  Future<void> emitDriverLocationUpdate() async {
+    try {
+      final token = Boxes.getUserData().get(tokenKey);
+      if (token == null) return;
+
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token.toString());
+
+      if (decodedToken['role'] == "DRIVER") {
+        logger.i("🚦 Starting initial driver location emission...");
+
+        // Ensure socket is connected and listeners are ready
+        if (socketService.socket == null || !socketService.socket!.connected) {
+          logger.i("Waiting for socket connection before emission...");
+          initializeSocket();
+          // Wait for connection with timeout
+          int retryCount = 0;
+          while ((socketService.socket == null ||
+                  !socketService.socket!.connected) &&
+              retryCount < 10) {
+            await Future.delayed(const Duration(milliseconds: 500));
+            retryCount++;
+          }
+        }
+
+        // Fetch location reliably
+        await CommonController.to.fetchCurrentLocationMethod();
+        await CommonController.to.startTrackingLocationMethod();
+
+        // Sync trip status
+        await getDriverCurrentTripRequest();
+        if (currentTrip.value.sId == null) {
+          if (Get.isRegistered<NavigationController>()) {
+            NavigationController.to.clearPolyline();
+          }
+        }
+
+        // Emit location after everything is ready
+        if (socketService.socket != null && socketService.socket!.connected) {
+          socketService.emit(DriverEvent.driverLocationUpdate, {
+            "userId": decodedToken['userId'],
+            "lat": CommonController.to.markerPositionDriver.value.latitude,
+            "long": CommonController.to.markerPositionDriver.value.longitude,
+          });
+          logger.i("📡 Initial driver location update emitted successfully");
+        } else {
+          logger.w(
+            "⚠️ Failed to emit initial driver location: Socket not connected",
+          );
+        }
+      }
+    } catch (e) {
+      logger.e("🔥 Error in emitDriverLocationUpdate: $e");
+    }
   }
 }
 

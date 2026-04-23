@@ -75,7 +75,7 @@ String richPurpleCarImage = 'assets/images/rich_purple_car.png';
 String superRichPurpleCarImage = 'assets/images/siper_rich_purple_car.png';
 
 // Images
-String carImage = 'assets/images/car_img.svg';
+String carImage = 'assets/images/car_img.png';
 String emptyLottie = 'assets/lottie/empty_list.json';
 String logoImage = 'assets/images/logo.svg';
 String orImage = 'assets/images/or_img.svg';

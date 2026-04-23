@@ -229,8 +229,8 @@ class CommonController extends GetxController {
   }
 
   @override
-  void onInit() async {
-    // locationService.handleLocationPermission();
+  void onInit() {
+    checkUserRole(); // Initialize role first
     logger.d(
       "--check role----${Boxes.getUserRole().get(role, defaultValue: user).toString()}",
     );
@@ -389,7 +389,8 @@ class CommonController extends GetxController {
   }
 
   void initialSetup() {
-    Future.wait([checkUserRole()]);
+    checkUserRole();
+    fetchCurrentLocationMethod();
   }
 
   /// Fetch Place Details for a given place ID
@@ -509,15 +510,18 @@ class CommonController extends GetxController {
     );
   }
 
-  Future<void> checkUserRole() async {
-    logger.d("token - ${Boxes.getUserData().get(tokenKey)}");
-    if (Boxes.getUserData().get(tokenKey) != null &&
-        Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(
-        Boxes.getUserData().get(tokenKey).toString(),
-      );
-
-      isDriver.value = decodedToken['role'] == "DRIVER";
+  void checkUserRole() {
+    // logger.d("token - ${Boxes.getUserData().get(tokenKey)}");
+    final token = Boxes.getUserData().get(tokenKey);
+    if (token != null && token.toString().isNotEmpty) {
+      try {
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(token.toString());
+        String userRole = decodedToken['role'] ?? "USER";
+        isDriver.value = userRole == "DRIVER";
+        Boxes.getUserRole().put(role, userRole);
+      } catch (e) {
+        logger.e("Error decoding token in CommonController: $e");
+      }
     }
   }
 

@@ -18,13 +18,11 @@ class AuthScaffoldStructureWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: CustomText(text: title ?? '')),
+      appBar: AppBar(title: CustomText(text: title ?? '')),
       body: Stack(
-
         // alignment: Alignment.center,
         children: [
-          Center(child: SvgPicture.asset(carImage)),
+          Center(child: Image.asset(carImage)),
           SingleChildScrollView(
             child: Padding(
               padding: padding16.copyWith(top: 0),
