@@ -25,6 +25,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_service.dart';
+import 'package:e_hailing_app/core/service/socket-service/socket_events_variable.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
+import 'package:e_hailing_app/presentations/navigation/controllers/navigation_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
@@ -314,6 +319,8 @@ class AuthController extends GetxController {
 
         CommonController.to.initialSetup();
 
+        await emitDriverLocationAfterLogin();
+
         checkVerifiedOrNot(
           status: response["data"][nrcVerificationField],
           isFirstTimeLogin: response["data"]['first_time_log_in'],
@@ -482,6 +489,8 @@ class AuthController extends GetxController {
           );
           // NavigationController.to.isLoggedIn;CommonController.to.initialSetup();
 
+          await emitDriverLocationAfterLogin();
+
           checkVerifiedOrNot(
             status: retryResponse["data"][nrcVerificationField],
             isFirstTimeLogin: retryResponse["data"]['first_time_log_in'],
@@ -505,6 +514,8 @@ class AuthController extends GetxController {
           message: initialResponse['message'],
         );
         CommonController.to.initialSetup();
+
+        await emitDriverLocationAfterLogin();
 
         checkVerifiedOrNot(
           status: initialResponse["data"][nrcVerificationField],
@@ -625,6 +636,8 @@ class AuthController extends GetxController {
           );
           CommonController.to.initialSetup();
 
+          await emitDriverLocationAfterLogin();
+
           checkVerifiedOrNot(
             status: retryResponse["data"][nrcVerificationField],
             isFirstTimeLogin: retryResponse["data"]['first_time_log_in'],
@@ -648,6 +661,8 @@ class AuthController extends GetxController {
           message: initialResponse['message'],
         );
         CommonController.to.initialSetup();
+
+        await emitDriverLocationAfterLogin();
 
         checkVerifiedOrNot(
           status: initialResponse["data"][nrcVerificationField],
@@ -724,5 +739,44 @@ class AuthController extends GetxController {
       controller.value.clear();
     }
     focusNodes[0].requestFocus();
+  }
+
+  Future<void> emitDriverLocationAfterLogin() async {
+    try {
+      final token = Boxes.getUserData().get(tokenKey);
+      if (token == null) return;
+
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token.toString());
+
+      if (decodedToken['role'] == "DRIVER") {
+        // Ensure socket is connected before emitting
+        if (SocketService().socket == null ||
+            !SocketService().socket!.connected) {
+          SocketService().connect(decodedToken['userId'], true);
+          // Wait briefly for connection
+          await Future.delayed(const Duration(milliseconds: 1000));
+        }
+
+        await CommonController.to.fetchCurrentLocationMethod();
+        await CommonController.to.startTrackingLocationMethod();
+
+        if (Get.isRegistered<DashBoardController>()) {
+          await DashBoardController.to.getDriverCurrentTripRequest();
+          if (DashBoardController.to.currentTrip.value.sId == null) {
+            if (Get.isRegistered<NavigationController>()) {
+              NavigationController.to.clearPolyline();
+            }
+          }
+        }
+
+        SocketService().emit(DriverEvent.driverLocationUpdate, {
+          "userId": decodedToken['userId'],
+          "lat": CommonController.to.markerPositionDriver.value.latitude,
+          "long": CommonController.to.markerPositionDriver.value.longitude,
+        });
+      }
+    } catch (e) {
+      logger.e("Error emitting driver location after login: $e");
+    }
   }
 }
