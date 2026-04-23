@@ -184,23 +184,37 @@ class _NavigationPageState extends State<NavigationPage>
                     child: FloatingActionButton.small(
                       onPressed: () async {
                         if (CommonController.to.isDriver == true) {
- Map<String, dynamic> decodedToken = JwtDecoder.decode(
-      Boxes.getUserData().get(tokenKey).toString(),
-    );
-                          await CommonController.to.fetchCurrentLocationMethod();
-                          await CommonController.to.startTrackingLocationMethod();
-                          await DashBoardController.to.getDriverCurrentTripRequest();
+                          DashBoardController.to.getNearbyTrips();
+                          Map<String, dynamic> decodedToken = JwtDecoder.decode(
+                            Boxes.getUserData().get(tokenKey).toString(),
+                          );
+                          await CommonController.to
+                              .fetchCurrentLocationMethod();
+                          await CommonController.to
+                              .startTrackingLocationMethod();
+                          await DashBoardController.to
+                              .getDriverCurrentTripRequest();
                           if (DashBoardController.to.currentTrip.value.sId ==
                               null) {
                             NavigationController.to.clearPolyline();
-                          } 
-                            // Emit driver location update
-                            SocketService().emit(DriverEvent.driverLocationUpdate, {
-                              "userId":decodedToken['userId'],
-                              "lat": CommonController.to.markerPositionDriver.value.latitude,
-                              "long": CommonController.to.markerPositionDriver.value.longitude,
-                            });
-                         
+                          }
+                          // Emit driver location update
+                          SocketService()
+                              .emit(DriverEvent.driverLocationUpdate, {
+                                "userId": decodedToken['userId'],
+                                "lat":
+                                    CommonController
+                                        .to
+                                        .markerPositionDriver
+                                        .value
+                                        .latitude,
+                                "long":
+                                    CommonController
+                                        .to
+                                        .markerPositionDriver
+                                        .value
+                                        .longitude,
+                              });
                         } else {
                           CommonController.to.fetchCurrentLocationMethod();
                           HomeController.to.getUserCurrentTrip();

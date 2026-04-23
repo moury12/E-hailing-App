@@ -69,24 +69,29 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       builder: (context, child) {
         return Obx(() {
-          return UpgradeAlert(
-            upgrader: Upgrader(
-              durationUntilAlertAgain: const Duration(seconds: 0),
-            ),
-            showIgnore: false,
-            showLater: false,
-            barrierDismissible: false,
-            child: GetMaterialApp(
-              title: 'Dudu Car',
-              theme: AppTheme.lightTheme,
-              translations: translationController,
-              locale: translationController.appLocale.value,
-              themeMode: ThemeMode.dark,
-              initialRoute: SplashPage.routeName,
-              getPages: AppRoutes.route(),
-              initialBinding: SplashBinding(),
-              debugShowCheckedModeBanner: false,
-            ),
+          return GetMaterialApp(
+            title: 'Dudu Car',
+            theme: AppTheme.lightTheme,
+            translations: translationController,
+            locale: translationController.appLocale.value,
+            themeMode: ThemeMode.dark,
+            initialRoute: SplashPage.routeName,
+            getPages: AppRoutes.route(),
+            initialBinding: SplashBinding(),
+            debugShowCheckedModeBanner: false,
+            builder: (context, child) {
+              return UpgradeAlert(
+                upgrader: Upgrader(
+                  durationUntilAlertAgain: const Duration(seconds: 0),
+                  // debugLogging: true, // Uncomment to see detailed logs in the console
+                  // debugDisplayAlways: true, // Uncomment to test the alert in debug mode
+                ),
+                showIgnore: false,
+                showLater: false,
+                barrierDismissible: false,
+                child: child ?? const SizedBox.shrink(),
+              );
+            },
           );
         });
       },

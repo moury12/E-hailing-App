@@ -55,6 +55,7 @@ class DashBoardController extends GetxController {
   RxBool isLoadingTripStatus = false.obs;
   RxString estimatedPickupTime = "0:00 Min".obs;
   RxInt driverToPickupDuration = 0.obs;
+  RxBool isLoadingNearbyTrips = false.obs;
 
   @override
   void onInit() {
@@ -64,6 +65,7 @@ class DashBoardController extends GetxController {
 
   Future<void> _initializeDashboard() async {
     await emitDriverLocationUpdate();
+    getNearbyTrips();
     initializeSocket();
   }
 
@@ -318,6 +320,49 @@ class DashBoardController extends GetxController {
     }
   }
 
+  Future<void> getNearbyTrips() async {
+    try {
+      isLoadingNearbyTrips.value = true;
+      final lat = CommonController.to.markerPositionDriver.value.latitude;
+      final lng = CommonController.to.markerPositionDriver.value.longitude;
+
+      if (lat == 0.0 || lng == 0.0) {
+        logger.w("Cannot fetch nearby trips: Location not ready.");
+        return;
+      }
+
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+      final response = await ApiService().request(
+        endpoint: findNearbyTripsEndpoint,
+        method: 'GET',
+        queryParams: {
+          'lat': lat.toString(),
+          'long': lng.toString(),
+          'page': '1',
+          'limit': '20',
+        },
+      );
+      logger.d(response);
+
+      if (response['success'] == true) {
+        final List tripsJson = response['data']['trips'] ?? [];
+        final List<DriverCurrentTripModel> trips =
+            tripsJson.map((e) => DriverCurrentTripModel.fromJson(e)).toList();
+
+        availableTrips.value = trips;
+        logger.i("${trips.length} nearby trips fetched");
+        if (trips.isNotEmpty) {
+          showAvailableTrips();
+        }
+      }
+    } catch (e) {
+      logger.e("Error fetching nearby trips: $e");
+    } finally {
+      isLoadingNearbyTrips.value = false;
+    }
+  }
+
   Future<void> drawPolylineMethod() async {
     final trip = currentTrip.value;
     final coords = trip.pickUpCoordinates?.coordinates;
@@ -475,8 +520,8 @@ class DashBoardController extends GetxController {
           if (!DashBoardController.to.availableTrips.any(
             (trip) => trip.sId == newTrip.sId,
           )) {
-            DashBoardController.to.availableTrips.add(newTrip);
-            logger.i("New trip added to availableTrips");
+            DashBoardController.to.availableTrips.insert(0, newTrip);
+            logger.i("New trip added to availableTrips at the top");
           }
 
           DashBoardController.to.resetRideFlow(

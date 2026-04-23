@@ -1,9 +1,12 @@
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/components/custom_refresh_indicator.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
+import 'package:e_hailing_app/core/constants/custom_text.dart';
+import 'package:e_hailing_app/core/constants/fontsize_constant.dart';
 import 'package:e_hailing_app/core/helper/helper_function.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
+import 'package:e_hailing_app/presentations/driver-dashboard/views/all_nearby_trips_page.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/widgets/after_destination_reached_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -150,51 +153,83 @@ class _DashboardPageState extends State<DashboardPage>
                                   : DashBoardController.to.findingRide.value
                                   ? NoNewRideReqWidget()
                                   : DashBoardController.to.rideRequest.value
-                                  ? SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      spacing: 8.w,
-                                      children:
-                                          DashBoardController.to.availableTrips
-                                              .map((availableTrip) {
-                                                return SizedBox(
-                                                  width: 0.9.sw,
-                                                  child: RideRequestCardWidget(
-                                                    tripId: availableTrip.sId,
-                                                    userName:
-                                                        availableTrip
-                                                            .user
-                                                            ?.name,
-                                                    userImg:
-                                                        "${ApiService().baseUrl}/${availableTrip.user?.profileImage}",
-                                                    fare:
-                                                        availableTrip
-                                                            .estimatedFare
-                                                            .toString(),
-                                                    dateTime: formatDateTime(
-                                                      availableTrip.createdAt ??
-                                                          AppStaticStrings
-                                                              .noDataFound
-                                                              .tr,
-                                                    ),
-                                                    distance:
-                                                        availableTrip.distance
-                                                            .toString(),
-                                                    fromAddress:
-                                                        availableTrip
-                                                            .pickUpAddress,
-                                                    rideType:
-                                                        availableTrip.tripType,
-                                                    tripClass:
-                                                        availableTrip.tripClass,
-                                                    toAddress:
-                                                        availableTrip
-                                                            .dropOffAddress,
-                                                  ),
-                                                );
-                                              })
-                                              .toList(),
-                                    ),
+                                  ? Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          CustomText(
+                                            text: "Nearby Requests",
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: getFontSizeDefault(),
+                                          ),
+                                          TextButton(
+                                            onPressed:
+                                                () => Get.toNamed(
+                                                  AllNearbyTripsPage.routeName,
+                                                ),
+                                            child: CustomText(
+                                              text: "See All",
+                                              color: AppColors.kPrimaryColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      space8H,
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          spacing: 8.w,
+                                          children:
+                                              DashBoardController.to.availableTrips
+                                                  .take(5)
+                                                  .map((availableTrip) {
+                                                    return SizedBox(
+                                                      width: 0.9.sw,
+                                                      child: RideRequestCardWidget(
+                                                        tripId:
+                                                            availableTrip.sId,
+                                                        userName:
+                                                            availableTrip
+                                                                .user
+                                                                ?.name,
+                                                        userImg:
+                                                            "${ApiService().baseUrl}/${availableTrip.user?.profileImage}",
+                                                        fare:
+                                                            availableTrip
+                                                                .estimatedFare
+                                                                .toString(),
+                                                        dateTime: formatDateTime(
+                                                          availableTrip
+                                                              .createdAt ??
+                                                              '',
+                                                        ),
+                                                        distance:
+                                                            availableTrip
+                                                                .distance
+                                                                .toString(),
+                                                        fromAddress:
+                                                            availableTrip
+                                                                .pickUpAddress,
+                                                        rideType:
+                                                            availableTrip
+                                                                .tripType,
+                                                        tripClass:
+                                                            availableTrip
+                                                                .tripClass,
+                                                        toAddress:
+                                                            availableTrip
+                                                                .dropOffAddress,
+                                                      ),
+                                                    );
+                                                  })
+                                                  .toList(),
+                                        ),
+                                      ),
+                                    ],
                                   )
                                   : DashBoardController
                                           .to

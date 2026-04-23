@@ -9,4 +9,5 @@ class Boxes{
   static Box getLanguage()=>Hive.box('languageBox');
   static Box getRattingData()=>Hive.box("ratingData");
 
+
 }

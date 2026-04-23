@@ -546,7 +546,7 @@ class AuthController extends GetxController {
           "token": fcmToken ?? "xzxz",
           "appleToken": credential.identityToken,
           "role": "USER",
-          "fullName": AppleIDAuthorizationScopes.fullName.name,
+          "fullName": credential.givenName,
         },
         useAuth: false,
       );
@@ -611,7 +611,8 @@ class AuthController extends GetxController {
           },
           useAuth: false,
         );
-
+        logger.d("retryResponse");
+        logger.d(retryResponse);
         if (retryResponse['success'] == true) {
           Boxes.getUserData().put(
             tokenKey,

@@ -28,6 +28,7 @@ class DriverCurrentTripModel {
   num? iV;
   User? driver;
   String? driverTripAcceptedAt;
+  num? distanceToPickup;
 
   DriverCurrentTripModel({
     this.sId,
@@ -59,6 +60,7 @@ class DriverCurrentTripModel {
     this.driver,
     this.tripClass,
     this.driverTripAcceptedAt,
+    this.distanceToPickup,
   });
 
   DriverCurrentTripModel.fromJson(Map<String, dynamic> json) {
@@ -101,6 +103,7 @@ class DriverCurrentTripModel {
     iV = json['__v'];
     driver = json['driver'] != null ? User.fromJson(json['driver']) : null;
     driverTripAcceptedAt = json['driverTripAcceptedAt'];
+    distanceToPickup = json['distanceToPickup'];
   }
 
   Map<String, dynamic> toJson() {
@@ -144,6 +147,7 @@ class DriverCurrentTripModel {
       data['driver'] = driver!.toJson();
     }
     data['driverTripAcceptedAt'] = driverTripAcceptedAt;
+    data['distanceToPickup'] = distanceToPickup;
     return data;
   }
 }

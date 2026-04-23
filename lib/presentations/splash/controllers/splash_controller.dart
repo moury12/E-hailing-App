@@ -19,6 +19,7 @@ class SplashController extends GetxController {
 
   @override
   void onInit() {
+    logger.d("-------------fcm token----------------${Boxes.getUserData().get(tokenKey)}");
     _initSplashLogic();
     super.onInit();
   }
