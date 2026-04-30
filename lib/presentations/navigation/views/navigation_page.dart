@@ -194,6 +194,7 @@ class _NavigationPageState extends State<NavigationPage>
                               .startTrackingLocationMethod();
                           await DashBoardController.to
                               .getDriverCurrentTripRequest();
+                          await DashBoardController.to.getGasStations();
                           if (DashBoardController.to.currentTrip.value.sId ==
                               null) {
                             NavigationController.to.clearPolyline();

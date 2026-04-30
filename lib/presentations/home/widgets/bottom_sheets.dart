@@ -523,28 +523,28 @@ class HomeInitialContentWidget extends StatelessWidget {
                 },
               ),
 
-              // ServiceWidget(
-              //   backgroundColor: Colors.grey.shade400,
-              //   // onTap: () {
-              //   //   HomeController.to.wantToGo.value = true;
-              //   //   HomeController.to.tripType.value = preBook;
-              //   // },
-              //   title: AppStaticStrings.preBookRide.tr,
-              //   img: purpleCarImage2,
-              // ),
               ServiceWidget(
                 // backgroundColor: Colors.grey.shade400,
                 onTap: () {
-                  // showComingSoonDialog(context);
-                  HomeController.to.tripType.value = "ride";
-                  HomeController.to.tripClass.value = "RICH";
                   HomeController.to.wantToGo.value = true;
-
-                  // HomeController.to.setPickup.value = true;
+                  HomeController.to.tripType.value = preBook;
                 },
-                title: AppStaticStrings.premiumRide.tr,
+                title: AppStaticStrings.preBookRide.tr,
                 img: purpleCarImage2,
               ),
+              // ServiceWidget(
+              //   // backgroundColor: Colors.grey.shade400,
+              //   onTap: () {
+              //     // showComingSoonDialog(context);
+              //     HomeController.to.tripType.value = "ride";
+              //     HomeController.to.tripClass.value = "RICH";
+              //     HomeController.to.wantToGo.value = true;
+
+              //     // HomeController.to.setPickup.value = true;
+              //   },
+              //   title: AppStaticStrings.premiumRide.tr,
+              //   img: purpleCarImage2,
+              // ),
             ],
           ),
         ),

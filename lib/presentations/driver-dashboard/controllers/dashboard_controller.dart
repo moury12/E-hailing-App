@@ -12,7 +12,9 @@ import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_locati
 import 'package:e_hailing_app/presentations/navigation/views/navigation_page.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_page.dart';
 import 'package:e_hailing_app/presentations/trip/model/trip_cancellation_model.dart';
+import 'package:e_hailing_app/presentations/home/model/station_model.dart';
 import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -56,6 +58,9 @@ class DashBoardController extends GetxController {
   RxString estimatedPickupTime = "0:00 Min".obs;
   RxInt driverToPickupDuration = 0.obs;
   RxBool isLoadingNearbyTrips = false.obs;
+  RxList<StationModel> gasStations = <StationModel>[].obs;
+  RxBool isLoadingStations = false.obs;
+
 
   @override
   void onInit() {
@@ -66,6 +71,7 @@ class DashBoardController extends GetxController {
   Future<void> _initializeDashboard() async {
     await emitDriverLocationUpdate();
     getNearbyTrips();
+    getGasStations();
     initializeSocket();
   }
 
@@ -363,7 +369,35 @@ class DashBoardController extends GetxController {
     }
   }
 
+  Future<void> getGasStations() async {
+    try {
+      isLoadingStations.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+      final response = await ApiService().request(
+        endpoint: getAllStationsEndpoint,
+        method: 'GET',
+        queryParams: {
+          'page': '1',
+          'limit': '100',
+        },
+      );
+
+      if (response['success'] == true) {
+        final List stationsJson = response['data']['stations'] ?? [];
+        gasStations.value =
+            stationsJson.map((e) => StationModel.fromJson(e)).toList();
+        logger.i("${gasStations.length} gas stations fetched");
+      }
+    } catch (e) {
+      logger.e("Error fetching gas stations: $e");
+    } finally {
+      isLoadingStations.value = false;
+    }
+  }
+
   Future<void> drawPolylineMethod() async {
+
     final trip = currentTrip.value;
     final coords = trip.pickUpCoordinates?.coordinates;
     final dropCoords = trip.dropOffCoordinates?.coordinates;
@@ -415,7 +449,22 @@ class DashBoardController extends GetxController {
     }
   }
 
+  Future<void> drawPolylineForStation(LatLng stationLocation) async {
+    NavigationController.to.routePolylinesStation.clear();
+    NavigationController.to.routePolylinesStation.refresh();
+
+    await locationService.drawPolylineBetweenPoints(
+      CommonController.to.markerPositionDriver.value,
+      stationLocation,
+      NavigationController.to.routePolylinesStation,
+      userPosition: CommonController.to.markerPositionDriver.value,
+      mapController: CommonController.to.mapControllerDriver,
+      type: PolylineType.pickupToDropoff,
+    );
+  }
+
   bool handleBackNavigation() {
+
     if (afterOnTheWay.value) {
       // From payment request back to trip end
       afterOnTheWay.value = false;

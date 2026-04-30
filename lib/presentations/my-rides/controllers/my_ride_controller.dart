@@ -1,3 +1,5 @@
+import 'dart:nativewrappers/_internal/vm/lib/math_patch.dart';
+
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
@@ -85,6 +87,7 @@ class MyRideController extends GetxController {
           rideStatus == "completed"
               ? pagingControllerForCompletedTrip
               : pagingControllerForUpcomingTrip;
+            
       logger.d(response);
       if (response['success'] == true) {
         final newItems =

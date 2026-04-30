@@ -45,3 +45,4 @@ String getCurrentDriverTripEndpoint = 'trip/get-driver-current-trip';
 String payoutRequestEndpoint = 'payout/request';
 String payoutHistoryEndpoint = 'payout/my-payouts';
 String findNearbyTripsEndpoint = 'trip/find-nearby-trips';
+String getAllStationsEndpoint = 'stations/get-all-stations';

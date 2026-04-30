@@ -26,6 +26,8 @@ class NavigationController extends GetxController {
   RxBool markerDraging = false.obs;
   RxSet<Polyline> routePolylines = <Polyline>{}.obs;
   RxSet<Polyline> routePolylinesDrivers = <Polyline>{}.obs;
+  RxSet<Polyline> routePolylinesStation = <Polyline>{}.obs;
+
 
   @override
   void onInit() async {
@@ -52,6 +54,12 @@ class NavigationController extends GetxController {
     routePolylines.clear();
     routePolylines.refresh();
     routePolylines.value = {};
+    routePolylinesDrivers.clear();
+    routePolylinesDrivers.refresh();
+    routePolylinesDrivers.value = {};
+    routePolylinesStation.clear();
+    routePolylinesStation.refresh();
+    routePolylinesStation.value = {};
     update();
     logger.d("Polyline cleared: ${routePolylines.value}");
   }

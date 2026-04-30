@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage>
                                   child: GradientProgressIndicator(),
                                 );
                               } else {
-                                return HomeWantToGoContentWidget();
+                                return HomeInitialContentWidget();
                               }
                             }),
 

@@ -7,11 +7,18 @@ import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/boundary_controller.dart';
+import 'package:e_hailing_app/presentations/home/model/station_model.dart';
 import 'package:e_hailing_app/presentations/splash/controllers/common_controller.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'package:geolocator/geolocator.dart';
+import 'package:e_hailing_app/core/constants/color_constants.dart';
+import 'package:e_hailing_app/core/constants/text_style_constant.dart';
+import 'package:e_hailing_app/core/components/custom_button.dart';
 
 import '../../navigation/controllers/navigation_controller.dart';
 
@@ -276,29 +283,48 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
   final Rx<BitmapDescriptor?> customIcon = Rx<BitmapDescriptor?>(null);
   final Rx<BitmapDescriptor?> sourceIcon = Rx<BitmapDescriptor?>(null);
   final Rx<BitmapDescriptor?> destinationIcon = Rx<BitmapDescriptor?>(null);
+  final Rx<BitmapDescriptor?> stationIcon = Rx<BitmapDescriptor?>(null);
   Future<void> loadCustomMarker() async {
     try {
-      final bitmap = await BitmapDescriptor.asset(
+      customIcon.value = await BitmapDescriptor.asset(
         const ImageConfiguration(size: Size(30, 15)),
         purpleCarImage2,
       );
-      customIcon.value = bitmap;
-      final sIcon = await BitmapDescriptor.asset(
-        ImageConfiguration(size: Size(40, 40)),
+    } catch (e) {
+      debugPrint('Error loading customIcon: $e');
+      customIcon.value = BitmapDescriptor.defaultMarker;
+    }
+
+    try {
+      sourceIcon.value = await BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(40, 40)),
         sourceLocationIcon,
       );
-      sourceIcon.value = sIcon;
-      final dIcon = await BitmapDescriptor.asset(
-        ImageConfiguration(size: Size(40, 40)),
+    } catch (e) {
+      debugPrint('Error loading sourceIcon: $e');
+      sourceIcon.value = BitmapDescriptor.defaultMarker;
+    }
+
+    try {
+      destinationIcon.value = await BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(40, 40)),
         destinationLocationIcon,
       );
-      destinationIcon.value = dIcon;
     } catch (e) {
-      sourceIcon.value = BitmapDescriptor.defaultMarker;
+      debugPrint('Error loading destinationIcon: $e');
       destinationIcon.value = BitmapDescriptor.defaultMarker;
-      debugPrint('Error loading custom marker: $e');
-      // Fallback to default marker if custom marker fails
-      customIcon.value = BitmapDescriptor.defaultMarker;
+    }
+
+    try {
+      stationIcon.value = await BitmapDescriptor.asset(
+        ImageConfiguration(size: Size(30.w, 30.w)),
+        gasStationIcon,
+      );
+    } catch (e) {
+      debugPrint('Error loading stationIcon: $e');
+      stationIcon.value = BitmapDescriptor.defaultMarkerWithHue(
+        BitmapDescriptor.hueOrange,
+      );
     }
   }
 
@@ -336,6 +362,7 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
         polylines: {
           ...NavigationController.to.routePolylines.value,
           ...NavigationController.to.routePolylinesDrivers.value,
+          ...NavigationController.to.routePolylinesStation.value,
         },
 
         onMapCreated: _onMapCreated,
@@ -364,6 +391,163 @@ class _GoogleMapWidgetForDriverState extends State<GoogleMapWidgetForDriver> {
               ),
               icon: destinationIcon.value ?? BitmapDescriptor.defaultMarker,
             ),
+          ...DashBoardController.to.gasStations.map((station) {
+            final stationCoords = station.location?.coordinates;
+            if (stationCoords != null && stationCoords.length >= 2) {
+              return Marker(
+                markerId: MarkerId("station_${station.sId}"),
+                position: LatLng(
+                  stationCoords.last.toDouble(),
+                  stationCoords.first.toDouble(),
+                ),
+                icon:
+                    stationIcon.value ??
+                    BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueOrange,
+                    ),
+
+                onTap: () {
+                  final driverPos = CommonController.to.markerPositionDriver.value;
+                  final stationPos = LatLng(
+                    stationCoords.last.toDouble(),
+                    stationCoords.first.toDouble(),
+                  );
+                  
+                  double distanceInMeters = Geolocator.distanceBetween(
+                    driverPos.latitude,
+                    driverPos.longitude,
+                    stationPos.latitude,
+                    stationPos.longitude,
+                  );
+                  String distanceText = (distanceInMeters / 1000).toStringAsFixed(1) + " km";
+
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        elevation: 0,
+                        backgroundColor: Colors.transparent,
+                        child: Container(
+                          padding: EdgeInsets.all(20.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 10,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(16.w),
+                                decoration: BoxDecoration(
+                                  color: AppColors.kPrimaryColor.withOpacity(0.1),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.local_gas_station_rounded,
+                                  color: AppColors.kPrimaryColor,
+                                  size: 40.w,
+                                ),
+                              ),
+                              SizedBox(height: 16.h),
+                              Text(
+                                station.title ?? "Gas Station",
+                                style: poppinsSemiBold.copyWith(
+                                  fontSize: 18.sp,
+                                  color: AppColors.kTextColor,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 8.h),
+                              Text(
+                                station.address ?? "Unknown Address",
+                                style: poppinsRegular.copyWith(
+                                  fontSize: 14.sp,
+                                  color: AppColors.kBorderColor,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 16.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.route_outlined, color: AppColors.kPrimaryColor, size: 20.w),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    "Distance: $distanceText",
+                                    style: poppinsMedium.copyWith(
+                                      fontSize: 14.sp,
+                                      color: AppColors.kPrimaryColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 24.h),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: OutlinedButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      style: OutlinedButton.styleFrom(
+                                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.r),
+                                        ),
+                                        side: BorderSide(color: AppColors.kPrimaryColor),
+                                      ),
+                                      child: Text(
+                                        "Close",
+                                        style: poppinsMedium.copyWith(color: AppColors.kPrimaryColor),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        DashBoardController.to.drawPolylineForStation(stationPos);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.kPrimaryColor,
+                                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.r),
+                                        ),
+                                        elevation: 0,
+                                      ),
+                                      child: Text(
+                                        "Directions",
+                                        style: poppinsMedium.copyWith(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                infoWindow: InfoWindow(
+                  title: station.title,
+                  snippet: station.address,
+                ),
+              );
+            }
+            return null;
+          }).whereType<Marker>(),
         },
       );
     });
