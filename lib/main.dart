@@ -14,7 +14,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'core/bindings/bindings.dart';
 import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
-import 'package:upgrader/upgrader.dart';
+
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -80,17 +80,7 @@ class MyApp extends StatelessWidget {
             initialBinding: SplashBinding(),
             debugShowCheckedModeBanner: false,
             builder: (context, child) {
-              return UpgradeAlert(
-                upgrader: Upgrader(
-                  durationUntilAlertAgain: const Duration(seconds: 0),
-                  // debugLogging: true, // Uncomment to see detailed logs in the console
-                  // debugDisplayAlways: true, // Uncomment to test the alert in debug mode
-                ),
-                showIgnore: false,
-                showLater: false,
-                barrierDismissible: false,
-                child: child ?? const SizedBox.shrink(),
-              );
+              return child ?? const SizedBox.shrink();
             },
           );
         });

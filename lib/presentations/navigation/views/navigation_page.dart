@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:upgrader/upgrader.dart';
 
 import '../../../core/components/custom_button_tap.dart';
 import '../../../core/constants/app_static_strings_constant.dart';
@@ -125,168 +126,176 @@ class _NavigationPageState extends State<NavigationPage>
   @override
   Widget build(BuildContext context) {
     // super.build(context);
-    return Obx(() {
-      final navController = NavigationController.to;
+    final UpgradeAlert upgrader = UpgradeAlert(
+      upgrader: Upgrader(
+        durationUntilAlertAgain: const Duration(seconds: 0),
+      ),
+      showIgnore: false,
+      showLater: false,
+      barrierDismissible: false,
+      child: Obx(() {
+        final navController = NavigationController.to;
 
-      int currentIndex = navController.currentNavIndex.value;
-      double containerWidth = MediaQuery.of(context).size.width;
-      double itemWidth =
-          containerWidth / NavigationController.to.navList.length;
-      double indicatorPosition =
-          itemWidth * currentIndex + (itemWidth - 70.w) / 2 - 12.w;
+        int currentIndex = navController.currentNavIndex.value;
+        double containerWidth = MediaQuery.of(context).size.width;
+        double itemWidth =
+            containerWidth / NavigationController.to.navList.length;
+        double indicatorPosition =
+            itemWidth * currentIndex + (itemWidth - 70.w) / 2 - 12.w;
 
-      return PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, result) {
-          if (currentIndex == 0) {
-            if (!CommonController.to.isDriver.value) {
-              final homeController = HomeController.to;
-              if (!didPop) {
-                homeController.handleBackNavigation();
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (currentIndex == 0) {
+              if (!CommonController.to.isDriver.value) {
+                final homeController = HomeController.to;
+                if (!didPop) {
+                  homeController.handleBackNavigation();
+                }
+              } else {
+                // DashBoardController.to.handleBackNavigation();
               }
             } else {
-              // DashBoardController.to.handleBackNavigation();
+              debugPrint('------------------');
+              debugPrint(currentIndex.toString());
+              navController.changeIndex(0);
+              debugPrint(currentIndex.toString());
             }
-          } else {
-            debugPrint('------------------');
-            debugPrint(currentIndex.toString());
-            navController.changeIndex(0);
-            debugPrint(currentIndex.toString());
-          }
-        },
-        child: Scaffold(
-          // resizeToAvoidBottomInset: false,
-          appBar: getAppBar(currentIndex),
-          body: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              RepaintBoundary(
-                child: Offstage(
-                  offstage: currentIndex != 0,
-                  child: _persistentMapWidget,
-                ),
-              ),
-
-              // Other pages
-              ...List.generate(navController.getPages().length, (index) {
-                // if (index == 0) return SizedBox.shrink(); // Skip map page
-
-                return Offstage(
-                  offstage: currentIndex != index,
-                  child: RepaintBoundary(
-                    child: navController.getPages()[index],
+          },
+          child: Scaffold(
+            // resizeToAvoidBottomInset: false,
+            appBar: getAppBar(currentIndex),
+            body: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                RepaintBoundary(
+                  child: Offstage(
+                    offstage: currentIndex != 0,
+                    child: _persistentMapWidget,
                   ),
-                );
-              }),
-              currentIndex == 0
-                  ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FloatingActionButton.small(
-                      onPressed: () async {
-                        if (CommonController.to.isDriver == true) {
-                          DashBoardController.to.getNearbyTrips();
-                          Map<String, dynamic> decodedToken = JwtDecoder.decode(
-                            Boxes.getUserData().get(tokenKey).toString(),
-                          );
-                          await CommonController.to
-                              .fetchCurrentLocationMethod();
-                          await CommonController.to
-                              .startTrackingLocationMethod();
-                          await DashBoardController.to
-                              .getDriverCurrentTripRequest();
-                          await DashBoardController.to.getGasStations();
-                          if (DashBoardController.to.currentTrip.value.sId ==
-                              null) {
-                            NavigationController.to.clearPolyline();
-                          }
-                          // Emit driver location update
-                          SocketService()
-                              .emit(DriverEvent.driverLocationUpdate, {
-                                "userId": decodedToken['userId'],
-                                "lat":
-                                    CommonController
-                                        .to
-                                        .markerPositionDriver
-                                        .value
-                                        .latitude,
-                                "long":
-                                    CommonController
-                                        .to
-                                        .markerPositionDriver
-                                        .value
-                                        .longitude,
-                              });
-                        } else {
-                          CommonController.to.fetchCurrentLocationMethod();
-                          HomeController.to.getUserCurrentTrip();
-                          // if (HomeController.to.tripAcceptedModel.value.sId ==
-                          //     null) {
-                          //   NavigationController.to.clearPolyline();
-                          //   HomeController.to.pickupLatLng.value = null;
-                          //   HomeController.to.dropoffLatLng.value = null;
-                          //   HomeController.to.resetAllStates();
-                          // }
-                        }
-                      },
-                      shape: CircleBorder(),
-                      child: Icon(Icons.refresh_rounded),
+                ),
+
+                // Other pages
+                ...List.generate(navController.getPages().length, (index) {
+                  // if (index == 0) return SizedBox.shrink(); // Skip map page
+
+                  return Offstage(
+                    offstage: currentIndex != index,
+                    child: RepaintBoundary(
+                      child: navController.getPages()[index],
                     ),
-                  )
-                  : SizedBox.shrink(),
-            ],
-          ),
-          bottomNavigationBar: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Container(
-                height: 80.w,
-                padding: padding6H,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.kWhiteColor,
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(4.r),
+                  );
+                }),
+                currentIndex == 0
+                    ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FloatingActionButton.small(
+                        onPressed: () async {
+                          if (CommonController.to.isDriver == true) {
+                            DashBoardController.to.getNearbyTrips();
+                            Map<String, dynamic> decodedToken = JwtDecoder.decode(
+                              Boxes.getUserData().get(tokenKey).toString(),
+                            );
+                            await CommonController.to
+                                .fetchCurrentLocationMethod();
+                            await CommonController.to
+                                .startTrackingLocationMethod();
+                            await DashBoardController.to
+                                .getDriverCurrentTripRequest();
+                            await DashBoardController.to.getGasStations();
+                            if (DashBoardController.to.currentTrip.value.sId ==
+                                null) {
+                              NavigationController.to.clearPolyline();
+                            }
+                            // Emit driver location update
+                            SocketService()
+                                .emit(DriverEvent.driverLocationUpdate, {
+                                  "userId": decodedToken['userId'],
+                                  "lat":
+                                      CommonController
+                                          .to
+                                          .markerPositionDriver
+                                          .value
+                                          .latitude,
+                                  "long":
+                                      CommonController
+                                          .to
+                                          .markerPositionDriver
+                                          .value
+                                          .longitude,
+                                });
+                          } else {
+                            CommonController.to.fetchCurrentLocationMethod();
+                            HomeController.to.getUserCurrentTrip();
+                            // if (HomeController.to.tripAcceptedModel.value.sId ==
+                            //     null) {
+                            //   NavigationController.to.clearPolyline();
+                            //   HomeController.to.pickupLatLng.value = null;
+                            //   HomeController.to.dropoffLatLng.value = null;
+                            //   HomeController.to.resetAllStates();
+                            // }
+                          }
+                        },
+                        shape: CircleBorder(),
+                        child: Icon(Icons.refresh_rounded),
+                      ),
+                    )
+                    : SizedBox.shrink(),
+              ],
+            ),
+            bottomNavigationBar: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  height: 80.w,
+                  padding: padding6H,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.kWhiteColor,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(4.r),
+                    ),
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(
-                    NavigationController.to.navList.length,
-                    (index) {
-                      final nav = NavigationController.to.navList[index];
-                      return Expanded(
-                        child: Tooltip(
-                          message: nav.title,
-                          child: ButtonTapWidget(
-                            onTap: () {
-                              navController.changeIndex(index);
-                            },
-                            child: Padding(
-                              padding: padding6H.copyWith(bottom: 6.w),
-                              child: NavItem(nav: nav),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      NavigationController.to.navList.length,
+                      (index) {
+                        final nav = NavigationController.to.navList[index];
+                        return Expanded(
+                          child: Tooltip(
+                            message: nav.title,
+                            child: ButtonTapWidget(
+                              onTap: () {
+                                navController.changeIndex(index);
+                              },
+                              child: Padding(
+                                padding: padding6H.copyWith(bottom: 6.w),
+                                child: NavItem(nav: nav),
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-              AnimatedPositioned(
-                left: indicatorPosition,
-                duration: Duration(milliseconds: 200),
-                child: Container(
-                  margin: padding12H,
-                  decoration: BoxDecoration(color: AppColors.kPrimaryColor),
-                  height: 3.w,
-                  width: 70.w,
+                AnimatedPositioned(
+                  left: indicatorPosition,
+                  duration: Duration(milliseconds: 200),
+                  child: Container(
+                    margin: padding12H,
+                    decoration: BoxDecoration(color: AppColors.kPrimaryColor),
+                    height: 3.w,
+                    width: 70.w,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      }));
+    return upgrader;
   }
 
   // TODO: implement wantKeepAlive
