@@ -232,6 +232,9 @@ class CommonController extends GetxController {
   void onInit() {
     checkUserRole(); // Initialize role first
     logger.d(
+      "--check token----${Boxes.getUserData().get(tokenKey).toString()}",
+    );
+    logger.d(
       "--check role----${Boxes.getUserRole().get(role, defaultValue: user).toString()}",
     );
     ever(isDriver, (_) => updateTripCancellationList());

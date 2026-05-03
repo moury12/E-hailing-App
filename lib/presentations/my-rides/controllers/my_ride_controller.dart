@@ -1,5 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/math_patch.dart';
-
 import 'package:e_hailing_app/core/api-client/api_service.dart';
 import 'package:e_hailing_app/core/constants/app_static_strings_constant.dart';
 import 'package:e_hailing_app/core/constants/hive_boxes.dart';
@@ -46,7 +44,7 @@ class MyRideController extends GetxController {
       getAllRideRequest(pageKey: pageKey, rideStatus: "completed");
     });
     pagingControllerForUpcomingTrip.addPageRequestListener((pageKey) {
-      getAllRideRequest(pageKey: pageKey, rideStatus: "scheduled");
+      getAllRideRequest(pageKey: pageKey,  isPreBooked: true);
     });
   }
 
@@ -65,6 +63,7 @@ class MyRideController extends GetxController {
   Future<void> getAllRideRequest({
     required int pageKey,
     String? rideStatus,
+    bool isPreBooked = false,
   }) async {
     // if (isAllTripLoading.value) return; // Removed lock
     // WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -81,6 +80,7 @@ class MyRideController extends GetxController {
           'page': pageKey.toString(),
           'limit': "5",
           if (rideStatus != null) 'status': rideStatus,
+          if (isPreBooked) 'tripType':'pre_book'
         },
       );
       PagingController<int, TripResponseModel> pageController =
