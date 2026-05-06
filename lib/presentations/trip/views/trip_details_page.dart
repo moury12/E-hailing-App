@@ -333,7 +333,8 @@ class TripDetailsPage extends StatelessWidget {
                         },
                         title: AppStaticStrings.payment.tr,
                       )
-                      : CancelTripButtonWidget(
+                      : trip.tripType != "pre_book"
+                      ? CancelTripButtonWidget(
                         isLoading: HomeController.to.isCancellingTrip,
                         onSubmit: () {
                           if (HomeController.to.cancelReason.isEmpty) {
@@ -351,7 +352,8 @@ class TripDetailsPage extends StatelessWidget {
                             Get.back();
                           }
                         },
-                      ),
+                      )
+                      : SizedBox.shrink(),
                 ],
               );
             }),

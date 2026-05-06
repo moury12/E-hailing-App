@@ -46,3 +46,4 @@ String payoutRequestEndpoint = 'payout/request';
 String payoutHistoryEndpoint = 'payout/my-payouts';
 String findNearbyTripsEndpoint = 'trip/find-nearby-trips';
 String getAllStationsEndpoint = 'stations/get-all-stations';
+String cancelPreBookTripEndpoint = 'trip/cancel-prebook-trip';

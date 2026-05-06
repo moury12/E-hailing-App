@@ -8,6 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:e_hailing_app/core/helper/helper_function.dart';
+import 'package:e_hailing_app/core/utils/enum.dart';
 
 import '../../../core/api-client/api_endpoints.dart';
 
@@ -21,6 +23,7 @@ class MyRideController extends GetxController {
   final RxInt itemsProductPerPage = 5.obs;
   final RxInt totalProductPages = 5.obs;
   final RxBool isProductLoadingMore = false.obs;
+  RxBool isCancellingTrip = false.obs;
 
   List<String> get tabLabels {
     return [
@@ -124,6 +127,48 @@ class MyRideController extends GetxController {
       pageController.error = e;
     } finally {
       // isAllTripLoading.value = false; // Removed lock
+    }
+  }
+
+  Future<void> cancelPreBookTrip({
+    required String tripId,
+    required String cancellationReason,
+  }) async {
+    try {
+      isCancellingTrip.value = true;
+      ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
+      final response = await ApiService().request(
+        endpoint: cancelPreBookTripEndpoint,
+        method: 'POST',
+        body: {"tripId": tripId, "cancellationReason": cancellationReason},
+      );
+
+      logger.i("Cancel Pre-Book Trip Response: $response");
+
+      if (response['success'] == true) {
+        showCustomSnackbar(
+          title: 'Success',
+          message: response['message'] ?? 'Trip cancelled successfully',
+          type: SnackBarType.success,
+        );
+        pagingControllerForUpcomingTrip.refresh();
+      } else {
+        showCustomSnackbar(
+          title: 'Failed',
+          message: response['message'] ?? 'Failed to cancel trip',
+          type: SnackBarType.failed,
+        );
+      }
+    } catch (e) {
+      logger.e("Error cancelling pre-book trip: $e");
+      showCustomSnackbar(
+        title: 'Error',
+        message: 'An error occurred while cancelling the trip',
+        type: SnackBarType.failed,
+      );
+    } finally {
+      isCancellingTrip.value = false;
     }
   }
 

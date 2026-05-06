@@ -11,8 +11,11 @@ import 'package:e_hailing_app/core/utils/enum.dart';
 import 'package:e_hailing_app/core/utils/variables.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/controllers/dashboard_controller.dart';
 import 'package:e_hailing_app/presentations/driver-dashboard/model/driver_current_trip_model.dart';
+import 'package:e_hailing_app/presentations/home/controllers/home_controller.dart';
+import 'package:e_hailing_app/presentations/my-rides/controllers/my_ride_controller.dart';
 import 'package:e_hailing_app/presentations/home/widgets/trip_details_card_widget.dart';
 import 'package:e_hailing_app/presentations/payment/views/payment_invoice_page.dart';
+import 'package:e_hailing_app/presentations/splash/views/no_internet_page.dart';
 import 'package:e_hailing_app/presentations/trip/widgets/row_call_chat_details_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,8 +48,10 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
     String cost = 'RM 0';
     String distance = '0 km';
     String dateTime = 'N/A';
+    String tripType = 'ride';
     String? pickup;
     String? dropOff;
+    dynamic driver;
 
     if (rideModel is DriverCurrentTripModel) {
       final model = rideModel as DriverCurrentTripModel;
@@ -64,7 +69,9 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
             : model.createdAt.toString(),
       );
       pickup = model.pickUpAddress;
-      dropOff = model.dropOffAddress; // define this method below
+      dropOff = model.dropOffAddress;
+      tripType = model.tripType ?? 'ride';
+      driver = model.driver ?? null; // define this method below
     } else if (rideModel is TripResponseModel) {
       final model = rideModel as TripResponseModel;
 
@@ -87,6 +94,8 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
       );
       pickup = model.pickUpAddress;
       dropOff = model.dropOffAddress;
+      tripType = model.tripType ?? 'ride';
+      driver = model.driver ?? null;
     }
 
     return Container(
@@ -131,27 +140,37 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
             spacing: 6.w,
             children: [
               ///============================dynamic driver image==============================///
-              CustomNetworkImage(
-                imageUrl: driverImage,
-                boxShape: BoxShape.circle,
-                height: 42.w,
-                width: 42.w,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ///============================dynamic driver name rating ==============================///
-                    CustomText(
-                      text: driverName,
-                      maxLines: 1,
-                      fontSize: getFontSizeDefault(),
+              !isDriver && driver == null
+                  ? SizedBox.shrink()
+                  : CustomNetworkImage(
+                    imageUrl: driverImage,
+                    boxShape: BoxShape.circle,
+                    height: 42.w,
+                    width: 42.w,
+                  ),
+              !isDriver && driver == null
+                  ? Expanded(
+                    child: CustomText(
+                      text: "Driver not assigned yet",
+                      fontSize: getFontSizeSmall(),
+                      color: Colors.black,
                     ),
-                    RatingInfoWidget(rating: rating),
-                    // !isDriver?RatingInfoWidget(rating: rating):SizedBox.shrink(),
-                  ],
-                ),
-              ),
+                  )
+                  : Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ///============================dynamic driver name rating ==============================///
+                        CustomText(
+                          text: driverName,
+                          maxLines: 1,
+                          fontSize: getFontSizeDefault(),
+                        ),
+                        RatingInfoWidget(rating: rating),
+                        // !isDriver?RatingInfoWidget(rating: rating):SizedBox.shrink(),
+                      ],
+                    ),
+                  ),
               Expanded(
                 child: MyRidesHistoryTripInfoWidget(
                   title: AppStaticStrings.finalCost.tr,
@@ -170,7 +189,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
 
           ///============================Timeline==============================///
           FromToTimeLine(pickUpAddress: pickup, dropOffAddress: dropOff),
-          if (isDriver && isOngoin)
+          if (isDriver && isOngoin && rideModel.tripType != "pre_book")
             CancelTripButtonWidget(
               // isLoading: DashBoardController.to.isCancellingTrip.value,
               onSubmit: () {
@@ -185,6 +204,24 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
 
                     reason: DashBoardController.to.cancelReason,
                     newStatus: DriverTripStatus.cancelled.name.toString(),
+                  );
+                  Get.back();
+                }
+              },
+            ),
+          if (!isDriver && driver == null && rideModel.tripType == "pre_book")
+            CancelTripButtonWidget(
+              isLoading: MyRideController.to.isCancellingTrip,
+              onSubmit: () {
+                if (HomeController.to.cancelReason.isEmpty) {
+                  showCustomSnackbar(
+                    title: "Field Required",
+                    message: "Need to select the reason",
+                  );
+                } else {
+                  MyRideController.to.cancelPreBookTrip(
+                    tripId: rideModel.sId.toString(),
+                    cancellationReason: HomeController.to.cancelReason.join(", "),
                   );
                   Get.back();
                 }

@@ -61,7 +61,6 @@ class DashBoardController extends GetxController {
   RxList<StationModel> gasStations = <StationModel>[].obs;
   RxBool isLoadingStations = false.obs;
 
-
   @override
   void onInit() {
     super.onInit();
@@ -377,10 +376,7 @@ class DashBoardController extends GetxController {
       final response = await ApiService().request(
         endpoint: getAllStationsEndpoint,
         method: 'GET',
-        queryParams: {
-          'page': '1',
-          'limit': '100',
-        },
+        queryParams: {'page': '1', 'limit': '100'},
       );
 
       if (response['success'] == true) {
@@ -397,7 +393,6 @@ class DashBoardController extends GetxController {
   }
 
   Future<void> drawPolylineMethod() async {
-
     final trip = currentTrip.value;
     final coords = trip.pickUpCoordinates?.coordinates;
     final dropCoords = trip.dropOffCoordinates?.coordinates;
@@ -464,7 +459,6 @@ class DashBoardController extends GetxController {
   }
 
   bool handleBackNavigation() {
-
     if (afterOnTheWay.value) {
       // From payment request back to trip end
       afterOnTheWay.value = false;
