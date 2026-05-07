@@ -52,6 +52,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
     String? pickup;
     String? dropOff;
     dynamic driver;
+    String status = "";
 
     if (rideModel is DriverCurrentTripModel) {
       final model = rideModel as DriverCurrentTripModel;
@@ -72,6 +73,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
       dropOff = model.dropOffAddress;
       tripType = model.tripType ?? 'ride';
       driver = model.driver ?? null; // define this method below
+      status = model.status ?? "";
     } else if (rideModel is TripResponseModel) {
       final model = rideModel as TripResponseModel;
 
@@ -96,139 +98,171 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
       dropOff = model.dropOffAddress;
       tripType = model.tripType ?? 'ride';
       driver = model.driver ?? null;
+      status = model.status ?? "";
     }
 
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 6.h),
-      decoration: BoxDecoration(
-        color: AppColors.kWhiteColor,
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      padding: padding12,
-      child: Column(
-        spacing: 6.h,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ///============================dynamic date==============================///
-          Row(
-            children: [
-              Expanded(
-                child: CustomText(
-                  text: dateTime,
-                  style: poppinsSemiBold,
-                  fontSize: getFontSizeExtraLarge(),
-                ),
-              ),
-              if (showInvoice)
-                IconButton(
-                  onPressed: () {
-                    Get.to(
-                      PaymentInvoicePage(
-                        rideModel: rideModel,
-                        isDriver: isDriver,
-                      ),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.receipt_long,
-                    color: AppColors.kPrimaryColor,
-                  ),
-                ),
-            ],
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 6.h),
+          decoration: BoxDecoration(
+            color: AppColors.kWhiteColor,
+            borderRadius: BorderRadius.circular(8.r),
           ),
-          Row(
-            spacing: 6.w,
+          padding: padding12,
+          child: Column(
+            spacing: 6.h,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ///============================dynamic driver image==============================///
-              !isDriver && driver == null
-                  ? SizedBox.shrink()
-                  : CustomNetworkImage(
-                    imageUrl: driverImage,
-                    boxShape: BoxShape.circle,
-                    height: 42.w,
-                    width: 42.w,
-                  ),
-              !isDriver && driver == null
-                  ? Expanded(
+              ///============================dynamic date==============================///
+              Row(
+                children: [
+                  Expanded(
                     child: CustomText(
-                      text: "Driver not assigned yet",
-                      fontSize: getFontSizeSmall(),
-                      color: Colors.black,
-                    ),
-                  )
-                  : Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ///============================dynamic driver name rating ==============================///
-                        CustomText(
-                          text: driverName,
-                          maxLines: 1,
-                          fontSize: getFontSizeDefault(),
-                        ),
-                        RatingInfoWidget(rating: rating),
-                        // !isDriver?RatingInfoWidget(rating: rating):SizedBox.shrink(),
-                      ],
+                      text: dateTime,
+                      style: poppinsSemiBold,
+                      fontSize: getFontSizeExtraLarge(),
                     ),
                   ),
-              Expanded(
-                child: MyRidesHistoryTripInfoWidget(
-                  title: AppStaticStrings.finalCost.tr,
-                  text: cost,
-                ),
+                  if (showInvoice)
+                    IconButton(
+                      onPressed: () {
+                        Get.to(
+                          PaymentInvoicePage(
+                            rideModel: rideModel,
+                            isDriver: isDriver,
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.receipt_long,
+                        color: AppColors.kPrimaryColor,
+                      ),
+                    ),
+                ],
               ),
-              Expanded(
-                child: MyRidesHistoryTripInfoWidget(
-                  title: AppStaticStrings.tripDistance.tr,
-                  text: distance,
-                ),
+              Row(
+                spacing: 6.w,
+                children: [
+                  ///============================dynamic driver image==============================///
+                  !isDriver && driver == null
+                      ? SizedBox.shrink()
+                      : CustomNetworkImage(
+                        imageUrl: driverImage,
+                        boxShape: BoxShape.circle,
+                        height: 42.w,
+                        width: 42.w,
+                      ),
+                  !isDriver && driver == null
+                      ? Expanded(
+                        child: CustomText(
+                          text: "Driver not assigned yet",
+                          fontSize: getFontSizeSmall(),
+                          color: Colors.black,
+                        ),
+                      )
+                      : Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ///============================dynamic driver name rating ==============================///
+                            CustomText(
+                              text: driverName,
+                              maxLines: 1,
+                              fontSize: getFontSizeDefault(),
+                            ),
+                            RatingInfoWidget(rating: rating),
+                            // !isDriver?RatingInfoWidget(rating: rating):SizedBox.shrink(),
+                          ],
+                        ),
+                      ),
+                  Expanded(
+                    child: MyRidesHistoryTripInfoWidget(
+                      title: AppStaticStrings.finalCost.tr,
+                      text: cost,
+                    ),
+                  ),
+                  Expanded(
+                    child: MyRidesHistoryTripInfoWidget(
+                      title: AppStaticStrings.tripDistance.tr,
+                      text: distance,
+                    ),
+                  ),
+                ],
               ),
+              space4H,
+
+              ///============================Timeline==============================///
+              FromToTimeLine(pickUpAddress: pickup, dropOffAddress: dropOff),
+              if (isDriver && isOngoin && rideModel.tripType != "pre_book")
+                CancelTripButtonWidget(
+                  // isLoading: DashBoardController.to.isCancellingTrip.value,
+                  onSubmit: () {
+                    if (DashBoardController.to.cancelReason.isEmpty) {
+                      showCustomSnackbar(
+                        title: "Field Required",
+                        message: "Need to select the reason",
+                      );
+                    } else {
+                      DashBoardController.to.driverTripUpdateStatus(
+                        tripId: rideModel.sId.toString(),
+
+                        reason: DashBoardController.to.cancelReason,
+                        newStatus: DriverTripStatus.cancelled.name.toString(),
+                      );
+                      Get.back();
+                    }
+                  },
+                ),
+              if (status.toLowerCase() != "cancelled" &&
+                  !isDriver &&
+                  driver == null &&
+                  rideModel.tripType == "pre_book")
+                CancelTripButtonWidget(
+                  isLoading: MyRideController.to.isCancellingTrip,
+                  onSubmit: () {
+                    if (HomeController.to.cancelReason.isEmpty) {
+                      showCustomSnackbar(
+                        title: "Field Required",
+                        message: "Need to select the reason",
+                      );
+                    } else {
+                      MyRideController.to.cancelPreBookTrip(
+                        tripId: rideModel.sId.toString(),
+                        cancellationReason: HomeController.to.cancelReason.join(
+                          ", ",
+                        ),
+                      );
+                      Get.back();
+                    }
+                  },
+                ),
             ],
           ),
-          space4H,
+        ),
 
-          ///============================Timeline==============================///
-          FromToTimeLine(pickUpAddress: pickup, dropOffAddress: dropOff),
-          if (isDriver && isOngoin && rideModel.tripType != "pre_book")
-            CancelTripButtonWidget(
-              // isLoading: DashBoardController.to.isCancellingTrip.value,
-              onSubmit: () {
-                if (DashBoardController.to.cancelReason.isEmpty) {
-                  showCustomSnackbar(
-                    title: "Field Required",
-                    message: "Need to select the reason",
-                  );
-                } else {
-                  DashBoardController.to.driverTripUpdateStatus(
-                    tripId: rideModel.sId.toString(),
-
-                    reason: DashBoardController.to.cancelReason,
-                    newStatus: DriverTripStatus.cancelled.name.toString(),
-                  );
-                  Get.back();
-                }
-              },
+        if (status.isNotEmpty)
+          Positioned(
+            right: 0,
+            top: 4,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.kPrimaryLightColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(12.r),
+                  topRight: Radius.circular(8.r),
+                ),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+              child: CustomText(
+                text: status,
+                style: poppinsBold,
+                fontSize: getFontSizeSmall(),
+                color: AppColors.kPrimaryColor,
+              ),
             ),
-          if (!isDriver && driver == null && rideModel.tripType == "pre_book")
-            CancelTripButtonWidget(
-              isLoading: MyRideController.to.isCancellingTrip,
-              onSubmit: () {
-                if (HomeController.to.cancelReason.isEmpty) {
-                  showCustomSnackbar(
-                    title: "Field Required",
-                    message: "Need to select the reason",
-                  );
-                } else {
-                  MyRideController.to.cancelPreBookTrip(
-                    tripId: rideModel.sId.toString(),
-                    cancellationReason: HomeController.to.cancelReason.join(", "),
-                  );
-                  Get.back();
-                }
-              },
-            ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
