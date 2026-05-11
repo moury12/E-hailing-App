@@ -621,25 +621,37 @@ Future<String?> pickDateTime(BuildContext context) async {
     firstDate: DateTime(2000),
     lastDate: DateTime(2100),
   );
-
   if (pickedDate == null) return null;
 
-  // Pick Time
+  // Pick Time — force 12h AM/PM format
   final TimeOfDay? pickedTime = await showTimePicker(
     context: context,
     initialTime: TimeOfDay.now(),
+    builder: (context, child) {
+      return MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          alwaysUse24HourFormat: false, // 👈 এটাই 12h করে দেয়
+        ),
+        child: child!,
+      );
+    },
   );
-
   if (pickedTime == null) return null;
 
-  // Combine and return ISO string
+  // Combine
   final dateTime = DateTime(
     pickedDate.year,
     pickedDate.month,
     pickedDate.day,
     pickedTime.hour,
     pickedTime.minute,
-  );
 
-  return dateTime.toIso8601String();
+  );
+  return dateTime.toLocal().toString();
+}
+String formatTo12h(String utcString) {
+  final utc = DateTime.parse(utcString);
+  final local = utc.toLocal(); // UTC → device local time
+  return DateFormat('MMM dd, yyyy  hh:mm a').format(local);
+  // Output: May 11, 2025  02:30 PM
 }

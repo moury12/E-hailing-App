@@ -53,6 +53,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
     String? dropOff;
     dynamic driver;
     String status = "";
+    String pickupTime="";
 
     if (rideModel is DriverCurrentTripModel) {
       final model = rideModel as DriverCurrentTripModel;
@@ -74,6 +75,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
       tripType = model.tripType ?? 'ride';
       driver = model.driver ?? null; // define this method below
       status = model.status ?? "";
+      pickupTime=formatTo12h(model.pickUpDate.toString());
     } else if (rideModel is TripResponseModel) {
       final model = rideModel as TripResponseModel;
 
@@ -99,6 +101,7 @@ class MyRidesHistoryCardItemWidget extends StatelessWidget {
       tripType = model.tripType ?? 'ride';
       driver = model.driver ?? null;
       status = model.status ?? "";
+      pickupTime=formatTo12h(model.pickUpDate.toString());
     }
 
     return Stack(

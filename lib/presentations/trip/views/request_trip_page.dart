@@ -149,7 +149,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
                     ? ButtonTapWidget(
                       onTap: () async {
                         String? time = await pickDateTime(context);
-                        dateTimeController.text = time ?? "";
+                        dateTimeController.text = formatTo12h(time ?? "");
                       },
                       child: CustomTextField(
                         borderColor: AppColors.kGreyColor,
