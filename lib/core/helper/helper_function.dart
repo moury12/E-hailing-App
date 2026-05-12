@@ -542,10 +542,10 @@ void showCustomSnackbar({
 String formatDateTime(String input) {
   try {
     final utcDate = DateTime.parse(input); // Parse the ISO string
-    final localDate = utcDate.toLocal(); // Convert to local timezone
+    // final localDate = utcDate.toLocal(); // Convert to local timezone
 
-    final datePart = DateFormat('dd MMM yyyy').format(localDate);
-    final timePart = DateFormat('hh:mm a').format(localDate);
+    final datePart = DateFormat('dd MMM yyyy').format(utcDate);
+    final timePart = DateFormat('hh:mm a').format(utcDate);
 
     return '$datePart at $timePart';
   } catch (e) {
@@ -645,13 +645,13 @@ Future<String?> pickDateTime(BuildContext context) async {
     pickedDate.day,
     pickedTime.hour,
     pickedTime.minute,
-
   );
-  return dateTime.toLocal().toString();
+  return dateTime.toString();
 }
+
 String formatTo12h(String utcString) {
   final utc = DateTime.parse(utcString);
-  final local = utc.toLocal(); // UTC → device local time
-  return DateFormat('MMM dd, yyyy  hh:mm a').format(local);
+  // final local = utc.toLocal(); // UTC → device local time
+  return DateFormat('MMM dd, yyyy  hh:mm a').format(utc);
   // Output: May 11, 2025  02:30 PM
 }

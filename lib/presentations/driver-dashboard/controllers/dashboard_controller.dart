@@ -588,10 +588,7 @@ class DashBoardController extends GetxController {
     });
     socketService.on('driver_location_updated', (data) {
       logger.d("📩 updateLocation: ");
-      if (data["success"] == true) {
-        registerSocketListeners();
-        // driverUpdatedLocation.value = DriverLocationUpdateModel.fromJson(data);
-      }
+      // driverUpdatedLocation.value = DriverLocationUpdateModel.fromJson(data);
       logger.d(data);
     });
 
