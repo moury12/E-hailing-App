@@ -29,7 +29,7 @@ class AfterTripStartedWidget extends StatelessWidget {
       children: [
         TitleTextWidget(
           title: "Distance",
-          text: "${(int.parse(tripDistance ?? "0") / 1000).toString()} km",
+          text: "${(double.parse(tripDistance ?? "0") / 1000).toStringAsFixed(1)} km",
         ),
         TitleTextWidget(title: 'Estimated Time', text: "$estimatedTime min"),
         FromToTimeLine(

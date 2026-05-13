@@ -846,7 +846,7 @@ class HomeController extends GetxController {
       ),
       barrierDismissible: false,
     );
-
+    logger.d("body of req ------- ${body}");
     socket.emit(TripEvents.tripRequested, body);
     // Future.delayed(Duration(seconds: 30), () {
     //   if (isRequestingTrip.value) {

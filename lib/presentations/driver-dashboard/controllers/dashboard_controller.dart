@@ -68,6 +68,7 @@ class DashBoardController extends GetxController {
   }
 
   Future<void> _initializeDashboard() async {
+    await getDriverCurrentTripRequest();
     await emitDriverLocationUpdate();
     getNearbyTrips();
     getGasStations();
@@ -144,7 +145,7 @@ class DashBoardController extends GetxController {
 
   void showAvailableTrips() {
     // rideRequest.value = true;
-    if (availableTrips.isNotEmpty) {
+    if (availableTrips.isNotEmpty && currentTrip.value.sId == null) {
       resetRideFlow(rideType: RideFlowState.rideRequest);
     }
   }
@@ -301,11 +302,13 @@ class DashBoardController extends GetxController {
       );
       if (response['success'] == true) {
         logger.d(response);
+        currentTrip.value = DriverCurrentTripModel.fromJson(response['data']);
+        updateRideFlowState(currentTrip.value.status);
         startTrackingUserLocationMethod(
           tripId: currentTrip.value.sId.toString(),
         );
-        currentTrip.value = DriverCurrentTripModel.fromJson(response['data']);
-        drawPolylineMethod();
+
+        await drawPolylineMethod();
       } else {
         logger.e(response);
         resetController();
@@ -409,8 +412,8 @@ class DashBoardController extends GetxController {
         LatLng(dropCoords.last.toDouble(), dropCoords.first.toDouble()),
         NavigationController.to.routePolylines,
         type: PolylineType.pickupToDropoff,
-        distance: int.tryParse(trip.distance.toString())?.obs ?? 0.obs,
-        duration: int.tryParse(trip.duration.toString())?.obs ?? 0.obs,
+        distance: (double.tryParse(trip.distance.toString())?.toInt() ?? 0).obs,
+        duration: (double.tryParse(trip.duration.toString())?.toInt() ?? 0).obs,
       );
 
       double distanceInMeters = Geolocator.distanceBetween(
@@ -435,7 +438,7 @@ class DashBoardController extends GetxController {
           LatLng(coords.last.toDouble(), coords.first.toDouble()),
           NavigationController.to.routePolylinesDrivers,
           type: PolylineType.driverToPickup,
-          distance: int.tryParse(distanceInMeters.toString())?.obs ?? 0.obs,
+          distance: (distanceInMeters.toInt()).obs,
           duration: driverToPickupDuration,
         );
         // Update estimated pickup time from Directions API result (no separate Distance Matrix call needed)
@@ -567,9 +570,11 @@ class DashBoardController extends GetxController {
             logger.i("New trip added to availableTrips at the top");
           }
 
-          DashBoardController.to.resetRideFlow(
-            rideType: RideFlowState.rideRequest,
-          );
+          if (currentTrip.value.sId == null) {
+            DashBoardController.to.resetRideFlow(
+              rideType: RideFlowState.rideRequest,
+            );
+          }
         } else {
           logger.w("DashBoardController is not registered in GetX!");
         }

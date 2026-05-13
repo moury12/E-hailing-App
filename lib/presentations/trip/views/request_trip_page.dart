@@ -33,6 +33,7 @@ class RequestTripPage extends StatefulWidget {
 
 class _RequestTripPageState extends State<RequestTripPage> {
   TextEditingController dateTimeController = TextEditingController();
+  String? time;
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> args =
@@ -148,8 +149,9 @@ class _RequestTripPageState extends State<RequestTripPage> {
                 return HomeController.to.tripType.value == preBook
                     ? ButtonTapWidget(
                       onTap: () async {
-                        String? time = await pickDateTime(context);
+                        time = await pickDateTime(context);
                         dateTimeController.text = formatTo12h(time ?? "");
+                        logger.i(time);
                       },
                       child: CustomTextField(
                         borderColor: AppColors.kGreyColor,
@@ -210,7 +212,7 @@ class _RequestTripPageState extends State<RequestTripPage> {
                         HomeController.to.selectedPaymentMethod.value,
                     "coupon": HomeController.to.promoCode.text,
                     if (HomeController.to.tripType.value == preBook)
-                      "pickUpDate": dateTimeController.text,
+                      "pickUpDate": time,
                   });
 
                   // logger.d(args);
